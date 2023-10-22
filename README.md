@@ -1,6 +1,6 @@
 # Iligan Stray Feeders (ISF) Web Application
 
-**Iligan Stray Feeders (ISF)** is a web application designed to connect stray animals in Iligan City with potential adopters and donors while also providing valuable resources for lost and found pets. This project also serves as a platform for volunteers who want to contribute to the cause of Iligan Stray Feeders.
+**Iligan Stray Feeders (ISF)** is a web application designed to connect stray animals in Iligan City with potential adopters and donors, while also providing valuable resources for lost and found pets. This project serves as a platform for volunteers who want to contribute to the cause of Iligan Stray Feeders.
 
 ## Table of Contents
 
@@ -21,10 +21,10 @@
 
 ## Prerequisites
 
-Before you begin, ensure you have met the following requirements:
+Before you begin, make sure you meet the following requirements:
 
 - Python (version 3.x)
-- Flask (a Python web framework)
+- Flask (for the web app)
 - MySQL (for the database)
 - Tailwind CSS (for styling)
 
@@ -32,37 +32,41 @@ Before you begin, ensure you have met the following requirements:
 
 1. **Clone the Repository:**
 
-   ```bash
-   git clone https://mjcarnaje@bitbucket.org/isf-team/isf-web.git
-   ```
+   - Clone this repository to your local machine using the following command:
 
-2. **Install Pipenv (if not yet installed):**
+     ```shell
+     git clone https://mjcarnaje@bitbucket.org/isf-team/isf-web.git
+     ```
 
-   ```bash
-   pip install --user pipenv
-   ```
+2. **Install Dependencies:**
 
-3. **Install Dependencies:**
+   - You need to have [pipenv](https://pipenv.pypa.io/en/latest/) installed on your system to install the project's dependencies. You can install pipenv using the following command:
 
-   ```bash
-   pipenv install
-   ```
+     ```shell
+     pip install --user pipenv
+     ```
 
-4. **Set Up the Database:**
+   - Once pipenv is installed, you can install the dependencies for this project using the following command:
+
+     ```shell
+     pipenv install
+     ```
+
+3. **Set Up the Database:**
 
    - Create a MySQL database for the project and update the database connection configuration in your Flask app.
 
-5. **Setup the Environment:**
+4. **Set Up the Environment:**
 
-   - Create a `.env` file in the root directory of the project and add the following environment variables:
+   - Create a `.env` file in the root directory of the project and add the following environment variables, or copy the `.env.sample` file and update the values:
 
-     ```bash
-        PIPENV_VENV_IN_PROJECT=1
-        SECRET_KEY=<your_secret_key>
-        MYSQL_HOST=<your_mysql_host>
-        MYSQL_USER=<your_mysql_user>
-        MYSQL_PASSWORD=<your_mysql_password>
-        MYSQL_DATABASE=<your_mysql_database>
+     ```
+     PIPENV_VENV_IN_PROJECT=1
+     SECRET_KEY=<your_secret_key>
+     MYSQL_HOST=<your_mysql_host>
+     MYSQL_USER=<your_mysql_user>
+     MYSQL_PASSWORD=<your_mysql_password>
+     MYSQL_DATABASE=<your_mysql_database>
      ```
 
      **Note:** The `SECRET_KEY` is used by Flask to encrypt session cookies. You can generate a secret key using the following Python code:
@@ -71,20 +75,20 @@ Before you begin, ensure you have met the following requirements:
      python -c 'import secrets; print(secrets.token_hex())'
      ```
 
-6. **Run the Application (Development):**
+5. **Run the Application (Development):**
 
-   To run the application, you can use the following commands:
+   - To run the application, you can use the following commands:
 
-   - To run compile the Tailwind CSS stylesheets:
+     - To compile the Tailwind CSS stylesheets:
 
-     ```bash
+     ```shell
      ./tailwindcss -i web/static/css/tailwind.css -o web/static/css/styles.css --watch
      ```
 
-   - To run the Flask app:
+     - To run the Flask app:
 
-     ```bash
+     ```shell
      python app.py
      ```
 
-7. Access the web app in your browser at `http://localhost:5000`.
+6. Access the web app in your browser at `http://localhost:5000`.
