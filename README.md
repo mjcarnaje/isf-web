@@ -32,32 +32,59 @@ Before you begin, ensure you have met the following requirements:
 
 1. **Clone the Repository:**
 
-    ```bash
-	git clone https://mjcarnaje@bitbucket.org/isf-team/isf-web.git
-    ```
+   ```bash
+   git clone https://mjcarnaje@bitbucket.org/isf-team/isf-web.git
+   ```
 
-2. **Set Up the Virtual Environment:**
+2. **Install Pipenv (if not yet installed):**
 
-    ```bash
-    python -m venv venv
-    source venv/bin/activate  # On Windows, use: venv\Scripts\activate
-    ```
+   ```bash
+   pip install --user pipenv
+   ```
 
 3. **Install Dependencies:**
 
-    ```bash
-    pip install -r requirements.txt
-    ```
+   ```bash
+   pipenv install
+   ```
 
 4. **Set Up the Database:**
 
-    - Create a MySQL database for the project and update the database connection configuration in your Flask app.
+   - Create a MySQL database for the project and update the database connection configuration in your Flask app.
 
-5. **Run the Application:**
+5. **Setup the Environment:**
 
-    ```bash
-    python app.py
-    ```
+   - Create a `.env` file in the root directory of the project and add the following environment variables:
 
-6. Access the web app in your browser at `http://localhost:5000`.
+     ```bash
+        PIPENV_VENV_IN_PROJECT=1
+        SECRET_KEY=<your_secret_key>
+        MYSQL_HOST=<your_mysql_host>
+        MYSQL_USER=<your_mysql_user>
+        MYSQL_PASSWORD=<your_mysql_password>
+        MYSQL_DATABASE=<your_mysql_database>
+     ```
 
+     **Note:** The `SECRET_KEY` is used by Flask to encrypt session cookies. You can generate a secret key using the following Python code:
+
+     ```python
+     python -c 'import secrets; print(secrets.token_hex())'
+     ```
+
+6. **Run the Application (Development):**
+
+   To run the application, you can use the following commands:
+
+   - To run compile the Tailwind CSS stylesheets:
+
+     ```bash
+     ./tailwindcss -i web/static/css/tailwind.css -o web/static/css/styles.css --watch
+     ```
+
+   - To run the Flask app:
+
+     ```bash
+     python app.py
+     ```
+
+7. Access the web app in your browser at `http://localhost:5000`.

@@ -1,0 +1,9 @@
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  mode: "jit",
+  content: ["./website/templates/**/*.{html,js}", "./website/static/js/*.js"],
+  theme: {
+    extend: {},
+  },
+  plugins: [require("@tailwindcss/forms"), require("@tailwindcss/typography")],
+};
