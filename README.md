@@ -81,18 +81,18 @@ To begin your journey with ISF, follow these steps:
 5. **Run the Application (Development):**
 	
 	To run the application, follow these steps:
-	
-	- Compile the Tailwind CSS stylesheets:
+    
+    - Compile the Tailwind CSS stylesheets:
 
-   	```shell
-   	./tailwindcss -i web/static/css/tailwind.css -o web/static/css/styles.css --watch
-   	```
+        ```shell
+   	    ./tailwindcss -i web/static/css/tailwind.css -o web/static/css/styles.css --watch
+   	    ```
+    
+    - Run the Flask app:
 
-   - Run the Flask app:
-
-   	```shell
-   	python app.py
-   	```
+   	    ```shell
+   	    python app.py
+   	    ```
 
 6. Access the web app in your browser at `http://localhost:5000`.
 
