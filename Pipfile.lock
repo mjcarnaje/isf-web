@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "e174b4ac4669e8f103681bd6918ebef0d2d9895efbd8e32e3ef4c7bbdfe6fcf2"
+            "sha256": "0a673307a27fd57c210985c7711022fc5f3479e72b89d2dafc497c62059806bd"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -40,6 +40,15 @@
             "index": "pypi",
             "markers": "python_version >= '3.8'",
             "version": "==2.3.3"
+        },
+        "flask-login": {
+            "hashes": [
+                "sha256:1ef79843f5eddd0f143c2cd994c1b05ac83c0401dc6234c143495af9a939613f",
+                "sha256:c0a7baa9fdc448cdd3dd6f0939df72eec5177b2f7abe6cb82fc934d29caac9c3"
+            ],
+            "index": "pypi",
+            "markers": "python_version >= '3.7'",
+            "version": "==0.6.2"
         },
         "flask-mysql-connector": {
             "hashes": [
@@ -289,11 +298,12 @@
         },
         "werkzeug": {
             "hashes": [
-                "sha256:3ffff4dcc32db52ef3cc94dff3000a3c2846890f3a5a51800a27b909c5e770f0",
-                "sha256:cbb2600f7eabe51dbc0502f58be0b3e1b96b893b05695ea2b35b43d4de2d9962"
+                "sha256:2b8c0e447b4b9dbcc85dd97b6eeb4dcbaf6c8b6c3be0bd654e25553e0a2157d8",
+                "sha256:effc12dba7f3bd72e605ce49807bbe692bd729c3bb122a3b91747a6ae77df528"
             ],
+            "index": "pypi",
             "markers": "python_version >= '3.8'",
-            "version": "==3.0.0"
+            "version": "==2.3.7"
         }
     },
     "develop": {}
