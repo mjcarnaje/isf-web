@@ -1,6 +1,9 @@
 {% extends "base.html" %}
+{% block title %}
+  Admin Login
+{% endblock title %}
 {% block content %}
-  <form class="flex flex-col">
+  <form class="flex flex-col" method="post">
     <input type="text" name="username" />
     <input type="password" name="password" />
     <button type="submit">Login</button>

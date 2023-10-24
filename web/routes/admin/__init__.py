@@ -6,6 +6,8 @@ admin_bp = Blueprint("admin", __name__, url_prefix='/admin')
 def login():
 
   if request.method == "POST":
-    print("Login as admin")
+    username = request.form.get('username')
+    password = request.form.get('password')
+    print(f"Username: {username}, Password: {password}")
   
   return render_template('admin/login.html')
