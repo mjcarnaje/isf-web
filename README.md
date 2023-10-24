@@ -1,6 +1,6 @@
 # Iligan Stray Feeders (ISF) Web Application
 
-**Iligan Stray Feeders (ISF)** is a web application designed to connect stray animals in Iligan City with potential adopters and donors while also providing valuable resources for lost and found pets. This project also serves as a platform for volunteers who want to contribute to the cause of Iligan Stray Feeders.
+Welcome to the **Iligan Stray Feeders (ISF)** web application! Our platform is dedicated to connecting stray animals in Iligan City with potential adopters and donors. Additionally, we provide valuable resources for lost and found pets. ISF is a project that aims to unite volunteers and individuals who want to make a difference in the lives of stray animals.
 
 ## Table of Contents
 
@@ -13,51 +13,87 @@
 
 ## Features
 
-- **Pet Listings**: Easily browse through profiles of stray animals in need of adoption.
-- **Lost and Found**: Find resources and tools for reporting lost or found pets and reuniting them with their owners.
-- **Donations**: Support the cause by making monetary or in-kind donations to help feed and care for stray animals.
-- **Volunteer Opportunities**: Sign up as a volunteer and contribute your time and skills to the Iligan Stray Feeders organization.
-- **User Profiles**: Create and manage user profiles to track your activity and contributions.
+ISF offers a range of features to support our mission:
+
+- **Pet Listings**: Browse profiles of stray animals in need of loving homes.
+- **Lost and Found**: Access resources and tools for reporting lost or found pets and facilitating reunions.
+- **Donations**: Contribute to our cause through monetary or in-kind donations, helping us feed and care for stray animals.
+- **Volunteer Opportunities**: Sign up as a volunteer and use your time and skills to make a positive impact within the Iligan Stray Feeders organization.
+- **User Profiles**: Create and manage your user profile to monitor your activity and contributions.
 
 ## Prerequisites
 
-Before you begin, ensure you have met the following requirements:
+Before you get started with ISF, ensure that you meet the following requirements:
 
 - Python (version 3.x)
-- Flask (a Python web framework)
+- Flask (for the web app)
 - MySQL (for the database)
 - Tailwind CSS (for styling)
 
 ## Getting Started
 
+To begin your journey with ISF, follow these steps:
+
 1. **Clone the Repository:**
 
-    ```bash
-	git clone https://mjcarnaje@bitbucket.org/isf-team/isf-web.git
-    ```
+	Clone this repository to your local machine using the following command:
+	```shell
+   	git clone https://mjcarnaje@bitbucket.org/isf-team/isf-web.git
+   	```
 
-2. **Set Up the Virtual Environment:**
+2. **Install Dependencies:**
 
-    ```bash
-    python -m venv venv
-    source venv/bin/activate  # On Windows, use: venv\Scripts\activate
-    ```
+	Install [pipenv](https://pipenv.pypa.io/en/latest/) on your system to manage project dependencies. You can install pipenv with this command:
 
-3. **Install Dependencies:**
+   	```shell
+   	pip install --user pipenv
+   	```
 
-    ```bash
-    pip install -r requirements.txt
-    ```
+   	Once pipenv is installed, use the following command to install project dependencies:
 
-4. **Set Up the Database:**
+   	```shell
+   	pipenv install
+   	```
 
-    - Create a MySQL database for the project and update the database connection configuration in your Flask app.
+3. **Set Up the Database:**
 
-5. **Run the Application:**
+	Create a MySQL database for the project and update the database connection configuration within your Flask app.
 
-    ```bash
-    python app.py
-    ```
+4. **Set Up the Environment:**
+	
+	Create a `.env` file in the project's root directory. Add the following environment variables or copy them from the `.env.sample` file and update their values:
+	
+	```
+   	PIPENV_VENV_IN_PROJECT=1
+   	SECRET_KEY=<your_secret_key>
+   	MYSQL_HOST=<your_mysql_host>
+   	MYSQL_USER=<your_mysql_user>
+   	MYSQL_PASSWORD=<your_mysql_password>
+   	MYSQL_DATABASE=<your_mysql_database>
+   	```
+		
+	The `SECRET_KEY` is used by Flask to encrypt session cookies. You can generate a secret key using the following Python code:
+
+   	```python
+   	python -c 'import secrets; print(secrets.token_hex())'
+   	```
+
+5. **Run the Application (Development):**
+	
+	To run the application, follow these steps:
+    
+    - Compile the Tailwind CSS stylesheets:
+
+        ```shell
+   	    ./tailwindcss -i web/static/css/tailwind.css -o web/static/css/styles.css --watch
+   	    ```
+    
+    - Run the Flask app:
+
+   	    ```shell
+   	    python app.py
+   	    ```
 
 6. Access the web app in your browser at `http://localhost:5000`.
 
+Thank you for joining us in our mission to make a difference in the lives of stray animals in Iligan City! We appreciate your support and involvement in the Iligan Stray Feeders (ISF) community.
