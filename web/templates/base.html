@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="keywords" content="Iligan Stray Feeder" />
+    <meta name="description"
+          content="Iligan Stray Feeder is a web application that aims to help the city government of Iligan to monitor the stray animals in the city." />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+      {% block title %}
+      {% endblock title %}
+    -  Iligan Stray Feeder</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/styles.css') }}" />
+    <script src="{{ url_for('static', filename='js/index.js') }}" defer></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
+          rel="stylesheet">
+  </head>
+  <body>
+    {% block content %}
+    {% endblock content %}
+  </body>
+</html>
