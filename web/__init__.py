@@ -16,7 +16,7 @@ def create_app():
     create_tables(app)
 
     login_manager = LoginManager()
-    login_manager.login_view = 'auth.login'
+    login_manager.login_view = 'admin.login'
     login_manager.init_app(app)
 
     @login_manager.user_loader
@@ -24,14 +24,14 @@ def create_app():
         return Admin.find_one(user_id=user_id)
 
 
-    from .routes import auth_bp
+    from .routes import admin_bp
 
     @app.route('/')
     def index():
         return render_template('home.html')
     
 
-    app.register_blueprint(auth_bp)
+    app.register_blueprint(admin_bp)
     
     return app
 

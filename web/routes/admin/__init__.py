@@ -1,7 +1,11 @@
-from flask import Blueprint
+from flask import Blueprint, render_template, request
 
-auth_bp = Blueprint("auth", __name__)
+admin_bp = Blueprint("admin", __name__, url_prefix='/admin')
 
-@auth_bp.route('/login')
+@admin_bp.route('/login', methods=['GET', 'POST'])
 def login():
-  return "Login Page"
+
+  if request.method == "POST":
+    print("Login as admin")
+  
+  return render_template('admin/login.html')

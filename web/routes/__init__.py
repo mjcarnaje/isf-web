@@ -1,1 +1,1 @@
-from .admin import auth_bp
+from .admin import admin_bp
