@@ -20,9 +20,7 @@ def create_app():
         email = app.config['ADMIN_EMAIL']
         username = app.config['ADMIN_USERNAME']
         password = generate_password_hash(app.config['ADMIN_PASSWORD'])
-
-        admin = Admin(email=email, username=username, password=password)
-        admin.insert_ignore()
+        Admin.insert_ignore(email=email, username=username, password=password)
         
     login_manager = LoginManager()
     login_manager.login_view = 'admin.login'
@@ -30,7 +28,7 @@ def create_app():
 
     @login_manager.user_loader
     def load_user(user_id):
-        return Admin.find_one(user_id=user_id)
+        return Admin.find_by_id(user_id=user_id)
 
 
     from .routes import admin_bp

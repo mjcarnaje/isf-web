@@ -3,9 +3,10 @@
   Admin Login
 {% endblock title %}
 {% block content %}
-  <form class="flex flex-col" method="post">
-    <input type="text" name="username" />
-    <input type="password" name="password" />
-    <button type="submit">Login</button>
+  <form class="flex flex-col w-full max-w-md p-8 space-y-8 border"
+        method="post">
+    <input class="rounded-md" type="text" name="username" />
+    <input class="rounded-md" type="password" name="password" />
+    <button class="bg-red-500" type="submit">Login</button>
   </form>
 {% endblock content %}

@@ -1,13 +1,9 @@
+import datetime
 from flask_login import UserMixin
 from ..database import db
 
 class Admin(UserMixin):
-    email: str
-    username: str
-    password: str
-    id: int | None
-    
-    def __init__(self, email, username, password, id=None):
+    def __init__(self, email: str = None, username: str = None, password: str = None, id: int | None = None, created_at: datetime.datetime | None = None):
         self.id = id
         self.email = email
         self.username = username
@@ -16,17 +12,30 @@ class Admin(UserMixin):
     def get_id(self):
         return self.id
 
-    def insert_ignore(self):
+    @staticmethod
+    def insert_ignore(email: str, username: str, password: str):
         sql = "INSERT IGNORE INTO admin (email, username, password) VALUES (%s, %s, %s)"
         cur = db.new_cursor(dictionary=True)
-        cur.execute(sql, (self.email, self.username, self.password))
+        cur.execute(sql, (email, username, password))
         db.connection.commit()
-        return True
+        return cur.lastrowid
 
     @staticmethod
-    def find_one(user_id):
+    def find_by_id(user_id: int):
         sql = "SELECT * FROM admin WHERE id = %s"
         cur = db.new_cursor(dictionary=True)
-        db.execute(sql, (user_id,))
+        cur.execute(sql, (user_id,))
         row = cur.fetchone()
         return row
+    
+    @classmethod
+    def find_by_username(cls, username: str):
+        sql = "SELECT * FROM admin WHERE username = %s"
+        cur = db.new_cursor(dictionary=True)
+        cur.execute(sql, (username,))
+        admin = cur.fetchone()
+        if not admin: 
+            return None
+        return cls(**admin)
+
+    
