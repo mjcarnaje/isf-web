@@ -34,66 +34,70 @@ Before you get started with ISF, ensure that you meet the following requirements
 
 To begin your journey with ISF, follow these steps:
 
-1. **Clone the Repository:**
+1.  **Clone the Repository:**
 
-	Clone this repository to your local machine using the following command:
-	```shell
-   	git clone https://mjcarnaje@bitbucket.org/isf-team/isf-web.git
-   	```
+    Clone this repository to your local machine using the following command:
 
-2. **Install Dependencies:**
+    ```shell
+    git clone https://mjcarnaje@bitbucket.org/isf-team/isf-web.git
+    ```
 
-	Install [pipenv](https://pipenv.pypa.io/en/latest/) on your system to manage project dependencies. You can install pipenv with this command:
+2.  **Install Dependencies:**
 
-   	```shell
-   	pip install --user pipenv
-   	```
-
-   	Once pipenv is installed, use the following command to install project dependencies:
-
-   	```shell
-   	pipenv install
-   	```
-
-3. **Set Up the Database:**
-
-	Create a MySQL database for the project and update the database connection configuration within your Flask app.
-
-4. **Set Up the Environment:**
-	
-	Create a `.env` file in the project's root directory. Add the following environment variables or copy them from the `.env.sample` file and update their values:
-	
-	```
-   	PIPENV_VENV_IN_PROJECT=1
-   	SECRET_KEY=<your_secret_key>
-   	MYSQL_HOST=<your_mysql_host>
-   	MYSQL_USER=<your_mysql_user>
-   	MYSQL_PASSWORD=<your_mysql_password>
-   	MYSQL_DATABASE=<your_mysql_database>
-   	```
-		
-	The `SECRET_KEY` is used by Flask to encrypt session cookies. You can generate a secret key using the following Python code:
-
-   	```python
-   	python -c 'import secrets; print(secrets.token_hex())'
-   	```
-
-5. **Run the Application (Development):**
-	
-	To run the application, follow these steps:
-    
-    - Compile the Tailwind CSS stylesheets:
+    Install [pipenv](https://pipenv.pypa.io/en/latest/) on your system to manage project dependencies. You can install pipenv with this command:
 
         ```shell
-   	    ./tailwindcss -i web/static/css/tailwind.css -o web/static/css/styles.css --watch
-   	    ```
-    
+        pip install --user pipenv
+        ```
+
+    Once pipenv is installed, use the following command to install project dependencies:
+
+        ```shell
+        pipenv install
+        ```
+
+3.  **Set Up the Database:**
+
+    Create a MySQL database for the project and update the database connection configuration within your Flask app.
+
+4.  **Set Up the Environment:**
+
+    Create a `.env` file in the project's root directory. Add the following environment variables or copy them from the `.env.sample` file and update their values:
+
+        ```
+        PIPENV_VENV_IN_PROJECT=1
+        SECRET_KEY=<your_secret_key>
+        MYSQL_HOST=<your_mysql_host>
+        MYSQL_USER=<your_mysql_user>
+        MYSQL_PASSWORD=<your_mysql_password>
+        MYSQL_DATABASE=<your_mysql_database>
+        ```
+
+    The `SECRET_KEY` is used by Flask to encrypt session cookies. You can generate a secret key using the following Python code:
+
+        ```python
+        python -c 'import secrets; print(secrets.token_hex())'
+        ```
+
+5.  **Run the Application (Development):**
+
+    To run the application, follow these steps:
+
+    - Compile the Tailwind CSS stylesheets:
+
+      ```shell
+      # Windows
+      ./tailwindcss-win -i web/static/css/tailwind.css -o web/static/css/styles.css --watch
+      # Mac
+      ./tailwindcss-mac -i web/static/css/tailwind.css -o web/static/css/styles.css --watch
+      ```
+
     - Run the Flask app:
 
-   	    ```shell
-   	    python app.py
-   	    ```
+      ```shell
+      python app.py
+      ```
 
-6. Access the web app in your browser at `http://localhost:5000`.
+6.  Access the web app in your browser at `http://localhost:5000`.
 
 Thank you for joining us in our mission to make a difference in the lives of stray animals in Iligan City! We appreciate your support and involvement in the Iligan Stray Feeders (ISF) community.
