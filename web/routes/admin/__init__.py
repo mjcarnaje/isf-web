@@ -2,23 +2,23 @@ from flask import Blueprint, render_template, request, redirect, url_for
 from ...models import Admin
 from werkzeug.security import check_password_hash
 from flask_login import login_user, logout_user, login_required
+from ...validations import LoginValidation
 
 admin_bp = Blueprint("admin", __name__, url_prefix='/admin')
 
 @admin_bp.route('/login', methods=['GET', 'POST'])
 def login():
+  form = LoginValidation()
 
-  if request.method == "POST":
-    username = request.form.get('username')
-    password = request.form.get('password')
+  if form.validate_on_submit():
+    admin = Admin.find_by_username(username=form.username.data)
 
-    admin = Admin.find_by_username(username=username)
-
-    if admin and check_password_hash(admin.password, password):
+    if admin and check_password_hash(admin.password, form.password.data):
       login_user(admin, remember=True)
       return redirect(url_for('index'))
-  
-  return render_template('admin/login.html')
+
+     
+  return render_template('admin/login.html', form=form)
 
 
 @admin_bp.route("/logout")

@@ -4,9 +4,29 @@
 {% endblock title %}
 {% block content %}
   <form class="flex flex-col w-full max-w-md p-8 space-y-8 border"
-        method="post">
-    <input class="rounded-md" type="text" name="username" />
-    <input class="rounded-md" type="password" name="password" />
+        method="post"
+        novalidate>
+    {# <input class="rounded-md" type="text" name="username" /> #}
+    {# <input class="rounded-md" type="password" name="password" /> #}
+    {{ form.csrf_token }}
+    <div>
+      {{ form.username.label }}
+      {{ form.username }}
+      {% if form.username.errors %}
+        <ul class="errors">
+          {% for error in form.username.errors %}<li>{{ error }}</li>{% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+    <div>
+      {{ form.password.label }}
+      {{ form.password }}
+      {% if form.password.errors %}
+        <ul class="errors">
+          {% for error in form.password.errors %}<li>{{ error }}</li>{% endfor %}
+        </ul>
+      {% endif %}
+    </div>
     <button class="bg-red-500" type="submit">Login</button>
   </form>
 {% endblock content %}
