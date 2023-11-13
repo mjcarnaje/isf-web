@@ -3,5 +3,17 @@
   Home
 {% endblock title %}
 {% block content %}
-  <h1>Home</h1>
+  <div class="space-y-8">
+    <div>
+      <p>{{ current_user.username }}</p>
+      <p>{{ current_user.email }}</p>
+    </div>
+    <h1>Home</h1>
+    <div>
+      <a href='{{ url_for("admin.login") }}'>Login as admin</a>
+    </div>
+    <div>
+      <a href="{{ url_for("admin.logout") }}">Logout</a>
+    </div>
+  </div>
 {% endblock content %}

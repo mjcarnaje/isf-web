@@ -1,0 +1,17 @@
+{% from './macros/custom-input.html' import render_field %}
+{% extends "base.html" %}
+{% block title %}
+  Admin Login
+{% endblock title %}
+{% block content %}
+  <form class="flex flex-col w-full max-w-md p-8 space-y-8 border"
+        method="post"
+        novalidate>
+    {# <input class="rounded-md" type="text" name="username" /> #}
+    {# <input class="rounded-md" type="password" name="password" /> #}
+    {{ form.csrf_token }}
+    {{ render_field(form.username) }}
+    {{ render_field(form.password) }}
+    <button class="bg-red-500" type="submit">Login</button>
+  </form>
+{% endblock content %}

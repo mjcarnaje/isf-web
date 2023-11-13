@@ -7,6 +7,10 @@ name = "pypi"
 flask = "==2.3.3"
 flask-mysql-connector = "*"
 python-dotenv = "*"
+flask-login = "*"
+werkzeug = "==2.3.7"
+wtforms = "*"
+flask-wtf = "*"
 
 [dev-packages]
 
