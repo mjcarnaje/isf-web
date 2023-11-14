@@ -32,13 +32,27 @@ def create_app():
 
 
     from .routes import admin_bp
+    from .routes import rescue_bp
+    from .routes import adopt_bp
+    from .routes import donate_bp
+    from .routes import sponsor_bp
+    from .routes import volunteer_bp
 
     @app.route('/')
     def index():
         return render_template('home.html')
     
-
+    @app.route('/about-us')
+    def about_us():
+        return render_template('about_us.html')
+    
     app.register_blueprint(admin_bp)
+    app.register_blueprint(rescue_bp)
+    app.register_blueprint(adopt_bp)
+    app.register_blueprint(donate_bp)
+    app.register_blueprint(sponsor_bp)
+    app.register_blueprint(volunteer_bp)
+
 
 
     return app
