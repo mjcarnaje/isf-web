@@ -1,0 +1,22 @@
+{% block footer %}
+  <footer class="z-10 flex items-center space-y-8 justify-center w-full p-12 bg-[#D4E2D4]">
+    <div class="flex flex-col items-center space-y-4">
+      <div class="py-2">
+        <img src="{{ url_for('static', filename='images/isf-logo.png') }}"
+             class="object-contain w-24 h-24"
+             alt="ISF Logo"
+             width="auto"
+             height="auto" />
+      </div>
+      <p class="text-[#642902] font-semibold">Iligan Stray Feeders</p>
+      <p class="text-[#642902]">
+        <span class="font-semibold">Shelter Address:</span> Prk 4, Mimbalot, Buru-un, Iligan City
+      </p>
+      <p class="text-[#642902]">
+        <span class="font-semibold">Residential HeadQuarter:</span>
+        Block 6 Lot 3 Orchid Homes, Santiago, Iligan City
+      </p>
+    </div>
+    <div class="flex flex-col items-center space-y-4"></div>
+  </footer>
+{% endblock footer %}
