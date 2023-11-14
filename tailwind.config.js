@@ -6,8 +6,11 @@ module.exports = {
   content: ["./web/templates/**/*.{html,js}", "./web/static/js/*.js"],
   theme: {
     extend: {
+      colors: {
+        primary: "#642902",
+      },
       fontFamily: {
-        sans: ["Inter", ...defaultTheme.fontFamily.sans],
+        sans: ["'Libre Franklin'", ...defaultTheme.fontFamily.sans],
       },
     },
   },
