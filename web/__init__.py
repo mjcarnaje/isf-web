@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, url_for
 from .config import Config
 from .database import db
 from .database.create_tables import create_tables
@@ -40,7 +40,67 @@ def create_app():
 
     @app.route('/')
     def index():
-        return render_template('home.html')
+        
+        # this is temporary, fetch this from db
+        rescue_cats = [
+            {
+                "name": "Fluffy",
+                "description": "A playful and affectionate cat.",
+                "image_url": url_for('static', filename='images/animal_cat.png')
+            },
+            {
+                "name": "Whiskers",
+                "description": "An elegant and curious feline companion.",
+                "image_url": url_for('static', filename='images/animal_cat.png')
+            },
+            {
+                "name": "Mittens",
+                "description": "A cuddly cat with a love for warm laps.",
+                "image_url": url_for('static', filename='images/animal_cat.png')
+            },
+            {
+                "name": "Shadow",
+                "description": "A mysterious and independent cat.",
+                "image_url": url_for('static', filename='images/animal_cat.png')
+            },
+            {
+                "name": "Sunny",
+                "description": "A cheerful and energetic cat with a sunny disposition.",
+                "image_url": url_for('static', filename='images/animal_cat.png')
+            }
+        ]
+        
+        # this is temporary, fetch this from db
+        rescue_dogs = [
+            {
+                "name": "Buddy",
+                "description": "A loyal and friendly canine companion.",
+                "image_url": url_for('static', filename='images/animal_dog.png')
+            },
+            {
+                "name": "Max",
+                "description": "An energetic and playful dog that loves fetch.",
+                "image_url": url_for('static', filename='images/animal_dog.png')
+            },
+            {
+                "name": "Luna",
+                "description": "A gentle and loving dog that enjoys long walks.",
+                "image_url": url_for('static', filename='images/animal_dog.png')
+            },
+            {
+                "name": "Rocky",
+                "description": "A strong and adventurous dog with a love for the outdoors.",
+                "image_url": url_for('static', filename='images/animal_dog.png')
+            },
+            {
+                "name": "Coco",
+                "description": "A sweet and affectionate dog that adores belly rubs.",
+                "image_url": url_for('static', filename='images/animal_dog.png')
+            }
+        ]
+
+        
+        return render_template('home.html', rescue_cats=rescue_cats, rescue_dogs=rescue_dogs)
     
     @app.route('/about-us')
     def about_us():
