@@ -7,20 +7,47 @@
       { 'name': 'Sponsor', 'url': url_for('sponsor.index'), 'page': 'sponsor'},
       { 'name': 'Volunteer', 'url': url_for('volunteer.index'), 'page': 'volunteer'},
     ] %}
-  <nav class="z-10 flex items-center justify-center w-full h-20 px-12 bg-white border-b">
-    <div class="flex items-center justify-between w-full max-w-7xl">
+  <nav class="relative z-10 flex items-center justify-center w-full h-20 px-4 bg-white border-b md:px-8 lg:px-12">
+    <div class="flex items-center justify-between w-full gap-8 max-w-7xl">
       <a href="{{ url_for('index',) }}">
         <img src="{{ url_for('static', filename='svgs/logo.svg') }}"
              alt="ISF logo"
-             class="object-cover w-auto h-12"
+             class="object-cover h-auto w-52"
              height="auto"
              width="auto" />
       </a>
-      <ul class="flex space-x4">
+      <ul class="hidden space-x-4 md:flex">
         {% for navigation in navigations %}
           <li class="rounded-lg cursor-pointer">
             <a href="{{ navigation.url }}"
-               class="flex items-center px-6 py-4 space-x-4 text-md text-primary {{ 'text-gray-700' if active_page != navigation.page else 'font-semibold' }}">
+               class="flex items-center px-6 py-4 text-md {{ 'text-primary opacity-80' if active_page != navigation.page else 'font-semibold text-primary' }}">
+              {{ navigation.name }}
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+      <button id="menu-button" class="flex md:hidden">
+        <svg xmlns="http://www.w3.org/2000/svg"
+             width="28"
+             height="28"
+             viewBox="0 0 24 24"
+             fill="none"
+             stroke="currentColor"
+             stroke-width="2"
+             stroke-linecap="round"
+             stroke-linejoin="round"
+             class="lucide lucide-align-justify">
+          <line x1="3" x2="21" y1="6" y2="6" /><line x1="3" x2="21" y1="12" y2="12" /><line x1="3" x2="21" y1="18" y2="18" />
+        </svg>
+      </button>
+    </div>
+    <div id="menu-panel"
+         class="absolute hidden w-full left-0 right-0 min-h-[200px] shadow-sm rounded-b-sm p-3 bg-white border-b top-20">
+      <ul>
+        {% for navigation in navigations %}
+          <li class="rounded-lg cursor-pointer hover:bg-slate-100">
+            <a href="{{ navigation.url }}"
+               class="flex items-center px-6 py-4 text-md text-primary {{ 'font-semibold' if active_page == navigation.page else 'opacity-80' }}">
               {{ navigation.name }}
             </a>
           </li>
@@ -28,4 +55,12 @@
       </ul>
     </div>
   </nav>
+  <script>
+  const menuButton = document.getElementById("menu-button");
+  const menuPabel = document.getElementById("menu-panel");
+
+  menuButton.addEventListener("click", () => {
+    menuPabel.classList.toggle("hidden")
+  })
+  </script>
 {% endblock navbar %}
