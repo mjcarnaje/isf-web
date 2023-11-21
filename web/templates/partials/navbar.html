@@ -1,6 +1,5 @@
 {% block navbar %}
   {% set navigations = [
-      { 'name': 'About Us', 'url': url_for('about_us'), 'page': 'about-us'},
       { 'name': 'Rescues', 'url': url_for('rescue.index'), 'page': 'rescue'},
       { 'name': 'Adopt', 'url': url_for('adopt.index'), 'page': 'adopt'},
       { 'name': 'Donate', 'url': url_for('donate.index'), 'page': 'donate'},
@@ -20,7 +19,7 @@
         {% for navigation in navigations %}
           <li class="rounded-lg cursor-pointer">
             <a href="{{ navigation.url }}"
-               class="flex items-center px-6 py-4 text-md {{ 'text-primary opacity-80' if active_page != navigation.page else 'font-semibold text-primary' }}">
+               class="flex items-center px-6 py-4 text-md {{ 'text-primary-400' if active_page != navigation.page else 'font-bold text-primary-500' }}">
               {{ navigation.name }}
             </a>
           </li>
@@ -47,7 +46,7 @@
         {% for navigation in navigations %}
           <li class="rounded-lg cursor-pointer hover:bg-slate-100">
             <a href="{{ navigation.url }}"
-               class="flex items-center px-6 py-4 text-md text-primary {{ 'font-semibold' if active_page == navigation.page else 'opacity-80' }}">
+               class="flex items-center px-6 py-4 text-md text-primary-500 {{ 'font-semibold' if active_page == navigation.page else 'opacity-80' }}">
               {{ navigation.name }}
             </a>
           </li>
