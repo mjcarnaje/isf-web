@@ -1159,6 +1159,11 @@ select {
   background-color: rgb(255 242 204 / var(--tw-bg-opacity));
 }
 
+.bg-tertiary {
+  --tw-bg-opacity: 1;
+  background-color: rgb(212 226 212 / var(--tw-bg-opacity));
+}
+
 .bg-opacity-40 {
   --tw-bg-opacity: 0.4;
 }
@@ -1194,6 +1199,11 @@ select {
 .bg-\[\#D4E2D4\] {
   --tw-bg-opacity: 1;
   background-color: rgb(212 226 212 / var(--tw-bg-opacity));
+}
+
+.bg-\[\#FFC288\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 194 136 / var(--tw-bg-opacity));
 }
 
 .bg-cover {
