@@ -1,0 +1,32 @@
+{% macro render_field(field, container_class, footer_text) %}
+  <div class="{{ container_class }} form-control">
+    {{ field.label(class="label label-text") }}
+    {% if field.type == "SelectField" %}
+      <div class="relative">
+        <select class="w-full select select-bordered" name="{{ field.name }}">
+          <option value="">Select {{ field.label.text }}</option>
+          {% for key, value in field.choices %}
+            <option value="{{ key }}" {% if field.data == key %}selected{% endif %}>{{ value }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    {% else %}
+      {{ field(class="w-full input input-bordered", placeholder=field.label.text, **kwargs) }}
+    {% endif %}
+    {% if field.errors %}
+      <ul class="mt-2">
+        {% for error in field.errors %}<li class="text-xs text-red-500">{{ error }}</li>{% endfor %}
+      </ul>
+      <style>
+          [name="{{ field.name }}"] {
+            border-color: #ff6f70;
+          }
+      </style>
+    {% endif %}
+    {% if footer_text %}
+      <span>
+        <small class="text-xs text-gray-500">{{ footer_text }}</small>
+      </span>
+    {% endif %}
+  </div>
+{% endmacro %}

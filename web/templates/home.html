@@ -1,5 +1,5 @@
-{% from './macros/landing-gallery-item.html' import render_landing_gallery_item with context %}
-{% extends "base.html" %}
+{% from './_helpers/macros/gallery_item.html' import render_gallery_item with context %}
+{% extends "./_helpers/layout/main_layout.html" %}
 {% block title %}
   Home
 {% endblock title %}
@@ -18,9 +18,7 @@
       </p>
       <div class="flex items-center justify-center">
         <a href="{{ url_for('about_us',) }}"
-           class="px-12 py-3 text-lg font-semibold transition-all duration-300 rounded-lg bg-primary_light text-primary-500 hover:bg-opacity-80">
-          Learn About Us
-        </a>
+           class="btn btn-secondary text-primary-500">Learn About Us</a>
       </div>
     </div>
   </div>
@@ -44,9 +42,7 @@
             <i class="text-4xl text-primary-500 fa-solid fa-chevron-left"></i>
           </div>
           <div class="flex w-full gap-4 pb-4 overflow-y-auto no-scrollbar scroll-smooth gallery__animals--items">
-            {% for item in rescue_animals %}
-              {{ render_landing_gallery_item(item.image_url, item.name, item.description) }}
-            {% endfor %}
+            {% for item in rescue_animals %}{{ render_gallery_item(item.image_url, item.name, item.description) }}{% endfor %}
           </div>
           <div class="flex items-center justify-center w-12 transition-all duration-150 cursor-pointer h-80 gallery__animals--right-button">
             <i class="text-4xl text-primary-500 fa-solid fa-chevron-right"></i>
@@ -64,27 +60,21 @@
             Make a difference with your generosity. Your contributions enable us to continue our vital work, rescuing, caring for, and rehoming animals in need. Every donation, no matter the size, brings us one step closer to a world where every animal is safe and loved.
           </p>
           <a href="{{ url_for('donate.index',) }}"
-             class="flex items-center justify-center w-full p-3 text-lg font-semibold transition-all duration-300 rounded-lg bg-primary_light text-primary-500 hover:bg-opacity-80">
-            Donate
-          </a>
+             class="btn btn-secondary text-primary-500">Donate</a>
         </div>
         <div class="flex flex-col self-stretch justify-between flex-1 space-y-4">
           <p class="font-medium leading-9 text-center text-primary-500">
             Discover the perfect companion for your family. Browse our lovingly rescued animals ready for their forever homes. By choosing adoption, you're not just welcoming a pet into your life, you're offering a deserving soul a new beginning.
           </p>
           <a href="{{ url_for('adopt.index',) }}"
-             class="flex items-center justify-center w-full p-3 text-lg font-semibold transition-all duration-300 rounded-lg bg-primary_light text-primary-500 hover:bg-opacity-80">
-            Adopt
-          </a>
+             class="btn btn-secondary text-primary-500">Adopt</a>
         </div>
         <div class="flex flex-col self-stretch justify-between flex-1 space-y-4">
           <p class="font-medium leading-9 text-center text-primary-500">
             Become a vital part of an animal's journey. When you sponsor an animal, you provide them with the support they need for rehabilitation and care. Your sponsorship ensures their well-being and transformation, and you can follow their progress with pride.
           </p>
           <a href="{{ url_for('sponsor.index',) }}"
-             class="flex items-center justify-center w-full p-3 text-lg font-semibold transition-all duration-300 rounded-lg bg-primary_light text-primary-500 hover:bg-opacity-80">
-            Sponsor
-          </a>
+             class="btn btn-secondary text-primary-500">Sponsor</a>
         </div>
       </div>
     </div>
@@ -104,9 +94,7 @@
         </p>
         <div>
           <a href="{{ url_for('donate.index',) }}"
-             class="flex items-center justify-center px-12 py-3 text-lg font-semibold transition-all duration-300 rounded-lg bg-primary_light text-primary-500 hover:bg-opacity-80">
-            Support the Shelter
-          </a>
+             class="btn btn-secondary text-primary-500">Support the Shelter</a>
         </div>
       </div>
     </div>

@@ -6,6 +6,11 @@ from ...validations import LoginValidation
 
 admin_bp = Blueprint("admin", __name__, url_prefix='/admin')
 
+@admin_bp.route('/', methods=['GET'])
+@login_required
+def index():
+   return render_template('/admin/index.html')
+
 @admin_bp.route('/login', methods=['GET', 'POST'])
 def login():
   form = LoginValidation()
