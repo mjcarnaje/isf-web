@@ -1,6 +1,8 @@
 {% macro render_field(field, container_class, footer_text) %}
   <div class="{{ container_class }} form-control">
-    {{ field.label(class="label label-text") }}
+    {% if field.type != "BooleanField" %}{{ field.label(class="label label-text") }}{% endif %}
+    {# ################################ #}
+    {# ################################ #}
     {% if field.type == "SelectField" %}
       <div class="relative">
         <select class="w-full select select-bordered" name="{{ field.name }}">
@@ -10,9 +12,27 @@
           {% endfor %}
         </select>
       </div>
+    {% elif field.type == "BooleanField" %}
+      <div class="relative">
+        <label class="cursor-pointer label">
+          <span class="label-text">{{ field.label.text }}</span>
+          <input type="checkbox"
+                 name="{{ field.name }}"
+                 {% if field.data is true %}checked='checked'{% endif %}
+                 class="checkbox checkbox-primary" />
+        </label>
+      </div>
+    {% elif field.type == "TextAreaField" %}
+      <div class="relative">
+        <textarea class="w-full textarea textarea-bordered"
+                  placeholder="{{ field.render_kw.placeholder }}"
+                  name="{{ field.name }}"></textarea>
+      </div>
     {% else %}
       {{ field(class="w-full input input-bordered", placeholder=field.label.text, **kwargs) }}
     {% endif %}
+    {# ################################ #}
+    {# ################################ #}
     {% if field.errors %}
       <ul class="mt-2">
         {% for error in field.errors %}<li class="text-xs text-red-500">{{ error }}</li>{% endfor %}
@@ -23,6 +43,8 @@
           }
       </style>
     {% endif %}
+    {# ################################ #}
+    {# ################################ #}
     {% if footer_text %}
       <span>
         <small class="text-xs text-gray-500">{{ footer_text }}</small>

@@ -75,6 +75,11 @@ To begin your journey with ISF, follow these steps:
         ADMIN_EMAIL=
         ADMIN_USERNAME=
         ADMIN_PASSWORD=
+        #cloudinary config
+        CLOUDINARY_CLOUD_NAME=
+        CLOUDINARY_API_KEY=
+        CLOUDINARY_API_SECRET=
+        CLOUDINARY_FOLDER=
         # flask config
         PIPENV_VENV_IN_PROJECT=1
         FLASK_DEBUG=1
