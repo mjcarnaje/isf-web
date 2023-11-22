@@ -4,7 +4,31 @@
   About us
 {% endblock title %}
 {% block content %}
-  <div class="space-y-8">
-    <h1 class="text-2xl font-bold">About us</h1>
+  <div class="flex flex-col items-center w-full px-6 py-12 space-y-12 md:space-y-16 lg:space-y-20 md:py-16 lg:py-20">
+    <div class="w-full max-w-5xl space-y-4 md:space-y-8">
+      <h1 class="text-4xl font-bold text-center text-primary-500">About us</h1>
+      <p class="font-medium leading-9 text-justify md:text-center text-primary-500">
+        ISF or Iligan Stray Feeders is a non-profit non government organization which focuses on feeding Stray animals in and around the city. It was founded and spearheaded by Trusty Choice O. Espinosa as it aims in promoting animal welfare through Stray Feeding Program. First Stray Feeding activity was conducted on December 9, 2020 and by January 7, 2021 ISF was formally organized. Through constant and regular Stray Feeding Program the group attracted a number of fellow animal advocates which became regular volunteers. The group expanded to other areas as it aims to feed larger number of Strays. With the help of regular donors and supporters the group was able to sustain its advocacy program until present time. 
+      </p>
+    </div>
+    <div class="w-full max-w-5xl space-y-4 md:space-y-8">
+      <h1 class="text-4xl font-bold text-center text-primary-500">Misson</h1>
+      <p class="font-medium leading-9 text-justify md:text-center text-primary-500">
+        To improve the well-being of stray animals in Iligan City and surrounding areas through compassionate care, sustainable feeding programs, and community engagement. We are dedicated to alleviating the suffering of stray animals and fostering a community that values and actively participates in animal welfare.
+      </p>
+    </div>
+    <div class="w-full max-w-5xl space-y-4 md:space-y-8">
+      <h1 class="text-4xl font-bold text-center text-primary-500">Vision</h1>
+      <p class="font-medium leading-9 text-justify md:text-center text-primary-500">
+        A city where no stray animal goes hungry or unloved. ISF envisions a future where the plight of stray animals is minimized through our relentless commitment to providing consistent nourishment, medical care, and advocacy. We aspire to create a compassionate community that embraces the importance of coexisting harmoniously with our stray companions, ultimately fostering a city where both humans and animals thrive together.
+      </p>
+    </div>
+    <div class="w-full max-w-5xl">
+      <img src="{{ url_for('static', filename='/images/ISF-Organization Structure.png') }}"
+           class="w-full rounded-xl"
+           alt="ISF Organization Structure"
+           height="auto"
+           width="auto" />
+    </div>
   </div>
 {% endblock content %}

@@ -1,6 +1,6 @@
 {% macro render_landing_gallery_item(image_src, name, description) %}
   <div class="space-y-2">
-    <div class="overflow-hidden border rounded-lg aspect-square h-80 bg-gray-50">
+    <div class="overflow-hidden border rounded-lg aspect-square h-72 bg-gray-50">
       <img class="object-cover h-full"
            src="{{ image_src }}"
            alt="Animal Gallery Photo"
@@ -8,8 +8,8 @@
            height="auto" />
     </div>
     <div class="space-y-1">
-      <h3 class="text-lg font-bold text-primary">{{ name }}</h3>
-      <p class="text-primary">{{ description }}</p>
+      <h3 class="font-bold text-primary-500">{{ name }}</h3>
+      <p class="text-sm text-primary-500">{{ description }}</p>
     </div>
   </div>
 {% endmacro %}
