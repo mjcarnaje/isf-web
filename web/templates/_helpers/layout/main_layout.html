@@ -1,0 +1,9 @@
+{% extends "./_helpers/layout/base.html" %}
+{% block body %}
+  {% include "./_helpers/partials/navbar.html" %}
+  <div class="min-h-screen">
+    {% block content %}
+    {% endblock content %}
+  </div>
+  {% include "./_helpers/partials/footer.html" %}
+{% endblock body %}

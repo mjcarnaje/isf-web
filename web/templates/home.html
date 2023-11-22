@@ -1,105 +1,86 @@
-{% from './macros/landing-gallery-item.html' import render_landing_gallery_item with context %}
-{% extends "base.html" %}
+{% from './_helpers/macros/gallery_item.html' import render_gallery_item with context %}
+{% extends "./_helpers/layout/main_layout.html" %}
 {% block title %}
   Home
 {% endblock title %}
 {% block content %}
-  <div class="flex items-center justify-center w-full min-h-[80vh] bg-no-repeat bg-cover bg-hero-image">
+  <div class="flex items-center justify-center w-full min-h-[80vh] bg-no-repeat bg-center bg-cover bg-hero-image">
     <div class="flex flex-col items-center space-y-4 text-center">
-      <h1 class="text-6xl font-bold text-white">Feed Furr A Cause</h1>
-      <p class="text-white">In Service to the Hungry and Weak</p>
+      <h1 class="text-5xl font-extrabold text-white md:text-7xl">Feed Furr A Cause</h1>
+      <p class="font-semibold text-white md:text-lg">In Service to the Hungry and Weak</p>
     </div>
   </div>
-  <div class="flex flex-col items-center w-full max-w-6xl py-20 mx-auto space-y-12">
-    <h1 class="text-4xl font-bold text-center text-primary">About us</h1>
-    <p class="text-lg font-medium leading-10 text-center text-primary">
-      ISF or Iligan Stray Feeders is a non-profit non government organization which focuses on feeding Stray animals in and around the city. It was founded and spearheaded by Trusty Choice O. Espinosa as it aims in promoting animal welfare through Stray Feeding Program. First Stray Feeding activity was conducted on December 9, 2020 and by January 7, 2021 ISF was formally organized. Through constant and regular Stray Feeding Program the group attracted a number of fellow animal advocates which became regular volunteers. The group expanded to other areas as it aims to feed larger number of Strays. With the help of regular donors and supporters the group was able to sustain its advocacy program until present time. 
-    </p>
-    <a href="{{ url_for('about_us',) }}"
-       class="px-12 py-3 text-lg font-semibold transition-all duration-300 rounded-lg bg-primary_light text-primary hover:bg-opacity-80">
-      Learn About Us
-    </a>
-  </div>
-  <div class="flex flex-col items-center w-full max-w-6xl py-20 mx-auto space-y-12">
-    <h1 class="text-4xl font-bold text-center text-primary">Our Rescues</h1>
-    <div class="flex w-full h-64 space-x-5">
-      <div class="flex-1 bg-no-repeat bg-cover rounded-xl bg-our-rescue-1"></div>
-      <div class="flex-1 bg-no-repeat bg-cover rounded-xl bg-our-rescue-2"></div>
-      <div class="flex-1 bg-no-repeat bg-cover rounded-xl bg-our-rescue-3"></div>
-    </div>
-    <p class="text-lg font-medium leading-10 text-center text-primary">
-      At the heart of our mission, you'll find the stories of countless animals we've rescued, nurtured, and given a second chance at life. Each rescue is a testament to our unwavering commitment to the well-being of animals in need. Explore these inspiring journeys of hope, recovery, and transformation in our 'Our Rescues' section and witness the incredible impact of our work.
-    </p>
-    <div class="flex flex-col items-start w-full space-y-4">
-      <h1 class="text-4xl font-bold text-center pl-14 text-primary">Cats</h1>
-      <div class="relative flex w-full space-x-2">
-        <div class="flex items-center justify-center w-12 transition-all duration-150 cursor-pointer h-80 gallery__cat--left-button">
-          <i class="text-4xl text-primary fa-solid fa-chevron-left"></i>
-        </div>
-        <div class="flex w-full gap-4 pb-4 overflow-y-auto scroll-smooth gallery__cat--items">
-          {% for item in rescue_cats %}
-            {{ render_landing_gallery_item(item.image_url, item.name, item.description) }}
-          {% endfor %}
-        </div>
-        <div class="flex items-center justify-center w-12 transition-all duration-150 cursor-pointer h-80 gallery__cat--right-button">
-          <i class="text-4xl text-primary fa-solid fa-chevron-right"></i>
-        </div>
+  <div class="flex flex-col items-center w-full px-6 py-12 md:py-16 lg:py-20">
+    <div class="w-full max-w-5xl space-y-12">
+      <h1 class="text-4xl font-bold text-center text-primary-500">About us</h1>
+      <p class="font-medium leading-9 text-justify md:text-center">
+        ISF or Iligan Stray Feeders is a non-profit non government organization which focuses on feeding Stray animals in and around the city. It was founded and spearheaded by Trusty Choice O. Espinosa as it aims in promoting animal welfare through Stray Feeding Program. First Stray Feeding activity was conducted on December 9, 2020 and by January 7, 2021 ISF was formally organized. Through constant and regular Stray Feeding Program the group attracted a number of fellow animal advocates which became regular volunteers. The group expanded to other areas as it aims to feed larger number of Strays. With the help of regular donors and supporters the group was able to sustain its advocacy program until present time. 
+      </p>
+      <div class="flex items-center justify-center">
+        <a href="{{ url_for('about_us',) }}"
+           class="btn btn-secondary text-primary-500">Learn About Us</a>
       </div>
     </div>
-    <div class="flex flex-col items-start w-full space-y-4">
-      <h1 class="text-4xl font-bold text-center pl-14 text-primary">Dogs</h1>
-      <div class="relative flex w-full space-x-2">
-        <div class="flex items-center justify-center w-12 transition-all duration-150 cursor-pointer h-80 gallery__dog--left-button">
-          <i class="text-4xl text-primary fa-solid fa-chevron-left"></i>
+  </div>
+  <div class="flex flex-col items-center w-full px-6 py-8 md:py-10 lg:py-12">
+    <div class="w-full max-w-6xl space-y-12 ">
+      <div class="space-y-12">
+        <h1 class="text-4xl font-bold text-center text-primary-500">Our Rescues</h1>
+        <div class="flex-col hidden w-full h-64 gap-5 md:flex md:flex-row">
+          <div class="flex-1 bg-no-repeat bg-cover rounded-xl bg-our-rescue-1"></div>
+          <div class="flex-1 bg-no-repeat bg-cover rounded-xl bg-our-rescue-2"></div>
+          <div class="flex-1 bg-no-repeat bg-cover rounded-xl bg-our-rescue-3"></div>
         </div>
-        <div class="flex w-full gap-4 pb-4 overflow-y-auto scroll-smooth gallery__dog--items">
-          {% for item in rescue_dogs %}
-            {{ render_landing_gallery_item(item.image_url, item.name, item.description) }}
-          {% endfor %}
-        </div>
-        <div class="flex items-center justify-center w-12 transition-all duration-150 cursor-pointer h-80 gallery__dog--right-button">
-          <i class="text-4xl text-primary fa-solid fa-chevron-right"></i>
+        <p class="max-w-5xl mx-auto font-medium leading-9 text-justify md:text-center">
+          At the heart of our mission, you'll find the stories of countless animals we've rescued, nurtured, and given a second chance at life. Each rescue is a testament to our unwavering commitment to the well-being of animals in need. Explore these inspiring journeys of hope, recovery, and transformation in our 'Our Rescues' section and witness the incredible impact of our work.
+        </p>
+      </div>
+      <div class="flex flex-col items-start w-full space-y-4">
+        <h1 class="text-2xl font-bold text-center pl-14 text-primary-500">Animals</h1>
+        <div class="relative flex w-full space-x-2">
+          <div class="flex items-center justify-center w-12 transition-all duration-150 cursor-pointer h-80 gallery__animals--left-button">
+            <i class="text-4xl text-primary-500 fa-solid fa-chevron-left"></i>
+          </div>
+          <div class="flex w-full gap-4 pb-4 overflow-y-auto no-scrollbar scroll-smooth gallery__animals--items">
+            {% for item in rescue_animals %}{{ render_gallery_item(item.image_url, item.name, item.description) }}{% endfor %}
+          </div>
+          <div class="flex items-center justify-center w-12 transition-all duration-150 cursor-pointer h-80 gallery__animals--right-button">
+            <i class="text-4xl text-primary-500 fa-solid fa-chevron-right"></i>
+          </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="relative flex items-center justify-center w-full min-h-[40vh] overflow-hidden">
-    <div class="absolute inset-0 w-full h-full bg-no-repeat bg-cover bg-ways-to-make-better blur-[3px]"></div>
-    <div class="z-10 flex flex-col items-center w-full max-w-6xl py-16 space-y-8">
-      <h1 class="text-4xl font-bold text-center text-primary_light">Our Rescues</h1>
-      <div class="flex items-start w-full gap-4 space-between">
-        <div class="flex flex-col self-stretch justify-between flex-1 p-6 space-y-4 border-2 border-primary_light bg-opacity-40 rounded-2xl">
-          <p class="text-lg font-medium leading-10 text-justify text-primary_light">
+  <div class="relative flex flex-col py-12 md:py-16 lg:py-20 px-6 space-y-12 items-center justify-center w-full min-h-[40vh] overflow-hidden">
+    <h1 class="w-8/12 text-4xl font-bold text-center text-primary-500">Help Us On Our Journey</h1>
+    <div class="z-10 flex flex-col items-center w-full max-w-6xl">
+      <div class="flex flex-col items-start w-full gap-12 md:flex-row space-between">
+        <div class="flex flex-col self-stretch justify-between flex-1 space-y-4">
+          <p class="font-medium leading-9 text-center">
             Make a difference with your generosity. Your contributions enable us to continue our vital work, rescuing, caring for, and rehoming animals in need. Every donation, no matter the size, brings us one step closer to a world where every animal is safe and loved.
           </p>
           <a href="{{ url_for('donate.index',) }}"
-             class="flex items-center justify-center w-full p-3 text-lg font-semibold transition-all duration-300 rounded-lg bg-primary_light text-primary hover:bg-opacity-80">
-            Donate
-          </a>
+             class="btn btn-secondary text-primary-500">Donate</a>
         </div>
-        <div class="flex flex-col self-stretch justify-between flex-1 p-6 space-y-4 border-2 border-primary_light bg-opacity-40 rounded-2xl">
-          <p class="text-lg font-medium leading-10 text-justify text-primary_light">
+        <div class="flex flex-col self-stretch justify-between flex-1 space-y-4">
+          <p class="font-medium leading-9 text-center">
             Discover the perfect companion for your family. Browse our lovingly rescued animals ready for their forever homes. By choosing adoption, you're not just welcoming a pet into your life, you're offering a deserving soul a new beginning.
           </p>
           <a href="{{ url_for('adopt.index',) }}"
-             class="flex items-center justify-center w-full p-3 text-lg font-semibold transition-all duration-300 rounded-lg bg-primary_light text-primary hover:bg-opacity-80">
-            Adopt
-          </a>
+             class="btn btn-secondary text-primary-500">Adopt</a>
         </div>
-        <div class="flex flex-col self-stretch justify-between flex-1 p-6 space-y-4 border-2 border-primary_light bg-opacity-40 rounded-2xl">
-          <p class="text-lg font-medium leading-10 text-justify text-primary_light">
+        <div class="flex flex-col self-stretch justify-between flex-1 space-y-4">
+          <p class="font-medium leading-9 text-center">
             Become a vital part of an animal's journey. When you sponsor an animal, you provide them with the support they need for rehabilitation and care. Your sponsorship ensures their well-being and transformation, and you can follow their progress with pride.
           </p>
           <a href="{{ url_for('sponsor.index',) }}"
-             class="flex items-center justify-center w-full p-3 text-lg font-semibold transition-all duration-300 rounded-lg bg-primary_light text-primary hover:bg-opacity-80">
-            Sponsor
-          </a>
+             class="btn btn-secondary text-primary-500">Sponsor</a>
         </div>
       </div>
     </div>
   </div>
-  <div class="flex justify-center bg-secondary py-28">
-    <div class="flex items-center w-full gap-12 max-w-7xl">
+  <div class="flex justify-center px-6 py-12 md:py-16 lg:py-20">
+    <div class="flex flex-col items-center w-full max-w-6xl gap-12 md:flex-row">
       <div class="flex-1">
         <img src="{{ url_for('static', filename='images/shelter.png') }}"
              alt="Our Shelter"
@@ -107,27 +88,22 @@
              width="auto" />
       </div>
       <div class="flex flex-col items-center flex-1 space-y-6">
-        <h1 class="text-4xl font-bold text-center text-primary">Our Shelter</h1>
-        <p class="text-lg font-medium leading-10 text-justify text-primary">
+        <h1 class="text-4xl font-bold text-center text-primary-500">Our Shelter</h1>
+        <p class="font-medium leading-9 text-justify hyphens-auto">
           As Iligan Stray Feeders establishes its presence and reputation in the animal advocacy arena, the group has decided to expand its services to include rescue and adoption. This led to the creation of ISFAC, which stands for Iligan Stray Foster and Adoption Center. ISFAC was officially registered with the Securities and Exchange Commission on July 23, 2021. Currently, the group manages a mini shelter as its pilot program, following a procedure that involves rescuing, fostering, rehabilitating, and then rehoming animals. To date, ISFAC has been run and operated by a dedicated team of volunteers who have since become regular members. They continue to serve the helpless and voiceless stray animals in our society.
         </p>
         <div>
           <a href="{{ url_for('donate.index',) }}"
-             class="flex items-center justify-center px-12 py-3 text-lg font-semibold transition-all duration-300 rounded-lg bg-primary_light text-primary hover:bg-opacity-80">
-            Support the Shelter
-          </a>
+             class="btn btn-secondary text-primary-500">Support the Shelter</a>
         </div>
       </div>
     </div>
   </div>
   <script>
-    const galleryCatItems = document.querySelector(".gallery__cat--items")
-    const galleryCatLeftButton = document.querySelector(".gallery__cat--left-button")
-    const galleryCatRightButton = document.querySelector(".gallery__cat--right-button")
+    const galleryAnimalsItems = document.querySelector(".gallery__animals--items")
+    const galleryAnimalsLeftButton = document.querySelector(".gallery__animals--left-button")
+    const galleryAnimalsRightButton = document.querySelector(".gallery__animals--right-button")
 
-    const galleryDogItems = document.querySelector(".gallery__dog--items")
-    const galleryDogLeftButton = document.querySelector(".gallery__dog--left-button")
-    const galleryDogRightButton = document.querySelector(".gallery__dog--right-button")
     
     function scrollToLeft(element){
       element.scrollBy(-330, 0)
@@ -137,19 +113,14 @@
       element.scrollBy(330, 0)
     }
 
-    galleryCatLeftButton.addEventListener("click", () => {
-      scrollToLeft(galleryCatItems)
+    galleryAnimalsLeftButton.addEventListener("click", () => {
+      scrollToLeft(galleryAnimalsItems)
     })
-    galleryCatRightButton.addEventListener("click", () => {
-      scrollToRight(galleryCatItems)
+    galleryAnimalsRightButton.addEventListener("click", () => {
+      scrollToRight(galleryAnimalsItems)
     })
     
-    galleryDogLeftButton.addEventListener("click", () => {
-      scrollToLeft(galleryDogItems)
-    })
-    galleryDogRightButton.addEventListener("click", () => {
-      scrollToRight(galleryDogItems)
-    })
+    
 
   </script>
 {% endblock content %}
