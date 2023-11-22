@@ -25,6 +25,7 @@ ISF offers a range of features to support our mission:
 
 Before you get started with ISF, ensure that you meet the following requirements:
 
+- Node.js (version 16.x)
 - Python (version 3.x)
 - Flask (for the web app)
 - MySQL (for the database)
@@ -65,12 +66,18 @@ To begin your journey with ISF, follow these steps:
     Create a `.env` file in the project's root directory. Add the following environment variables or copy them from the `.env.sample` file and update their values:
 
         ```
-        PIPENV_VENV_IN_PROJECT=1
-        SECRET_KEY=<your_secret_key>
+        SECRET_KEY=
         MYSQL_HOST=<your_mysql_host>
         MYSQL_USER=<your_mysql_user>
         MYSQL_PASSWORD=<your_mysql_password>
         MYSQL_DATABASE=<your_mysql_database>
+        # admin credentials
+        ADMIN_EMAIL=
+        ADMIN_USERNAME=
+        ADMIN_PASSWORD=
+        # flask config
+        PIPENV_VENV_IN_PROJECT=1
+        FLASK_DEBUG=1
         ```
 
     The `SECRET_KEY` is used by Flask to encrypt session cookies. You can generate a secret key using the following Python code:
@@ -86,10 +93,7 @@ To begin your journey with ISF, follow these steps:
     - Compile the Tailwind CSS stylesheets:
 
       ```shell
-      # Windows
-      ./tailwindcss-win -i web/static/css/tailwind.css -o web/static/css/styles.css --watch
-      # Mac
-      ./tailwindcss-mac -i web/static/css/tailwind.css -o web/static/css/styles.css --watch
+      npm run compile:css
       ```
 
     - Run the Flask app:

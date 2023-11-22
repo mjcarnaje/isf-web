@@ -8,15 +8,15 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          100: "#EA6106",
-          200: "#D05605",
-          300: "#B64C05",
-          400: "#9C4104",
-          500: "#823603",
-          600: "#783203",
-          700: "#6F2E03",
-          800: "#662A03",
-          900: "#5C2602",
+          100: "#d2986b",
+          200: "#cb8753",
+          300: "#c3753a",
+          400: "#bc6422",
+          500: "#b45309",
+          600: "#a24b08",
+          700: "#904207",
+          800: "#7e3a06",
+          900: "#6c3205",
         },
         primary_light: "#FCECDD",
         secondary: "#FFF2CC",
@@ -33,5 +33,20 @@ module.exports = {
       },
     },
   },
-  plugins: [require("@tailwindcss/forms"), require("@tailwindcss/typography")],
+  daisyui: {
+    themes: [
+      {
+        light: {
+          ...require("daisyui/src/theming/themes")["light"],
+          primary: "#b45309",
+          secondary: "#FCEBDD",
+        },
+      },
+    ],
+  },
+  plugins: [
+    require("@tailwindcss/forms"),
+    require("@tailwindcss/typography"),
+    require("daisyui"),
+  ],
 };

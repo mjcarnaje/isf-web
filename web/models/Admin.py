@@ -1,6 +1,9 @@
 import datetime
+
 from flask_login import UserMixin
+
 from ..database import db
+
 
 class Admin(UserMixin):
     def __init__(self, email: str = None, username: str = None, password: str = None, id: int | None = None, created_at: datetime.datetime | None = None):
@@ -8,9 +11,6 @@ class Admin(UserMixin):
         self.email = email
         self.username = username
         self.password = password
-
-    def get_id(self):
-        return self.id
 
     @staticmethod
     def insert_ignore(email: str, username: str, password: str):
@@ -20,13 +20,15 @@ class Admin(UserMixin):
         db.connection.commit()
         return cur.lastrowid
 
-    @staticmethod
-    def find_by_id(user_id: int):
+    @classmethod
+    def find_by_id(cls, user_id: int):
         sql = "SELECT * FROM admin WHERE id = %s"
         cur = db.new_cursor(dictionary=True)
         cur.execute(sql, (user_id,))
         row = cur.fetchone()
-        return row
+        if not row:
+            return None
+        return cls(**row)    
     
     @classmethod
     def find_by_username(cls, username: str):
@@ -37,5 +39,18 @@ class Admin(UserMixin):
         if not admin: 
             return None
         return cls(**admin)
+    
+    @staticmethod
+    def check_if_username_exists(username: str, id: int = None):
+        sql = "SELECT * FROM admin WHERE username=%s"
+        params = [username]
+        if id:
+            sql += " AND id != %s"
+            params.append(id)
+        cur = db.new_cursor(dictionary=True)
+        cur.execute(sql, params)
+        exists = cur.fetchone() is not None
+        return exists
+
 
     

@@ -17,3 +17,4 @@ build/
 .idea/
 docs/_build/
 .vscode
+node_modules
