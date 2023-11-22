@@ -23,7 +23,7 @@
         {% for navigation in navigations %}
           <li class="rounded-lg cursor-pointer">
             <a href="{{ navigation.url }}"
-               class="flex items-center px-6 py-4 text-md {{ 'text-primary-400' if active_page != navigation.page else 'font-bold text-primary-500' }}">
+               class="flex items-center px-6 py-4 text-md {{ 'font-bold text-primary-500' if active_page == navigation.page else 'text-primary-300' }}">
               {{ navigation.name }}
             </a>
           </li>
@@ -50,7 +50,7 @@
         {% for navigation in navigations %}
           <li class="rounded-lg cursor-pointer hover:bg-slate-100">
             <a href="{{ navigation.url }}"
-               class="flex items-center px-6 py-4 text-md text-primary-500 {{ 'font-semibold' if active_page == navigation.page else 'opacity-80' }}">
+               class="flex items-center px-6 py-4 text-md {{ 'font-bold text-primary-500' if active_page == navigation.page else 'text-primary-200' }}">
               {{ navigation.name }}
             </a>
           </li>
