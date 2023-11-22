@@ -1,0 +1,27 @@
+{% set active_page = "rescue" %}
+{% extends "./_helpers/layout/admin_layout.html" %}
+{% block title %}
+  Rescues
+{% endblock title %}
+{% block content %}
+  <div class="w-full max-w-5xl py-16 mx-auto space-y-8">
+    <h1 class="text-2xl font-bold">Rescues</h1>
+    <div class="grid w-full grid-cols-3 gap-5 mx-auto">
+      {% for animal in animals %}
+        <div class="space-y-2">
+          <div class="overflow-hidden border rounded-lg aspect-square h-72 bg-gray-50">
+            <img class="object-cover h-full"
+                 src="{{ get_image(animal.photo_url) }}"
+                 alt="Animal Photo"
+                 width="auto"
+                 height="auto" />
+          </div>
+          <div class="space-y-1">
+            <h3 class="font-bold text-primary-500">{{ animal.name }}</h3>
+            <p class="text-sm text-primary-500">{{ animal.description }}</p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock content %}

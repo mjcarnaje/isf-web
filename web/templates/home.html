@@ -42,7 +42,7 @@
             <i class="text-4xl text-primary-500 fa-solid fa-chevron-left"></i>
           </div>
           <div class="flex w-full gap-4 pb-4 overflow-y-auto no-scrollbar scroll-smooth gallery__animals--items">
-            {% for item in rescue_animals %}{{ render_gallery_item(item.image_url, item.name, item.description) }}{% endfor %}
+            {% for item in rescue_animals %}{{ render_gallery_item(item, item.name, item.description) }}{% endfor %}
           </div>
           <div class="flex items-center justify-center w-12 transition-all duration-150 cursor-pointer h-80 gallery__animals--right-button">
             <i class="text-4xl text-primary-500 fa-solid fa-chevron-right"></i>

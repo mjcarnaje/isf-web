@@ -1,15 +1,15 @@
-{% macro render_gallery_item(image_src, name, description) %}
+{% macro render_gallery_item(animal, name, description) %}
   <div class="space-y-2">
     <div class="overflow-hidden border rounded-lg aspect-square h-72 bg-gray-50">
       <img class="object-cover h-full"
-           src="{{ image_src }}"
+           src="{{ get_image(animal.photo_url) }}"
            alt="Animal Gallery Photo"
            width="auto"
            height="auto" />
     </div>
     <div class="space-y-1">
-      <h3 class="font-bold text-primary-500">{{ name }}</h3>
-      <p class="text-sm text-primary-500">{{ description }}</p>
+      <h3 class="font-bold text-primary-500">{{ animal.name }}</h3>
+      <p class="text-sm text-primary-500">{{ animal.description }}</p>
     </div>
   </div>
 {% endmacro %}
