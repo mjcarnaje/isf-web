@@ -11,6 +11,11 @@ flask-login = "*"
 werkzeug = "==2.3.7"
 wtforms = "*"
 flask-wtf = "*"
+oauthlib = "*"
+pyopenssl = "*"
+requests = "*"
+email-validator = "*"
+ipython = "*"
 
 [dev-packages]
 

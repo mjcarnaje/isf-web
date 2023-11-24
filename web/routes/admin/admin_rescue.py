@@ -1,11 +1,14 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, redirect, render_template, request, url_for
 
 from ...models import Animal
+from ...utils import admin_required
 from ...validations import AnimalValidation
+from flask_login import current_user
 
-admin_rescue_bp = Blueprint("admin_rescue", __name__, url_prefix='/admin/rescue')
+admin_rescue_bp = Blueprint("rescue", __name__, url_prefix='/rescue')
 
 @admin_rescue_bp.route('/', methods=['GET'])
+@admin_required
 def index():
     page = request.args.get('page', 1, type=int)
     query = request.args.get('query', '', type=str)
@@ -24,6 +27,7 @@ def index():
     return render_template('rescue/admin_rescues.html', animals=animals, has_previous_page=has_previous_page, has_next_page=has_next_page, total_count=total_count)
 
 @admin_rescue_bp.route('/add-animal', methods=['GET', 'POST'])
+@admin_required
 def add_animal():
   form = AnimalValidation()
 
@@ -42,6 +46,7 @@ def add_animal():
     is_rescued = form.is_rescued.data
     description = form.description.data
     appearance = form.appearance.data
+    author_id = current_user.id
 
     animal_id = Animal.insert(
       name=name,
@@ -57,11 +62,12 @@ def add_animal():
       in_shelter=in_shelter,
       is_rescued=is_rescued,
       description=description,
-      appearance=appearance
+      appearance=appearance,
+      author_id=author_id
     )
 
     if animal_id:
-       return redirect(url_for('admin_rescue.index'))
+       return redirect(url_for('admin.rescue.index'))
 
 
   return render_template('rescue/admin_add_animal.html', form=form)

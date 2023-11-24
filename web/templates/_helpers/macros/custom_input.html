@@ -1,5 +1,5 @@
 {% macro render_field(field, container_class, footer_text) %}
-  <div class="{{ container_class }} form-control">
+  <div class="{{ container_class }} w-full form-control">
     {% if field.type != "BooleanField" %}{{ field.label(class="label label-text") }}{% endif %}
     {# ################################ #}
     {# ################################ #}
@@ -35,7 +35,15 @@
     {# ################################ #}
     {% if field.errors %}
       <ul class="mt-2">
-        {% for error in field.errors %}<li class="text-xs text-red-500">{{ error }}</li>{% endfor %}
+        {% for error in field.errors %}
+          <li class="text-xs text-red-500">
+            {{ error }}
+            {% if 'admin' in error %}
+              <a href="{{ url_for('admin.login',) }}"
+                 class="font-bold text-primary-500">Click here</a>
+            {% endif %}
+          </li>
+        {% endfor %}
       </ul>
       <style>
           [name="{{ field.name }}"] {
