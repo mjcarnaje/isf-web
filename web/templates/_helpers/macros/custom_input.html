@@ -28,6 +28,19 @@
                  class="checkbox checkbox-primary" />
         </label>
       </div>
+    {% elif field.type == "RadioField" %}
+      <div class="relative flex items-center gap-4">
+        {% for key, value in field.choices %}
+          <label class="flex-1 cursor-pointer space-x-3 label">
+            <span class="label-text">{{ value }}</span>
+            <input type="radio"
+                  name="{{ field.name }}"
+                  {% if field.data is true %}checked='checked'{% endif %}
+                  class="radio radio-primary" 
+                  value="{{ key }}" />
+          </label>
+        {% endfor %}
+      </div>
     {% elif field.type == "TextAreaField" %}
       <div class="relative">
         <textarea class="w-full textarea textarea-bordered"
@@ -35,7 +48,7 @@
                   name="{{ field.name }}"></textarea>
       </div>
     {% else %}
-      {{ field(class="w-full input input-bordered", placeholder=field.label.text, **kwargs) }}
+      {{ field(class="w-full input input-bordered", placeholder=field.render_kw.placeholder or field.label.text, **kwargs) }}
     {% endif %}
     {# ################################ #}
     {# ################################ #}

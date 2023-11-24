@@ -3,7 +3,7 @@
   <div class="flex flex-col items-center gap-4 {{ container_class }}">
     {{ field(class="hidden") }}
     <div id="photo-preview"
-         class="flex relative items-center justify-center overflow-hidden w-48 h-48 border bg-slate-200 {{ 'rounded-full' if is_circle else 'rounded-3xl' }} {{ 'border-red-500' if field.errors }}">
+         class="flex relative items-center justify-center overflow-hidden w-48 h-48 border bg-slate-300 {{ 'rounded-full' if is_circle else 'rounded-3xl' }} {{ 'border-red-500' if field.errors }}">
       {% if photo %}
         <img src="{{ get_image(photo) }}"
              class="object-cover w-full h-full"
