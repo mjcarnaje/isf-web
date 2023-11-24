@@ -14,11 +14,11 @@ class UserSignupValidation(FlaskForm):
     ])
     first_name = StringField("First name", validators=[
         validators.DataRequired(),
-        validators.Length(min=6, max=256)
+        validators.Length(min=4, max=256)
     ])
     last_name = StringField("Last name", validators=[
         validators.DataRequired(),
-        validators.Length(min=6, max=256)
+        validators.Length(min=4, max=256)
     ])
     photo_url = StringField('Photo')
     contact_number = StringField("Contact Number", validators=[

@@ -1,0 +1,18 @@
+{% set active_page = "donate" %}
+{% from './_helpers/macros/custom_input.html' import render_field %}
+{% extends "./_helpers/layout/main_layout.html" %}
+{% block title %}
+  Donate
+{% endblock title %}
+{% block content %}
+<div class="flex flex-col items-center w-full px-6 py-12 space-y-12 md:space-y-16 lg:space-y-20 md:py-16 lg:py-20">
+  <div class="w-full max-w-5xl space-y-4 md:space-y-8 ">
+    <h1 class="text-4xl font-bold text-center text-primary-500">In-Kind Donation</h1>
+    <p class="font-medium leading-9 text-justify md:text-center">
+      Contribute to the well-being of stray animals by providing in-kind donations to Iligan Stray Feeders, a dedicated organization focused on rescuing and nurturing stray animals in need. Your in-kind support offers crucial resources, including shelter, medical care, and nutritious food, enhancing the quality of life for these animals. With your assistance, Iligan Stray Feeders can sustain their essential work, implementing spaying and neutering programs to address overpopulation and extending support for adoption initiatives. Your in-kind donations play a pivotal role in giving stray animals a chance to thrive and find caring homes.  </div>
+  <div class="w-full max-w-xl space-y-4 md:space-y-8">
+    <h1 class="text-xl font-bold text-center text-primary-500"> 
+      "Support Iligan Stray Feeders, donate, and make a paw-some impact on the lives of stray animals in Iligan"</h1>
+  </div>
+
+{% endblock content %}
