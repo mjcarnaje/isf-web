@@ -4,5 +4,32 @@
   Donate
 {% endblock title %}
 {% block content %}
-
+<div class="flex flex-col items-center w-full px-6 py-12 space-y-12 md:space-y-16 lg:space-y-20 md:py-16 lg:py-20">
+  <div class="w-full max-w-5xl space-y-4 md:space-y-8 ">
+    <h1 class="text-4xl font-bold text-center text-primary-500">Money Donation</h1>
+    <p class="font-medium leading-9 text-justify md:text-center">
+      Support stray animals by donating to Iligan Stray Feeders, the dedicated organization that rescues and cares for stray animals in need. Your contributions provide crucial resources for their well-being, including shelter, medical care, and nutritious food. With your help, Iligan Stray Feeders can continue their vital work, implementing spaying and neutering programs to control overpopulation and offering support for adoption initiatives, giving stray animals a chance at finding loving homes.     </p>
+  </div>
+  <div class="w-full max-w-xl space-y-4 md:space-y-8">
+    <h1 class="text-xl font-bold text-center  text-primary-500"> 
+      "Support Iligan Stray Feeders, donate, and make a paw-some impact on the lives of stray animals in Iligan"</h1>
+  </div>
+  <div class="mb-8 w-full max-w-xs px-4">
+    <div class="items-center flex">
+      <div class="bg-secondary flex flex-col items-center w-full py-4 gap-y-4 rounded-xl">
+        <p class="text-xl font-bold mb-0 text-center">"How to contribute through Money Donation?"</p>
+        <p class="text-sm mt-0 text-center">"Simply scan the QR code with Maya or GCash"</p>
+        <div class="flex gap-x-4 justify-center py-8">
+          <img src="{{ url_for('static', filename='/images/gcash.png') }}"
+            class="w-10 h-10 rounded-xl" alt="gcash" />
+          <img src="{{ url_for('static', filename='/images/paymaya.png') }}"
+            class="w-10 h-10 rounded-xl" alt="paymaya" />
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
 {% endblock content %}
+
+

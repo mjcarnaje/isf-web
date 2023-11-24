@@ -7,11 +7,13 @@ def index():
   return render_template('donate/donate.html')
 
 
-@donate_bp.route('/food_materials', methods=['GET'])
-def food_materials():
-    return render_template('donate/donateFood_materials.html')
-  
-  
 @donate_bp.route('/money', methods=['GET'])
 def money():
     return render_template('donate/donateMoney.html')
+
+
+@donate_bp.route('/food_materials', methods=['GET', 'POST'])
+def food_materials():
+ 
+    return render_template('donate/donateFood_materials.html',)
+   
