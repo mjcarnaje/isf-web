@@ -65,3 +65,17 @@ SET @admin_user_id = LAST_INSERT_ID();
 
 -- Associate user with admin role
 INSERT IGNORE INTO user_role (user_id, role_id) VALUES (@admin_user_id, @admin_role_id);
+
+-- Generate 10 dummy animals
+INSERT INTO animal (name, type, estimated_birth_month, estimated_birth_year, photo_url, gender, is_adopted, is_dead, is_dewormed, is_neutered, in_shelter, is_rescued, description, appearance, author_id)
+VALUES
+    ('Dog1', 'Dog', 'January', '2020', 'unitrack/g4apxw3zexqjbnw1ttcu', 'Male', 0, 0, 1, 1, 1, 0, 'Friendly dog', 'Brown fur, medium size', @admin_user_id),
+    ('Cat1', 'Cat', 'February', '2021', 'unitrack/g4apxw3zexqjbnw1ttcu', 'Female', 1, 0, 1, 0, 1, 0, 'Playful cat', 'Black and white, small size', @admin_user_id),
+    ('Rabbit1', 'Rabbit', 'March', '2019', 'unitrack/g4apxw3zexqjbnw1ttcu', 'Male', 0, 0, 0, 1, 1, 0, 'Adorable rabbit', 'White fur, long ears', @admin_user_id),
+    ('Dog2', 'Dog', 'April', '2022', 'unitrack/g4apxw3zexqjbnw1ttcu', 'Female', 0, 0, 1, 0, 0, 1, 'Energetic dog', 'Golden fur, large size', @admin_user_id),
+    ('Cat2', 'Cat', 'May', '2020', 'unitrack/g4apxw3zexqjbnw1ttcu', 'Male', 1, 0, 1, 1, 1, 0, 'Independent cat', 'Gray fur, medium size', @admin_user_id),
+    ('Rabbit2', 'Rabbit', 'June', '2021', 'unitrack/g4apxw3zexqjbnw1ttcu', 'Female', 0, 0, 0, 1, 0, 1, 'Curious rabbit', 'Brown fur, short ears', @admin_user_id),
+    ('Dog3', 'Dog', 'July', '2018', 'unitrack/g4apxw3zexqjbnw1ttcu', 'Male', 1, 1, 1, 0, 1, 0, 'Calm dog', 'Black fur, medium size', @admin_user_id),
+    ('Cat3', 'Cat', 'August', '2019', 'unitrack/g4apxw3zexqjbnw1ttcu', 'Female', 0, 1, 1, 1, 0, 1, 'Lazy cat', 'Orange fur, large size', @admin_user_id),
+    ('Rabbit3', 'Rabbit', 'September', '2020', 'unitrack/g4apxw3zexqjbnw1ttcu', 'Male', 1, 0, 0, 0, 1, 0, 'Playful rabbit', 'Gray fur, floppy ears', @admin_user_id),
+    ('Dog4', 'Dog', 'October', '2019', 'unitrack/g4apxw3zexqjbnw1ttcu', 'Female', 0, 0, 1, 1, 1, 1, 'Protective dog', 'White fur, small size', @admin_user_id);
