@@ -47,6 +47,21 @@ CREATE TABLE IF NOT EXISTS animal (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS event (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(256) NOT NULL,
+    description TEXT,
+    cover_photo_url VARCHAR(256),
+    start_date DATETIME NOT NULL,
+    end_date DATETIME NOT NULL,
+    location VARCHAR(256),
+    author_id INT NOT NULL REFERENCES user(id),
+    is_done BOOLEAN NOT NULL,
+    show_in_landing BOOLEAN NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
 -- Insert admin role
 INSERT IGNORE INTO role (name) VALUES ('member');
 INSERT IGNORE INTO role (name) VALUES ('donor');
