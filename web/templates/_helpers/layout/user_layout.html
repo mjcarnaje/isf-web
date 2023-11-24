@@ -1,14 +1,11 @@
 {% extends "./_helpers/layout/base.html" %}
 {% block body %}
-  {% include "./_helpers/partials/admin_navbar.html" %}
+  {% include "./_helpers/partials/navbar.html" %}
   <div class="flex w-full min-h-screen">
     <aside class="max-w-[320px] p-4 w-full border-r min-h-screen">
       <ul class="space-y-4">
         <li>
-          <a class="w-full btn" href="{{ url_for('admin.rescue.index',) }}">Rescues</a>
-        </li>
-        <li>
-          <a class="w-full btn" href="{{ url_for('admin.rescue.add_animal',) }}">Add Animal</a>
+          <a class="w-full btn" href="{{ url_for('admin.rescue.index',) }}">Adoptions</a>
         </li>
       </ul>
     </aside>

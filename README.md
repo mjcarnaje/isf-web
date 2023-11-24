@@ -71,15 +71,15 @@ To begin your journey with ISF, follow these steps:
         MYSQL_USER=<your_mysql_user>
         MYSQL_PASSWORD=<your_mysql_password>
         MYSQL_DATABASE=<your_mysql_database>
-        # admin credentials
-        ADMIN_EMAIL=
-        ADMIN_USERNAME=
-        ADMIN_PASSWORD=
         #cloudinary config
         CLOUDINARY_CLOUD_NAME=
         CLOUDINARY_API_KEY=
         CLOUDINARY_API_SECRET=
         CLOUDINARY_FOLDER=
+        # google auth
+        GOOGLE_CLIENT_ID=
+        GOOGLE_CLIENT_SECRET=
+        GOOGLE_DISCOVERY_URL=
         # flask config
         PIPENV_VENV_IN_PROJECT=1
         FLASK_DEBUG=1
