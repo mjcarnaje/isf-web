@@ -2,20 +2,20 @@ from flask_wtf import FlaskForm
 from werkzeug.security import check_password_hash
 from wtforms import PasswordField, StringField, validators
 
-from ..models import Admin
+from ..models import User
 
 
-class LoginValidation(FlaskForm):
+class AdminLoginValidation(FlaskForm):
   username = StringField("Username", validators=[validators.DataRequired()])
   password = PasswordField("Password", validators=[validators.DataRequired()])
 
-  def validate_username(self, field):
-      if not Admin.check_if_username_exists(field.data):
+  def validate_username(self, field):      
+      if not User.check_if_username_exists(field.data):
           raise validators.ValidationError(
-              'Email address does not exist')
+              'Username does not exist')
 
   def validate_password(self, field):
-      admin = Admin.find_by_username(username=self.username.data)
+      admin = User.find_by_username(username=self.username.data)
 
       if admin and not check_password_hash(admin.password, field.data):
           raise validators.ValidationError(

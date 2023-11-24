@@ -41,8 +41,8 @@ class Animal():
     @staticmethod
     def insert(name: str, type: str, estimated_birth_month: str, estimated_birth_year: str, photo_url: str, gender: str,
             is_adopted: bool, is_dead: bool, is_dewormed: bool, is_neutered: bool,
-            in_shelter: bool, is_rescued: bool, description: str, appearance: str) -> int:
-        sql = "INSERT INTO animal (name, type, estimated_birth_month, estimated_birth_year, photo_url, gender, is_adopted, is_dead, is_dewormed, is_neutered, in_shelter, is_rescued, description, appearance) VALUES(%(name)s, %(type)s, %(estimated_birth_month)s, %(estimated_birth_year)s, %(photo_url)s, %(gender)s, %(is_adopted)s, %(is_dead)s, %(is_dewormed)s, %(is_neutered)s, %(in_shelter)s, %(is_rescued)s, %(description)s, %(appearance)s)"
+            in_shelter: bool, is_rescued: bool, description: str, appearance: str,author_id: int) -> int:
+        sql = "INSERT INTO animal (name, type, estimated_birth_month, estimated_birth_year, photo_url, gender, is_adopted, is_dead, is_dewormed, is_neutered, in_shelter, is_rescued, description, appearance, author_id) VALUES(%(name)s, %(type)s, %(estimated_birth_month)s, %(estimated_birth_year)s, %(photo_url)s, %(gender)s, %(is_adopted)s, %(is_dead)s, %(is_dewormed)s, %(is_neutered)s, %(in_shelter)s, %(is_rescued)s, %(description)s, %(appearance)s, %(author_id)s)"
         data = {
             'name': name,
             'type': type,
@@ -58,6 +58,7 @@ class Animal():
             'is_rescued': is_rescued,
             'description': description,
             'appearance': appearance,
+            'author_id': author_id
         }
         cur = db.new_cursor(dictionary=True)
         cur.execute(sql, data)

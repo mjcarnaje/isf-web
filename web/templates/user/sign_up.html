@@ -1,0 +1,41 @@
+{% from './_helpers/macros/custom_input.html' import render_field %}
+{% from './_helpers/macros/photo_input.html' import render_photo_field with context %}
+{% extends "./_helpers/layout/bare_layout.html" %}
+{% block title %}
+  User Login
+{% endblock title %}
+{% block content %}
+  <div class="flex flex-col items-center w-full min-h-screen gap-12 px-4 py-24 login">
+    <div class="flex items-center justify-center overflow-hidden rounded-full shadow w-36 h-36">
+      <img src="{{ url_for('static', filename='images/isf-logo.png') }}"
+           class="object-cover w-full h-full"
+           alt="ISF Logo"
+           width="auto"
+           height="auto" />
+    </div>
+    <form class="flex flex-col w-full max-w-4xl p-8 space-y-8 bg-white border shadow-lg rounded-2xl"
+          method="post"
+          novalidate>
+      <div class="space-y-4">
+        <h1 class="text-3xl font-bold">Sign up</h1>
+        {{ form.csrf_token }}
+        {{ render_photo_field(form.photo_url, add_text="Add photo", remove_text="Remove photo", is_circle=True) }}
+        {{ render_field(form.email) }}
+        {{ render_field(form.username) }}
+        {{ render_field(form.first_name) }}
+        {{ render_field(form.last_name) }}
+        {{ render_field(form.contact_number) }}
+        <div class="flex items-center w-full gap-4">
+          {{ render_field(form.password) }}
+          {{ render_field(form.confirm_password) }}
+        </div>
+        <p class="text-sm text-gray-700">
+          Already have an account?
+          <a class="font-medium text-primary-500"
+             href="{{ url_for('user.login',) }}">Sign in.</a>
+        </p>
+      </div>
+      <button class="btn btn-primary" type="submit">Sign Up</button>
+    </form>
+  </div>
+{% endblock content %}

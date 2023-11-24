@@ -12,6 +12,11 @@ werkzeug = "==2.3.7"
 wtforms = "*"
 flask-wtf = "*"
 cloudinary = "*"
+oauthlib = "*"
+pyopenssl = "*"
+requests = "*"
+email-validator = "*"
+ipython = "*"
 
 [dev-packages]
 
