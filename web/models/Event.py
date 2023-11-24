@@ -15,6 +15,18 @@ class Event():
         self.created_at = created_at
         self.updated_at = updated_at
 
+    @staticmethod
+    def find_all():
+        sql = "SELECT * FROM event"
+        cur = db.new_cursor(dictionary=True)
+        cur.execute(sql)
+        
+        data = cur.fetchall()
+        
+        return {
+            'data': data
+        }
+    
     @classmethod
     def find_by_id(cls, event_id):
         sql = "SELECT * FROM event WHERE id = %s"

@@ -10,7 +10,8 @@ admin_event_bp = Blueprint("event", __name__, url_prefix='/event')
 @admin_event_bp.route('/', methods=['GET'])
 @admin_required
 def index():
-    return render_template('event/admin_event_list.html')
+    events = Event.find_all()
+    return render_template('event/admin_event_list.html', events=events.get('data'))
 
 @admin_event_bp.route('/add-event', methods=['GET', 'POST'])
 @admin_required
