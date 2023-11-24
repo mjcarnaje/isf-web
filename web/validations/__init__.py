@@ -2,3 +2,4 @@ from .AdminLoginValidation import AdminLoginValidation
 from .AnimalValidation import AnimalValidation
 from .UserLoginValidation import UserLoginValidation
 from .UserSignupValidation import UserSignupValidation
+from .AddEventValidation import AddEventValidation

@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS animal (
 
 CREATE TABLE IF NOT EXISTS event (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(256) NOT NULL,
+    name VARCHAR(256) UNIQUE NOT NULL,
     description TEXT,
     cover_photo_url VARCHAR(256),
     start_date DATETIME NOT NULL,
