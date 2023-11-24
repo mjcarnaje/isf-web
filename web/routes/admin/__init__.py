@@ -41,5 +41,7 @@ def logout():
     return redirect(url_for('landing.index'))
 
 from .admin_rescue import admin_rescue_bp
+from .admin_event import admin_event_bp
 
 admin_bp.register_blueprint(admin_rescue_bp)
+admin_bp.register_blueprint(admin_event_bp)

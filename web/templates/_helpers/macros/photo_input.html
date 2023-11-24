@@ -1,9 +1,9 @@
-{% macro render_photo_field(field, add_text, remove_text, container_class, is_circle=false) %}
+{% macro render_photo_field(field, add_text, remove_text, container_class, is_circle=false, is_cover=false) %}
   {% set photo = field.data %}
   <div class="flex flex-col items-center gap-4 {{ container_class }}">
     {{ field(class="hidden") }}
     <div id="photo-preview"
-         class="flex relative items-center justify-center overflow-hidden w-48 h-48 border bg-slate-300 {{ 'rounded-full' if is_circle else 'rounded-3xl' }} {{ 'border-red-500' if field.errors }}">
+         class="flex relative items-center justify-center overflow-hidden border bg-slate-300 {{ 'rounded-full' if is_circle else 'rounded-3xl' }} {{ 'border-red-500' if field.errors }} {{ 'w-full aspect-video' if is_cover else 'w-48 h-48' }}">
       {% if photo %}
         <img src="{{ get_image(photo) }}"
              class="object-cover w-full h-full"
