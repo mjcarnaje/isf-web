@@ -33,7 +33,7 @@
   <form class="w-full p-8 space-y-8 border max-w-xl rounded-lg shadow-sm"
             method="post"
             novalidate>
-        {{ render_photo_field(form.evidence_pictures, add_text="Add Picture", remove_text="Remove Picture") }}
+        {{ render_photo_field(form.evidence_pictures, add_text="Add Receipt", remove_text="Remove Receipt") }}
         <div class="space-y-4">
           {{ form.csrf_token() }}
           {{ render_field(form.description) }}

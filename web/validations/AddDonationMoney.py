@@ -1,6 +1,9 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, validators
+from wtforms import TextAreaField, StringField, validators
 
 class AddDonationMoney(FlaskForm):
-  description = StringField("Description", validators=[validators.DataRequired()])
+  description = TextAreaField("Description", validators=[validators.DataRequired()], render_kw={
+      'label': "Receipt Description",
+     
+  })
   evidence_pictures = StringField("Evidence Pictures", validators=[validators.DataRequired()])

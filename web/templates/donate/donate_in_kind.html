@@ -1,6 +1,7 @@
 {% set active_page = "donate" %}
-{% from './_helpers/macros/custom_input.html' import render_field %}
 {% extends "./_helpers/layout/main_layout.html" %}
+{% from './_helpers/macros/custom_input.html' import render_field %}
+{% from './_helpers/macros/photo_input.html' import render_photo_field with context %}
 {% block title %}
   Donate
 {% endblock title %}
@@ -14,5 +15,17 @@
     <h1 class="text-xl font-bold text-center text-primary-500"> 
       "Support Iligan Stray Feeders, donate, and make a paw-some impact on the lives of stray animals in Iligan"</h1>
   </div>
+  <form class="w-full p-8 space-y-8 border max-w-xl rounded-lg shadow-sm"
+            method="post"
+            novalidate>
+        {{ render_photo_field(form.evidence_pictures, add_text="Add Photo ", remove_text="Remove Photo") }}
+        <div class="space-y-4">
+          {{ form.csrf_token() }}
+          {{ render_field(form.description) }}
+        <button type="submit" class="w-full btn btn-md">Submit</button>
+      </form>
+    </div>
+  </div>
+  
 
 {% endblock content %}
