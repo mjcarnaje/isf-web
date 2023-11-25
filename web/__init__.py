@@ -48,7 +48,7 @@ def create_app():
 
 
     from .routes import (landing_bp, admin_bp, adopt_bp, donate_bp,
-                         rescue_bp, sponsor_bp, user_bp, volunteer_bp)
+                         rescue_bp, user_bp, volunteer_bp)
 
 
     @app.route('/upload/cloudinary', methods=['POST'])
@@ -77,7 +77,6 @@ def create_app():
     app.register_blueprint(rescue_bp)
     app.register_blueprint(adopt_bp)
     app.register_blueprint(donate_bp)
-    app.register_blueprint(sponsor_bp)
     app.register_blueprint(volunteer_bp)
 
     return app

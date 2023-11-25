@@ -1,38 +1,102 @@
 {% set active_page = "donate" %}
 {% extends "./_helpers/layout/main_layout.html" %}
 {% from './_helpers/macros/custom_input.html' import render_field %}
-{% from './_helpers/macros/photo_input.html' import render_photo_field with context %}
+{% from './_helpers/macros/multiple_photo_input.html' import render_multiple_photo_field with context %}
 {% block title %}
   Donate
 {% endblock title %}
 {% block content %}
-<div class="flex flex-col items-center w-full px-6 py-12 space-y-12 md:space-y-16 lg:space-y-20 md:py-16 lg:py-20">
-  <div class="w-full max-w-5xl space-y-4 md:space-y-8 ">
-    <h1 class="text-4xl font-bold text-center text-primary-500">In-Kind Donation</h1>
-    <p class="font-medium leading-9 text-justify md:text-center">
-      Contribute to the well-being of stray animals by providing in-kind donations to Iligan Stray Feeders, a dedicated organization focused on rescuing and nurturing stray animals in need. Your in-kind support offers crucial resources, including shelter, medical care, and nutritious food, enhancing the quality of life for these animals. With your assistance, Iligan Stray Feeders can sustain their essential work, implementing spaying and neutering programs to address overpopulation and extending support for adoption initiatives. Your in-kind donations play a pivotal role in giving stray animals a chance to thrive and find caring homes.  </div>
-  <div class="w-full max-w-xl space-y-4 md:space-y-8">
-    <h1 class="text-xl font-bold text-center text-primary-500"> 
-      "Support Iligan Stray Feeders, donate, and make a paw-some impact on the lives of stray animals in Iligan"</h1>
-  </div>
-  <form class="w-full p-8 space-y-8 bg-slate-200 shadow-2xl border max-w-xl rounded-lg"
-            method="post"
-            novalidate>
-        
-        <div class="w-full max-w-xl space-y-4 md:space-y-8">
-          <h1 class="text-lg font-bold text-center text-primary-500"> 
-            "Kindly Fill-In The Form "</h1>
+  <div class="flex flex-col items-center w-full px-6 py-12 space-y-12 md:space-y-16 lg:space-y-20 md:py-16 lg:py-20">
+    <div class="w-full max-w-5xl space-y-4 md:space-y-10">
+      <h1 class="text-4xl font-bold text-center text-primary-500">In-Kind Donation</h1>
+      <p class="font-medium leading-9 text-justify md:text-center">
+        Contribute to the well-being of stray animals by providing in-kind donations to Iligan Stray Feeders, a dedicated organization focused on rescuing and nurturing stray animals in need. Your in-kind support offers crucial resources, including shelter, medical care, and nutritious food, enhancing the quality of life for these animals. With your assistance, Iligan Stray Feeders can sustain their essential work, implementing spaying and neutering programs to address overpopulation and extending support for adoption initiatives. Your in-kind donations play a pivotal role in giving stray animals a chance to thrive and find caring homes.
+      </p>
+    </div>
+    <div class="grid w-full max-w-4xl grid-cols-2 px-4 py-8 border divide-x shadow-xl rounded-2xl">
+      <div class="flex flex-col justify-center flex-1 px-8 py-4 space-y-4">
+        <h3 class="text-xl font-bold text-primary-500">Animals Wish List</h3>
+        <ul class="space-y-1.5 list-disc list-inside">
+          <li>Dog food (kibble and canned)</li>
+          <li>Cat food (kibble and canned)</li>
+          <li>Crates, carriers or cages</li>
+          <li>Pee pads</li>
+          <li>Scratching posts for the cats</li>
+          <li>Chew toys for the dogs</li>
+          <li>Vaccines, medicine and vitamins</li>
+          <li>Dog and cat treats</li>
+          <li>Leashes, harnesses and collars</li>
+        </ul>
+      </div>
+      <div class="flex flex-col justify-center flex-1 px-8 py-4 space-y-4">
+        <h3 class="text-xl font-bold text-primary-500">Shelter Wish List</h3>
+        <ul class="space-y-1.5 list-disc list-inside">
+          <li>Detergent powder and bleach</li>
+          <li>Dishwashing paste or liquid</li>
+          <li>Bath towels</li>
+          <li>Garbage bags (XXL)</li>
+          <li>Foot rugs or door mats</li>
+          <li>Clinic supplies (alcohol, cotton, etc.)</li>
+          <li>Old newspapers</li>
+          <li>Toilet paper</li>
+          <li>Mops and brooms</li>
+        </ul>
+      </div>
+    </div>
+    <form class="w-full max-w-4xl p-8 space-y-4 bg-white border shadow-lg borderm rounded-2xl"
+          method="post"
+          novalidate>
+      <div class="space-y-4">
+        {{ render_field(form.delivery_type) }}
+        {{ render_field(form.pick_up_location) }}
+        <div class="flex-col hidden p-4 space-y-4 border rounded-lg delivery_addresses">
+          <p class="text-sm italic text-gray-600">Your donations can be dropped off at the address below.</p>
+          <div class="flex items-center gap-4">
+            <i class="fa-solid text-primary-500 fa-house"></i>
+            <p class="font-medium text-gray-700">Block 6 Lot 3 Orchid Homes, Santiago, Iligan City (Residential HQ)</p>
+          </div>
+          <div class="flex items-center gap-4">
+            <i class="fa-solid text-primary-500 fa-tents"></i>
+            <p class="font-medium text-gray-700">Prk 4, Mimbalot, Buru-un, Iligan City (Shelter)</p>
+            <a class="text-sm text-green-500 hover:font-medium"
+               href="https://maps.app.goo.gl/UdbSi4tejvpQrp7j9"
+               target="_blank">
+              <i class="fa-solid fa-map"></i>
+              View in google map
+            </a>
+          </div>
         </div>
-        {{ render_photo_field(form.evidence_pictures, add_text="Add Photo ", remove_text="Remove Photo") }}
-        <div class="space-y-4">
-          {{ form.csrf_token() }}
-          {{ render_field(form.description) }}
-          {{ render_field(form.delivery_type) }}
-          {{ render_field(form.pick_up_location) }}
-        <button type="submit" class="w-full btn-primary btn btn-md">Submit</button>
+        {{ render_field(form.remarks) }}
+        {{ render_multiple_photo_field(form.pictures) }}
+        {{ form.csrf_token() }}
+        <button type="submit" class="w-full text-white btn-primary btn btn-md">Submit</button>
       </form>
     </div>
   </div>
-  
+  <script>
+    let isRendered = false;
+    const deliveryTypeField = document.querySelector("[name='delivery_type']");
+    const pickUpLocationField = document.querySelector("[name='pick_up_location']");
+    const deliveryAddresses = document.querySelector('.delivery_addresses')
+    
+    // Function to show or hide pick-up location based on delivery type
+    function handleDeliveryTypeChange() {
+      if (deliveryTypeField.value === 'pickup') {
+        pickUpLocationField.parentElement.style.display = 'block';
+        deliveryAddresses.style.display = 'none';
+      } else {
+        pickUpLocationField.parentElement.style.display = 'none';
+        if (isRendered){ 
+          deliveryAddresses.style.display = 'flex';
+        }
+      }
+      isRendered = true;
+    }
 
+    // Initial setup
+    handleDeliveryTypeChange();
+
+    // Add event listener to detect changes in delivery type
+    deliveryTypeField.addEventListener('change', handleDeliveryTypeChange);
+  </script>
 {% endblock content %}

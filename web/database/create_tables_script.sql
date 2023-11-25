@@ -69,9 +69,16 @@ CREATE TABLE IF NOT EXISTS donation (
     donation_type VARCHAR(16) NOT NULL, -- 'money' or 'in_kind'
     delivery_type VARCHAR(16), -- 'pickup' or 'deliver' (if in_kind)
     pick_up_location VARCHAR(256), -- optional, depending on delivery_type
-    description TEXT,
-    evidence_pictures VARCHAR(256), -- store file paths or use appropriate data type for images
+    amount INT, -- (if money)
+    remarks TEXT,
     is_confirmed BOOLEAN,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS donation_pictures (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    donation_id INT NOT NULL REFERENCES donation(id),
+    photo_url VARCHAR(256) NOT NULL, -- store file paths or use appropriate data type for images
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

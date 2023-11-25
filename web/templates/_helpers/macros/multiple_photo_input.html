@@ -1,0 +1,87 @@
+{% macro render_multiple_photo_field(field, add_text) %}
+  <div class="flex flex-col form-control">
+    <label class="label label-text">{{ field.label.text }}</label>
+    <ul id="pictures"
+        class="grid w-full grid-cols-2 gap-2 p-4 bg-gray-100 border rounded-lg md:grid-cols-5 {{ 'border-red-500' if field.errors | length > 0 else '' }}">
+      {% for entry in field.entries %}
+        <li class="w-full h-auto max-w-full">
+          {{ entry(class="hidden") }}
+          {% if entry.data %}
+            <img src="{{ get_image(entry.data) }}"
+                 class="object-cover w-full h-auto border cursor-pointer hover:shadow-sm rounded-xl bg-gray-50"
+                 alt=""
+                 height="auto"
+                 width="auto" />
+          {% endif %}
+        </li>
+      {% endfor %}
+      <button type="button"
+              id="add-photo"
+              class="flex flex-col items-center justify-center w-full gap-2 bg-white border border-dashed rounded-lg cursor-pointer aspect-square hover:shadow-sm">
+        <i class="text-3xl fa-solid fa-image"></i>
+        <p class="text-xs">Add photo</p>
+      </button>
+    </ul>
+    <input type="file" name="upload" accept="image/*" class="hidden" />
+    {% if field.errors %}
+      <ul class="mt-2">
+        {% for error in field.errors %}<li class="text-xs text-red-500">{{ error }}</li>{% endfor %}
+      </ul>
+    {% endif %}
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const addPhoto = document.getElementById("add-photo");
+      const uploadPhotoInput = document.querySelector("input[type=file]");
+      const csrfToken = document.querySelector("meta[name=csrf_token]").content;
+
+      uploadPhotoInput.addEventListener("change", async () => {
+        const file = uploadPhotoInput.files[0];
+
+        if (file) {
+          const formData = new FormData();
+          formData.append("upload", file);
+          formData.append("csrf_token", csrfToken);
+
+          try {
+            const response = await fetch("{{ url_for('upload_to_cloudinary') }}", {
+              method: "POST",
+              body: formData,
+            });
+
+            const data = await response.json();
+
+            if (data?.is_success) {
+              const ul = document.getElementById("pictures");
+
+              // Create a new li element with the new image
+              const newLi = document.createElement("li");
+              const newInput = document.createElement("input");
+              const newImage = document.createElement("img");
+
+              newInput.setAttribute("name", `pictures-${ul.children.length}`);
+              newInput.setAttribute("type", "text");
+              newInput.setAttribute("id", `pictures-${ul.children.length}`);
+              newInput.setAttribute("value", data.public_id);
+              newInput.classList.add("hidden")
+
+              newImage.src = data.url
+              newImage.classList.add("object-cover", "w-full", "h-auto", "border", "cursor-pointer", "hover:shadow-sm", "rounded-xl", "bg-gray-50");
+              newImage.alt = data.public_id
+
+              newLi.appendChild(newInput);
+              newLi.appendChild(newImage);
+              ul.insertBefore(newLi, ul.lastElementChild)
+            }
+          } catch (error) {
+            console.error("Error uploading photo:", error);
+          }
+        }
+      });
+
+      addPhoto.addEventListener("click", () => {
+        uploadPhotoInput.click();
+      });
+    });
+  </script>
+{% endmacro %}

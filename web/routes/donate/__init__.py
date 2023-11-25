@@ -1,10 +1,9 @@
-from flask import Blueprint, render_template, request, redirect, url_for
-from flask_login import login_required, current_user
-from ...utils import user_only
-from ...validations import AddDonationMoney
-from ...validations import AddDonation_In_Kind
+from flask import Blueprint, redirect, render_template, request, url_for
+from flask_login import current_user, login_required
 
 from ...models import Donation
+from ...utils import user_only
+from ...validations import AddDonation_In_Kind, AddDonationMoney
 
 donate_bp = Blueprint("donate", __name__, url_prefix='/donate')
 
@@ -22,8 +21,9 @@ def money():
     
   if form.validate_on_submit():
     new_donation = Donation(
-      description=form.description.data,
-      evidence_pictures=form.evidence_pictures.data,
+      remarks=form.remarks.data,
+      amount=form.amount.data,
+      pictures=form.pictures.data,
       donation_type='money',
       type='org',
       user_id=current_user.id
@@ -42,8 +42,8 @@ def in_kind():
     
   if form.validate_on_submit():
     new_donation = Donation(
-      description=form.description.data,
-      evidence_pictures=form.evidence_pictures.data,
+      remarks=form.remarks.data,
+      pictures=form.pictures.data,
       delivery_type=form.delivery_type.data,
       pick_up_location=form.pick_up_location.data,
       donation_type='in_kind',

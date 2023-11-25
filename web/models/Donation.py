@@ -2,16 +2,18 @@ import datetime
 
 from ..database import db
 
+
 class Donation():
-    def __init__(self, type: str = None,  user_id: int = None, donation_type: str = None, delivery_type: str = None, pick_up_location: str = None, description: str = None, evidence_pictures: str = None, is_confirmed: bool = False, created_at: datetime.datetime = None, id: int | None = None):
+    def __init__(self, type: str = None,  user_id: int = None, donation_type: str = None, amount: int | None = None, delivery_type: str = None, pick_up_location: str = None, remarks: str = None, pictures: [str] = None, is_confirmed: bool = False, created_at: datetime.datetime = None, id: int | None = None):
         self.id = id
         self.type = type
+        self.amount = amount
         self.user_id = user_id
         self.donation_type = donation_type
         self.delivery_type = delivery_type
         self.pick_up_location = pick_up_location
-        self.description = description
-        self.evidence_pictures = evidence_pictures 
+        self.remarks = remarks
+        self.pictures = pictures 
         self.is_confirmed = is_confirmed
         self.created_at = created_at
         
@@ -28,23 +30,61 @@ class Donation():
     
     @classmethod
     def insert(cls, donation):
-        sql = """
+        donation_sql = """
             INSERT INTO donation (
-                type, user_id, donation_type, delivery_type, pick_up_location, description, evidence_pictures, is_confirmed
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                type, user_id, donation_type, amount, delivery_type, pick_up_location, remarks, is_confirmed, created_at
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
-        params = (
+        donation_params = (
             donation.type,
             donation.user_id,
             donation.donation_type,
+            donation.amount,
             donation.delivery_type,
             donation.pick_up_location,
-            donation.description,
-            donation.evidence_pictures,
+            donation.remarks,
             donation.is_confirmed,
+            donation.created_at,
         )
+
         cur = db.new_cursor()
-        cur.execute(sql, params)
+        cur.execute(donation_sql, donation_params)
         db.connection.commit()
 
-        return cur.lastrowid
+        donation_id = cur.lastrowid
+
+        pictures_sql = """
+            INSERT INTO donation_pictures (
+                donation_id, photo_url
+            ) VALUES(%s, %s)
+        """
+
+        if donation.pictures:
+            pictures_params = [(donation_id, photo_url) for photo_url in donation.pictures]
+            cur.executemany(pictures_sql, pictures_params)
+            db.connection.commit()
+
+        return donation_id
+    
+    @staticmethod
+    def get_user_donations(user_id):
+        donation_sql = """
+            SELECT * FROM donation WHERE user_id = %s ORDER BY created_at DESC
+        """
+
+        picture_sql = """
+            SELECT photo_url FROM donation_pictures WHERE donation_id = %s
+        """
+
+        cur = db.new_cursor(dictionary=True)
+        cur.execute(donation_sql, (user_id,))
+        donations = cur.fetchall()
+
+        for donation in donations:
+            donation_id = donation['id']
+            cur.execute(picture_sql, (donation_id,))
+            pictures = [row['photo_url'] for row in cur.fetchall()]
+            donation['pictures'] = pictures
+
+        return [Donation(**donation) for donation in donations]
+

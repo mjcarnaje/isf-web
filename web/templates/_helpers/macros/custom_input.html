@@ -3,7 +3,7 @@
     {% if field.type != "BooleanField" %}
       {% if field.render_kw.label %}
         {{ field.label(class="label label-text", text=field.render_kw.label) }}
-      {% else %} 
+      {% else %}
         {{ field.label(class="label label-text") }}
       {% endif %}
     {% endif %}
@@ -31,13 +31,13 @@
     {% elif field.type == "RadioField" %}
       <div class="relative flex items-center gap-4">
         {% for key, value in field.choices %}
-          <label class="flex-1 cursor-pointer space-x-3 label">
+          <label class="flex-1 space-x-3 cursor-pointer label">
             <span class="label-text">{{ value }}</span>
             <input type="radio"
-                  name="{{ field.name }}"
-                  {% if field.data is true %}checked='checked'{% endif %}
-                  class="radio radio-primary" 
-                  value="{{ key }}" />
+                   name="{{ field.name }}"
+                   {% if field.data is true %}checked='checked'{% endif %}
+                   class="radio radio-primary"
+                   value="{{ key }}" />
           </label>
         {% endfor %}
       </div>
@@ -66,7 +66,7 @@
       </ul>
       <style>
           [name="{{ field.name }}"] {
-            border-color: #ff6f70;
+            border-color: #ef4444;
           }
       </style>
     {% endif %}
