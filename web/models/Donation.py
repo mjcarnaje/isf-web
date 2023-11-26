@@ -87,4 +87,26 @@ class Donation():
             donation['pictures'] = pictures
 
         return [Donation(**donation) for donation in donations]
+    
+    @staticmethod
+    def get_donations():
+        donation_sql = """
+            SELECT * FROM donation ORDER BY created_at DESC
+        """
+
+        picture_sql = """
+            SELECT photo_url FROM donation_pictures WHERE donation_id = %s
+        """
+
+        cur = db.new_cursor(dictionary=True)
+        cur.execute(donation_sql)
+        donations = cur.fetchall()
+
+        for donation in donations:
+            donation_id = donation['id']
+            cur.execute(picture_sql, (donation_id,))
+            pictures = [row['photo_url'] for row in cur.fetchall()]
+            donation['pictures'] = pictures
+
+        return [Donation(**donation) for donation in donations]
 

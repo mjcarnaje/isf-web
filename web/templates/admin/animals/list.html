@@ -1,11 +1,11 @@
-{% set active_page = "rescue" %}
+{% set active_page = "admin.rescue.index" %}
 {% extends "./_helpers/layout/admin_layout.html" %}
 {% block title %}
-  Rescues
+  Animals
 {% endblock title %}
 {% block content %}
   <div class="w-full max-w-5xl py-16 mx-auto space-y-8">
-    <h1 class="text-2xl font-bold">Rescues</h1>
+    <h1 class="text-2xl font-bold">Animals</h1>
     <div class="grid w-full grid-cols-3 gap-5 mx-auto">
       {% for animal in animals %}
         <div class="space-y-2">
