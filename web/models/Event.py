@@ -1,4 +1,5 @@
 from ..database import db
+import datetime
 
 class Event():
     def __init__(self, id=None, name=None, description=None, cover_photo_url=None, start_date=None, end_date=None, location=None, author_id=None, is_done=None, show_in_landing=None, created_at=None, updated_at=None):
@@ -73,3 +74,50 @@ class Event():
         cur.execute(sql, params)
         exists = cur.fetchone() is not None
         return exists
+    
+    @classmethod
+    def edit(cls, event):
+        sql = """
+            UPDATE event
+            SET
+                name = %s,
+                description = %s,
+                cover_photo_url = %s,
+                start_date = %s,
+                end_date = %s,
+                location = %s,
+                author_id = %s,
+                is_done = %s,
+                show_in_landing = %s,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE
+                id = %s
+        """
+        params = (
+            event.name,
+            event.description,
+            event.cover_photo_url,
+            event.start_date,
+            event.end_date,
+            event.location,
+            event.author_id,
+            event.is_done,
+            event.show_in_landing,
+            event.id
+        )
+        cur = db.new_cursor()
+        cur.execute(sql, params)
+        db.connection.commit()
+
+        return cur.rowcount
+
+    @classmethod
+    def delete(cls, event_id):
+        sql = "DELETE FROM event WHERE id = %s"
+        params = (event_id,)
+
+        cur = db.new_cursor()
+        cur.execute(sql, params)
+        db.connection.commit()
+
+        return cur.rowcount

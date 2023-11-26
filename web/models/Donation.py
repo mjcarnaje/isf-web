@@ -4,7 +4,7 @@ from ..database import db
 
 
 class Donation():
-    def __init__(self, type: str = None,  user_id: int = None, donation_type: str = None, amount: int | None = None, delivery_type: str = None, pick_up_location: str = None, remarks: str = None, pictures: [str] = None, is_confirmed: bool = False, created_at: datetime.datetime = None, id: int | None = None):
+    def __init__(self, type: str = None,  user_id: int = None, donation_type: str = None, amount: int | None = None, delivery_type: str = None, pick_up_location: str = None, remarks: str = None, pictures: [str] = None, is_confirmed: bool = False, created_at: datetime.date = None, id: int | None = None):
         self.id = id
         self.type = type
         self.amount = amount

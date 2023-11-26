@@ -6,7 +6,7 @@ from ..database import db
 
 
 class User(UserMixin):
-    def __init__(self, email: str = None, google_id: str = None, username: str = None, first_name: str = None, last_name: str = None, password: str = None, photo_url: str | None = None, contact_number: str = None, roles: [str] = [], id: int | None = None, created_at: datetime.datetime | None = None):
+    def __init__(self, email: str = None, google_id: str = None, username: str = None, first_name: str = None, last_name: str = None, password: str = None, photo_url: str | None = None, contact_number: str = None, roles: [str] = [], id: int | None = None, created_at: datetime.date | None = None):
         self.id = id
         self.email = email
         self.google_id = google_id
