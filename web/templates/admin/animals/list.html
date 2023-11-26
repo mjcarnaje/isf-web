@@ -1,25 +1,33 @@
-{% set active_page = "admin.rescue.index" %}
+{% set active_page = "admin.  .index" %}
 {% extends "./_helpers/layout/admin_layout.html" %}
 {% block title %}
   Animals
 {% endblock title %}
 {% block content %}
-  <div class="w-full max-w-5xl py-16 mx-auto space-y-8">
+  <div class="w-full max-w-4xl py-16 mx-auto space-y-8">
     <h1 class="text-2xl font-bold">Animals</h1>
-    <div class="grid w-full grid-cols-3 gap-5 mx-auto">
+    <div class="grid w-full grid-cols-2 gap-5 mx-auto">
       {% for animal in animals %}
-        <div class="space-y-2">
-          <div class="overflow-hidden border rounded-lg aspect-square h-72 bg-gray-50">
+        <div class="flex flex-row">
+          <div class="overflow-hidden border rounded-lg aspect-square h-24 bg-gray-50 ">
             <img class="object-cover h-full"
                  src="{{ get_image(animal.photo_url) }}"
                  alt="Animal Photo"
                  width="auto"
                  height="auto" />
           </div>
-          <div class="space-y-1">
-            <h3 class="font-bold text-primary-500">{{ animal.name }}</h3>
-            <p class="text-sm text-primary-500">{{ animal.description }}</p>
+          <div class="px-5 space-y-0.5">
+            <h3 class="font-bold text-lg text-primary-500">{{ animal.name }}</h3>
+            <p class="text-sm text-primary-500 text-black">{{ animal.description }}</p>
+            <p class="text-sm text-primary-500 text-black">{{ animal.gender }}</p>
+            <p class="text-sm text-primary-500 text-black">{{ animal.estimated_birth_month }}{{" "}}{{ animal.estimated_birth_year }}</p>
+            <div class="flex gap-4 items-center">
+              <button class="btn btn-xs">Edit</button>
+              <button class="btn btn-error text-white btn-xs">Delete</button>
+            </div>
           </div>
+          
+
         </div>
       {% endfor %}
     </div>
