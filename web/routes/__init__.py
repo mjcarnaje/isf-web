@@ -5,3 +5,4 @@ from .landing import landing_bp
 from .rescue import rescue_bp
 from .user import user_bp
 from .volunteer import volunteer_bp
+from .event import event_bp
