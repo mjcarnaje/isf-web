@@ -4,7 +4,31 @@
   Rescues
 {% endblock title %}
 {% block content %}
-  <div class="space-y-8">
-    <h1 class="text-2xl font-bold">Rescues</h1>
+<div class="py-8">
+  <div class="flex flex-col items-center w-full max-w-5xl py-12 mx-auto space-y-10">
+    <h1 class="text-4xl font-bold text-center text-primary-500 text-primary">Our Rescues</h1>
+    <p class="font-medium leading-9 text-justify md:text-center">
+      Our rescued animals embody tales of resilience and hope, each with a unique narrative of survival and second chances. These remarkable beings have found sanctuary in our care, having triumphed over adversity ranging from abandonment and neglect to abuse. From the gentle, trusting eyes of once-abandoned dogs to the graceful movements of formerly mistreated horses, our rescued animals showcase the transformative power of compassion. In our haven, they receive the love, attention, and rehabilitation they deserve, blossoming into vibrant testimonies of the positive impact that dedicated care can have on the lives of those who have endured hardship. Through our commitment to their well-being, we provide a haven where these creatures can rediscover joy, trust, and the simple pleasures of a life filled with compassion.    </p>
   </div>
+<div class="w-full max-w-5xl py-16 mx-auto space-y-8">
+  <h1 class="text-2xl font-bold">Animals</h1>
+  <div class="grid w-full grid-cols-3 gap-5 mx-auto">
+    {% for animal in animals %}
+      <div class="space-y-2">
+        <div class="overflow-hidden border rounded-lg aspect-square h-72 bg-gray-50">
+          <img class="object-cover h-full"
+               src="{{ get_image(animal.photo_url) }}"
+               alt="Animal Photo"
+               width="auto"
+               height="auto" />
+        </div>
+        <div class="space-y-1">
+          <h3 class="font-bold text-primary-500">{{ animal.name }}</h3>
+          <p class="text-sm text-primary-500">{{ animal.description }}</p>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
 {% endblock content %}
+
