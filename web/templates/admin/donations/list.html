@@ -1,0 +1,47 @@
+{% set active_page = "admin.donations" %}
+{% extends "./_helpers/layout/admin_layout.html" %}
+{% block title %}
+  Donations
+{% endblock title %}
+{% block content %}
+  <div class="max-w-3xl min-h-screen py-20 mx-auto space-y-8">
+    <h1 class="text-3xl font-bold">Donations</h1>
+    <div class="flex flex-col space-y-4">
+      {% for donation in donations %}
+        <div class="flex flex-col w-full gap-4 p-5 bg-white border rounded-lg shadow-md">
+          <div class="flex justify-between w-full">
+            <div class="flex items-center w-full gap-4">
+              {% if donation.donation_type == 'money' %}
+                <div class="flex items-center justify-center w-10 h-10 bg-green-100 rounded-full">
+                  <i class="text-green-600 fa-solid fa-money-bill"></i>
+                </div>
+                <p class="font-bold">Money</p>
+              {% else %}
+                <div class="flex items-center justify-center w-10 h-10 bg-yellow-100 rounded-full">
+                  <i class="text-yellow-600 fa-solid fa-hand-holding-heart"></i>
+                </div>
+                <p class="font-bold">In-kind</p>
+              {% endif %}
+            </div>
+            {% if donation.is_confirmed %}
+              <div class="gap-2 p-3 font-bold text-white badge badge-success">Confirmed</div>
+            {% else %}
+              <div class="gap-2 p-3 font-bold text-white badge badge-info">Unconfirmed</div>
+            {% endif %}
+          </div>
+          <div class="flex gap-2">
+            {% for picture in donation.pictures %}
+              <img src="{{ get_image(picture) }}"
+                   class="object-cover w-full max-w-[60px] h-auto border cursor-pointer hover:shadow-sm rounded-lg bg-gray-50"
+                   alt=""
+                   height="auto"
+                   width="auto" />
+            {% endfor %}
+          </div>
+          <p class="text-sm italic text-gray-700">{{ donation.remarks }}</p>
+          <p class="text-sm italic text-gray-700">{{ donation.created_at or "No Date" }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock content %}

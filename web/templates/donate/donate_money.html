@@ -1,0 +1,53 @@
+{% set active_page = "donate" %}
+{% extends "./_helpers/layout/main_layout.html" %}
+{% from './_helpers/macros/custom_input.html' import render_field %}
+{% from './_helpers/macros/photo_input.html' import render_photo_field with context %}
+{% from './_helpers/macros/multiple_photo_input.html' import render_multiple_photo_field with context %}
+{% block title %}
+  Donate
+{% endblock title %}
+{% block content %}
+  <div class="flex flex-col items-center w-full px-6 py-12 space-y-12 md:space-y-16 lg:space-y-20 md:py-16 lg:py-20">
+    <div class="w-full max-w-5xl space-y-4 md:space-y-10">
+      <h1 class="text-4xl font-bold text-center text-primary-500">Money Donation</h1>
+      <p class="font-medium leading-9 text-justify md:text-center">
+        Support stray animals by donating money to Iligan Stray Feeders, the dedicated organization that rescues and cares for stray animals in need. Your contributions provide crucial resources for their well-being, including shelter, medical care, and nutritious food. With your help, Iligan Stray Feeders can continue their vital work, implementing spaying and neutering programs to control overpopulation and offering support for adoption initiatives, giving stray animals a chance at finding loving homes.
+      </p>
+    </div>
+    <div class="w-full max-w-4xl px-8 py-12 space-y-8 border shadow-xl rounded-2xl">
+      <p class="text-2xl font-bold text-center text-primary-500">How to contribute through Money Donation?</p>
+      <p class="italic text-center">Simply scan the QR code with Maya or GCash</p>
+      <div class="grid grid-cols-4 gap-5 gap">
+        <img src="{{ url_for('static', filename='/images/qrs/gcash.png') }}"
+             class="col-span-1 rounded-lg"
+             alt="gcash"
+             width="auto"
+             height="auto" />
+        <img src="{{ url_for('static', filename='/images/qrs/maya.png') }}"
+             class="col-span-1 rounded-lg"
+             alt="paymaya"
+             width="auto"
+             height="auto" />
+        <img src="{{ url_for('static', filename='/images/qrs/bpi.png') }}"
+             class="col-span-1 rounded-lg"
+             alt="paymaya"
+             width="auto"
+             height="auto" />
+        <img src="{{ url_for('static', filename='/images/qrs/bdo.png') }}"
+             class="col-span-1 rounded-lg"
+             alt="paymaya"
+             width="auto"
+             height="auto" />
+      </div>
+    </div>
+    <form class="w-full max-w-4xl p-8 space-y-4 bg-white border shadow-lg borderm rounded-2xl"
+          method="post"
+          novalidate>
+      {{ render_field(form.amount) }}
+      {{ render_field(form.remarks) }}
+      {{ render_multiple_photo_field(form.pictures) }}
+      {{ form.csrf_token() }}
+      <button type="submit" class="w-full text-white btn-primary btn btn-md">Submit</button>
+    </form>
+  </div>
+{% endblock content %}

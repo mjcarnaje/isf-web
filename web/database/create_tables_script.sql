@@ -47,6 +47,41 @@ CREATE TABLE IF NOT EXISTS animal (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS event (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(256) UNIQUE NOT NULL,
+    description TEXT,
+    cover_photo_url VARCHAR(256),
+    start_date DATETIME NOT NULL,
+    end_date DATETIME NOT NULL,
+    location VARCHAR(256),
+    author_id INT NOT NULL REFERENCES user(id),
+    is_done BOOLEAN NOT NULL,
+    show_in_landing BOOLEAN NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS donation (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    type VARCHAR(16) NOT NULL, -- 'event' or 'org'
+    user_id INT NOT NULL REFERENCES user(id),
+    donation_type VARCHAR(16) NOT NULL, -- 'money' or 'in_kind'
+    delivery_type VARCHAR(16), -- 'pickup' or 'deliver' (if in_kind)
+    pick_up_location VARCHAR(256), -- optional, depending on delivery_type
+    amount INT, -- (if money)
+    remarks TEXT,
+    is_confirmed BOOLEAN,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS donation_pictures (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    donation_id INT NOT NULL REFERENCES donation(id),
+    photo_url VARCHAR(256) NOT NULL, -- store file paths or use appropriate data type for images
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Insert admin role
 INSERT IGNORE INTO role (name) VALUES ('member');
 INSERT IGNORE INTO role (name) VALUES ('donor');
@@ -79,3 +114,6 @@ VALUES
     ('Cat3', 'Cat', 'August', '2019', 'unitrack/g4apxw3zexqjbnw1ttcu', 'Female', 0, 1, 1, 1, 0, 1, 'Lazy cat', 'Orange fur, large size', @admin_user_id),
     ('Rabbit3', 'Rabbit', 'September', '2020', 'unitrack/g4apxw3zexqjbnw1ttcu', 'Male', 1, 0, 0, 0, 1, 0, 'Playful rabbit', 'Gray fur, floppy ears', @admin_user_id),
     ('Dog4', 'Dog', 'October', '2019', 'unitrack/g4apxw3zexqjbnw1ttcu', 'Female', 0, 0, 1, 1, 1, 1, 'Protective dog', 'White fur, small size', @admin_user_id);
+
+
+

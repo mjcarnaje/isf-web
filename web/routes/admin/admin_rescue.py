@@ -9,7 +9,7 @@ admin_rescue_bp = Blueprint("rescue", __name__, url_prefix='/rescue')
 
 @admin_rescue_bp.route('/', methods=['GET'])
 @admin_required
-def index():
+def animals():
     page = request.args.get('page', 1, type=int)
     query = request.args.get('query', '', type=str)
 
@@ -24,7 +24,7 @@ def index():
     has_next_page = animals_query.get("has_next_page")
     total_count = animals_query.get("total_count")
 
-    return render_template('rescue/admin_rescues.html', animals=animals, has_previous_page=has_previous_page, has_next_page=has_next_page, total_count=total_count)
+    return render_template('admin/animals/list.html', animals=animals, has_previous_page=has_previous_page, has_next_page=has_next_page, total_count=total_count)
 
 @admin_rescue_bp.route('/add-animal', methods=['GET', 'POST'])
 @admin_required
@@ -70,5 +70,5 @@ def add_animal():
        return redirect(url_for('admin.rescue.index'))
 
 
-  return render_template('rescue/admin_add_animal.html', form=form)
+  return render_template('admin/animals/add_animal.html', form=form)
 
