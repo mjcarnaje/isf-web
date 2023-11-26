@@ -34,6 +34,15 @@
           </div>
         {% endfor %}
       </div>
+      <div class="flex justify-center">
+        <div class="join">
+          <a href="{{ url_for('rescue.animals', page=page_number - 1) }}"
+             class="join-item btn {{ 'btn-disabled' if not has_previous_page }}">«</a>
+          <p class="join-item btn">Page {{ page_number }}</p>
+          <a href="{{ url_for('rescue.animals', page=page_number + 1) }}"
+             class="join-item btn {{ 'btn-disabled' if not has_next_page }}">»</a>
+        </div>
+      </div>
     </div>
   </div>
 {% endblock content %}

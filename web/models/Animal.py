@@ -6,10 +6,25 @@ from ..database import db
 import datetime
 
 class Animal():
-    def __init__(self, name: str = None, type: str = None, estimated_birth_month: str = None, estimated_birth_year: str = None, photo_url: str = None, gender: str = None,
-                 is_adopted: bool = False, is_dead: bool = False, is_dewormed: bool = False, is_neutered: bool = False,
-                 in_shelter: bool = False, is_rescued: bool = False, description: str = None, appearance: str = None, author_id: str = None,
-                 id: int | None = None, created_at: datetime.date | None = None, updated_at: datetime.date | None = None):
+    def __init__(self, name: str = None, 
+                 type: str = None,
+                estimated_birth_month: str = None,
+                estimated_birth_year: str = None,
+                photo_url: str = None,
+                gender: str = None,
+                is_adopted: bool = False,
+                is_dead: bool = False,
+                is_dewormed: bool = False,
+                is_neutered: bool = False,
+                in_shelter: bool = False,
+                is_rescued: bool = False,
+                for_adoption: bool = True,
+                description: str = None,
+                appearance: str = None,
+                author_id: str = None,
+                id: int | None = None, 
+                created_at: datetime.date | None = None,
+                updated_at: datetime.date | None = None):
         self.id = id
         self.name = name
         self.type = type
@@ -23,6 +38,7 @@ class Animal():
         self.is_neutered = is_neutered
         self.in_shelter = in_shelter
         self.is_rescued = is_rescued
+        self.for_adoption = for_adoption
         self.description = description
         self.appearance = appearance
         self.author_id = author_id
@@ -40,10 +56,25 @@ class Animal():
         return cls(**row)
 
     @staticmethod
-    def insert(name: str, type: str, estimated_birth_month: str, estimated_birth_year: str, photo_url: str, gender: str,
-            is_adopted: bool, is_dead: bool, is_dewormed: bool, is_neutered: bool,
-            in_shelter: bool, is_rescued: bool, description: str, appearance: str,author_id: int) -> int:
-        sql = "INSERT INTO animal (name, type, estimated_birth_month, estimated_birth_year, photo_url, gender, is_adopted, is_dead, is_dewormed, is_neutered, in_shelter, is_rescued, description, appearance, author_id) VALUES(%(name)s, %(type)s, %(estimated_birth_month)s, %(estimated_birth_year)s, %(photo_url)s, %(gender)s, %(is_adopted)s, %(is_dead)s, %(is_dewormed)s, %(is_neutered)s, %(in_shelter)s, %(is_rescued)s, %(description)s, %(appearance)s, %(author_id)s)"
+    def insert(
+        name: str, 
+        type: str,
+        estimated_birth_month: str,
+        estimated_birth_year: str,
+        photo_url: str,
+        gender: str,
+        is_adopted: bool,
+        is_dead: bool,
+        is_dewormed: bool,
+        is_neutered: bool,
+        in_shelter: bool,
+        is_rescued: bool,
+        for_adoption: bool,
+        description: str,
+        appearance: str,
+        author_id: int
+        ) -> int:
+        sql = "INSERT INTO animal (name, type, estimated_birth_month, estimated_birth_year, photo_url, gender, is_adopted, is_dead, is_dewormed, is_neutered, in_shelter, is_rescued, for_adoption, description, appearance, author_id) VALUES(%(name)s, %(type)s, %(estimated_birth_month)s, %(estimated_birth_year)s, %(photo_url)s, %(gender)s, %(is_adopted)s, %(is_dead)s, %(is_dewormed)s, %(is_neutered)s, %(in_shelter)s, %(is_rescued)s, %(description)s, %(appearance)s, %(author_id)s)"
         data = {
             'name': name,
             'type': type,
@@ -57,6 +88,7 @@ class Animal():
             'is_neutered': is_neutered,
             'in_shelter': in_shelter,
             'is_rescued': is_rescued,
+            'for_adoption': for_adoption,
             'description': description,
             'appearance': appearance,
             'author_id': author_id
@@ -68,32 +100,39 @@ class Animal():
 
 
     @staticmethod
-    def find_all(page_number: int, page_size: int, query: str =  None):
+    def find_all(page_number: int, page_size: int, query: str = None, filters: dict = None):
         offset = (page_number - 1) * page_size
 
-        where_clause = ""
+        where_clauses = []
         filter_params = []
-        
+
         if query:
-            where_clause += " AND name LIKE %s"
+            where_clauses.append("name LIKE %s")
             filter_params.append(f"%{query}%")
+
+        if filters:
+            for key, value in filters.items():
+                if key == 'for_adoption': 
+                    where_clauses.append(f"{key} = %s")
+                    filter_params.append(value)
+
+        where_clause = " AND ".join(where_clauses) if where_clauses else ""
 
         sql = f"""
             SELECT * FROM animal
             """
-        if where_clause: 
+        if where_clause:
             sql += f" WHERE {where_clause}"
         sql += " LIMIT %s OFFSET %s"
 
         cur = db.new_cursor(dictionary=True)
-
         cur.execute(sql, filter_params + [page_size, offset])
 
         data = cur.fetchall()
 
         count_sql = f"SELECT COUNT(*) FROM animal"
 
-        if where_clause: 
+        if where_clause:
             count_sql += f" WHERE {where_clause}"
 
         cur.execute(count_sql, filter_params)
@@ -108,6 +147,8 @@ class Animal():
             'has_next_page': has_next_page,
             'total_count': total_count
         }
+
+        
     @classmethod
     def edit(cls, animal):
         sql = """
@@ -125,6 +166,7 @@ class Animal():
                 is_neutered = %s,
                 in_shelter = %s,
                 is_rescued = %s,
+                for_adoption = %s,
                 description = %s,
                 appearance = %s,
                 author_id = %s,
@@ -145,6 +187,7 @@ class Animal():
             animal.is_neutered,
             animal.in_shelter,
             animal.is_rescued,
+            animal.for_adoption,
             animal.description,
             animal.appearance,
             animal.author_id,
@@ -179,7 +222,8 @@ class Animal():
                 SUM(CASE WHEN is_dewormed THEN 1 ELSE 0 END) AS dewormed_count,
                 SUM(CASE WHEN is_neutered THEN 1 ELSE 0 END) AS neutered_count,
                 SUM(CASE WHEN in_shelter THEN 1 ELSE 0 END) AS in_shelter_count,
-                SUM(CASE WHEN is_rescued THEN 1 ELSE 0 END) AS rescued_count
+                SUM(CASE WHEN is_rescued THEN 1 ELSE 0 END) AS rescued_count,
+                SUM(CASE WHEN for_adoption THEN 1 ELSE 0 END) AS for_adoption_count
             FROM animal
         """
 

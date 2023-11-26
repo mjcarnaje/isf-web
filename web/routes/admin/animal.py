@@ -27,6 +27,29 @@ def animals():
     return render_template('admin/animal/animals.html', animals=animals, has_previous_page=has_previous_page, has_next_page=has_next_page, total_count=total_count)
 
 
+@admin_animal_bp.route('/for-adoption', methods=['GET'])
+@admin_required
+def for_adoption_animals():
+    page = request.args.get('page', 1, type=int)
+    query = request.args.get('query', '', type=str)
+
+    animals_query = Animal.find_all(
+        page_number=page,
+        page_size=12,
+        query=query,
+        filters={
+           'for_adoption': True
+        }
+    )
+
+    animals = animals_query.get("data")
+    has_previous_page = animals_query.get("has_previous_page")
+    has_next_page = animals_query.get("has_next_page")
+    total_count = animals_query.get("total_count")
+
+    return render_template('admin/animal/for_adoption_animals.html', animals=animals, has_previous_page=has_previous_page, has_next_page=has_next_page, total_count=total_count)
+
+
 @admin_animal_bp.route('/<int:id>', methods=['GET'])
 @admin_required
 def view_animal(id):
@@ -51,6 +74,7 @@ def add_animal():
     is_neutered = form.is_neutered.data
     in_shelter = form.in_shelter.data
     is_rescued = form.is_rescued.data
+    for_adoption = form.for_adoption.data
     description = form.description.data
     appearance = form.appearance.data
     author_id = current_user.id
@@ -68,6 +92,7 @@ def add_animal():
       is_neutered=is_neutered,
       in_shelter=in_shelter,
       is_rescued=is_rescued,
+      for_adoption=for_adoption,
       description=description,
       appearance=appearance,
       author_id=author_id
@@ -98,6 +123,7 @@ def edit_animal(id):
         animal.is_neutered = form.is_neutered.data
         animal.in_shelter = form.in_shelter.data
         animal.is_rescued = form.is_rescued.data
+        animal.for_adoption = form.for_adoption.data
         animal.description = form.description.data
         animal.appearance = form.appearance.data
 
@@ -121,6 +147,7 @@ def edit_animal(id):
         form.is_neutered.data = animal.is_neutered == 1
         form.in_shelter.data = animal.in_shelter == 1
         form.is_rescued.data = animal.is_rescued == 1
+        form.for_adoption.data = animal.for_adoption == 1
             
     return render_template('admin/animal/edit.html', form=form)
 
