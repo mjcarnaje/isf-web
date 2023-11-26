@@ -1,12 +1,25 @@
-{% set active_page = 'admin.index' %}
+{% set active_page = "admin.index" %}
 {% extends "./_helpers/layout/admin_layout.html" %}
 {% block title %}
   Admin
 {% endblock title %}
 {% block content %}
-  <div class="flex items-center justify-center min-h-screen">
-    <div class="flex flex-col space-y-6">
-      <div class="text-3xl font-bold text-primary-500">Admin</div>
+  <div class="flex justify-center min-h-screen py-12">
+    <div class="w-full max-w-4xl">
+      <div class="w-full shadow stats stats-vertical lg:stats-horizontal">
+        <div class="stat">
+          <div class="stat-title">Animals</div>
+          <div class="stat-value text-primary-500">{{ animal_stats.total_count }}</div>
+        </div>
+        <div class="stat">
+          <div class="stat-title">Dogs</div>
+          <div class="stat-value text-primary-500">{{ animal_stats.dog_count }}</div>
+        </div>
+        <div class="stat">
+          <div class="stat-title">Cats</div>
+          <div class="stat-value text-primary-500">{{ animal_stats.cat_count }}</div>
+        </div>
+      </div>
     </div>
   </div>
 {% endblock content %}

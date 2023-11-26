@@ -74,7 +74,7 @@ def add_animal():
     )
 
     if animal_id:
-       return redirect(url_for('admin.rescue.index'))
+       return redirect(url_for('admin.animal.index'))
 
 
   return render_template('admin/animal/add.html', form=form)
@@ -103,7 +103,7 @@ def edit_animal(id):
 
         Animal.edit(animal)
         
-        return redirect(url_for("admin.rescue.animals"))
+        return redirect(url_for("admin.animal.animals"))
     
     if not form.is_submitted():
         form.id.data = animal.id

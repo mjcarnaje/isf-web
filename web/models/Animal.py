@@ -166,3 +166,25 @@ class Animal():
         db.connection.commit()
 
         return cur.rowcount
+    
+    @staticmethod
+    def get_stats():
+        stats_query = """
+            SELECT
+                COUNT(*) AS total_count,
+                SUM(CASE WHEN type = 'cat' THEN 1 ELSE 0 END) AS cat_count,
+                SUM(CASE WHEN type = 'dog' THEN 1 ELSE 0 END) AS dog_count,
+                SUM(CASE WHEN is_adopted THEN 1 ELSE 0 END) AS adopted_count,
+                SUM(CASE WHEN is_dead THEN 1 ELSE 0 END) AS dead_count,
+                SUM(CASE WHEN is_dewormed THEN 1 ELSE 0 END) AS dewormed_count,
+                SUM(CASE WHEN is_neutered THEN 1 ELSE 0 END) AS neutered_count,
+                SUM(CASE WHEN in_shelter THEN 1 ELSE 0 END) AS in_shelter_count,
+                SUM(CASE WHEN is_rescued THEN 1 ELSE 0 END) AS rescued_count
+            FROM animal
+        """
+
+        cur = db.new_cursor(dictionary=True)
+        cur.execute(stats_query)
+        stats = cur.fetchone()
+
+        return stats

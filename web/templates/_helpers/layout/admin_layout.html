@@ -2,23 +2,70 @@
 {% block body %}
   {% include "./_helpers/partials/admin_navbar.html" %}
   {% set admin_navigations = [
-      { 'name': 'Home', 'url': url_for('admin.index'), 'icon': 'fa-solid fa-house', 'page': 'admin.index'},
-      { 'name': 'Animals', 'url': url_for('admin.animal.animals'), 'icon': 'fa-solid fa-dog', 'page': 'admin.animal.animals'},
-      { 'name': 'Add Animal', 'url': url_for('admin.animal.add_animal'), 'icon': 'fa-sharp fa-solid fa-circle-plus', 'page': 'admin.animal.add_animal'},
-      { 'name': 'Event', 'url': url_for('admin.event.events'), 'icon': 'fa-solid fa-calendar', 'page': 'admin.event.events'},
-      { 'name': 'Add Event', 'url': url_for('admin.event.add_event'), 'icon': 'fa-sharp fa-solid fa-circle-plus', 'page': 'admin.event.add_event'},
-      { 'name': 'Donations', 'url': url_for('admin.donation.donations'), 'icon': 'fa-solid fa-hand-holding-heart', 'page': 'admin.donation.donations'},
+      {
+        'name': 'Home',
+        'url': url_for('admin.index'),
+        'icon': 'fa-solid fa-house',
+        'page': 'admin.index'
+      },
+      {
+        'name': 'Animals',
+        'url': url_for('admin.animal.animals'),
+        'icon': 'fa-solid fa-dog',
+        'page': 'admin.animal.animals' ,
+        'children': [
+          {
+            'name': 'Add Animal',
+            'url': url_for('admin.animal.add_animal'),
+            'icon': 'fa-sharp fa-solid fa-circle-plus',
+            'page': 'admin.animal.add_animal'
+          },
+        ]
+      },
+      {
+        'name': 'Event',
+        'url': url_for('admin.event.events'),
+        'icon': 'fa-solid fa-calendar',
+        'page': 'admin.event.events',
+        'children': [
+          {
+            'name': 'Add Event',
+            'url': url_for('admin.event.add_event'),
+            'icon': 'fa-sharp fa-solid fa-circle-plus',
+            'page': 'admin.event.add_event'
+          },
+        ]
+      },
+      {
+        'name': 'Donations',
+        'url': url_for('admin.donation.donations'),
+        'icon': 'fa-solid fa-hand-holding-heart',
+        'page': 'admin.donation.donations'
+      },
     ] %}
   <div class="flex w-full min-h-screen">
     <aside class="max-w-[320px] p-4 w-full border-r min-h-screen">
-      <ul class="space-y-4">
+      <ul class="menu">
         {% for navigation in admin_navigations %}
           <li>
             <a href="{{ navigation.url }}"
-               class="flex items-center gap-3 p-4 font-medium rounded-lg cursor-pointer hover:bg-gray-50 {{ 'font-bold text-primary-500 bg-gray-50' if active_page == navigation.page else '' }}">
+               class="flex items-center active:!bg-gray-50 hover:!text-primary-500 active:!text-primary-500 gap-3 p-4 font-medium rounded-lg cursor-pointer hover:bg-gray-50 {{ 'font-bold text-primary-500 bg-gray-50' if active_page == navigation.page else '' }}">
               <i class="{{ navigation.icon }}"></i>
               {{ navigation.name }}
             </a>
+            {% if navigation.children %}
+              <ul>
+                {% for item in navigation.children %}
+                  <li>
+                    <a href="{{ item.url }}"
+                       class="flex items-center active:!bg-gray-50 hover:!text-primary-500 active:!text-primary-500 gap-3 p-4 font-medium rounded-lg cursor-pointer hover:bg-gray-50 {{ 'font-bold text-primary-500 bg-gray-50' if active_page == item.page else '' }}">
+                      <i class="{{ item.icon }}"></i>
+                      {{ item.name }}
+                    </a>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% endif %}
           </li>
         {% endfor %}
       </ul>

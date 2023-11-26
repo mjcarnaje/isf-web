@@ -2,7 +2,7 @@ from flask import Blueprint, redirect, render_template, request, url_for
 from flask_login import login_required, login_user, logout_user
 from werkzeug.security import check_password_hash
 
-from ...models import User
+from ...models import User, Animal
 from ...utils import admin_required
 from ...validations import AdminLoginValidation
 
@@ -19,8 +19,9 @@ admin_bp.register_blueprint(admin_donations_bp)
 @admin_bp.route('/', methods=['GET'])
 @login_required
 @admin_required
-def index():
-   return render_template('/admin/index.html')
+def index(): 
+   animal_stats = Animal.get_stats()
+   return render_template('/admin/index.html', animal_stats=animal_stats)
 
 @admin_bp.route('/login', methods=['GET', 'POST'])
 def login():

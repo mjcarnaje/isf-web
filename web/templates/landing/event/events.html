@@ -5,25 +5,26 @@
 {% endblock title %}
 {% block content %}
   <div class="flex justify-center min-h-screen py-12">
-    <div class="flex flex-col space-y-6">
+    <div class="flex flex-col max-w-3xl gap-12">
       {% for event in events %}
         <div class="flex gap-8">
-          <div class="overflow-hidden border rounded-lg aspect-video w-72 bg-gray-50">
-            <img class="object-contain w-full"
-                 src="{{ get_image(event.cover_photo_url) }}"
-                 alt="Cover Photo"
-                 width="auto"
-                 height="auto" />
-          </div>
-          <div class="space-y-1">
+          <div class="overflow-hidden w-96">
             <a href="{{ url_for('event.view_event', id=event.id) }}"
-               class="text-3xl font-bold text-primary-500">{{ event.name }}</a>
-            <p class="">{{ event.description }}</p>
-            <div class="flex items-center gap-1">
-              <p class="text-primary-500">{{ event.start_date.strftime("%b %d, %Y") }}</p>
-              <p>-</p>
-              <p class="text-primary-500">{{ event.end_date.strftime("%b %d, %Y") }}</p>
-            </div>
+               class="overflow-hidden rounded-lg w-96">
+              <img class="object-cover w-full overflow-hidden transition-all duration-300 border aspect-video bg-gray-50 hover:scale-105"
+                   src="{{ get_image(event.cover_photo_url) }}"
+                   alt="Cover Photo"
+                   width="auto"
+                   height="auto" />
+            </a>
+          </div>
+          <div class="flex flex-col w-full gap-2">
+            <a href="{{ url_for('event.view_event', id=event.id) }}"
+               class="text-2xl font-bold text-primary-500">{{ event.name }}</a>
+            <p class="leading-6">{{ event.description }}</p>
+            <p class="text-primary-500">
+              {{ event.start_date.strftime("%b %d, %Y") }} - {{ event.end_date.strftime("%b %d, %Y") }}
+            </p>
             <p class="text-primary-500">{{ event.location }}</p>
           </div>
         </div>
