@@ -1,4 +1,4 @@
-{% set active_page = "admin.  .index" %}
+{% set active_page = "admin.animal.animals" %}
 {% extends "./_helpers/layout/admin_layout.html" %}
 {% block title %}
   Animals
@@ -33,7 +33,7 @@
                class="text-lg font-bold text-primary-500">{{ animal.name }}</a>
             <p class="text-sm text-primary-500">{{ animal.description }}</p>
             <p class="text-sm text-primary-500">{{ animal.gender }}</p>
-            <p class="text-sm text-primary-500">{{ animal.estimated_birth_month }}{{" "}}{{ animal.estimated_birth_year }}</p>
+            <p class="text-sm text-primary-500">{{ animal.estimated_birth_month }} {{ animal.estimated_birth_year }}</p>
           </div>
           <div class="dropdown">
             <label tabindex="0">

@@ -11,5 +11,5 @@ admin_donations_bp = Blueprint("donation", __name__, url_prefix='/donations')
 @admin_required
 def donations():
     donations = Donation.get_donations()
-    return render_template('admin/donations/list.html', donations=donations)
+    return render_template('admin/donation/list.html', donations=donations)
 

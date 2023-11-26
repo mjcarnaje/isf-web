@@ -1,15 +1,14 @@
-{% set active_page = "event" %}
+{% set active_page = "admin.event.events" %}
 {% from './_helpers/macros/custom_input.html' import render_field %}
 {% from './_helpers/macros/photo_input.html' import render_photo_field with context %}
 {% from './_helpers/macros/multiple_photo_input.html' import render_multiple_photo_field with context %}
-
 {% extends "./_helpers/layout/admin_layout.html" %}
 {% block title %}
   Edit Event
 {% endblock title %}
 {% block content %}
   <div class="flex flex-col items-center justify-center w-full p-12">
-    <div class="w-full max-w-2xl space-y-8">
+    <div class="w-full max-w-3xl space-y-8">
       <div class="flex w-full">
         <h1 class="text-3xl font-bold">Edit Event</h1>
       </div>
@@ -18,7 +17,7 @@
             novalidate>
         {{ render_photo_field(form.cover_photo_url, add_text="Add Cover Photo", remove_text="Remove Cover Photo", is_cover=true) }}
         <div class="space-y-4">
-          {{ form.id()}}
+          {{ form.id() }}
           {{ form.csrf_token() }}
           {{ render_field(form.name) }}
           {{ render_field(form.description) }}
@@ -27,9 +26,8 @@
           {{ render_field(form.location) }}
           {{ render_field(form.show_in_landing) }}
           {{ render_multiple_photo_field(form.pictures) }}
-
-        <button type="submit" class="w-full btn btn-md">Submit</button>
-      </form>
+          <button type="submit" class="w-full btn btn-md">Submit</button>
+        </form>
+      </div>
     </div>
-  </div>
-{% endblock content %}
+  {% endblock content %}

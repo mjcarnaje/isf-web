@@ -24,14 +24,14 @@ def animals():
     has_next_page = animals_query.get("has_next_page")
     total_count = animals_query.get("total_count")
 
-    return render_template('admin/animals/animals.html', animals=animals, has_previous_page=has_previous_page, has_next_page=has_next_page, total_count=total_count)
+    return render_template('admin/animal/animals.html', animals=animals, has_previous_page=has_previous_page, has_next_page=has_next_page, total_count=total_count)
 
 
 @admin_animal_bp.route('/<int:id>', methods=['GET'])
 @admin_required
 def view_animal(id):
   animal = Animal.find_by_id(id)
-  return render_template('/admin/animals/animal.html', animal=animal)  
+  return render_template('/admin/animal/animal.html', animal=animal)  
   
 @admin_animal_bp.route('/add-animal', methods=['GET', 'POST'])
 @admin_required
@@ -77,7 +77,7 @@ def add_animal():
        return redirect(url_for('admin.rescue.index'))
 
 
-  return render_template('admin/animals/add.html', form=form)
+  return render_template('admin/animal/add.html', form=form)
 
 @admin_animal_bp.route('/<int:id>/edit', methods=['GET', 'POST'])
 @admin_required
@@ -122,7 +122,7 @@ def edit_animal(id):
         form.in_shelter.data = animal.in_shelter == 1
         form.is_rescued.data = animal.is_rescued == 1
             
-    return render_template('admin/animals/edit.html', form=form)
+    return render_template('admin/animal/edit.html', form=form)
 
 @admin_animal_bp.route('/<int:id>/delete', methods=['DELETE'])
 @admin_required
