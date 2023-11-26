@@ -110,3 +110,14 @@ class Event():
         db.connection.commit()
 
         return cur.rowcount
+
+    @classmethod
+    def delete(cls, event_id):
+        sql = "DELETE FROM event WHERE id = %s"
+        params = (event_id,)
+
+        cur = db.new_cursor()
+        cur.execute(sql, params)
+        db.connection.commit()
+
+        return cur.rowcount

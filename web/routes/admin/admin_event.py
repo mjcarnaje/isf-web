@@ -2,7 +2,7 @@ from flask import Blueprint, redirect, render_template, request, url_for
 
 from ...models import Event
 from ...utils import admin_required
-from ...validations import AddEventValidation, EditEventValidation
+from ...validations import AddEventValidation, EditEventValidation, DeleteEventValidation
 from flask_login import current_user
 
 admin_event_bp = Blueprint("event", __name__, url_prefix='/event')
@@ -64,3 +64,14 @@ def add_event():
     
     return render_template('event/admin_event_add.html', form=form)
 
+@admin_event_bp.route('/<int:id>/delete', methods=['DELETE'])
+@admin_required
+def delete_event(id):
+    event = Event.find_by_id(id)
+
+    if not event:
+        return {"error": "Event not found"}, 404
+
+    Event.delete(id)
+    
+    return True

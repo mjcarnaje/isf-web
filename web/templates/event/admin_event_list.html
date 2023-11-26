@@ -6,35 +6,65 @@
   <div class="flex items-center justify-center min-h-screen">
     <div class="flex flex-col space-y-6">
       <div class="text-3xl font-bold text-primary-500">Events</div>
-      {% for event in events %}
-        <div class="flex gap-8">
-          <div class="overflow-hidden border rounded-lg aspect-video w-72 bg-gray-50">
-            <img class="object-contain w-full"
-                src="{{ get_image(event.cover_photo_url) }}"
-                alt="Cover Photo"
-                width="auto"
-                height="auto" />
-          </div>
-          <div class="space-y-1">
-            <h3 class="font-bold text-3xl text-primary-500">{{ event.name }}</h3>
-            <p class="">{{ event.description }}</p>
-            <div class="flex items-center gap-1">
-              <p class="text-primary-500">{{ event.start_date.strftime("%b %d, %Y") }}</p>
-              <p>-</p>
-              <p class="text-primary-500">{{ event.end_date.strftime("%b %d, %Y") }}</p>
-            </div>
-            <p class="text-primary-500">{{ event.location }}</p>
-            <div class="flex items-center gap-2">
-              <a href="{{ url_for('admin.event.edit_event', id=event.id) }}" class="btn btn-sm">
-                Edit
-              </a>
-              <button class="btn btn-sm">
-                Delete
-              </button>
+      <dialog id="deleteModal" class="modal z-20">
+        <div class="modal-box bg-white">
+          <h3 class="font-bold text-lg">Delete Event</h3>
+          <p class="py-4">Are you sure you want to delete this event?</p>
+          <div class="modal-action">
+              <form method="dialog">
+                <button class="btn">Cancel</button>
+              </form>
+              <button id="deleteAnyway" class="btn btn-error text-white">Delete Anyway</button>
             </div>
           </div>
-        </div>
-      {% endfor %}
+        </dialog>
+        {% for event in events %}
+          <div class="flex gap-8">
+            <div class="overflow-hidden border rounded-lg aspect-video w-72 bg-gray-50">
+              <img class="object-contain w-full"
+                  src="{{ get_image(event.cover_photo_url) }}"
+                  alt="Cover Photo"
+                  width="auto"
+                  height="auto" />
+            </div>
+            <div class="space-y-1">
+              <h3 class="font-bold text-3xl text-primary-500">{{ event.name }}</h3>
+              <p class="">{{ event.description }}</p>
+              <div class="flex items-center gap-1">
+                <p class="text-primary-500">{{ event.start_date.strftime("%b %d, %Y") }}</p>
+                <p>-</p>
+                <p class="text-primary-500">{{ event.end_date.strftime("%b %d, %Y") }}</p>
+              </div>
+              <p class="text-primary-500">{{ event.location }}</p>
+              <div class="flex items-center gap-2">
+                <a href="{{ url_for('admin.event.edit_event', id=event.id) }}" class="btn btn-sm">
+                  Edit
+                </a>
+                <button class="btn open-delete-modal btn-sm" data-event-id="{{event.id}}">
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
     </div>
   </div>
+  <script>
+    const deleteButtons = document.querySelectorAll(".open-delete-modal");
+    deleteButtons.forEach((deleteButton) => {
+      deleteButton.addEventListener("click", function () {
+        deleteModal.showModal();
+        const deleteAnyway = document.querySelector("#deleteAnyway");
+        deleteAnyway.addEventListener("click", async function () {
+          await fetch(`/admin/event/${deleteButton.dataset.eventId}/delete`, {
+            method: "DELETE",
+            headers: {
+              "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
+            },
+          });
+          window.location.reload();
+        });
+      });
+    });
+  </script>
 {% endblock content %}
