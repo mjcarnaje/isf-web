@@ -2708,6 +2708,10 @@ html {
   max-height: 150px;
 }
 
+.max-h-\[300px\] {
+  max-height: 300px;
+}
+
 .min-h-\[200px\] {
   min-height: 200px;
 }

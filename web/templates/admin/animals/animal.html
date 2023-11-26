@@ -1,0 +1,30 @@
+{% set active_page = "admin.rescue.index" %}
+{% from './_helpers/macros/custom_input.html' import render_field %}
+{% from './_helpers/macros/photo_input.html' import render_photo_field with context %}
+{% extends "./_helpers/layout/admin_layout.html" %}
+{% block title %}
+  Animal
+{% endblock title %}
+{% block content %}
+  <div class="flex flex-col items-center justify-center w-full p-12">
+    <div class="w-full max-w-2xl space-y-8">
+      <div class="flex flex-col w-full">
+        <img class='max-h-[300px] object-contain' src="{{get_image(animal.photo_url)}}" alt=""/>
+        <h1 class="text-3xl font-bold">{{animal.name}}</h1>
+        <p class="text-sm text-primary-500">{{ animal.type }}</p>
+        <p class="text-sm text-primary-500">{{ animal.description }}</p>
+        <p class="text-sm text-primary-500">{{ animal.gender }}</p>
+        <p class="text-sm text-primary-500">{{ animal.estimated_birth_month }}{{" "}}{{ animal.estimated_birth_year }}</p>
+        
+        <div class="grid grid-cols-2 gap-4">
+          <p class="text-sm text-primary-500">{{ 'Adopted' if animal.is_adopted == 1 else 'Not Adopted' }}</p>
+          <p class="text-sm text-primary-500">{{ 'Dead' if animal.is_dead == 1 else 'Not Dead'}}</p>
+          <p class="text-sm text-primary-500">{{ 'Dewormed' if animal.is_dewormed == 1 else 'Not Dewormed' }}</p>
+          <p class="text-sm text-primary-500">{{ 'Neutered' if animal.is_neutered == 1 else 'Not Neutered' }}</p>
+          <p class="text-sm text-primary-500">{{ 'Shelter' if animal.in_shelter == 1 else 'Not Shelter' }}</p>
+          <p class="text-sm text-primary-500">{{ 'Rescued' if animal.is_rescued == 1 else 'Not Rescued' }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

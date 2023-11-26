@@ -1,5 +1,6 @@
 from .AdminLoginValidation import AdminLoginValidation
-from .AnimalValidation import AnimalValidation
+from .AddAnimalValidation import AddAnimalValidation
+from .EditAnimalValidation import EditAnimalValidation
 from .UserLoginValidation import UserLoginValidation
 from .UserSignupValidation import UserSignupValidation
 from .AddDonationMoney import AddDonationMoney
