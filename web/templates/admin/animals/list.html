@@ -29,10 +29,10 @@
                   height="auto" />
             </div>
             <div class="flex-1 space-y-0.5">
-              <h3 class="font-bold text-lg text-primary-500">{{ animal.name }}</h3>
-              <p class="text-sm text-primary-500 text-black">{{ animal.description }}</p>
-              <p class="text-sm text-primary-500 text-black">{{ animal.gender }}</p>
-              <p class="text-sm text-primary-500 text-black">{{ animal.estimated_birth_month }}{{" "}}{{ animal.estimated_birth_year }}</p>
+              <a href="{{ url_for('admin.rescue.view_animal', id=animal.id) }}" class="font-bold text-lg text-primary-500">{{ animal.name }}</a>
+              <p class="text-sm text-primary-500">{{ animal.description }}</p>
+              <p class="text-sm text-primary-500">{{ animal.gender }}</p>
+              <p class="text-sm text-primary-500">{{ animal.estimated_birth_month }}{{" "}}{{ animal.estimated_birth_year }}</p>
             </div>
             <div class="dropdown">
               <label tabindex="0">

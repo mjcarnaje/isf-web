@@ -26,6 +26,13 @@ def animals():
 
     return render_template('admin/animals/list.html', animals=animals, has_previous_page=has_previous_page, has_next_page=has_next_page, total_count=total_count)
 
+
+@admin_rescue_bp.route('/<int:id>', methods=['GET'])
+@admin_required
+def view_animal(id):
+  animal = Animal.find_by_id(id)
+  return render_template('/admin/animals/animal.html', animal=animal)  
+  
 @admin_rescue_bp.route('/add-animal', methods=['GET', 'POST'])
 @admin_required
 def add_animal():
