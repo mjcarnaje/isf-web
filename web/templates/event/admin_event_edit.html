@@ -1,6 +1,8 @@
 {% set active_page = "event" %}
 {% from './_helpers/macros/custom_input.html' import render_field %}
 {% from './_helpers/macros/photo_input.html' import render_photo_field with context %}
+{% from './_helpers/macros/multiple_photo_input.html' import render_multiple_photo_field with context %}
+
 {% extends "./_helpers/layout/admin_layout.html" %}
 {% block title %}
   Edit Event
@@ -24,6 +26,8 @@
           {{ render_field(form.end_date) }}
           {{ render_field(form.location) }}
           {{ render_field(form.show_in_landing) }}
+          {{ render_multiple_photo_field(form.pictures) }}
+
         <button type="submit" class="w-full btn btn-md">Submit</button>
       </form>
     </div>

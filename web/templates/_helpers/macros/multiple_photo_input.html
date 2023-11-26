@@ -16,7 +16,7 @@
         </li>
       {% endfor %}
       <button type="button"
-              id="add-photo"
+              id="add-multi-photo"
               class="flex flex-col items-center justify-center w-full gap-2 bg-white border border-dashed rounded-lg cursor-pointer aspect-square hover:shadow-sm">
         <i class="text-3xl fa-solid fa-image"></i>
         <p class="text-xs">Add photo</p>
@@ -31,7 +31,7 @@
   </div>
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      const addPhoto = document.getElementById("add-photo");
+      const addPhoto = document.getElementById("add-multi-photo");
       const uploadPhotoInput = document.querySelector("input[type=file]");
       const csrfToken = document.querySelector("meta[name=csrf_token]").content;
 

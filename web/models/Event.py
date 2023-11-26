@@ -2,7 +2,7 @@ from ..database import db
 import datetime
 
 class Event():
-    def __init__(self, id=None, name=None, description=None, cover_photo_url=None, start_date=None, end_date=None, location=None, author_id=None, is_done=None, show_in_landing=None, created_at=None, updated_at=None):
+    def __init__(self, id=None, name=None, description=None, cover_photo_url=None, start_date=None, end_date=None, location=None, author_id=None, is_done=None, show_in_landing=None, created_at=None, updated_at=None,):
         self.id = id
         self.name = name
         self.description = description
@@ -15,6 +15,7 @@ class Event():
         self.show_in_landing = show_in_landing
         self.created_at = created_at
         self.updated_at = updated_at
+        
 
     @staticmethod
     def find_all(show_landing_page_only: bool = False):
@@ -64,8 +65,21 @@ class Event():
         cur = db.new_cursor()
         cur.execute(sql, params)
         db.connection.commit()
+        
+        event_id = cur.lastrowid
+        
+        pictures_sql = """
+            INSERT INTO event_pictures (
+                event_id, photo_url
+            ) VALUES(%s, %s)
+        """
 
-        return cur.lastrowid
+        if event.pictures:
+            pictures_params = [(event_id, photo_url) for photo_url in event.pictures]
+            cur.executemany(pictures_sql, pictures_params)
+            db.connection.commit()
+
+        return event_id
 
     @staticmethod
     def check_if_event_exists(event_name, id=None):
@@ -112,8 +126,21 @@ class Event():
         cur = db.new_cursor()
         cur.execute(sql, params)
         db.connection.commit()
+        
+        event_id = cur.lastrowid
+        
+        pictures_sql = """
+            INSERT INTO event_pictures (
+                event_id, photo_url
+            ) VALUES(%s, %s)
+        """
 
-        return cur.rowcount
+        if event.pictures:
+            pictures_params = [(event_id, photo_url) for photo_url in event.pictures]
+            cur.executemany(pictures_sql, pictures_params)
+            db.connection.commit()
+
+        return event_id
 
     @classmethod
     def delete(cls, event_id):
