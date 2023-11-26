@@ -17,8 +17,12 @@ class Event():
         self.updated_at = updated_at
 
     @staticmethod
-    def find_all():
+    def find_all(show_landing_page_only: bool = False):
         sql = "SELECT * FROM event"
+        
+        if show_landing_page_only:
+            sql += " WHERE show_in_landing = 1"
+
         cur = db.new_cursor(dictionary=True)
         cur.execute(sql)
         

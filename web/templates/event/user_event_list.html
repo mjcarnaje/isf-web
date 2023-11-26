@@ -1,11 +1,11 @@
-{% extends "./_helpers/layout/admin_layout.html" %}
+{% set active_page = "event" %}
+{% extends "./_helpers/layout/main_layout.html" %}
 {% block title %}
-  Admin - Events
+    Events
 {% endblock title %}
 {% block content %}
-  <div class="flex py-12 justify-center min-h-screen">
+<div class="flex py-12 justify-center min-h-screen">
     <div class="flex flex-col space-y-6">
-      <div class="text-3xl font-bold text-primary-500">Events</div>
       <dialog id="deleteModal" class="modal z-20">
         <div class="modal-box bg-white">
           <h3 class="font-bold text-lg">Delete Event</h3>
@@ -36,35 +36,9 @@
                 <p class="text-primary-500">{{ event.end_date.strftime("%b %d, %Y") }}</p>
               </div>
               <p class="text-primary-500">{{ event.location }}</p>
-              <div class="flex items-center gap-2">
-                <a href="{{ url_for('admin.event.edit_event', id=event.id) }}" class="btn btn-sm">
-                  Edit
-                </a>
-                <button class="btn open-delete-modal btn-sm" data-event-id="{{event.id}}">
-                  Delete
-                </button>
-              </div>
             </div>
           </div>
           {% endfor %}
     </div>
   </div>
-  <script>
-    const deleteButtons = document.querySelectorAll(".open-delete-modal");
-    deleteButtons.forEach((deleteButton) => {
-      deleteButton.addEventListener("click", function () {
-        deleteModal.showModal();
-        const deleteAnyway = document.querySelector("#deleteAnyway");
-        deleteAnyway.addEventListener("click", async function () {
-          await fetch(`/admin/event/${deleteButton.dataset.eventId}/delete`, {
-            method: "DELETE",
-            headers: {
-              "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
-            },
-          });
-          window.location.reload();
-        });
-      });
-    });
-  </script>
 {% endblock content %}
