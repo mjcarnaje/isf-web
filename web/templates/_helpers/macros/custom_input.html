@@ -45,7 +45,8 @@
       <div class="relative">
         <textarea class="w-full textarea textarea-bordered"
                   placeholder="{{ field.render_kw.placeholder }}"
-                  name="{{ field.name }}"></textarea>
+                  name="{{ field.name }}"
+                  >{{field.data or ""}}</textarea>
       </div>
     {% else %}
       {{ field(class="w-full input input-bordered", placeholder=field.render_kw.placeholder or field.label.text, **kwargs) }}

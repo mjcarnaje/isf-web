@@ -5,3 +5,5 @@ from .UserSignupValidation import UserSignupValidation
 from .AddDonationMoney import AddDonationMoney
 from .AddDonation_In_Kind import AddDonation_In_Kind
 from .AddEventValidation import AddEventValidation
+from .EditEventValidation import EditEventValidation 
+from .DeleteEventValidation import DeleteEventValidation 

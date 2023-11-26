@@ -9,7 +9,7 @@ class Animal():
     def __init__(self, name: str = None, type: str = None, estimated_birth_month: str = None, estimated_birth_year: str = None, photo_url: str = None, gender: str = None,
                  is_adopted: bool = False, is_dead: bool = False, is_dewormed: bool = False, is_neutered: bool = False,
                  in_shelter: bool = False, is_rescued: bool = False, description: str = None, appearance: str = None,
-                 id: int | None = None, created_at: datetime.datetime | None = None, updated_at: datetime.datetime | None = None):
+                 id: int | None = None, created_at: datetime.date | None = None, updated_at: datetime.date | None = None):
         self.id = id
         self.name = name
         self.type = type
