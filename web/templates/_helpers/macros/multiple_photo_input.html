@@ -1,7 +1,7 @@
 {% macro render_multiple_photo_field(field, add_text) %}
   <div class="flex flex-col form-control">
     <label class="label label-text">{{ field.label.text }}</label>
-    <ul id="pictures"
+    <ul id="multi-pictures"
         class="grid w-full grid-cols-2 gap-2 p-4 bg-gray-100 border rounded-lg md:grid-cols-5 {{ 'border-red-500' if field.errors | length > 0 else '' }}">
       {% for entry in field.entries %}
         <li class="w-full h-auto max-w-full">
@@ -22,7 +22,7 @@
         <p class="text-xs">Add photo</p>
       </button>
     </ul>
-    <input type="file" name="upload" accept="image/*" class="hidden" />
+    <input type="file" name="multi_upload" accept="image/*" class="hidden" />
     {% if field.errors %}
       <ul class="mt-2">
         {% for error in field.errors %}<li class="text-xs text-red-500">{{ error }}</li>{% endfor %}
@@ -32,7 +32,7 @@
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       const addPhoto = document.getElementById("add-multi-photo");
-      const uploadPhotoInput = document.querySelector("input[type=file]");
+      const uploadPhotoInput = document.querySelector("input[name=multi_upload]");
       const csrfToken = document.querySelector("meta[name=csrf_token]").content;
 
       uploadPhotoInput.addEventListener("change", async () => {
@@ -52,7 +52,7 @@
             const data = await response.json();
 
             if (data?.is_success) {
-              const ul = document.getElementById("pictures");
+              const ul = document.getElementById("multi-pictures");
 
               // Create a new li element with the new image
               const newLi = document.createElement("li");

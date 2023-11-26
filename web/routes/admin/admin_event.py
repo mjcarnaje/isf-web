@@ -27,7 +27,9 @@ def edit_event(id):
         event.end_date=form.end_date.data
         event.location=form.location.data
         event.show_in_landing=form.show_in_landing.data
-        event.is_done=False    
+        new_pictures = [photo.data for photo in form.pictures.entries if photo.data not in event.pictures]
+        event.pictures.extend(new_pictures)        
+        event.is_done=False 
         Event.edit(event)
         return redirect(url_for("admin.event.index"))
     
@@ -40,7 +42,10 @@ def edit_event(id):
         form.end_date.data = event.end_date.date()
         form.location.data = event.location
         form.show_in_landing.data = event.show_in_landing == 1 
-    
+
+        for photo_url in event.pictures:
+            form.pictures.append_entry(data=photo_url)
+            
     return render_template('event/admin_event_edit.html', form=form)
 
 @admin_event_bp.route('/add-event', methods=['GET', 'POST'])
@@ -57,6 +62,7 @@ def add_event():
             end_date=form.end_date.data,
             location=form.location.data,
             show_in_landing=form.show_in_landing.data,
+            pictures=form.pictures.data,
             is_done=False    
         )
         Event.insert(new_event)
