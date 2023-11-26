@@ -116,4 +116,19 @@ VALUES
     ('Dog4', 'Dog', 'October', '2019', 'unitrack/g4apxw3zexqjbnw1ttcu', 'Female', 0, 0, 1, 1, 1, 1, 'Protective dog', 'White fur, small size', @admin_user_id);
 
 
+-- Generate 10 dummy events
+INSERT IGNORE INTO event (name, description, cover_photo_url, start_date, end_date, location, author_id, is_done, show_in_landing)
+VALUES
+    ('Event#1', 'This is the description for Event1.', 'unitrack/g4apxw3zexqjbnw1ttcu', '2023-01-01 10:00:00', '2023-01-01 15:00:00', 'Location1', @admin_user_id, 0, 1),
+    ('Event#2', 'This is the description for Event2.', 'unitrack/g4apxw3zexqjbnw1ttcu', '2023-02-01 12:00:00', '2023-02-01 17:00:00', 'Location2', @admin_user_id, 1, 1),
+    ('Event#3', 'This is the description for Event3.', 'unitrack/g4apxw3zexqjbnw1ttcu', '2023-03-01 14:00:00', '2023-03-01 19:00:00', 'Location3', @admin_user_id, 0, 1),
+    ('Event#4', 'This is the description for Event4.', 'unitrack/g4apxw3zexqjbnw1ttcu', '2023-04-01 16:00:00', '2023-04-01 21:00:00', 'Location4', @admin_user_id, 1, 0),
+    ('Event#5', 'This is the description for Event5.', 'unitrack/g4apxw3zexqjbnw1ttcu', '2023-05-01 18:00:00', '2023-05-01 23:00:00', 'Location5', @admin_user_id, 0, 1),
+    ('Event#6', 'This is the description for Event6.', 'unitrack/g4apxw3zexqjbnw1ttcu', '2023-06-01 20:00:00', '2023-06-01 01:00:00', 'Location6', @admin_user_id, 1, 0),
+    ('Event#7', 'This is the description for Event7.', 'unitrack/g4apxw3zexqjbnw1ttcu', '2023-07-01 22:00:00', '2023-07-02 03:00:00', 'Location7', @admin_user_id, 0, 1),
+    ('Event#8', 'This is the description for Event8.', 'unitrack/g4apxw3zexqjbnw1ttcu', '2023-08-01 00:00:00', '2023-08-02 05:00:00', 'Location8', @admin_user_id, 1, 1),
+    ('Event#9', 'This is the description for Event9.', 'unitrack/g4apxw3zexqjbnw1ttcu', '2023-09-01 02:00:00', '2023-09-02 07:00:00', 'Location9', @admin_user_id, 0, 0),
+    ('Event#10', 'This is the description for Event10.', 'unitrack/g4apxw3zexqjbnw1ttcu', '2023-10-01 04:00:00', '2023-10-02 09:00:00', 'Location10', @admin_user_id, 1, 1);
+
+
 
