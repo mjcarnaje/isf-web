@@ -209,6 +209,18 @@ class Animal():
         db.connection.commit()
 
         return cur.rowcount
+
+    @staticmethod
+    def check_if_animal_exists(event_name, id=None):
+        sql = "SELECT * FROM animal WHERE name=%s"
+        params = [event_name]
+        if id:
+            sql += " AND id != %s"
+            params.append(id)
+        cur = db.new_cursor(dictionary=True)
+        cur.execute(sql, params)
+        exists = cur.fetchone() is not None
+        return exists
     
     @staticmethod
     def get_stats():

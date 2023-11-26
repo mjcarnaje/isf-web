@@ -1,98 +1,3 @@
--- Add SQL statements to create the models
-CREATE TABLE IF NOT EXISTS user (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    email VARCHAR(256) UNIQUE NOT NULL,
-    google_id VARCHAR(64),
-    username VARCHAR(256) NOT NULL,
-    first_name VARCHAR(256) NOT NULL,
-    last_name VARCHAR(256) NOT NULL,
-    password VARCHAR(256) NOT NULL,
-    photo_url VARCHAR(256),
-    contact_number VARCHAR(12) UNIQUE NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS role (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(16) UNIQUE NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS user_role (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT,
-    role_id INT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES user(id),
-    FOREIGN KEY (role_id) REFERENCES role(id)
-);
-
-CREATE TABLE IF NOT EXISTS animal (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(256) NOT NULL,
-    type VARCHAR(16) NOT NULL,
-    estimated_birth_month VARCHAR(16) NOT NULL,
-    estimated_birth_year VARCHAR(16) NOT NULL,
-    photo_url VARCHAR(256) NOT NULL,
-    gender VARCHAR(10) NOT NULL,
-    is_adopted BOOLEAN NOT NULL,
-    is_dead BOOLEAN NOT NULL,
-    is_dewormed BOOLEAN NOT NULL,
-    is_neutered BOOLEAN NOT NULL,
-    in_shelter BOOLEAN NOT NULL,
-    is_rescued BOOLEAN NOT NULL,
-    for_adoption BOOLEAN NOT NULL,
-    description TEXT,
-    appearance TEXT,
-    author_id INT NOT NULL REFERENCES user(id),
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS event (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(256) UNIQUE NOT NULL,
-    description TEXT,
-    cover_photo_url VARCHAR(256),
-    start_date DATETIME NOT NULL,
-    end_date DATETIME NOT NULL,
-    location VARCHAR(256),
-    author_id INT NOT NULL REFERENCES user(id),
-    is_done BOOLEAN NOT NULL,
-    show_in_landing BOOLEAN NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS event_pictures (
-    event_id INT NOT NULL REFERENCES event(id),
-    photo_url VARCHAR(256) NOT NULL, 
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (event_id, photo_url),
-    CONSTRAINT unique_event_photo_url UNIQUE (event_id, photo_url)
-);
-
-
-CREATE TABLE IF NOT EXISTS donation (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    type VARCHAR(16) NOT NULL, -- 'event' or 'org'
-    user_id INT NOT NULL REFERENCES user(id),
-    donation_type VARCHAR(16) NOT NULL, -- 'money' or 'in_kind'
-    delivery_type VARCHAR(16), -- 'pickup' or 'deliver' (if in_kind)
-    pick_up_location VARCHAR(256), -- optional, depending on delivery_type
-    amount INT, -- (if money)
-    remarks TEXT,
-    is_confirmed BOOLEAN,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS donation_pictures (
-    donation_id INT NOT NULL REFERENCES donation(id),
-    photo_url VARCHAR(256) NOT NULL, 
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (donation_id, photo_url),
-    CONSTRAINT unique_donation_photo_url UNIQUE (donation_id, photo_url)
-);
-
 -- Insert admin role
 INSERT IGNORE INTO role (name) VALUES ('member');
 INSERT IGNORE INTO role (name) VALUES ('donor');
@@ -113,18 +18,18 @@ SET @admin_user_id = LAST_INSERT_ID();
 INSERT IGNORE INTO user_role (user_id, role_id) VALUES (@admin_user_id, @admin_role_id);
 
 -- Generate 10 dummy animals
-INSERT INTO animal (name, type, estimated_birth_month, estimated_birth_year, photo_url, gender, is_adopted, is_dead, is_dewormed, is_neutered, in_shelter, is_rescued, for_adoption, description, appearance, author_id)
+INSERT IGNORE INTO animal (name, type, estimated_birth_month, estimated_birth_year, photo_url, gender, is_adopted, is_dead, is_dewormed, is_neutered, in_shelter, is_rescued, for_adoption, description, appearance, author_id)
 VALUES
     ('Buddy', 'Dog', 'March', '2019', 'isf/default-dog', 'Male', 0, 0, 1, 1, 1, 0, 1, 'Buddy is a gentle and friendly dog who loves belly rubs. He has a brown and white coat and is of medium size.', 'Brown and white fur, medium size', @admin_user_id),
     ('Whiskers', 'Cat', 'July', '2020', 'isf/default-cat', 'Female', 1, 0, 1, 0, 1, 0, 1, 'Whiskers is a playful and curious cat with striking black and white fur. She enjoys playing with toys and cuddling.', 'Black and white fur, small size', @admin_user_id),
-    ('Maximus', 'Dog', 'January', '2018', 'isf/default-dog', 'Male', 0, 1, 1, 1, 1, 0, 1, 'Maximus is a loyal and protective dog. He has a sleek black coat and is of large size, making him an excellent companion for walks.', 'Black fur, large size', @admin_user_id),
-    ('Mittens', 'Cat', 'April', '2019', 'isf/default-cat', 'Male', 0, 0, 1, 1, 1, 0, 1, 'Mittens is a charming and laid-back cat. He has a fluffy gray and white coat, making him an ideal cuddle buddy.', 'Gray and white fur, medium size', @admin_user_id),
+    ('Maximus', 'Dog', 'January', '2018', 'isf/default-dog', 'Male', 0, 1, 1, 1, 1, 0, 0, 'Maximus is a loyal and protective dog. He has a sleek black coat and is of large size, making him an excellent companion for walks.', 'Black fur, large size', @admin_user_id),
+    ('Mittens', 'Cat', 'April', '2019', 'isf/default-cat', 'Male', 0, 0, 1, 1, 1, 0, 0, 'Mittens is a charming and laid-back cat. He has a fluffy gray and white coat, making him an ideal cuddle buddy.', 'Gray and white fur, medium size', @admin_user_id),
     ('Lola', 'Dog', 'September', '2020', 'isf/default-dog', 'Female', 1, 0, 1, 0, 1, 0, 0, 'Lola is an energetic and friendly dog who loves outdoor adventures. She has a beautiful golden coat and is of medium size.', 'Golden fur, medium size', @admin_user_id),
     ('Simba', 'Cat', 'June', '2022', 'isf/default-cat', 'Male', 0, 0, 1, 1, 1, 0, 1, 'Simba is a playful and curious kitten. With his orange tabby markings, he is sure to capture your heart with his adorable antics.', 'Orange tabby fur, small size', @admin_user_id),
     ('Sasha', 'Dog', 'December', '2017', 'isf/default-dog', 'Female', 0, 1, 1, 1, 1, 0, 0, 'Sasha is a sweet and gentle senior dog. She has a mix of black and white fur and enjoys leisurely strolls and quiet moments.', 'Black and white fur, medium size', @admin_user_id),
     ('Oliver', 'Cat', 'August', '2018', 'isf/default-cat', 'Male', 1, 0, 1, 0, 1, 0, 0, 'Oliver is a dignified and independent cat. With his sleek black coat, he exudes elegance and charm.', 'Black fur, medium size', @admin_user_id),
     ('Rosie', 'Dog', 'May', '2019', 'isf/default-dog', 'Female', 0, 0, 1, 1, 1, 0, 0, 'Rosie is a loving and loyal dog with a fluffy white coat. She enjoys cuddling on the couch and going for leisurely walks.', 'White fur, small size', @admin_user_id),
-    ('Leo', 'Cat', 'October', '2021', 'isf/default-cat', 'Male', 1, 0, 1, 0, 1, 0, 1, 'Leo is a mischievous and playful cat with distinctive black and orange markings. His vibrant personality will bring joy to any home.', 'Black and orange fur, small size', @admin_user_id);
+    ('Leo', 'Cat', 'October', '2021', 'isf/default-cat', 'Male', 1, 0, 1, 0, 1, 0, 0, 'Leo is a mischievous and playful cat with distinctive black and orange markings. His vibrant personality will bring joy to any home.', 'Black and orange fur, small size', @admin_user_id);
 
 -- Generate 10 dummy events
 INSERT IGNORE INTO event (name, description, cover_photo_url, start_date, end_date, location, author_id, is_done, show_in_landing)

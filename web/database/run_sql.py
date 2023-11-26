@@ -4,12 +4,10 @@ from flask import Flask
 
 from ..database import db
 
-script_path = os.path.join(os.path.dirname(
-    __file__), 'create_tables_script.sql')
-
-
-def create_tables(app: Flask):
-    with open(script_path, 'r') as f:
+def run_sql(app: Flask, file_name: str):
+    s_path = os.path.join(os.path.dirname(__file__), 'scripts', file_name)
+    
+    with open(s_path, 'r') as f:
         sql = f.read()
         with app.app_context():
             sql = sql.split(';')

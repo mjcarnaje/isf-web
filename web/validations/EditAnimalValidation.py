@@ -1,8 +1,10 @@
 import datetime
 
 from flask_wtf import FlaskForm
-from wtforms import (BooleanField, DateField, SelectField, StringField,
-                     TextAreaField, validators, HiddenField)
+from wtforms import (BooleanField, DateField, HiddenField, SelectField,
+                     StringField, TextAreaField, validators)
+
+from ..models import Animal
 
 
 def get_years(year_from: int):
@@ -45,3 +47,7 @@ class EditAnimalValidation(FlaskForm):
     for_adoption = BooleanField("Available for Adoption")
     description = TextAreaField("Description", validators=[validators.DataRequired()], render_kw={"placeholder": "Description"})
     appearance = TextAreaField("Appearance", validators=[validators.DataRequired()])
+
+    def validate_name(form, field):
+        if Animal.check_if_animal_exists(field.data, form.id.data):
+            raise validators.ValidationError("Animal name already in use. If this is intentional, please add a '#' after the name.")

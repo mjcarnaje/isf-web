@@ -1,5 +1,4 @@
 import cloudinary
-import requests
 from cloudinary.uploader import upload as cloudinary_upload
 from cloudinary.utils import cloudinary_url
 from flask import Flask, jsonify, render_template, request
@@ -9,19 +8,25 @@ from oauthlib.oauth2 import WebApplicationClient
 
 from .config import Config
 from .database import db
-from .database.create_tables import create_tables
+from .database.run_sql import run_sql
 from .models import Animal, User
 
 
 def create_app():    
-    app = Flask(__name__)   
+    app = Flask(__name__)
+
     app.config.from_object(Config)
-
     db.init_app(app)
+
+    @app.cli.command("reset-db")
+    def reset_db():
+        db.execute_sql(f"DROP DATABASE IF EXISTS {Config.MYSQL_DATABASE};")
+        db.execute_sql(f"CREATE DATABASE {Config.MYSQL_DATABASE};")
+        run_sql(app, 'create-schema.sql')
+        run_sql(app, 'seed.sql')
+        return
+
     CSRFProtect(app)
-
-
-    create_tables(app)
 
     cloudinary.config(cloud_name=Config.CLOUDINARY_CLOUD_NAME,
                     api_key=Config.CLOUDINARY_API_KEY,

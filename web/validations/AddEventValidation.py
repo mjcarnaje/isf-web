@@ -33,3 +33,5 @@ class AddEventValidation(FlaskForm):
     def validate_name(form, field):
         if Event.check_if_event_exists(field.data):
             raise validators.ValidationError("Event name already exists.")
+    
+    
