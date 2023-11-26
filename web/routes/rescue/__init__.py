@@ -9,6 +9,7 @@ rescue_bp = Blueprint("rescue", __name__, url_prefix='/rescue')
 @rescue_bp.route('/', methods=['GET'])
 @user_only
 def index():
-  return render_template('rescue/rescues.html')
+  animals = Animal.find_all(page_number=1, page_size=100)
+  return render_template('rescue/rescues.html', animals=animals.get('data'))
 
 
