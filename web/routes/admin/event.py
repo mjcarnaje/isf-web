@@ -1,17 +1,17 @@
-from flask import Blueprint, redirect, render_template, request, url_for
+from flask import Blueprint, redirect, render_template, url_for
+from flask_login import current_user
 
 from ...models import Event
 from ...utils import admin_required
-from ...validations import AddEventValidation, EditEventValidation, DeleteEventValidation
-from flask_login import current_user
+from ...validations import AddEventValidation, EditEventValidation
 
 admin_event_bp = Blueprint("event", __name__, url_prefix='/event')
 
 @admin_event_bp.route('/', methods=['GET'])
 @admin_required
-def index():
+def events():
     events = Event.find_all()
-    return render_template('event/admin_event_list.html', events=events.get('data'))
+    return render_template('/admin/event/events.html', events=events.get('data'))
 
 @admin_event_bp.route('/<int:id>/edit', methods=['GET', 'POST'])
 @admin_required
@@ -46,7 +46,7 @@ def edit_event(id):
         for photo_url in event.pictures:
             form.pictures.append_entry(data=photo_url)
             
-    return render_template('event/admin_event_edit.html', form=form)
+    return render_template('/admin/event/edit.html', form=form)
 
 @admin_event_bp.route('/add-event', methods=['GET', 'POST'])
 @admin_required
@@ -68,7 +68,7 @@ def add_event():
         Event.insert(new_event)
         return redirect(url_for("admin.event.index"))
     
-    return render_template('event/admin_event_add.html', form=form)
+    return render_template('/admin/event/add.html', form=form)
 
 @admin_event_bp.route('/<int:id>/delete', methods=['DELETE'])
 @admin_required

@@ -1,0 +1,42 @@
+{% set active_page = "admin.animal.add_animal" %}
+{% from './_helpers/macros/custom_input.html' import render_field %}
+{% from './_helpers/macros/photo_input.html' import render_photo_field with context %}
+{% extends "./_helpers/layout/admin_layout.html" %}
+{% block title %}
+  Add Animal
+{% endblock title %}
+{% block content %}
+  <div class="flex flex-col items-center justify-center w-full p-12">
+    <div class="w-full max-w-3xl space-y-8">
+      <div class="flex w-full">
+        <h1 class="text-3xl font-bold">Add Animal</h1>
+      </div>
+      <form class="w-full p-8 space-y-8 border rounded-lg shadow-sm"
+            method="post"
+            novalidate>
+        {{ render_photo_field(form.photo_url, add_text="Add Picture", remove_text="Remove Picture", is_circle=true) }}
+        <div class="space-y-4">
+          {{ form.csrf_token() }}
+          {{ render_field(form.name) }}
+          {{ render_field(form.type) }}
+          {{ render_field(form.gender) }}
+          <div class="flex w-full gap-4">
+            <div class="flex-1">{{ render_field(form.estimated_birth_month) }}</div>
+            <div class="flex-1">{{ render_field(form.estimated_birth_year) }}</div>
+          </div>
+          {{ render_field(form.description) }}
+          {{ render_field(form.appearance, footer_text="Note: Separate items with commas (e.g., blue eyes, brown skin)") }}
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          {{ render_field(form.is_adopted) }}
+          {{ render_field(form.is_dead) }}
+          {{ render_field(form.is_dewormed) }}
+          {{ render_field(form.is_neutered) }}
+          {{ render_field(form.in_shelter) }}
+          {{ render_field(form.is_rescued) }}
+        </div>
+        <button type="submit" class="w-full btn btn-md">Submit</button>
+      </form>
+    </div>
+  </div>
+{% endblock content %}

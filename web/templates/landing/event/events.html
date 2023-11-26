@@ -1,22 +1,23 @@
 {% set active_page = "event" %}
 {% extends "./_helpers/layout/main_layout.html" %}
 {% block title %}
-    Events
+  Events
 {% endblock title %}
 {% block content %}
-<div class="flex py-12 justify-center min-h-screen">
+  <div class="flex justify-center min-h-screen py-12">
     <div class="flex flex-col space-y-6">
       {% for event in events %}
         <div class="flex gap-8">
           <div class="overflow-hidden border rounded-lg aspect-video w-72 bg-gray-50">
             <img class="object-contain w-full"
-                src="{{ get_image(event.cover_photo_url) }}"
-                alt="Cover Photo"
-                width="auto"
-                height="auto" />
+                 src="{{ get_image(event.cover_photo_url) }}"
+                 alt="Cover Photo"
+                 width="auto"
+                 height="auto" />
           </div>
           <div class="space-y-1">
-            <a href="{{ url_for('event.view_event', id=event.id) }}" class="font-bold text-3xl text-primary-500">{{ event.name }}</a>
+            <a href="{{ url_for('event.view_event', id=event.id) }}"
+               class="text-3xl font-bold text-primary-500">{{ event.name }}</a>
             <p class="">{{ event.description }}</p>
             <div class="flex items-center gap-1">
               <p class="text-primary-500">{{ event.start_date.strftime("%b %d, %Y") }}</p>
@@ -26,7 +27,7 @@
             <p class="text-primary-500">{{ event.location }}</p>
           </div>
         </div>
-        {% endfor %}
+      {% endfor %}
     </div>
   </div>
 {% endblock content %}

@@ -1,21 +1,22 @@
-{% set active_page = "admin.rescue.add_animal" %}
+{% set active_page = "animal" %}
 {% from './_helpers/macros/custom_input.html' import render_field %}
 {% from './_helpers/macros/photo_input.html' import render_photo_field with context %}
 {% extends "./_helpers/layout/admin_layout.html" %}
 {% block title %}
-  Add Animal
+  Edit Animal
 {% endblock title %}
 {% block content %}
   <div class="flex flex-col items-center justify-center w-full p-12">
-    <div class="w-full max-w-2xl space-y-8">
+    <div class="w-full max-w-3xl space-y-8">
       <div class="flex w-full">
-        <h1 class="text-3xl font-bold">Add Animal</h1>
+        <h1 class="text-3xl font-bold">Edit Animal</h1>
       </div>
       <form class="w-full p-8 space-y-8 border rounded-lg shadow-sm"
             method="post"
             novalidate>
         {{ render_photo_field(form.photo_url, add_text="Add Picture", remove_text="Remove Picture", is_circle=true) }}
         <div class="space-y-4">
+          {{ form.id }}
           {{ form.csrf_token() }}
           {{ render_field(form.name) }}
           {{ render_field(form.type) }}

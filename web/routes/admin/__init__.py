@@ -3,10 +3,18 @@ from flask_login import login_required, login_user, logout_user
 from werkzeug.security import check_password_hash
 
 from ...models import User
-from ...validations import AdminLoginValidation
 from ...utils import admin_required
+from ...validations import AdminLoginValidation
 
 admin_bp = Blueprint("admin", __name__, url_prefix='/admin')
+
+from .animal import admin_animal_bp
+from .donation import admin_donations_bp
+from .event import admin_event_bp
+
+admin_bp.register_blueprint(admin_animal_bp)
+admin_bp.register_blueprint(admin_event_bp)
+admin_bp.register_blueprint(admin_donations_bp)
 
 @admin_bp.route('/', methods=['GET'])
 @login_required
@@ -39,12 +47,3 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('landing.index'))
-
-from .admin_rescue import admin_rescue_bp
-from .admin_event import admin_event_bp
-from .admin_donations import admin_donations_bp
-
-admin_bp.register_blueprint(admin_rescue_bp)
-admin_bp.register_blueprint(admin_event_bp)
-admin_bp.register_blueprint(admin_donations_bp)
-

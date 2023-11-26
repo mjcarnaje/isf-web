@@ -2,13 +2,13 @@
 {% block body %}
   {% include "./_helpers/partials/admin_navbar.html" %}
   {% set admin_navigations = [
-    { 'name': 'Home', 'url': url_for('admin.index'), 'icon': 'fa-solid fa-house', 'page': 'admin.index'},
-    { 'name': 'Animals', 'url': url_for('admin.rescue.animals'), 'icon': 'fa-solid fa-dog', 'page': 'admin.rescue.index'},
-    { 'name': 'Add Animal', 'url': url_for('admin.rescue.add_animal'), 'icon': 'fa-sharp fa-solid fa-circle-plus', 'page': 'admin.rescue.add_animal'},
-    { 'name': 'Event', 'url': url_for('admin.event.index'), 'icon': 'fa-solid fa-calendar', 'page': 'admin.event.index'},
-    { 'name': 'Add Event', 'url': url_for('admin.event.add_event'), 'icon': 'fa-sharp fa-solid fa-circle-plus', 'page': 'admin.event.add_event'},
-    { 'name': 'Donations', 'url': url_for('admin.donations.index'), 'icon': 'fa-solid fa-hand-holding-heart', 'page': 'admin.donations'},
-  ] %}
+      { 'name': 'Home', 'url': url_for('admin.index'), 'icon': 'fa-solid fa-house', 'page': 'admin.index'},
+      { 'name': 'Animals', 'url': url_for('admin.animal.animals'), 'icon': 'fa-solid fa-dog', 'page': 'admin.animal.index'},
+      { 'name': 'Add Animal', 'url': url_for('admin.animal.add_animal'), 'icon': 'fa-sharp fa-solid fa-circle-plus', 'page': 'admin.animal.add'},
+      { 'name': 'Event', 'url': url_for('admin.event.events'), 'icon': 'fa-solid fa-calendar', 'page': 'admin.event.index'},
+      { 'name': 'Add Event', 'url': url_for('admin.event.add_event'), 'icon': 'fa-sharp fa-solid fa-circle-plus', 'page': 'admin.event.add_event'},
+      { 'name': 'Donations', 'url': url_for('admin.donation.donations'), 'icon': 'fa-solid fa-hand-holding-heart', 'page': 'admin.donations'},
+    ] %}
   <div class="flex w-full min-h-screen">
     <aside class="max-w-[320px] p-4 w-full border-r min-h-screen">
       <ul class="space-y-4">
