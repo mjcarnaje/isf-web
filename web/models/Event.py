@@ -48,7 +48,6 @@ class Event():
         
         if not row:
             return None
-        print(row)
         return cls(**row)
 
     @classmethod
