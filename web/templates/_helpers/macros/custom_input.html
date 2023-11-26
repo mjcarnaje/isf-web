@@ -14,7 +14,7 @@
         <select class="w-full select select-bordered" name="{{ field.name }}">
           <option value="">Select {{ field.label.text }}</option>
           {% for key, value in field.choices %}
-            <option value="{{ key }}" {% if field.data == key %}selected{% endif %}>{{ value }}</option>
+            <option value="{{ key }}" {% if field.data | string == value | string %}selected{% endif %}>{{ value }}</option>
           {% endfor %}
         </select>
       </div>
