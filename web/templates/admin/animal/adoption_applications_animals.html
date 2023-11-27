@@ -5,7 +5,7 @@
 {% endblock title %}
 {% block content %}
   <div class="w-full max-w-4xl py-16 mx-auto space-y-8">
-    <h1 class="text-2xl font-bold">For Adoption Animals ({{ total_count }})</h1>
+    <h1 class="text-2xl font-bold">For Adoption Animals</h1>
     <dialog id="deleteModal" class="z-20 modal">
       <div class="bg-white modal-box">
         <h3 class="text-lg font-bold">Delete Animal</h3>
@@ -21,7 +21,7 @@
     <div class="grid w-full grid-cols-3 gap-8 mx-auto">
       {% for animal in animals %}
         <div class="flex flex-col bg-white border cursor-pointer group rounded-xl hover:shadow-sm">
-          <a href="{{ url_for('admin.animal.view_animal', id=animal.id) }}">
+          <a href="{{ url_for('admin.animal.adoption_applications_animal', id=animal.id) }}">
             <div class="h-full overflow-hidden border-b aspect-square rounded-t-xl">
               <img class="object-cover h-full transition-all duration-300 group-hover:scale-105"
                    src="{{ get_image(animal.photo_url) }}"
@@ -31,27 +31,12 @@
             </div>
           </a>
           <div class="flex-1 py-2 px-3 space-y-0.5">
-            <div class="flex items-center justify-between">
-              <a href="{{ url_for('admin.animal.view_animal', id=animal.id) }}"
-                 class="text-xl font-bold text-primary-500">{{ animal.name }}</a>
-              <div class="dropdown">
-                <label tabindex="0">
-                  <div class="flex items-center justify-center w-6 h-6 rounded-full cursor-pointer hover:bg-gray-300 aspect-square">
-                    <i class="fa-solid fa-ellipsis"></i>
-                  </div>
-                </label>
-                <ul tabindex="0"
-                    class="dropdown-content z-[1] menu p-2 border bg-base-100 rounded-box w-32">
-                  <li>
-                    <a href="{{ url_for('admin.animal.edit_animal', id=animal.id) }}">Edit</a>
-                  </li>
-                  <li>
-                    <button class="open-delete-modal" data-animal-id="{{ animal.id }}">Delete</button>
-                  </li>
-                </ul>
-              </div>
+            <a href="{{ url_for('admin.animal.adoption_applications_animal', id=animal.id) }}"
+               class="text-xl font-bold text-primary-500">{{ animal.name }}</a>
+            <div class="flex items-center gap-3">
+              <p class="text-sm">Active Application:</p>
+              <span class="text-white badge badge-info">{{ animal.user_count }}</span>
             </div>
-            <p class="text-gray-600">{{ animal.description | truncate(60) }}</p>
           </div>
         </div>
       {% endfor %}

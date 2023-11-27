@@ -1,7 +1,7 @@
 from flask import Blueprint, redirect, render_template, request, url_for
 from flask_login import current_user
 
-from ...models import Animal
+from ...models import Animal, AdoptionApplication
 from ...utils import admin_required
 from ...validations import AddAnimalValidation, EditAnimalValidation
 
@@ -27,27 +27,41 @@ def animals():
     return render_template('admin/animal/animals.html', animals=animals, has_previous_page=has_previous_page, has_next_page=has_next_page, total_count=total_count)
 
 
-@admin_animal_bp.route('/for-adoption', methods=['GET'])
+@admin_animal_bp.route('/adoption-animals', methods=['GET'])
 @admin_required
-def for_adoption_animals():
+def adoption_applications_animals():
     page = request.args.get('page', 1, type=int)
     query = request.args.get('query', '', type=str)
 
-    animals_query = Animal.find_all(
-        page_number=page,
-        page_size=12,
-        query=query,
-        filters={
-           'for_adoption': True
-        }
-    )
+    animals = AdoptionApplication.get_animals_applications()
+    return render_template('admin/animal/adoption_applications_animals.html', animals=animals)
 
-    animals = animals_query.get("data")
-    has_previous_page = animals_query.get("has_previous_page")
-    has_next_page = animals_query.get("has_next_page")
-    total_count = animals_query.get("total_count")
 
-    return render_template('admin/animal/for_adoption_animals.html', animals=animals, has_previous_page=has_previous_page, has_next_page=has_next_page, total_count=total_count)
+@admin_animal_bp.route('/adoption-animals/<int:id>', methods=['GET'])
+@admin_required
+def adoption_applications_animal(id):
+    animal = Animal.find_by_id(id)
+    applications = AdoptionApplication.get_animal_applications(id)
+    return render_template('admin/animal/adoption_applications_animal.html', animal=animal, applications=applications)
+
+@admin_animal_bp.route('/adoption-animals/<int:id>/under-review/<int:user_id>', methods=['POST'])
+@admin_required
+def set_under_review(id, user_id):
+    print(id, user_id)
+    AdoptionApplication.set_under_review(animal_id=id, user_id=user_id)
+    return redirect(url_for('admin.animal.adoption_applications_animal', id=id))
+
+@admin_animal_bp.route('/adoption-animals/<int:id>/approve/<int:user_id>', methods=['POST'])
+@admin_required
+def set_approved(id, user_id):
+    AdoptionApplication.set_approved_and_reject_others(animal_id=id, user_id=user_id)
+    return redirect(url_for('admin.animal.adoption_applications_animal', id=id))
+
+@admin_animal_bp.route('/adoption-animals/<int:id>/turnover/<int:user_id>', methods=['POST'])
+@admin_required
+def set_turnovered(id, user_id):
+    AdoptionApplication.set_turnovered(animal_id=id, user_id=user_id)
+    return redirect(url_for('admin.animal.adoption_applications_animal', id=id))
 
 
 @admin_animal_bp.route('/<int:id>', methods=['GET'])

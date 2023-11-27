@@ -3,6 +3,7 @@
   {% include "./_helpers/partials/navbar.html" %}
   {% set navigations = [
       { 'name': 'Home', 'url': url_for('user.dashboard'), 'icon': 'fa-solid fa-house', 'page': 'user.dashboard'},
+      { 'name': 'Adoption Application', 'url': url_for('user.applications'), 'icon': 'fa-solid fa-file-invoice', 'page': 'user.applications'},
       { 'name': 'Donations', 'url': url_for('user.donations'), 'icon': 'fa-solid fa-hand-holding-heart', 'page': 'user.donations'},
     ] %}
   <div class="flex w-full min-h-screen">

@@ -1,4 +1,3 @@
--- Add SQL statements to create the models
 CREATE TABLE IF NOT EXISTS user (
     id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(256) UNIQUE NOT NULL,
@@ -14,7 +13,7 @@ CREATE TABLE IF NOT EXISTS user (
 
 CREATE TABLE IF NOT EXISTS role (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(16) UNIQUE NOT NULL
+    name VARCHAR(16) UNIQUE NOT NULL -- 'member' | 'donor' | 'volunteer' | 'adopter' | 'admin'
 );
 
 CREATE TABLE IF NOT EXISTS user_role (
@@ -46,6 +45,19 @@ CREATE TABLE IF NOT EXISTS animal (
     author_id INT NOT NULL REFERENCES user(id),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS adoption_application (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    animal_id INT NOT NULL,
+    application_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    status ENUM('Pending', 'Under Review', 'Approved', 'Rejected', 'Turnovered') DEFAULT 'Pending',
+    reason_to_adopt TEXT,
+    admin_notes TEXT,
+    is_active BOOLEAN NOT NULL DEFAULT true,
+    FOREIGN KEY (user_id) REFERENCES user(id),
+    FOREIGN KEY (animal_id) REFERENCES animal(id)
 );
 
 CREATE TABLE IF NOT EXISTS event (

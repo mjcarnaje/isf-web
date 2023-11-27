@@ -13,3 +13,9 @@ def donations():
     donations = Donation.get_donations()
     return render_template('admin/donation/list.html', donations=donations)
 
+
+@admin_donations_bp.route('/confirm/<int:id>', methods=['POST'])
+@admin_required
+def set_is_confirmed(id):
+    Donation.set_is_confirmed(donation_id=id)
+    return redirect(url_for('admin.donation.donations'))

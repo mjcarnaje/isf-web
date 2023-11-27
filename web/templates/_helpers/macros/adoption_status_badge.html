@@ -1,0 +1,16 @@
+{% macro status_badge(status, size) %}
+  {% if status == 'Pending' %}
+    <div class="badge badge-{{ size }} badge-ghost">Pending</div>
+  {% elif status == 'Under Review' %}
+    <div class="badge badge-{{ size }} badge-warning">Under Review</div>
+  {% elif status == 'Approved' %}
+    <div class="text-white badge badge-{{ size }} badge-info">Approved</div>
+  {% elif status == 'Turnovered' %}
+    <div class="text-white badge badge-{{ size }} badge-success">Turnovered</div>
+  {% elif status == 'Rejected' %}
+    <div class="text-white badge badge-{{ size }} badge-error">Rejected</div>
+  {% else %}
+    <div class="badge">Unknown Status</div>
+  {% endif %}
+  <div class="hidden badge-lg badge-sm"></div>
+{% endmacro %}

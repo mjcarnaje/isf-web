@@ -8,7 +8,7 @@
     <h1 class="text-3xl font-bold">Donations</h1>
     <div class="flex flex-col space-y-4">
       {% for donation in donations %}
-        <div class="flex flex-col w-full gap-4 p-5 bg-white border rounded-lg shadow-md">
+        <div class="flex flex-col w-full gap-4 p-5 bg-white border shadow-md rounded-xl">
           <div class="flex justify-between w-full">
             <div class="flex items-center w-full gap-4">
               {% if donation.donation_type == 'money' %}
@@ -23,11 +23,18 @@
                 <p class="font-bold">In-kind</p>
               {% endif %}
             </div>
-            {% if donation.is_confirmed %}
-              <div class="gap-2 p-3 font-bold text-white badge badge-success">Confirmed</div>
-            {% else %}
-              <div class="gap-2 p-3 font-bold text-white badge badge-info">Unconfirmed</div>
-            {% endif %}
+            <div class="flex items-center gap-3">
+              {% if donation.is_confirmed %}
+                <div class="gap-2 p-3 font-bold text-white badge badge-success">Confirmed</div>
+              {% else %}
+                <div class="gap-2 p-3 font-bold text-white badge badge-info">Unconfirmed</div>
+                <button id="confirmButtons"
+                        class="btn btn-sm btn-square btn-success"
+                        data-donation-id="{{ donation.id }}">
+                  <i class="text-lg text-white fa-solid fa-check"></i>
+                </button>
+              {% endif %}
+            </div>
           </div>
           <div class="flex gap-2">
             {% for picture in donation.pictures %}
@@ -44,4 +51,18 @@
       {% endfor %}
     </div>
   </div>
+  <script>
+  const confirmButton = document.querySelectorAll("#confirmButtons");
+    confirmButton.forEach((confirmBtn) => {
+      confirmBtn.addEventListener("click", async function () {
+          await fetch(`/admin/donations/confirm/${confirmBtn.dataset.donationId}`, {
+            method: "POST",
+            headers: {
+              "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
+            },
+          });
+          window.location.reload()
+      });
+    });
+  </script>
 {% endblock content %}

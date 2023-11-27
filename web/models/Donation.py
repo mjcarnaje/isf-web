@@ -4,7 +4,7 @@ from ..database import db
 
 
 class Donation():
-    def __init__(self, type: str = None,  user_id: int = None, donation_type: str = None, amount: int | None = None, delivery_type: str = None, pick_up_location: str = None, remarks: str = None, pictures: [str] = None, is_confirmed: bool = False, created_at: datetime.date = None, id: int | None = None):
+    def __init__(self, type: str = None,  user_id: int = None, donation_type: str = None, amount: int | None = None, delivery_type: str = None, pick_up_location: str = None, remarks: str = None, pictures: [str] = None, is_confirmed: bool = False, created_at=None, id: int | None = None):
         self.id = id
         self.type = type
         self.amount = amount
@@ -15,7 +15,8 @@ class Donation():
         self.remarks = remarks
         self.pictures = pictures 
         self.is_confirmed = is_confirmed
-        self.created_at = created_at
+        self.created_at = created_at or datetime.datetime.now()
+
         
         
     @classmethod
@@ -110,3 +111,16 @@ class Donation():
 
         return [Donation(**donation) for donation in donations]
 
+
+    @staticmethod
+    def set_is_confirmed(donation_id):
+        sql = """
+            UPDATE donation
+            SET is_confirmed = 1
+            WHERE id = %s
+        """
+
+        cur_approve = db.new_cursor()
+        cur_approve.execute(sql, (donation_id,))
+
+        db.connection.commit()

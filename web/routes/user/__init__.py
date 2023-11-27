@@ -2,7 +2,7 @@ from flask import Blueprint, redirect, render_template, request, url_for
 from flask_login import login_user, logout_user, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from ...models import User, UserRole, Donation
+from ...models import User, UserRole, Donation, AdoptionApplication
 from ...validations import UserLoginValidation, UserSignupValidation
 from ...utils import user_only
 
@@ -18,6 +18,12 @@ def dashboard():
 def donations():
   donations = Donation.get_user_donations(current_user.id)
   return render_template('user/donations.html', donations=donations)
+
+@user_bp.route('/applications', methods=['GET', 'POST'])
+@user_only
+def applications():
+  applications = AdoptionApplication.get_user_applications(current_user.id)
+  return render_template('user/applications.html', applications=applications)
 
 @user_bp.route('/login', methods=['GET', 'POST'])
 @user_only

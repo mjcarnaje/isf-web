@@ -1,0 +1,187 @@
+{% set active_page = "admin.animal.for_adoption_animals" %}
+{% from './_helpers/macros/adoption_status_badge.html' import status_badge %}
+{% extends "./_helpers/layout/admin_layout.html" %}
+{% block title %}
+  Animal
+{% endblock title %}
+{% block content %}
+  <div class="flex flex-col items-center justify-center w-full p-12 space-y-16">
+    <div class="w-full max-w-4xl space-y-8">
+      <div class="flex gap-8">
+        <div class="w-full max-w-sm">
+          <img class="object-cover w-full border rounded-lg"
+               src="{{ get_image(animal.photo_url) }}"
+               alt=""
+               height="auto"
+               width="auto" />
+        </div>
+        <div class="flex flex-col w-full py-4 space-y-6">
+          <h1 class="text-3xl font-bold">{{ animal.name }}</h1>
+          <div class="flex items-center gap-2">
+            <p class="text-sm">Sex:</p>
+            <p class="font-bold">{{ animal.gender }}</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <p class="text-sm">Birthday (Appx):</p>
+            <p class="font-bold">{{ animal.estimated_birth_month }} {{ animal.estimated_birth_year }}</p>
+          </div>
+          <div class="flex w-full gap-4">
+            <p class="text-sm">Appearance:</p>
+            {% set appearances = animal.appearance.split(',') %}
+            <ul class="w-full">
+              {% for item in appearances %}
+                <li>
+                  <p class="font-bold">- {{ item }}</p>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+          <div class="py-3">
+            <p class="italic leading-6">{{ animal.description }}</p>
+          </div>
+          <div class="grid grid-cols-2 gap-6">
+            <p class="font-medium">
+              Adopted: <span class="px-2 py-1 ml-2 text-gray-800 bg-gray-300 rounded">{{ 'Yes' if animal.is_adopted == 1 else 'No' }}</span>
+            </p>
+            <p class="font-medium">
+              Dead: <span class="px-2 py-1 ml-2 text-gray-800 bg-gray-300 rounded">{{ 'Yes' if animal.is_dead == 1 else 'No' }}</span>
+            </p>
+            <p class="font-medium">
+              Dewormed: <span class="px-2 py-1 ml-2 text-gray-800 bg-gray-300 rounded">{{ 'Yes' if animal.is_dewormed == 1 else 'No' }}</span>
+            </p>
+            <p class="font-medium">
+              Neutered: <span class="px-2 py-1 ml-2 text-gray-800 bg-gray-300 rounded">{{ 'Yes' if animal.is_neutered == 1 else 'No' }}</span>
+            </p>
+            <p class="font-medium">
+              Shelter: <span class="px-2 py-1 ml-2 text-gray-800 bg-gray-300 rounded">{{ 'Yes' if animal.in_shelter == 1 else 'No' }}</span>
+            </p>
+            <p class="font-medium">
+              Rescued: <span class="px-2 py-1 ml-2 text-gray-800 bg-gray-300 rounded">{{ 'Yes' if animal.is_rescued == 1 else 'No' }}</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="w-full max-w-4xl space-y-8">
+      <h1 class="text-3xl font-bold">Applications</h1>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Full Name</th>
+            <th>Contact Number</th>
+            <th>Reason To Adopt</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for application in applications %}
+            <tr>
+              <td>
+                <div class="flex items-center gap-3">
+                  <div class="avatar">
+                    <div class="w-12 h-12 mask mask-squircle">
+                      {% if application.photo_url %}
+                        <img src="{{ get_image(application.photo_url) }}"
+                             alt="User profile picture"
+                             class="w-full h-full"
+                             height="auto"
+                             width="auto" />
+                      {% else %}
+                        <div class="flex items-center justify-center w-full h-full bg-slate-200 text-slate-500">
+                          <span class="text-2xl">{{ application.first_name[0] }}</span>
+                        </div>
+                      {% endif %}
+                    </div>
+                  </div>
+                  <div>
+                    <div class="font-bold">{{ application.first_name }} {{ application.last_name }}</div>
+                    <div class="text-sm opacity-50">{{ application.email }}</div>
+                  </div>
+                </div>
+              </td>
+              <td>{{ application.contact_number }}</td>
+              <td>
+                {{ application.reason_to_adopt }}
+                <br />
+              </td>
+              <td>{{ status_badge(application.status) }}</td>
+              <td>
+                <div class="dropdown dropdown-bottom dropdown-end">
+                  <label tabindex="0">
+                    <div class="flex items-center justify-center w-6 h-6 rounded-full cursor-pointer hover:bg-gray-300 aspect-square">
+                      <i class="fa-solid fa-ellipsis"></i>
+                    </div>
+                  </label>
+                  <ul tabindex="0"
+                      class="dropdown-content z-[1] menu p-2 border bg-base-100 rounded-box w-64">
+                    {% if application.status == "Pending" %}
+                      <li>
+                        <button id="underReviewBtns"
+                                type="submit"
+                                data-animal-id="{{ application.animal_id }}"
+                                data-user-id="{{ application.user_id }}">Set as Under Review</button>
+                      </li>
+                    {% elif application.status == "Under Review" %}
+                      <li>
+                        <button id="approveBtns"
+                                type="submit"
+                                data-animal-id="{{ application.animal_id }}"
+                                data-user-id="{{ application.user_id }}">Approve</button>
+                      </li>
+                    {% elif application.status == "Approved" %}
+                      <li>
+                        <button id="turnoveredBtns"
+                                type="submit"
+                                data-animal-id="{{ application.animal_id }}"
+                                data-user-id="{{ application.user_id }}">Turnovered</button>
+                      </li>
+                    {% endif %}
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <script>
+  const underReviewBtns = document.querySelectorAll("#underReviewBtns");
+    underReviewBtns.forEach((underReviewBtn) => {
+      underReviewBtn.addEventListener("click", async function () {
+          await fetch(`/admin/animal/adoption-animals/${underReviewBtn.dataset.animalId}/under-review/${underReviewBtn.dataset.userId}`, {
+            method: "POST",
+            headers: {
+              "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
+            },
+          });
+          window.location.reload()
+      });
+    });
+  const approveBtns = document.querySelectorAll("#approveBtns");
+    approveBtns.forEach((approveBtn) => {
+      approveBtn.addEventListener("click", async function () {
+          await fetch(`/admin/animal/adoption-animals/${approveBtn.dataset.animalId}/approve/${approveBtn.dataset.userId}`, {
+            method: "POST",
+            headers: {
+              "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
+            },
+          });
+          window.location.reload()
+      });
+    });
+  const turnoveredBtns = document.querySelectorAll("#turnoveredBtns");
+    turnoveredBtns.forEach((TurnoveredBtn) => {
+      TurnoveredBtn.addEventListener("click", async function () {
+          await fetch(`/admin/animal/adoption-animals/${TurnoveredBtn.dataset.animalId}/turnover/${TurnoveredBtn.dataset.userId}`, {
+            method: "POST",
+            headers: {
+              "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
+            },
+          });
+          window.location.reload()
+      });
+    });
+  </script>
+{% endblock content %}

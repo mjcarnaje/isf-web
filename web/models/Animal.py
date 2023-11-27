@@ -115,6 +115,9 @@ class Animal():
                 if key == 'for_adoption': 
                     where_clauses.append(f"{key} = %s")
                     filter_params.append(value)
+                if key == 'is_adopted': 
+                    where_clauses.append(f"{key} = %s")
+                    filter_params.append(value)
 
         where_clause = " AND ".join(where_clauses) if where_clauses else ""
 
