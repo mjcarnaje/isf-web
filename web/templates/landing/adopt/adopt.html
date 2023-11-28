@@ -1,7 +1,7 @@
 {% set active_page = "admin.animal.animals" %}
 {% from './_helpers/macros/custom_input.html' import render_field %}
 {% from './_helpers/macros/adoption_status_badge.html' import status_badge %}
-{% extends "./_helpers/layout/main_layout.html" %}
+{% extends "./_helpers/layout/user_layout.html" %}
 {% block title %}
   Animal
 {% endblock title %}
@@ -61,35 +61,6 @@
             </p>
           </div>
         </div>
-      </div>
-      <div class="flex flex-col w-full max-w-4xl gap-4 p-8 bg-white border shadow-xl rounded-2xl">
-        <h3 class="text-xl font-bold text-primary-500">Adoption Process</h3>
-        <ul class="space-y-1.5 list-decimal list-inside">
-          <li>
-            Submit the adoption application form
-            <div class="text-xs badge badge-ghost">Pending</div>
-          </li>
-          <li>
-            Conduct an initial interview (via phone, Zoom, or Google Meet).
-            <div class="text-xs badge badge-warning">Under Review</div>
-          </li>
-          <li>
-            Meet our shelter animals in person
-            <div class="text-xs text-white badge badge-info">Approved</div>
-          </li>
-          <li>
-            Visit your chosen pet to confirm your choice
-            <div class="text-xs text-white badge badge-info">Approved</div>
-          </li>
-          <li>
-            Wait for vet clearance and schedule pick up
-            <div class="text-xs text-white badge badge-info">Approved</div>
-          </li>
-          <li>
-            Take your pet home!
-            <div class="text-xs text-white badge badge-success">Turnovered</div>
-          </li>
-        </ul>
       </div>
       {% if active_application %}
         <div class="w-full max-w-4xl p-8 space-y-4 bg-white border shadow-lg rounded-2xl">

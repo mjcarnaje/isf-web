@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    
     <meta charset="UTF-8">
     <meta name="keywords" content="Iligan Stray Feeder" />
     <meta name="csrf_token" content="{{ csrf_token() }}" />
@@ -29,5 +28,6 @@
   <body>
     {% block body %}
     {% endblock body %}
+    {% include "./_helpers/partials/toast.html" %}
   </body>
 </html>

@@ -2,6 +2,8 @@ import os
 
 
 class Config:
+    APP_URL = os.getenv('APP_URL')
+    
     SECRET_KEY = os.getenv('SECRET_KEY')
     MYSQL_HOST = os.getenv('MYSQL_HOST')
     MYSQL_USER = os.getenv('MYSQL_USER')
@@ -20,3 +22,10 @@ class Config:
     GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
     GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
     GOOGLE_DISCOVERY_URL = os.getenv('GOOGLE_DISCOVERY_URL')
+
+    MAIL_SERVER = os.getenv('MAIL_SERVER')
+    MAIL_PORT = os.getenv('MAIL_PORT')
+    MAIL_USERNAME = os.getenv('MAIL_USERNAME')
+    MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
+    MAIL_USE_TLS = True
+    MAIL_USE_SSL = False

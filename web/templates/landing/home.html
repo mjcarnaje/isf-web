@@ -42,7 +42,7 @@
             <i class="text-4xl text-primary-500 fa-solid fa-chevron-left"></i>
           </div>
           <div class="flex w-full gap-4 pb-4 overflow-y-auto no-scrollbar scroll-smooth gallery__animals--items">
-            {% for item in rescue_animals %}{{ render_gallery_item(item, item.name, item.description) }}{% endfor %}
+            {% for item in animals %}{{ render_gallery_item(item, item.name, item.description) }}{% endfor %}
           </div>
           <div class="flex items-center justify-center w-12 transition-all duration-150 cursor-pointer h-80 gallery__animals--right-button">
             <i class="text-4xl text-primary-500 fa-solid fa-chevron-right"></i>
@@ -59,14 +59,14 @@
           <p class="font-medium leading-9 text-center">
             Make a difference with your generosity. Your contributions enable us to continue our vital work, rescuing, caring for, and rehoming animals in need. Every donation, no matter the size, brings us one step closer to a world where every animal is safe and loved.
           </p>
-          <a href="{{ url_for('donate.index',) }}"
+          <a href="{{ url_for('landing.donate',) }}"
              class="btn btn-secondary text-primary-500">Donate</a>
         </div>
         <div class="flex flex-col self-stretch justify-between flex-1 space-y-4">
           <p class="font-medium leading-9 text-center">
             Discover the perfect companion for your family. Browse our lovingly rescued animals ready for their forever homes. By choosing adoption, you're not just welcoming a pet into your life, you're offering a deserving soul a new beginning.
           </p>
-          <a href="{{ url_for('adopt.index',) }}"
+          <a href="{{ url_for('landing.adopt',) }}"
              class="btn btn-secondary text-primary-500">Adopt</a>
         </div>
       </div>
@@ -86,7 +86,7 @@
           As Iligan Stray Feeders establishes its presence and reputation in the animal advocacy arena, the group has decided to expand its services to include rescue and adoption. This led to the creation of ISFAC, which stands for Iligan Stray Foster and Adoption Center. ISFAC was officially registered with the Securities and Exchange Commission on July 23, 2021. Currently, the group manages a mini shelter as its pilot program, following a procedure that involves rescuing, fostering, rehabilitating, and then rehoming animals. To date, ISFAC has been run and operated by a dedicated team of volunteers who have since become regular members. They continue to serve the helpless and voiceless stray animals in our society.
         </p>
         <div>
-          <a href="{{ url_for('donate.index',) }}"
+          <a href="{{ url_for('landing.donate',) }}"
              class="btn btn-secondary text-primary-500">Support the Shelter</a>
         </div>
       </div>

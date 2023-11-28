@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS user (
     last_name VARCHAR(256) NOT NULL,
     password VARCHAR(256) NOT NULL,
     photo_url VARCHAR(256),
+    is_verified BOOLEAN DEFAULT 0,
     contact_number VARCHAR(12) UNIQUE NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
