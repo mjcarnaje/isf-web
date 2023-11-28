@@ -36,7 +36,12 @@ def adopt_me(id):
   form = AdoptApplicationValidation()
 
   if form.validate_on_submit():
-    new_application = AdoptionApplication(user_id=current_user.id, animal_id=animal.id, reason_to_adopt=form.reason_to_adopt.data)
+    new_application = AdoptionApplication(user_id=current_user.id,
+                                          animal_id=animal.id, 
+                                          reason_to_adopt=form.reason_to_adopt.data, 
+                                          interview_type_preference=form.interview_type_preference.data, 
+                                          interview_preferred_date=form.interview_preferred_date.data, 
+                                          interview_preferred_time=form.interview_preferred_time.data)
     new_application.insert(new_application)
     redirect(url_for('user.applications'))
   
