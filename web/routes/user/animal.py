@@ -1,9 +1,8 @@
 from flask import Blueprint, redirect, render_template, request, url_for
 from flask_login import current_user
 
-from ...models import Animal, AdoptionApplication
+from ...models import Animal
 from ...utils import user_verified_required
-from ...validations import AddAnimalValidation, EditAnimalValidation
 
 user_animal_bp = Blueprint("animal", __name__, url_prefix='/animal')
 
@@ -46,6 +45,7 @@ def animals():
 
     return render_template('user/animal/animals.html', 
                             animals=animals,
+                            page_number=page,
                             has_previous_page=has_previous_page,
                             has_next_page=has_next_page,
                             total_count=total_count,
