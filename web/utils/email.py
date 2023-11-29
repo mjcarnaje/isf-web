@@ -1,8 +1,11 @@
-from flask import current_app, url_for, render_template
-from flask_mail import Message
-from ..mail import mail
-from ..config import Config
 import os
+
+from flask import current_app, render_template, url_for
+from flask_mail import Message
+
+from ..config import Config
+from ..mail import mail
+
 
 def send_verification_email(email: str, token: str, user):
     try:
@@ -16,7 +19,13 @@ def send_verification_email(email: str, token: str, user):
         msg = Message("Verification Email",
                       sender=(sender_name, sender_email),
                       recipients=[email])
+
         msg.html = render_template('verify-account-template.html', user=user, verification_link=verification_link)
+        
+        msg.attach('logo.png', 'image/png', open(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'images', 'email_template', 'logo.png'), 'rb').read(), 'inline', headers=[('Content-ID', '<Logo>')])
+        msg.attach('banner.jpeg', 'image/jpeg', open(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'images', 'email_template', 'banner.jpeg'), 'rb').read(), 'inline', headers=[('Content-ID', '<Banner>')])
+        msg.attach('facebook.png', 'image/png', open(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'images', 'email_template', 'facebook.png'), 'rb').read(), 'inline', headers=[('Content-ID', '<Facebook>')])
+
         mail.send(msg)
         current_app.logger.info("Verification Email sent!")
 

@@ -143,7 +143,7 @@ def verify_account():
 
         if token.get('is_valid'):
           User.set_is_verified(current_user.id)
-          return redirect(url_for('user.index'))
+          return render_template('/landing/verify_account.html', is_valid=True)
         
         if token.get('is_expired'):
           return render_template('/landing/verify_account.html', is_expired=True)
@@ -221,7 +221,9 @@ def sign_up():
     user_id = User.insert(new_user)
     UserRole.insert_user_role_by_name(user_id=user_id, role_name="member")
     token = generate_verification_token(user_id=user_id, email=new_user.email)
-    send_verification_email(email=new_user.email, token=token, current_user=new_user)
+    send_verification_email(email=new_user.email, token=token, user=new_user)
+
+    flash('Check your email to confirm your account.', 'success')
 
     return redirect(url_for('landing.login'))
 
