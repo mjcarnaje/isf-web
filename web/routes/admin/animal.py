@@ -20,6 +20,7 @@ def animals():
     is_neutered = request.args.get('is_neutered') == 'on'
     in_shelter = request.args.get('in_shelter') == 'on'
     gender = request.args.get('gender')
+    type = request.args.get('type')
 
     animals_query = Animal.find_all(
         page_number=page,
@@ -33,7 +34,8 @@ def animals():
             'is_dewormed': is_dewormed,
             'is_neutered': is_neutered,
             'in_shelter': in_shelter,
-            'gender': gender
+            'gender': gender,
+            'type': type
         }
     )
 
@@ -55,7 +57,8 @@ def animals():
                             is_dewormed=is_dewormed,
                             is_neutered=is_neutered,
                             in_shelter=in_shelter, 
-                            gender=gender
+                            gender=gender,
+                            type=type
                         )
 
 

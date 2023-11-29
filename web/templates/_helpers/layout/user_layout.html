@@ -3,6 +3,7 @@
   {% include "./_helpers/partials/user_navbar.html" %}
   {% set navigations = [
       { 'name': 'Home', 'url': url_for('user.dashboard'), 'icon': 'fa-solid fa-house', 'page': 'user.dashboard'},
+      { 'name': 'Animals', 'url': url_for('user.animal.animals'), 'icon': 'fa-solid fa-dog', 'page': 'user.animal.animals'},
       { 'name': 'My Adoption Applications', 'url': url_for('user.applications'), 'icon': 'fa-solid fa-file-invoice', 'page': 'user.applications'},
       { 'name': 'My Donations', 'url': url_for('user.donations'), 'icon': 'fa-solid fa-hand-holding-heart', 'page': 'user.donations'},
     ] %}

@@ -5,6 +5,7 @@ from ...models import AdoptionApplication, Donation, Animal
 from ...utils import user_verified_required
 
 from ...validations import AdoptApplicationValidation
+from .animal import user_animal_bp
 
 user_bp = Blueprint("user", __name__, url_prefix='/user')
 
@@ -57,3 +58,5 @@ def logout():
     logout_user()
     return redirect(url_for('landing.index'))
 
+
+user_bp.register_blueprint(user_animal_bp)
