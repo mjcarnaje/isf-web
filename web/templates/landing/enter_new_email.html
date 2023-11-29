@@ -1,0 +1,21 @@
+{% extends "./_helpers/layout/user_layout.html" %}
+{% from './_helpers/macros/custom_input.html' import render_field %}
+{% block title %}
+  Verify Account
+{% endblock title %}
+{% block content %}
+  <div class="flex flex-col items-center justify-center  min-h-[calc(100vh-80px)]">
+    <div class="w-full max-w-xl mx-auto ">
+      <form method="post"
+            class="flex flex-col items-center w-full gap-8"
+            novalidate>
+        <h1 class="text-3xl font-bold">Enter your new email</h1>
+        {{ form.csrf_token }}
+        {{ form.id }}
+        {{ form.old_email }}
+        {{ render_field(form.email) }}
+        <button class="text-white btn btn-lg btn-primary" type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+{% endblock content %}

@@ -17,6 +17,8 @@ pyopenssl = "*"
 requests = "*"
 email-validator = "*"
 ipython = "*"
+itsdangerous = "*"
+flask-mail = "*"
 
 [dev-packages]
 

@@ -8,3 +8,4 @@ from .EditEventValidation import EditEventValidation
 from .UserLoginValidation import UserLoginValidation
 from .UserSignupValidation import UserSignupValidation
 from .AdoptApplicationValidation import AdoptApplicationValidation
+from .NewEmailValidation import NewEmailValidation

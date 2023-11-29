@@ -6,7 +6,7 @@ from ..database import db
 
 
 class User(UserMixin):
-    def __init__(self, email: str = None, google_id: str = None, username: str = None, first_name: str = None, last_name: str = None, password: str = None, photo_url: str | None = None, contact_number: str = None, roles: [str] = [], id: int | None = None, created_at: datetime.date | None = None):
+    def __init__(self, email: str = None, google_id: str = None, username: str = None, first_name: str = None, last_name: str = None, password: str = None, photo_url: str | None = None, contact_number: str = None, is_verified: bool = False, roles: [str] = [], id: int | None = None, created_at: datetime.date | None = None):
         self.id = id
         self.email = email
         self.google_id = google_id
@@ -14,6 +14,7 @@ class User(UserMixin):
         self.first_name = first_name
         self.last_name = last_name
         self.password = password
+        self.is_verified = is_verified
         self.photo_url = photo_url
         self.contact_number = contact_number
         
@@ -59,7 +60,31 @@ class User(UserMixin):
         db.connection.commit()
 
         return cur.lastrowid
+    
+    @classmethod
+    def update_email(cls, email, user_id):
+        sql = """
+            UPDATE user
+            SET email = %(email)s
+            WHERE id = %(user_id)s
+        """
 
+        cur = db.new_cursor(dictionary=True)
+        cur.execute(sql, {'email': email, 'user_id': user_id})
+        db.connection.commit()
+
+
+    @staticmethod
+    def set_is_verified(user_id):
+        sql = """
+            UPDATE user
+            SET is_verified = 1
+            WHERE id = %(user_id)s
+        """
+
+        cur = db.new_cursor(dictionary=True)
+        cur.execute(sql, {'user_id': user_id})
+        db.connection.commit()
 
     @staticmethod
     def check_if_username_exists(username: str, id: int = None):

@@ -1,7 +1,7 @@
 {% set active_page = "admin.animal.animals" %}
 {% from './_helpers/macros/custom_input.html' import render_field %}
 {% from './_helpers/macros/adoption_status_badge.html' import status_badge %}
-{% extends "./_helpers/layout/main_layout.html" %}
+{% extends "./_helpers/layout/user_layout.html" %}
 {% block title %}
   Animal
 {% endblock title %}
@@ -45,7 +45,7 @@
               Adopted: <span class="px-2 py-1 ml-2 text-gray-800 bg-gray-300 rounded">{{ 'Yes' if animal.is_adopted == 1 else 'No' }}</span>
             </p>
             <p class="font-medium">
-              Dead: <span class="px-2 py-1 ml-2 text-gray-800 bg-gray-300 rounded">{{ 'Yes' if animal.is_dead == 1 else 'No' }}</span>
+              Deceased: <span class="px-2 py-1 ml-2 text-gray-800 bg-gray-300 rounded">{{ 'Yes' if animal.is_dead == 1 else 'No' }}</span>
             </p>
             <p class="font-medium">
               Dewormed: <span class="px-2 py-1 ml-2 text-gray-800 bg-gray-300 rounded">{{ 'Yes' if animal.is_dewormed == 1 else 'No' }}</span>
@@ -62,47 +62,29 @@
           </div>
         </div>
       </div>
-      <div class="flex flex-col w-full max-w-4xl gap-4 p-8 bg-white border shadow-xl rounded-2xl">
-        <h3 class="text-xl font-bold text-primary-500">Adoption Process</h3>
-        <ul class="space-y-1.5 list-decimal list-inside">
-          <li>
-            Submit the adoption application form
-            <div class="text-xs badge badge-ghost">Pending</div>
-          </li>
-          <li>
-            Undergo a phone interview
-            <div class="text-xs badge badge-warning">Under Review</div>
-          </li>
-          <li>
-            Meet our shelter animals in person
-            <div class="text-xs text-white badge badge-info">Approved</div>
-          </li>
-          <li>
-            Visit your chosen pet to confirm your choice
-            <div class="text-xs text-white badge badge-info">Approved</div>
-          </li>
-          <li>
-            Wait for vet clearance and schedule pick up
-            <div class="text-xs text-white badge badge-info">Approved</div>
-          </li>
-          <li>
-            Take your pet home!
-            <div class="text-xs text-white badge badge-success">Turnovered</div>
-          </li>
-        </ul>
-      </div>
       {% if active_application %}
-        <div class="w-full max-w-4xl p-8 space-y-2 bg-white border shadow-lg rounded-2xl">
+        <div class="w-full max-w-4xl p-8 space-y-4 bg-white border shadow-lg rounded-2xl">
           <h3 class="italic">
             You have already applied. Reference Number <span>#{{ active_application.id }}</span>
           </h3>
-          {{ status_badge(active_application.status, size="lg") }}
+          <div class="flex items-center gap-2">
+            <div class="badge badge-lg badge-ghost">{{ active_application.interview_type_preference }}</div>
+            <div class="badge badge-lg badge-ghost">{{ active_application.interview_preferred_date.strftime("%b %d, %Y") }}</div>
+            <div class="badge badge-lg badge-ghost">{{ active_application.interview_preferred_time }}</div>
+            {{ status_badge(active_application.status, size="lg") }}
+          </div>
         </div>
       {% else %}
         <form class="w-full max-w-4xl p-8 space-y-4 bg-white border shadow-lg borderm rounded-2xl"
               method="post"
               novalidate>
           {{ form.csrf_token() }}
+          {{ render_field(form.interview_type_preference) }}
+          <div class="flex items-center gap-4">
+            {{ render_field(form.interview_preferred_date) }}
+            {{ render_field(form.interview_preferred_time) }}
+          </div>
+          <p class="text-sm italic text-gray-700">We can't guarantee the availability of your requested time.</p>
           {{ render_field(form.reason_to_adopt) }}
           <div class="flex justify-end">
             <button class="btn btn-primary">Apply</button>

@@ -1,10 +1,6 @@
 {% block navbar %}
   {% set navigations = [
-      { 'name': 'Rescues', 'url': url_for('landing.animals'), 'page': 'rescue'},
-      { 'name': 'Adopt', 'url': url_for('landing.adopt'), 'page': 'adopt'},
-      { 'name': 'Donate', 'url': url_for('landing.donate'), 'page': 'donate'},
-      { 'name': 'Volunteer', 'url': url_for('landing.volunteers'), 'page': 'volunteer'},
-      { 'name': 'Events', 'url': url_for('landing.events'), 'page': 'event'},
+      { 'name': 'Logout', 'url': url_for('user.logout'), 'page': ''},
     ] %}
   <nav class="relative z-10 flex items-center justify-center w-full h-20 px-4 bg-white border-b md:px-8 lg:px-12">
     <a href="{{ url_for('admin.index',) }}"
@@ -29,39 +25,6 @@
           </li>
         {% endfor %}
       </ul>
-      {% if current_user.is_authenticated %}
-        <div class="dropdown dropdown-end">
-          <label tabindex="0" class="btn btn-ghost btn-circle avatar">
-            <div class="w-10 rounded-full">
-              {% if current_user.photo_url %}
-                <img src="{{ get_image(current_user.photo_url) }}"
-                     alt="User profile picture"
-                     class="w-full h-full"
-                     height="auto"
-                     width="auto" />
-              {% else %}
-                <div class="flex items-center justify-center w-full h-full bg-slate-200 text-slate-500">
-                  <span class="text-2xl">{{ current_user.first_name[0] }}</span>
-                </div>
-              {% endif %}
-            </div>
-          </label>
-          <ul tabindex="0"
-              class="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
-            <li>
-              <a href="{{ url_for('user.dashboard',) }}">Dashboard</a>
-            </li>
-            <li>
-              <a href="{{ url_for('user.logout',) }}">Logout</a>
-            </li>
-          </ul>
-        </div>
-      {% else %}
-        <a href="{{ url_for('landing.login',) }}"
-           class="flex items-center px-6 py-4 text-md {{ 'font-bold text-primary-500' if active_page == 'landing.login' else 'text-primary-300' }}">
-          Login
-        </a>
-      {% endif %}
       <button id="menu-button" class="flex md:hidden">
         <svg xmlns="http://www.w3.org/2000/svg"
              width="28"
@@ -100,6 +63,3 @@
   })
   </script>
 {% endblock navbar %}
-{# <div class="w-10 h-10 rounded-xl bg-slate-200">
-             
-            </div> #}

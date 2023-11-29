@@ -1,0 +1,50 @@
+{% block toast %}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <style>
+        @keyframes smoothFadeOut {
+          0%   { opacity: 1; transform: translateY(0) scale(1); }
+          50%  { scale: 1; }
+          100% { opacity: 0; transform: translateY(30px) scale(0); }
+        }
+        .hideMe {
+          animation: smoothFadeOut 0.5s cubic-bezier(0.455, 0.03, 0.515, 0.955);     
+        }
+        
+      </style>
+      <div class="toast toast-center toast-top" id="toastContainer">
+        {% for category, message in messages %}
+          {% if category == 'error' %}
+            <div class="p-4 min-w-[232px] flex justify-center items-center shadow rounded-lg bg-error">
+              <span class="font-medium text-white">{{ message }}</span>
+            </div>
+          {% elif category == 'success' %}
+            <div class="p-4 min-w-[232px] flex justify-center items-center shadow rounded-lg bg-success">
+              <span class="font-medium text-white">{{ message }}</span>
+            </div>
+          {% else %}
+            <div class="p-4 min-w-[232px] flex justify-center items-center shadow rounded-lg bg-info">
+              <span class="font-medium text-white">{{ message }}</span>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+      <script defer>
+        document.addEventListener("DOMContentLoaded", function() {
+          const toastContainer = document.getElementById('toastContainer');
+          const toastItems = toastContainer.children
+
+          setTimeout(() => {
+            const toastArray = Array.from(toastItems);
+            toastArray.forEach((item) => {
+              item.addEventListener("animationend", () => {
+                item.remove()
+              })
+              item.classList.add('hideMe')
+            })
+          }, 3000)
+        });
+      </script>
+    {% endif %}
+  {% endwith %}
+{% endblock toast %}

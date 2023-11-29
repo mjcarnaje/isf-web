@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS user (
     last_name VARCHAR(256) NOT NULL,
     password VARCHAR(256) NOT NULL,
     photo_url VARCHAR(256),
+    is_verified BOOLEAN DEFAULT 0,
     contact_number VARCHAR(12) UNIQUE NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
@@ -53,6 +54,9 @@ CREATE TABLE IF NOT EXISTS adoption_application (
     animal_id INT NOT NULL,
     application_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     status ENUM('Pending', 'Under Review', 'Approved', 'Rejected', 'Turnovered') DEFAULT 'Pending',
+    interview_type_preference ENUM('Phone', 'Zoom', 'Google Meet') DEFAULT 'Phone',
+    interview_preferred_date DATETIME NOT NULL,
+    interview_preferred_time VARCHAR(256) NOT NULL,
     reason_to_adopt TEXT,
     admin_notes TEXT,
     is_active BOOLEAN NOT NULL DEFAULT true,

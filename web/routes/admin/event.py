@@ -31,7 +31,7 @@ def edit_event(id):
         event.pictures.extend(new_pictures)        
         event.is_done=False 
         Event.edit(event)
-        return redirect(url_for("admin.event.index"))
+        return redirect(url_for("admin.event.events"))
     
     if not form.is_submitted():
         form.id.data = event.id
@@ -66,7 +66,7 @@ def add_event():
             is_done=False    
         )
         Event.insert(new_event)
-        return redirect(url_for("admin.event.index"))
+        return redirect(url_for("admin.event.events"))
     
     return render_template('/admin/event/add.html', form=form)
 

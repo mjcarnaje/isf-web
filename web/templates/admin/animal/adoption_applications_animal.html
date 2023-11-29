@@ -44,7 +44,7 @@
               Adopted: <span class="px-2 py-1 ml-2 text-gray-800 bg-gray-300 rounded">{{ 'Yes' if animal.is_adopted == 1 else 'No' }}</span>
             </p>
             <p class="font-medium">
-              Dead: <span class="px-2 py-1 ml-2 text-gray-800 bg-gray-300 rounded">{{ 'Yes' if animal.is_dead == 1 else 'No' }}</span>
+              Deceased: <span class="px-2 py-1 ml-2 text-gray-800 bg-gray-300 rounded">{{ 'Yes' if animal.is_dead == 1 else 'No' }}</span>
             </p>
             <p class="font-medium">
               Dewormed: <span class="px-2 py-1 ml-2 text-gray-800 bg-gray-300 rounded">{{ 'Yes' if animal.is_dewormed == 1 else 'No' }}</span>
@@ -62,14 +62,15 @@
         </div>
       </div>
     </div>
-    <div class="w-full max-w-4xl space-y-8">
+    <div class="w-full space-y-8">
       <h1 class="text-3xl font-bold">Applications</h1>
       <table class="table">
         <thead>
           <tr>
             <th>Full Name</th>
             <th>Contact Number</th>
-            <th>Reason To Adopt</th>
+            <th>Interview Type</th>
+            <th>Preffered Interview Date & Time</th>
             <th>Status</th>
             <th>Action</th>
           </tr>
@@ -101,10 +102,8 @@
                 </div>
               </td>
               <td>{{ application.contact_number }}</td>
-              <td>
-                {{ application.reason_to_adopt }}
-                <br />
-              </td>
+              <td>{{ application.interview_type_preference }}</td>
+              <td>{{ application.interview_preferred_date.strftime("%b %d, %Y") }} - {{ application.interview_preferred_time }}</td>
               <td>{{ status_badge(application.status) }}</td>
               <td>
                 <div class="dropdown dropdown-bottom dropdown-end">
@@ -115,28 +114,34 @@
                   </label>
                   <ul tabindex="0"
                       class="dropdown-content z-[1] menu p-2 border bg-base-100 rounded-box w-64">
-                    {% if application.status == "Pending" %}
-                      <li>
-                        <button id="underReviewBtns"
-                                type="submit"
-                                data-animal-id="{{ application.animal_id }}"
-                                data-user-id="{{ application.user_id }}">Set as Under Review</button>
-                      </li>
-                    {% elif application.status == "Under Review" %}
-                      <li>
-                        <button id="approveBtns"
-                                type="submit"
-                                data-animal-id="{{ application.animal_id }}"
-                                data-user-id="{{ application.user_id }}">Approve</button>
-                      </li>
-                    {% elif application.status == "Approved" %}
-                      <li>
-                        <button id="turnoveredBtns"
-                                type="submit"
-                                data-animal-id="{{ application.animal_id }}"
-                                data-user-id="{{ application.user_id }}">Turnovered</button>
-                      </li>
-                    {% endif %}
+                    <li>
+                      <button id="reject"
+                              type="submit"
+                              data-animal-id="{{ application.animal_id }}"
+                              data-user-id="{{ application.user_id }}">Reject</button>
+                    </li>
+                    {# {% if application.status == "Pending" %} #}
+                    <li>
+                      <button id="under-review"
+                              type="submit"
+                              data-animal-id="{{ application.animal_id }}"
+                              data-user-id="{{ application.user_id }}">Set as Under Review</button>
+                    </li>
+                    {# {% elif application.status == "Under Review" %} #}
+                    <li>
+                      <button id="approve"
+                              type="submit"
+                              data-animal-id="{{ application.animal_id }}"
+                              data-user-id="{{ application.user_id }}">Approve</button>
+                    </li>
+                    {# {% elif application.status == "Approved" %} #}
+                    <li>
+                      <button id="turnover"
+                              type="submit"
+                              data-animal-id="{{ application.animal_id }}"
+                              data-user-id="{{ application.user_id }}">Turnovered</button>
+                    </li>
+                    {# {% endif %} #}
                   </ul>
                 </div>
               </td>
@@ -147,40 +152,24 @@
     </div>
   </div>
   <script>
-  const underReviewBtns = document.querySelectorAll("#underReviewBtns");
-    underReviewBtns.forEach((underReviewBtn) => {
-      underReviewBtn.addEventListener("click", async function () {
-          await fetch(`/admin/animal/adoption-animals/${underReviewBtn.dataset.animalId}/under-review/${underReviewBtn.dataset.userId}`, {
-            method: "POST",
-            headers: {
-              "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
-            },
-          });
-          window.location.reload()
-      });
-    });
-  const approveBtns = document.querySelectorAll("#approveBtns");
-    approveBtns.forEach((approveBtn) => {
-      approveBtn.addEventListener("click", async function () {
-          await fetch(`/admin/animal/adoption-animals/${approveBtn.dataset.animalId}/approve/${approveBtn.dataset.userId}`, {
-            method: "POST",
-            headers: {
-              "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
-            },
-          });
-          window.location.reload()
-      });
-    });
-  const turnoveredBtns = document.querySelectorAll("#turnoveredBtns");
-    turnoveredBtns.forEach((TurnoveredBtn) => {
-      TurnoveredBtn.addEventListener("click", async function () {
-          await fetch(`/admin/animal/adoption-animals/${TurnoveredBtn.dataset.animalId}/turnover/${TurnoveredBtn.dataset.userId}`, {
-            method: "POST",
-            headers: {
-              "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
-            },
-          });
-          window.location.reload()
+    const array_btns = ['reject', 'under-review', 'approve', 'turnover'];
+
+    array_btns.forEach((btn) => {
+      const buttons = document.querySelectorAll(`#${btn}`);
+      buttons.forEach((button) => {
+        button.addEventListener("click", async function () {
+          try {
+            await fetch(`/admin/animal/adoption-animals/${button.dataset.animalId}/${btn}/${button.dataset.userId}`, {
+              method: "POST",
+              headers: {
+                "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
+              },
+            });
+            window.location.reload();
+          } catch (error) {
+            console.error('Error during fetch:', error);
+          }
+        });
       });
     });
   </script>

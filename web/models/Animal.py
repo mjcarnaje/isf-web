@@ -3,8 +3,6 @@ import datetime
 from ..database import db
 
 
-import datetime
-
 class Animal():
     def __init__(self, name: str = None, 
                  type: str = None,
@@ -74,8 +72,11 @@ class Animal():
         appearance: str,
         author_id: int
         ) -> int:
-        sql = "INSERT INTO animal (name, type, estimated_birth_month, estimated_birth_year, photo_url, gender, is_adopted, is_dead, is_dewormed, is_neutered, in_shelter, is_rescued, for_adoption, description, appearance, author_id) VALUES(%(name)s, %(type)s, %(estimated_birth_month)s, %(estimated_birth_year)s, %(photo_url)s, %(gender)s, %(is_adopted)s, %(is_dead)s, %(is_dewormed)s, %(is_neutered)s, %(in_shelter)s, %(is_rescued)s, %(description)s, %(appearance)s, %(author_id)s)"
-        data = {
+        sql = """
+            INSERT INTO animal(
+                name, type, estimated_birth_month, estimated_birth_year, photo_url, gender, is_adopted, is_dead, is_dewormed, is_neutered, in_shelter, is_rescued, for_adoption, description, appearance, author_id
+            ) VALUES(%(name)s, %(type)s, %(estimated_birth_month)s, %(estimated_birth_year)s, %(photo_url)s, %(gender)s, %(is_adopted)s, %(is_dead)s, %(is_dewormed)s, %(is_neutered)s, %(in_shelter)s, %(is_rescued)s, %(for_adoption)s, %(description)s, %(appearance)s, %(author_id)s)"""
+        params = {
             'name': name,
             'type': type,
             'estimated_birth_month': estimated_birth_month,
@@ -94,7 +95,7 @@ class Animal():
             'author_id': author_id
         }
         cur = db.new_cursor(dictionary=True)
-        cur.execute(sql, data)
+        cur.execute(sql, params)
         db.connection.commit()
         return cur.lastrowid
 
@@ -157,45 +158,45 @@ class Animal():
         sql = """
             UPDATE animal
             SET
-                name = %s,
-                type = %s,
-                estimated_birth_month = %s,
-                estimated_birth_year = %s,
-                photo_url = %s,
-                gender = %s,
-                is_adopted = %s,
-                is_dead = %s,
-                is_dewormed = %s,
-                is_neutered = %s,
-                in_shelter = %s,
-                is_rescued = %s,
-                for_adoption = %s,
-                description = %s,
-                appearance = %s,
-                author_id = %s,
+                name = %(name)s,
+                type = %(type)s,
+                estimated_birth_month = %(estimated_birth_month)s,
+                estimated_birth_year = %(estimated_birth_year)s,
+                photo_url = %(photo_url)s,
+                gender = %(gender)s,
+                is_adopted = %(is_adopted)s,
+                is_dead = %(is_dead)s,
+                is_dewormed = %(is_dewormed)s,
+                is_neutered = %(is_neutered)s,
+                in_shelter = %(in_shelter)s,
+                is_rescued = %(is_rescued)s,
+                for_adoption = %(for_adoption)s,
+                description = %(description)s,
+                appearance = %(appearance)s,
+                author_id = %(author_id)s,
                 updated_at = CURRENT_TIMESTAMP
             WHERE
-                id = %s
+                id = %(id)s
         """
-        params = (
-            animal.name,
-            animal.type,
-            animal.estimated_birth_month,
-            animal.estimated_birth_year,
-            animal.photo_url,
-            animal.gender,
-            animal.is_adopted,
-            animal.is_dead,
-            animal.is_dewormed,
-            animal.is_neutered,
-            animal.in_shelter,
-            animal.is_rescued,
-            animal.for_adoption,
-            animal.description,
-            animal.appearance,
-            animal.author_id,
-            animal.id
-        )
+        params = {
+            'name': animal.name,
+            'type': animal.type,
+            'estimated_birth_month': animal.estimated_birth_month,
+            'estimated_birth_year': animal.estimated_birth_year,
+            'photo_url': animal.photo_url,
+            'gender': animal.gender,
+            'is_adopted': animal.is_adopted,
+            'is_dead': animal.is_dead,
+            'is_dewormed': animal.is_dewormed,
+            'is_neutered': animal.is_neutered,
+            'in_shelter': animal.in_shelter,
+            'is_rescued': animal.is_rescued,
+            'for_adoption': animal.for_adoption,
+            'description': animal.description,
+            'appearance': animal.appearance,
+            'author_id': animal.author_id,
+            'id': animal.id
+        }
         cur = db.new_cursor()
         cur.execute(sql, params)
         db.connection.commit()

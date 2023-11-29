@@ -9,7 +9,8 @@ from oauthlib.oauth2 import WebApplicationClient
 from .config import Config
 from .database import db
 from .database.run_sql import run_sql
-from .models import Animal, User
+from .mail import mail
+from .models import User
 
 
 def create_app():    
@@ -17,7 +18,8 @@ def create_app():
 
     app.config.from_object(Config)
     db.init_app(app)
-
+    mail.init_app(app)
+    
     @app.cli.command("reset-db")
     def reset_db():
         db.execute_sql(f"DROP DATABASE IF EXISTS {Config.MYSQL_DATABASE};")
@@ -36,7 +38,7 @@ def create_app():
     client = WebApplicationClient(Config.GOOGLE_CLIENT_ID)
         
     login_manager = LoginManager()
-    login_manager.login_view = 'user.login'
+    login_manager.login_view = 'landing.login'
     login_manager.init_app(app) 
 
     @login_manager.user_loader
@@ -50,11 +52,6 @@ def create_app():
             url, options = cloudinary_url(public_id, format="jpg", crop="fill")
             return url
         return dict(get_image=get_image)
-
-
-    from .routes import (admin_bp, adopt_bp, animal_bp, donate_bp, event_bp,
-                         landing_bp, user_bp, volunteer_bp)
-
 
     @app.route('/upload/cloudinary', methods=['POST'])
     def upload_to_cloudinary():
@@ -75,15 +72,11 @@ def create_app():
             'error': 'Missing file'
         })
 
+    from .routes import admin_bp, landing_bp, user_bp
         
     app.register_blueprint(landing_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(user_bp)
-    app.register_blueprint(animal_bp)
-    app.register_blueprint(adopt_bp)
-    app.register_blueprint(donate_bp)
-    app.register_blueprint(volunteer_bp)
-    app.register_blueprint(event_bp)
 
     return app
 

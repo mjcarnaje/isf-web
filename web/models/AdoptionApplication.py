@@ -5,13 +5,27 @@ from ..database import \
 
 
 class AdoptionApplication:
-    def __init__(self, id=None, user_id=None, animal_id=None, application_date=None,
-                 status='Pending', reason_to_adopt=None, is_active=None, admin_notes=None):
+    def __init__(self, 
+            id=None, 
+            user_id=None,
+            animal_id=None,
+            application_date=None,
+            status='Pending',
+            interview_type_preference=None,
+            interview_preferred_date=None,
+            interview_preferred_time=None,
+            reason_to_adopt=None,
+            is_active=None,
+            admin_notes=None
+        ):
         self.id = id
         self.user_id = user_id
         self.animal_id = animal_id
         self.application_date = application_date or datetime.datetime.now()
         self.status = status
+        self.interview_type_preference = interview_type_preference
+        self.interview_preferred_date = interview_preferred_date
+        self.interview_preferred_time = interview_preferred_time
         self.reason_to_adopt = reason_to_adopt
         self.is_active = is_active
         self.admin_notes = admin_notes
@@ -30,18 +44,22 @@ class AdoptionApplication:
     def insert(cls, application):
         sql = """
             INSERT INTO adoption_application 
-            (user_id, animal_id, application_date, status, reason_to_adopt, admin_notes) 
-            VALUES (%s, %s, %s, %s, %s, %s)
+                (user_id, animal_id, application_date, status, interview_type_preference, interview_preferred_date, interview_preferred_time, reason_to_adopt, admin_notes) 
+            VALUES (%(user_id)s, %(animal_id)s, %(application_date)s, %(status)s, %(interview_type_preference)s, %(interview_preferred_date)s, %(interview_preferred_time)s, %(reason_to_adopt)s, %(admin_notes)s)
         """
-        cur = db.new_cursor()
-        cur.execute(sql, (
-            application.user_id,
-            application.animal_id,
-            application.application_date,
-            application.status,
-            application.reason_to_adopt,
-            application.admin_notes
-        ))
+        params = {
+            'user_id': application.user_id,
+            'animal_id': application.animal_id,
+            'application_date': application.application_date,
+            'status': application.status,
+            'interview_type_preference': application.interview_type_preference, 
+            'interview_preferred_date': application.interview_preferred_date,
+            'interview_preferred_time': application.interview_preferred_time,
+            'reason_to_adopt': application.reason_to_adopt,
+            'admin_notes': application.admin_notes
+        }
+        cur = db.new_cursor(dictionary=True)
+        cur.execute(sql, params)
         db.connection.commit()
 
     @classmethod

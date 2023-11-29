@@ -63,6 +63,12 @@ def set_turnovered(id, user_id):
     AdoptionApplication.set_turnovered(animal_id=id, user_id=user_id)
     return redirect(url_for('admin.animal.adoption_applications_animal', id=id))
 
+@admin_animal_bp.route('/adoption-animals/<int:id>/reject/<int:user_id>', methods=['POST'])
+@admin_required
+def set_rejected(id, user_id):
+    AdoptionApplication.set_rejected(animal_id=id, user_id=user_id)
+    return redirect(url_for('admin.animal.adoption_applications_animal', id=id))
+
 
 @admin_animal_bp.route('/<int:id>', methods=['GET'])
 @admin_required
@@ -113,7 +119,7 @@ def add_animal():
     )
 
     if animal_id:
-       return redirect(url_for('admin.animal.index'))
+       return redirect(url_for('admin.animal.animals'))
 
 
   return render_template('admin/animal/add.html', form=form)
