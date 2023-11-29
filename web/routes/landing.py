@@ -114,6 +114,7 @@ def donate():
 
 
 @landing_bp.route('/money', methods=['GET', 'POST'])
+@user_verified_required
 def donate_money():
   form = AddDonationMoney()
     

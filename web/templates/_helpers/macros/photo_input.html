@@ -21,7 +21,9 @@
       </ul>
     {% endif %}
     <div class="flex items-center gap-2">
-      <button type="button" id="add-photo" class="btn btn-primary btn-sm">{{ add_text }}</button>
+      <button type="button"
+              id="add-photo"
+              class="text-white btn btn-primary btn-sm">{{ add_text }}</button>
       <button type="button"
               id="remove-photo"
               class="btn btn-error btn-sm text-white {{ 'hidden' if not photo }}">{{ remove_text }}</button>

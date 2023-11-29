@@ -58,9 +58,7 @@
         </div>
       {% else %}
         <a href="{{ url_for('landing.login',) }}"
-           class="flex items-center px-6 py-4 text-md {{ 'font-bold text-primary-800' if active_page == 'landing.login' else 'text-primary-300' }}">
-          Login
-        </a>
+           class="text-white btn btn-primary btn-sm">Login</a>
       {% endif %}
       <button id="menu-button" class="flex md:hidden">
         <svg xmlns="http://www.w3.org/2000/svg"

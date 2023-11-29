@@ -11,8 +11,34 @@
         ISF or Iligan Stray Feeders is a non-profit non government organization which focuses on feeding Stray animals in and around the city. It was founded and spearheaded by Trusty Choice O. Espinosa as it aims in promoting animal welfare through Stray Feeding Program. First Stray Feeding activity was conducted on December 9, 2020 and by January 7, 2021 ISF was formally organized. Through constant and regular Stray Feeding Program the group attracted a number of fellow animal advocates which became regular volunteers. The group expanded to other areas as it aims to feed larger number of Strays. With the help of regular donors and supporters the group was able to sustain its advocacy program until present time. 
       </p>
     </div>
+    <div class="w-full max-w-4xl px-8 py-12 mx-auto space-y-8">
+      <p class="text-2xl font-bold text-center">How to contribute through Money Donation?</p>
+      <p class="italic text-center">Simply scan the QR code with Maya or GCash</p>
+      <div class="grid grid-cols-4 gap-5 gap">
+        <img src="{{ url_for('static', filename='/images/qrs/gcash.png') }}"
+             class="col-span-1 rounded-lg"
+             alt="gcash"
+             width="auto"
+             height="auto" />
+        <img src="{{ url_for('static', filename='/images/qrs/maya.png') }}"
+             class="col-span-1 rounded-lg"
+             alt="paymaya"
+             width="auto"
+             height="auto" />
+        <img src="{{ url_for('static', filename='/images/qrs/bpi.png') }}"
+             class="col-span-1 rounded-lg"
+             alt="paymaya"
+             width="auto"
+             height="auto" />
+        <img src="{{ url_for('static', filename='/images/qrs/bdo.png') }}"
+             class="col-span-1 rounded-lg"
+             alt="paymaya"
+             width="auto"
+             height="auto" />
+      </div>
+    </div>
     <div class="flex items-center justify-center py-12">
-      <div class="flex flex-col items-center justify-center w-full max-w-3xl py-16 border shadow-2xl bg-slate-50 gap-y-12 rounded-2xl">
+      <div class="flex flex-col items-center justify-center w-full max-w-3xl py-16 border shadow-lg gap-y-12 rounded-2xl">
         <h1 class="text-3xl font-bold uppercase">Types of Donation</h1>
         <div class="flex gap-x-4">
           <a href="{{ url_for('landing.donate_money',) }}"
