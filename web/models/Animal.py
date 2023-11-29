@@ -113,10 +113,7 @@ class Animal():
 
         if filters:
             for key, value in filters.items():
-                if key == 'for_adoption': 
-                    where_clauses.append(f"{key} = %s")
-                    filter_params.append(value)
-                if key == 'is_adopted': 
+                if value:
                     where_clauses.append(f"{key} = %s")
                     filter_params.append(value)
 
