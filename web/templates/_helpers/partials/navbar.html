@@ -23,7 +23,7 @@
         {% for navigation in navigations %}
           <li class="rounded-lg cursor-pointer">
             <a href="{{ navigation.url }}"
-               class="flex items-center px-6 py-4 text-md {{ 'font-bold text-primary-500' if active_page == navigation.page else 'text-primary-300' }}">
+               class="flex items-center px-4 py-2 transition-all duration-300 text-md hover:text-opacity-80 {{ 'font-semibold text-primary-800' if active_page == navigation.page else 'font-medium' }}">
               {{ navigation.name }}
             </a>
           </li>
@@ -58,7 +58,7 @@
         </div>
       {% else %}
         <a href="{{ url_for('landing.login',) }}"
-           class="flex items-center px-6 py-4 text-md {{ 'font-bold text-primary-500' if active_page == 'landing.login' else 'text-primary-300' }}">
+           class="flex items-center px-6 py-4 text-md {{ 'font-bold text-primary-800' if active_page == 'landing.login' else 'text-primary-300' }}">
           Login
         </a>
       {% endif %}
@@ -83,7 +83,7 @@
         {% for navigation in navigations %}
           <li class="rounded-lg cursor-pointer hover:bg-slate-100">
             <a href="{{ navigation.url }}"
-               class="flex items-center px-6 py-4 text-md {{ 'font-bold text-primary-500' if active_page == navigation.page else 'text-primary-200' }}">
+               class="flex items-center px-6 py-4 text-md {{ 'font-bold text-primary-800' if active_page == navigation.page else 'text-primary-200' }}">
               {{ navigation.name }}
             </a>
           </li>

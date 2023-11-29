@@ -67,7 +67,7 @@
         {% for navigation in admin_navigations %}
           <li>
             <a href="{{ navigation.url }}"
-               class="flex items-center active:!bg-gray-50 hover:!text-primary-500 active:!text-primary-500 gap-3 p-4 font-medium rounded-lg cursor-pointer hover:bg-gray-50 {{ 'font-bold text-primary-500 bg-gray-50' if active_page == navigation.page else '' }}">
+               class="flex items-center active:!bg-gray-50 hover:!text-primary-800 active:!text-primary-800 gap-3 p-4 font-medium rounded-lg cursor-pointer hover:bg-gray-50 {{ 'font-bold text-primary-800 bg-gray-50' if active_page == navigation.page else '' }}">
               <i class="{{ navigation.icon }}"></i>
               {{ navigation.name }}
             </a>
@@ -76,7 +76,7 @@
                 {% for item in navigation.children %}
                   <li>
                     <a href="{{ item.url }}"
-                       class="flex items-center active:!bg-gray-50 hover:!text-primary-500 active:!text-primary-500 gap-3 p-4 font-medium rounded-lg cursor-pointer hover:bg-gray-50 {{ 'font-bold text-primary-500 bg-gray-50' if active_page == item.page else '' }}">
+                       class="flex items-center active:!bg-gray-50 hover:!text-primary-800 active:!text-primary-800 gap-3 p-4 font-medium rounded-lg cursor-pointer hover:bg-gray-50 {{ 'font-bold text-primary-800 bg-gray-50' if active_page == item.page else '' }}">
                       <i class="{{ item.icon }}"></i>
                       {{ item.name }}
                     </a>

@@ -10,10 +10,10 @@
       <h1>{{ event.name }}</h1>
       <p class="w-8/12">{{ event.description }}</p>
       <div class="flex items-center gap-1">
-        <p class="text-primary-500">{{ event.start_date.strftime("%b %d, %Y") }}</p>
+        <p class="text-primary-800">{{ event.start_date.strftime("%b %d, %Y") }}</p>
         <p>-</p>
-        <p class="text-primary-500">{{ event.end_date.strftime("%b %d, %Y") }}</p>
-        <p class="text-primary-500">{{ event.location }}</p>
+        <p class="text-primary-800">{{ event.end_date.strftime("%b %d, %Y") }}</p>
+        <p class="text-primary-800">{{ event.location }}</p>
       </div>
       <ul class="grid w-full grid-cols-2 gap-2 p-4 bg-gray-100 border rounded-lg md:grid-cols-5">
         {% for picture in event.pictures %}

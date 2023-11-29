@@ -8,15 +8,15 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          100: "#d2986b",
-          200: "#cb8753",
-          300: "#c3753a",
-          400: "#bc6422",
-          500: "#b45309",
-          600: "#a24b08",
-          700: "#904207",
-          800: "#7e3a06",
-          900: "#6c3205",
+          100: "#F7B472",
+          200: "#F6AD64",
+          300: "#F5A556",
+          400: "#F49E48",
+          500: "#F3953A",
+          600: "#F28C25",
+          700: "#F18111",
+          800: "#DF760D",
+          900: "#CB6B0C",
         },
         primary_light: "#FCECDD",
         secondary: "#FFF2CC",
@@ -38,7 +38,7 @@ module.exports = {
       {
         light: {
           ...require("daisyui/src/theming/themes")["light"],
-          primary: "#b45309",
+          primary: "#F3953A",
           secondary: "#FCEBDD",
         },
       },
