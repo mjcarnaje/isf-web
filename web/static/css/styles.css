@@ -3308,6 +3308,10 @@ details.collapse summary::-webkit-details-marker {
   min-height: 100vh;
 }
 
+.min-h-\[80vh\] {
+  min-height: 80vh;
+}
+
 .w-10 {
   width: 2.5rem;
 }
@@ -3965,6 +3969,11 @@ details.collapse summary::-webkit-details-marker {
   line-height: 1rem;
 }
 
+.text-5xl {
+  font-size: 3rem;
+  line-height: 1;
+}
+
 .font-bold {
   font-weight: 700;
 }
@@ -4069,6 +4078,15 @@ details.collapse summary::-webkit-details-marker {
 .text-yellow-600 {
   --tw-text-opacity: 1;
   color: rgb(202 138 4 / var(--tw-text-opacity));
+}
+
+.text-primary-500 {
+  --tw-text-opacity: 1;
+  color: rgb(243 149 58 / var(--tw-text-opacity));
+}
+
+.underline {
+  text-decoration-line: underline;
 }
 
 .opacity-0 {
@@ -4336,6 +4354,11 @@ details.collapse summary::-webkit-details-marker {
   .md\:text-lg {
     font-size: 1.125rem;
     line-height: 1.75rem;
+  }
+
+  .md\:text-7xl {
+    font-size: 4.5rem;
+    line-height: 1;
   }
 }
 
