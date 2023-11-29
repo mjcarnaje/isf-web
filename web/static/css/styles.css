@@ -3143,6 +3143,10 @@ details.collapse summary::-webkit-details-marker {
   position: relative;
 }
 
+.sticky {
+  position: sticky;
+}
+
 .left-0 {
   left: 0px;
 }
@@ -3165,6 +3169,10 @@ details.collapse summary::-webkit-details-marker {
 
 .z-20 {
   z-index: 20;
+}
+
+.z-50 {
+  z-index: 50;
 }
 
 .z-\[1\] {
@@ -3272,10 +3280,6 @@ details.collapse summary::-webkit-details-marker {
   height: 2rem;
 }
 
-.h-80 {
-  height: 20rem;
-}
-
 .h-auto {
   height: auto;
 }
@@ -3358,6 +3362,11 @@ details.collapse summary::-webkit-details-marker {
 
 .w-full {
   width: 100%;
+}
+
+.w-max {
+  width: -moz-max-content;
+  width: max-content;
 }
 
 .min-w-\[232px\] {
@@ -3529,12 +3538,6 @@ details.collapse summary::-webkit-details-marker {
   row-gap: 3rem;
 }
 
-.space-x-2 > :not([hidden]) ~ :not([hidden]) {
-  --tw-space-x-reverse: 0;
-  margin-right: calc(0.5rem * var(--tw-space-x-reverse));
-  margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
-}
-
 .space-x-3 > :not([hidden]) ~ :not([hidden]) {
   --tw-space-x-reverse: 0;
   margin-right: calc(0.75rem * var(--tw-space-x-reverse));
@@ -3635,14 +3638,6 @@ details.collapse summary::-webkit-details-marker {
 
 .overflow-x-auto {
   overflow-x: auto;
-}
-
-.overflow-y-auto {
-  overflow-y: auto;
-}
-
-.scroll-smooth {
-  scroll-behavior: smooth;
 }
 
 .truncate {
@@ -3815,6 +3810,10 @@ details.collapse summary::-webkit-details-marker {
      object-fit: cover;
 }
 
+.p-10 {
+  padding: 2.5rem;
+}
+
 .p-12 {
   padding: 3rem;
 }
@@ -3837,10 +3836,6 @@ details.collapse summary::-webkit-details-marker {
 
 .p-8 {
   padding: 2rem;
-}
-
-.p-10 {
-  padding: 2.5rem;
 }
 
 .px-12 {
@@ -3918,14 +3913,6 @@ details.collapse summary::-webkit-details-marker {
   padding-bottom: 2rem;
 }
 
-.pb-4 {
-  padding-bottom: 1rem;
-}
-
-.pl-14 {
-  padding-left: 3.5rem;
-}
-
 .pt-2 {
   padding-top: 0.5rem;
 }
@@ -3951,11 +3938,6 @@ details.collapse summary::-webkit-details-marker {
 .text-4xl {
   font-size: 2.25rem;
   line-height: 2.5rem;
-}
-
-.text-5xl {
-  font-size: 3rem;
-  line-height: 1;
 }
 
 .text-7xl {
@@ -4145,28 +4127,13 @@ details.collapse summary::-webkit-details-marker {
   transition-duration: 150ms;
 }
 
-.duration-150 {
-  transition-duration: 150ms;
-}
-
 .duration-300 {
   transition-duration: 300ms;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
 
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
 /* Hide scrollbar for IE, Edge and Firefox */
-
-.no-scrollbar {
-  -ms-overflow-style: none;
-  /* IE and Edge */
-  scrollbar-width: none;
-  /* Firefox */
-}
 
 /* Define the styles for the scrollbar */
 
@@ -4202,6 +4169,21 @@ details.collapse summary::-webkit-details-marker {
   background: rgb(203, 107, 12);
   background: linear-gradient(144deg, rgba(203, 107, 12, 1) 0%, rgba(243, 149, 58, 1) 52%, rgba(247, 180, 114, 1) 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#cb6b0c", endColorstr="#f7b472", GradientType=1);
+}
+
+.scroller {
+  -webkit-mask: linear-gradient(90deg, transparent, white 20%, white 80%, transparent);
+          mask: linear-gradient(90deg, transparent, white 20%, white 80%, transparent);
+}
+
+.scroller ul {
+  animation: scroll 20s linear infinite;
+}
+
+@keyframes scroll {
+  to {
+    transform: translate(calc(-50% - .5rem));
+  }
 }
 
 @media (min-width: 1024px) {
@@ -4346,8 +4328,8 @@ details.collapse summary::-webkit-details-marker {
     text-align: center;
   }
 
-  .md\:text-7xl {
-    font-size: 4.5rem;
+  .md\:text-6xl {
+    font-size: 3.75rem;
     line-height: 1;
   }
 

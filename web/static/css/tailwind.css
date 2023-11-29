@@ -50,3 +50,17 @@
   background: linear-gradient(144deg, rgba(203, 107, 12, 1) 0%, rgba(243, 149, 58, 1) 52%, rgba(247, 180, 114, 1) 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#cb6b0c", endColorstr="#f7b472", GradientType=1);
 }
+
+.scroller {
+  mask: linear-gradient(90deg, transparent, white 20%, white 80%, transparent);
+}
+
+.scroller ul {
+  animation: scroll 20s linear infinite;
+}
+
+@keyframes scroll {
+  to {
+    transform: translate(calc(-50% - .5rem));
+  }
+}

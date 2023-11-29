@@ -6,7 +6,7 @@
       { 'name': 'Volunteer', 'url': url_for('landing.volunteers'), 'page': 'volunteer'},
       { 'name': 'Events', 'url': url_for('landing.events'), 'page': 'event'},
     ] %}
-  <nav class="relative z-10 flex items-center justify-center w-full h-20 px-4 bg-white border-b md:px-8 lg:px-12">
+  <nav class="sticky top-0 z-50 flex items-center justify-center w-full h-20 px-4 bg-white border-b md:px-8 lg:px-12">
     <a href="{{ url_for('admin.index',) }}"
        class="absolute top-0 right-0 flex items-center justify-center w-8 h-8 transition rounded-lg opacity-0 cursor-pointer j hover:opacity-100 hover:bg-gray-200">
       <i class="fa-solid fa-user"></i>
@@ -98,6 +98,3 @@
   })
   </script>
 {% endblock navbar %}
-{# <div class="w-10 h-10 rounded-xl bg-slate-200">
-             
-            </div> #}

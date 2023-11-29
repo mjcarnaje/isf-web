@@ -10,7 +10,7 @@
            src="{{ url_for('static', filename='images/animals.png') }}" />
     </div>
     <div class="relative flex flex-col items-start justify-center flex-1 h-full col-span-6 gap-8 px-8">
-      <h1 class="z-10 text-5xl font-extrabold leading-10 md:text-7xl">Pawsitively Impactful: Feed Furr A Cause</h1>
+      <h1 class="z-10 text-4xl font-extrabold leading-10 md:text-6xl">Pawsitively Impactful: Feed Furr A Cause</h1>
       <p class="z-10 font-semibold md:text-lg">Empowering Lives, One Bowl at a Time - In Service to Stray Dogs and Cats</p>
       <button class="text-white btn bg-primary-500 btn-lg btn-wide">Join Us</button>
     </div>
@@ -40,20 +40,13 @@
           At the heart of our mission, you'll find the stories of countless animals we've rescued, nurtured, and given a second chance at life. Each rescue is a testament to our unwavering commitment to the well-being of animals in need. Explore these inspiring journeys of hope, recovery, and transformation in our 'Our Rescues' section and witness the incredible impact of our work.
         </p>
       </div>
-      <div class="flex flex-col items-start w-full space-y-4">
-        <h1 class="text-2xl font-bold text-center pl-14 ">Animals</h1>
-        <div class="relative flex w-full space-x-2">
-          <div class="flex items-center justify-center w-12 transition-all duration-150 cursor-pointer h-80 gallery__animals--left-button">
-            <i class="text-4xl fa-solid fa-chevron-left"></i>
-          </div>
-          <div class="flex w-full gap-4 pb-4 overflow-y-auto no-scrollbar scroll-smooth gallery__animals--items">
-            {% for item in animals %}{{ render_gallery_item(item, item.name, item.description) }}{% endfor %}
-          </div>
-          <div class="flex items-center justify-center w-12 transition-all duration-150 cursor-pointer h-80 gallery__animals--right-button">
-            <i class="text-4xl fa-solid fa-chevron-right"></i>
-          </div>
-        </div>
-      </div>
+    </div>
+  </div>
+  <div class="w-full py-12 ">
+    <div class="relative flex w-full max-w-6xl mx-auto overflow-hidden scroller">
+      <ul class="flex gap-4 w-max scroller__inner">
+        {% for item in animals %}{{ render_gallery_item(item, item.name, item.description) }}{% endfor %}
+      </ul>
     </div>
   </div>
   <div class="relative flex flex-col py-12 md:py-16 lg:py-20 px-6 space-y-12 items-center justify-center w-full min-h-[40vh] overflow-hidden">
@@ -97,28 +90,4 @@
       </div>
     </div>
   </div>
-  <script>
-    const galleryAnimalsItems = document.querySelector(".gallery__animals--items")
-    const galleryAnimalsLeftButton = document.querySelector(".gallery__animals--left-button")
-    const galleryAnimalsRightButton = document.querySelector(".gallery__animals--right-button")
-
-    
-    function scrollToLeft(element){
-      element.scrollBy(-330, 0)
-    }
-    
-    function scrollToRight(element){
-      element.scrollBy(330, 0)
-    }
-
-    galleryAnimalsLeftButton.addEventListener("click", () => {
-      scrollToLeft(galleryAnimalsItems)
-    })
-    galleryAnimalsRightButton.addEventListener("click", () => {
-      scrollToRight(galleryAnimalsItems)
-    })
-    
-    
-
-  </script>
 {% endblock content %}
