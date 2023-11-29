@@ -61,6 +61,18 @@ class User(UserMixin):
 
         return cur.lastrowid
     
+    @classmethod
+    def update_email(cls, email, user_id):
+        sql = """
+            UPDATE user
+            SET email = %(email)s
+            WHERE id = %(user_id)s
+        """
+
+        cur = db.new_cursor(dictionary=True)
+        cur.execute(sql, {'email': email, 'user_id': user_id})
+        db.connection.commit()
+
 
     @staticmethod
     def set_is_verified(user_id):

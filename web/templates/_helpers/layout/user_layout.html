@@ -7,19 +7,21 @@
       { 'name': 'My Donations', 'url': url_for('user.donations'), 'icon': 'fa-solid fa-hand-holding-heart', 'page': 'user.donations'},
     ] %}
   <div class="flex w-full min-h-screen">
-    <aside class="max-w-[320px] p-4 w-full border-r min-h-screen">
-      <ul class="w-full space-y-2">
-        {% for navigation in navigations %}
-          <li>
-            <a href="{{ navigation.url }}"
-               class="flex items-center gap-3 p-4 font-medium rounded-lg cursor-pointer hover:bg-gray-50 {{ 'font-bold text-primary-500 bg-gray-50' if active_page == navigation.page else '' }}">
-              <i class="{{ navigation.icon }}"></i>
-              {{ navigation.name }}
-            </a>
-          </li>
-        {% endfor %}
-      </ul>
-    </aside>
+    {% if current_user.is_verified %}
+      <aside class="max-w-[320px] p-4 w-full border-r min-h-screen">
+        <ul class="w-full space-y-2">
+          {% for navigation in navigations %}
+            <li>
+              <a href="{{ navigation.url }}"
+                 class="flex items-center gap-3 p-4 font-medium rounded-lg cursor-pointer hover:bg-gray-50 {{ 'font-bold text-primary-500 bg-gray-50' if active_page == navigation.page else '' }}">
+                <i class="{{ navigation.icon }}"></i>
+                {{ navigation.name }}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </aside>
+    {% endif %}
     <div class="flex-1 w-full min-h-screen">
       {% block content %}
       {% endblock content %}

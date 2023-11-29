@@ -7,10 +7,10 @@
           50%  { scale: 1; }
           100% { opacity: 0; transform: translateY(30px) scale(0); }
         }
-
         .hideMe {
           animation: smoothFadeOut 0.5s cubic-bezier(0.455, 0.03, 0.515, 0.955);     
         }
+        
       </style>
       <div class="toast toast-center toast-top" id="toastContainer">
         {% for category, message in messages %}

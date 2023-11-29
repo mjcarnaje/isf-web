@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Iligan Stray Feeder</title>
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+      .font-bold {
+        font-family: 'Libre Franklin', sans-serif;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="font-bold" style="font-weight: bold;">Hi, {{ user.first_name }}</h1>
+    <p>
+      Click the following link to verify your email: <a href='{{ verification_link }}'
+    style="color: blue;
+           text-decoration: underline">Click here</a>
+    </p>
+  </body>
+</html>

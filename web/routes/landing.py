@@ -9,7 +9,7 @@ from ..utils import (anonymous_required, check_verification_token,
                      generate_verification_token, send_verification_email,
                      user_verified_required)
 from ..validations import (AddDonation_In_Kind, AddDonationMoney,
-                           AdoptApplicationValidation, UserLoginValidation,
+                           NewEmailValidation, UserLoginValidation,
                            UserSignupValidation)
 
 landing_bp = Blueprint("landing", __name__)
@@ -151,10 +151,33 @@ def verify_account():
     if request.method == 'POST':
         current_app.logger.info('Requesting another token..')
         token = generate_verification_token(user_id=current_user.id, email=current_user.email)
-        send_verification_email(email=current_user.email, token=token)
+        send_verification_email(email=current_user.email, token=token, user=current_user)
         flash('Email is sent!', 'success')
       
     return render_template('/landing/verify_account.html', is_expired=False)
+
+@landing_bp.route('/enter-new-email', methods=['GET', 'POST'])
+@login_required
+def enter_new_email():
+    if current_user.is_verified:
+      return redirect(url_for('user.index'))
+
+    form = NewEmailValidation()
+    
+    form.id.data = current_user.id
+    form.old_email.data = current_user.email
+
+    if form.validate_on_submit():
+      user_id = current_user.id
+      new_email = form.email.data
+      User.update_email(email=new_email, user_id=user_id)
+      token = generate_verification_token(user_id=user_id, email=new_email)
+      send_verification_email(email=new_email, token=token, user=current_user)
+
+      flash('Successfuly update your email', 'success')
+      return redirect(url_for('landing.verify_account'))
+
+    return render_template('/landing/enter_new_email.html', form=form)
 
 
 @landing_bp.route('/login', methods=['GET', 'POST'])
@@ -198,7 +221,7 @@ def sign_up():
     user_id = User.insert(new_user)
     UserRole.insert_user_role_by_name(user_id=user_id, role_name="member")
     token = generate_verification_token(user_id=user_id, email=new_user.email)
-    send_verification_email(email=new_user.email, token=token)
+    send_verification_email(email=new_user.email, token=token, current_user=new_user)
 
     return redirect(url_for('landing.login'))
 
