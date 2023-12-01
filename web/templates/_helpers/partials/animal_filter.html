@@ -1,0 +1,165 @@
+{% block animal_filter %}
+  <dialog id="filters" class="modal modal-bottom sm:modal-middle">
+    <form id="filter-form" class="modal-box">
+      <div class="pb-4 border-b">
+        <h3 class="text-lg font-bold">Filters</h3>
+      </div>
+      <div class="flex flex-col gap-6 pt-4">
+        <div class="flex flex-col gap-2">
+          <label class="label-text">Gender</label>
+          <div class="relative">
+            <select class="w-full text-md select select-bordered" name="gender">
+              <option value="">Select Gender</option>
+              <option value="Male" {% if filters.gender == "Male" %}selected{% endif %}>Male</option>
+              <option value="Female" {% if filters.gender == "Female" %}selected{% endif %}>Female</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex flex-col gap-2">
+          <label class="label-text">Animal Type</label>
+          <div class="relative">
+            <select class="w-full text-md select select-bordered" name="type">
+              <option value="">Select Type</option>
+              <option value="Dog" {% if filters.type == "Dog" %}selected{% endif %}>Dog</option>
+              <option value="Cat" {% if filters.type == "Cat" %}selected{% endif %}>Cat</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex flex-col gap-2">
+          <label class="label-text">Status</label>
+          <div class="grid grid-cols-2 gap-4">
+            <label class="justify-start gap-4 cursor-pointer label">
+              <input name="for_adoption"
+                     type="checkbox"
+                     {% if filters.for_adoption is true %}checked='checked'{% endif %}
+                     class="checkbox" />
+              <span class="label-text">For Adoption</span>
+            </label>
+            <label class="justify-start gap-4 cursor-pointer label">
+              <input name="is_rescued"
+                     type="checkbox"
+                     {% if filters.is_rescued is true %}checked='checked'{% endif %}
+                     class="checkbox" />
+              <span class="label-text">Rescued</span>
+            </label>
+            <label class="justify-start gap-4 cursor-pointer label">
+              <input name="is_dead"
+                     type="checkbox"
+                     {% if filters.is_dead is true %}checked='checked'{% endif %}
+                     class="checkbox" />
+              <span class="label-text">Deceased</span>
+            </label>
+            <label class="justify-start gap-4 cursor-pointer label">
+              <input name="is_dewormed"
+                     type="checkbox"
+                     {% if filters.is_dewormed is true %}checked='checked'{% endif %}
+                     class="checkbox" />
+              <span class="label-text">Dewormed</span>
+            </label>
+            <label class="justify-start gap-4 cursor-pointer label">
+              <input name="is_neutered"
+                     type="checkbox"
+                     {% if filters.is_neutered is true %}checked='checked'{% endif %}
+                     class="checkbox" />
+              <span class="label-text">Neutered</span>
+            </label>
+            <label class="justify-start gap-4 cursor-pointer label">
+              <input name="in_shelter"
+                     type="checkbox"
+                     {% if filters.in_shelter is true %}checked='checked'{% endif %}
+                     class="checkbox" />
+              <span class="label-text">Shelter</span>
+            </label>
+            <label class="justify-start gap-4 cursor-pointer label">
+              <input name="is_adopted"
+                     type="checkbox"
+                     {% if filters.is_adopted is true %}checked='checked'{% endif %}
+                     class="checkbox" />
+              <span class="label-text">Adoption</span>
+            </label>
+          </div>
+        </div>
+        <div class="modal-action">
+          <form method="dialog">
+            <button type="button" id="reset-filter-form" class="btn">Clear Filter</button>
+            <button class="btn">Save Filter</button>
+          </form>
+        </div>
+      </div>
+    </form>
+  </dialog>
+  <div class="flex items-center justify-between gap-4">
+    <form id="search-form"  class="flex items-center gap-4">
+      <input class="input input-bordered"
+             placeholder="Search by name"
+             value="{{ filters.query }}"
+             name="query" />
+      <button id="search-btn" type="submit" class="btn">Search</button>
+    </form>
+    <button class="relative text-gray-700 btn btn-sm"
+            onclick="filters.showModal()">
+      {% if active_filters == 0 %}
+        <i class="fa-solid fa-filter"></i>
+      {% else %}
+        <div class="flex items-center justify-center w-4 h-4 rounded-full bg-primary-500">
+          <span class="text-xs font-medium text-white">{{ active_filters }}</span>
+        </div>
+      {% endif %}
+      Filters
+    </button>
+  </div>
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const filterForm = document.getElementById('filter-form');
+    const searchForm = document.getElementById('search-form');
+    const resetFilterForm = document.getElementById('reset-filter-form')
+
+    resetFilterForm.addEventListener('click', () => {
+      const filterFormData = new FormData(filterForm);
+      const url = new URL(window.location.href);
+      const params = new URLSearchParams(window.location.search);
+      filterFormData.forEach((item, key) => {
+        if (params.get(key)){
+          params.delete(key)
+        }
+      })
+      url.search = params;
+      window.location.href = url;
+    })
+    
+    function setParams() {
+      const filterFormData = new FormData(filterForm);
+      const searchFormData = new FormData(searchForm);
+
+      const filteredFormData = {};
+
+      filterFormData.forEach((value, key) => {
+        if (value !== "") {
+          filteredFormData[key] = value;
+        }
+      });
+
+      searchFormData.forEach((value, key) => {
+        if (value !== "") {
+          filteredFormData[key] = value;
+        }
+      });
+
+      const url = new URL(window.location.href);
+      const params = new URLSearchParams(filteredFormData);
+      url.search = params;
+      window.location.href = url;
+    }
+  
+    filterForm.addEventListener("submit", function(event) {
+      event.preventDefault();
+      setParams()
+    });
+
+    searchForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      setParams()
+    });
+  });
+  </script>
+{% endblock animal_filter %}

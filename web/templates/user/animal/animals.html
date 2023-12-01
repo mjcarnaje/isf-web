@@ -1,99 +1,23 @@
 {% set active_page = "user.animal.animals" %}
 {% extends "./_helpers/layout/user_layout.html" %}
+{% from "./_helpers/macros/render_animal_cards.html" import render_animal_cards with context %}
+{% from "./_helpers/macros/render_animal_tables.html" import render_animal_tables with context %}
 {% block title %}
-  Animals
+  User - Animals
 {% endblock title %}
 {% block content %}
-  <div class="w-full max-w-4xl py-16 mx-auto space-y-8">
-    <form class="flex flex-col gap-4">
-      <input class="input input-bordered" placeholder="Search by name" value="{{query}}" name="query" />
-      <div class="relative">
-        <select class="w-full text-md select select-bordered" name="gender">
-          <option value="">Select Gender</option>
-          <option value="Male" {% if gender == "Male" %} selected {% endif %} >
-            Male
-          </option>
-          <option value="Female" {% if gender == "Female" %} selected {% endif %}>
-            Female
-          </option>
-        </select>
+  <div class="w-full max-w-5xl px-4 py-16 mx-auto space-y-8">
+    {% include "./_helpers/partials/animal_filter.html" %}
+    <div class="sm:flex sm:items-center">
+      <div class="sm:flex-auto">
+        <h1 class="text-2xl font-bold leading-6 text-gray-900">Animals ({{ total_count }})</h1>
       </div>
-      <div class="relative">
-        <select class="w-full text-md select select-bordered" name="type">
-          <option value="">Select Type</option>
-          <option value="Dog" {% if type == "Dog" %} selected {% endif %} >
-            Dog
-          </option>
-          <option value="Cat" {% if type == "Cat" %} selected {% endif %}>
-            Cat
-          </option>
-        </select>
-      </div>
-      <div class="grid grid-cols-2 gap-4">
-        <label class="cursor-pointer label">
-          <span class="label-text">For Adoption</span> 
-          <input name="for_adoption" type="checkbox" {% if for_adoption is true %}checked='checked'{% endif %} class="checkbox" />
-        </label>
-        <label class="cursor-pointer label">
-          <span class="label-text">Rescued</span> 
-          <input name="is_rescued" type="checkbox" {% if is_rescued is true %}checked='checked'{% endif %} class="checkbox" />
-        </label>
-        <label class="cursor-pointer label">
-          <span class="label-text">Deceased</span> 
-          <input name="is_dead" type="checkbox" {% if is_dead is true %}checked='checked'{% endif %} class="checkbox" />
-        </label>
-        <label class="cursor-pointer label">
-          <span class="label-text">Dewormed</span> 
-          <input name="is_dewormed" type="checkbox" {% if is_dewormed is true %}checked='checked'{% endif %} class="checkbox" />
-        </label>
-        <label class="cursor-pointer label">
-          <span class="label-text">Neutered</span> 
-          <input name="is_neutered" type="checkbox" {% if is_neutered is true %}checked='checked'{% endif %} class="checkbox" />
-        </label>
-        <label class="cursor-pointer label">
-          <span class="label-text">Shelter</span> 
-          <input name="in_shelter" type="checkbox" {% if in_shelter is true %}checked='checked'{% endif %} class="checkbox" />
-        </label>
-        <label class="cursor-pointer label">
-          <span class="label-text">Adoption</span> 
-          <input name="is_adopted" type="checkbox" {% if is_adopted is true %}checked='checked'{% endif %} class="checkbox" />
-        </label>
-      </div>
-      <button class="btn">
-        Search
-      </button>
-    </form>
-    <div class="grid w-full grid-cols-3 gap-8 mx-auto">
-      {% for animal in animals %}
-        <div class="flex flex-col bg-white border cursor-pointer group rounded-xl hover:shadow-sm">
-          <a href="{{ url_for('user.animal.view_animal', id=animal.id) }}">
-            <div class="h-full overflow-hidden border-b aspect-square rounded-t-xl">
-              <img class="object-cover h-full transition-all duration-300 group-hover:scale-105"
-                   src="{{ get_image(animal.photo_url) }}"
-                   alt="Animal Photo"
-                   width="auto"
-                   height="auto" />
-            </div>
-          </a>
-          <div class="flex-1 py-2 px-3 space-y-0.5">
-            <div class="flex items-center justify-between">
-              <a href="{{ url_for('user.animal.view_animal', id=animal.id) }}"
-                 class="text-xl font-bold text-primary-500">{{ animal.name }}</a>
-            </div>
-            <p class="text-gray-600">{{ animal.description | truncate(60) }}</p>
-          </div>
-        </div>
-      {% endfor %}
+      {% include "./_helpers/partials/view_form.html" %}
     </div>
-    <div class="flex justify-center">
-      <div class="join">
-        <a href="{{ url_for('user.animal.animals', page=page_number - 1) }}"
-           class="join-item btn {{ 'btn-disabled' if not has_previous_page }}">«</a>
-        <p class="join-item btn">Page {{ page_number }}</p>
-        <a href="{{ url_for('user.animal.animals', page=page_number + 1) }}"
-           class="join-item btn {{ 'btn-disabled' if not has_next_page }}">»</a>
-      </div>
-    </div>
+    {% if view_type == "card" %}
+      {{ render_animal_cards(animals) }}
+    {% else %}
+      {{ render_animal_tables(animals) }}
+    {% endif %}
   </div>
-  
 {% endblock content %}

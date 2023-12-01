@@ -1,0 +1,38 @@
+{% block view_form %}
+  <form id="view-form">
+    <div class="grid grid-cols-2 gap-2">
+      <label class="flex items-center justify-center px-3 py-3 text-sm font-semibold uppercase rounded-md cursor-pointer sm:flex-1 focus:outline-none {% if view_type == 'card' %} bg-primary-600 text-white hover:bg-primary-500 {% else %} ring-1 ring-inset ring-gray-300 bg-white text-gray-900 hover:bg-gray-50 {% endif %}">
+        <input type="radio"
+               name="view_type"
+               value="card"
+               class="sr-only"
+               aria-labelledby="view_type-1-label">
+        <span id="view_type-2-label"><i class="fa-solid fa-grip"></i></span>
+      </label>
+      <label class="flex items-center justify-center px-3 py-3 text-sm font-semibold uppercase rounded-md cursor-pointer sm:flex-1 focus:outline-none {% if view_type == 'table' %} bg-primary-600 text-white hover:bg-primary-500 {% else %} ring-1 ring-inset ring-gray-300 bg-white text-gray-900 hover:bg-gray-50 {% endif %}">
+        <input type="radio"
+               name="view_type"
+               value="table"
+               class="sr-only"
+               aria-labelledby="view_type-2-label">
+        <span id="view_type-3-label"><i class="fa-solid fa-list-ul"></i></span>
+      </label>
+    </div>
+  </form>
+  <script>
+  const viewForm = document.getElementById("view-form");
+  const radios = document.querySelectorAll("[name='view_type']")
+  
+  radios.forEach((radio) => {
+    radio.addEventListener("change", () => {
+    const existingQueryStrings = window.location.search;
+    const existingUrlParams = new URLSearchParams(existingQueryStrings);
+    const formData = new FormData(viewForm);
+    existingUrlParams.set("view_type", formData.get("view_type"));
+    const url = new URL(window.location.href);
+    url.search = existingUrlParams;
+    window.location.href = url;
+    })
+  })
+  </script>
+{% endblock view_form %}

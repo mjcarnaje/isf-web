@@ -101,18 +101,19 @@ class Animal():
 
 
     @staticmethod
-    def find_all(page_number: int, page_size: int, query: str = None, filters: dict = None):
+    def find_all(page_number: int, page_size: int, filters: dict = None):
         offset = (page_number - 1) * page_size
 
         where_clauses = []
         filter_params = []
 
-        if query:
-            where_clauses.append("name LIKE %s")
-            filter_params.append(f"%{query}%")
-
-        if filters:
+        if filters: 
             for key, value in filters.items():
+                if key == "query":
+                    where_clauses.append("name LIKE %s")
+                    filter_params.append(f"%{value}%")
+                    continue
+    
                 if value:
                     where_clauses.append(f"{key} = %s")
                     filter_params.append(value)
