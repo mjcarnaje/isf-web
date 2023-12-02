@@ -1,17 +1,17 @@
-from flask import Blueprint, redirect, render_template, request, url_for
+from flask import Blueprint, redirect, render_template, request, url_for, session
 from flask_login import current_user
 
 from ...models import Animal, AdoptionApplication
 from ...utils import admin_required, get_active_filter_count
 from ...validations import AddAnimalValidation, EditAnimalValidation
 
-admin_animal_bp = Blueprint("animal", __name__, url_prefix='/animal')
+admin_animal_bp = Blueprint("animals", __name__, url_prefix='/animal')
 
 @admin_animal_bp.route('', methods=['GET'])
 @admin_required
 def animals():
     page = request.args.get('page', 1, type=int)
-    view_type = request.args.get('view_type', 'table', type=str)
+    view_type = session.get('view_type')
 
     filters = {
         'query': request.args.get('query', '', type=str),
@@ -70,25 +70,25 @@ def adoption_applications_animal(id):
 def set_under_review(id, user_id):
     print(id, user_id)
     AdoptionApplication.set_under_review(animal_id=id, user_id=user_id)
-    return redirect(url_for('admin.animal.adoption_applications_animal', id=id))
+    return redirect(url_for('admin.animals.adoption_applications_animal', id=id))
 
 @admin_animal_bp.route('/adoption-animals/<int:id>/approve/<int:user_id>', methods=['POST'])
 @admin_required
 def set_approved(id, user_id):
     AdoptionApplication.set_approved_and_reject_others(animal_id=id, user_id=user_id)
-    return redirect(url_for('admin.animal.adoption_applications_animal', id=id))
+    return redirect(url_for('admin.animals.adoption_applications_animal', id=id))
 
 @admin_animal_bp.route('/adoption-animals/<int:id>/turnover/<int:user_id>', methods=['POST'])
 @admin_required
 def set_turnovered(id, user_id):
     AdoptionApplication.set_turnovered(animal_id=id, user_id=user_id)
-    return redirect(url_for('admin.animal.adoption_applications_animal', id=id))
+    return redirect(url_for('admin.animals.adoption_applications_animal', id=id))
 
 @admin_animal_bp.route('/adoption-animals/<int:id>/reject/<int:user_id>', methods=['POST'])
 @admin_required
 def set_rejected(id, user_id):
     AdoptionApplication.set_rejected(animal_id=id, user_id=user_id)
-    return redirect(url_for('admin.animal.adoption_applications_animal', id=id))
+    return redirect(url_for('admin.animals.adoption_applications_animal', id=id))
 
 
 @admin_animal_bp.route('/<int:id>', methods=['GET'])
@@ -140,7 +140,7 @@ def add_animal():
     )
 
     if animal_id:
-       return redirect(url_for('admin.animal.animals'))
+       return redirect(url_for('admin.animals.animals'))
 
 
   return render_template('admin/animal/add.html', form=form)
@@ -170,7 +170,7 @@ def edit_animal(id):
 
         Animal.edit(animal)
         
-        return redirect(url_for("admin.animal.animals"))
+        return redirect(url_for("admin.animals.animals"))
     
     if not form.is_submitted():
         form.id.data = animal.id

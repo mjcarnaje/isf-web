@@ -1,5 +1,8 @@
 {% set active_page = "rescue" %}
+{% from "./_helpers/macros/render_animal_cards.html" import render_animal_cards with context %}
+{% from "./_helpers/macros/render_animal_tables.html" import render_animal_tables with context %}
 {% extends "./_helpers/layout/main_layout.html" %}
+{% from "./_helpers/macros/render_animal_filter.html" import render_animal_filter with context %}
 {% block title %}
   Rescues
 {% endblock title %}
@@ -11,39 +14,19 @@
         Our rescued animals embody tales of resilience and hope, each with a unique narrative of survival and second chances. These remarkable beings have found sanctuary in our care, having triumphed over adversity ranging from abandonment and neglect to abuse. From the gentle, trusting eyes of once-abandoned dogs to the graceful movements of formerly mistreated horses, our rescued animals showcase the transformative power of compassion. In our haven, they receive the love, attention, and rehabilitation they deserve, blossoming into vibrant testimonies of the positive impact that dedicated care can have on the lives of those who have endured hardship. Through our commitment to their well-being, we provide a haven where these creatures can rediscover joy, trust, and the simple pleasures of a life filled with compassion.
       </p>
     </div>
-    <div class="w-full max-w-5xl py-16 mx-auto space-y-8">
-      {% include "./_helpers/partials/animal_filter.html" %}
-      <div class="grid w-full grid-cols-3 gap-8 mx-auto">
-        {% for animal in animals %}
-          <div class="flex flex-col bg-white border cursor-pointer group rounded-xl hover:shadow-sm">
-            <a href="{{ url_for('landing.view_animal', id=animal.id) }}">
-              <div class="h-full overflow-hidden border-b aspect-square rounded-t-xl">
-                <img class="object-cover h-full transition-all duration-300 group-hover:scale-105"
-                     src="{{ get_image(animal.photo_url) }}"
-                     alt="Animal Photo"
-                     width="auto"
-                     height="auto" />
-              </div>
-            </a>
-            <div class="flex-1 py-2 px-3 space-y-0.5">
-              <div class="flex items-center justify-between">
-                <a href="{{ url_for('landing.view_animal', id=animal.id) }}"
-                   class="text-xl font-bold text-primary-800">{{ animal.name }}</a>
-              </div>
-              <p class="text-gray-600">{{ animal.description | truncate(60) }}</p>
-            </div>
-          </div>
-        {% endfor %}
-      </div>
-      <div class="flex justify-center">
-        <div class="join">
-          <a href="{{ url_for('landing.animals', page=page_number - 1) }}"
-             class="join-item btn {{ 'btn-disabled' if not has_previous_page }}">«</a>
-          <p class="join-item btn">Page {{ page_number }}</p>
-          <a href="{{ url_for('landing.animals', page=page_number + 1) }}"
-             class="join-item btn {{ 'btn-disabled' if not has_next_page }}">»</a>
+    <div class="w-full max-w-5xl px-4 py-16 mx-auto space-y-8">
+      {{ render_animal_filter(true) }}
+      <div class="sm:flex sm:items-center">
+        <div class="sm:flex-auto">
+          <h1 class="text-2xl font-bold leading-6 text-gray-900">Animals ({{ total_count }})</h1>
         </div>
+        {% include "./_helpers/partials/view_form.html" %}
       </div>
+      {% if view_type == "card" %}
+        {{ render_animal_cards(animals, false) }}
+      {% else %}
+        {{ render_animal_tables(animals, false) }}
+      {% endif %}
     </div>
   </div>
 {% endblock content %}

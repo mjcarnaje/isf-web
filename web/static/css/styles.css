@@ -3296,20 +3296,6 @@ details.collapse summary::-webkit-details-marker {
   margin: auto;
 }
 
-.m-1 {
-  margin: 0.25rem;
-}
-
-.-mx-4 {
-  margin-left: -1rem;
-  margin-right: -1rem;
-}
-
-.-my-2 {
-  margin-top: -0.5rem;
-  margin-bottom: -0.5rem;
-}
-
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
@@ -3338,10 +3324,6 @@ details.collapse summary::-webkit-details-marker {
 
 .mt-3 {
   margin-top: 0.75rem;
-}
-
-.mt-8 {
-  margin-top: 2rem;
 }
 
 .block {
@@ -3712,6 +3694,10 @@ details.collapse summary::-webkit-details-marker {
 
 .gap-y-12 {
   row-gap: 3rem;
+}
+
+.gap-y-5 {
+  row-gap: 1.25rem;
 }
 
 .space-x-3 > :not([hidden]) ~ :not([hidden]) {
@@ -4172,10 +4158,6 @@ details.collapse summary::-webkit-details-marker {
   text-align: justify;
 }
 
-.align-middle {
-  vertical-align: middle;
-}
-
 .text-2xl {
   font-size: 1.5rem;
   line-height: 2rem;
@@ -4557,11 +4539,6 @@ details.collapse summary::-webkit-details-marker {
   color: rgb(223 118 13 / var(--tw-text-opacity)) !important;
 }
 
-.hover\:text-primary-900:hover {
-  --tw-text-opacity: 1;
-  color: rgb(203 107 12 / var(--tw-text-opacity));
-}
-
 .hover\:text-opacity-80:hover {
   --tw-text-opacity: 0.8;
 }
@@ -4598,11 +4575,6 @@ details.collapse summary::-webkit-details-marker {
 }
 
 @media (min-width: 640px) {
-  .sm\:-mx-6 {
-    margin-left: -1.5rem;
-    margin-right: -1.5rem;
-  }
-
   .sm\:flex {
     display: flex;
   }
@@ -4617,11 +4589,6 @@ details.collapse summary::-webkit-details-marker {
 
   .sm\:items-center {
     align-items: center;
-  }
-
-  .sm\:px-6 {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
   }
 
   .sm\:pl-0 {
@@ -4699,11 +4666,6 @@ details.collapse summary::-webkit-details-marker {
 }
 
 @media (min-width: 1024px) {
-  .lg\:-mx-8 {
-    margin-left: -2rem;
-    margin-right: -2rem;
-  }
-
   .lg\:space-y-20 > :not([hidden]) ~ :not([hidden]) {
     --tw-space-y-reverse: 0;
     margin-top: calc(5rem * calc(1 - var(--tw-space-y-reverse)));
@@ -4713,11 +4675,6 @@ details.collapse summary::-webkit-details-marker {
   .lg\:px-12 {
     padding-left: 3rem;
     padding-right: 3rem;
-  }
-
-  .lg\:px-8 {
-    padding-left: 2rem;
-    padding-right: 2rem;
   }
 
   .lg\:py-12 {

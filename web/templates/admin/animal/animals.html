@@ -1,23 +1,17 @@
-{% set active_page = "admin.animal.animals" %}
+{% set active_page = "admin.animals.animals" %}
 {% extends "./_helpers/layout/admin_layout.html" %}
 {% from "./_helpers/macros/render_animal_cards.html" import render_animal_cards with context %}
 {% from "./_helpers/macros/render_animal_tables.html" import render_animal_tables with context %}
+{% from "./_helpers/macros/render_animal_filter.html" import render_animal_filter with context %}
 {% block title %}
   Admin - Animals
 {% endblock title %}
 {% block content %}
-  <div class="w-full max-w-4xl py-16 mx-auto space-y-8">
-    <form class="flex flex-col gap-4">
-      <input class="input input-bordered"
-             placeholder="Search by name"
-             value="{{ query }}"
-             name="query" />
-      <div class="relative">
-        <select class="w-full text-md select select-bordered" name="gender">
-          <option value="">Select Gender</option>
-          <option value="Male" {% if gender == "Male" %}selected{% endif %}>Male</option>
-          <option value="Female" {% if gender == "Female" %}selected{% endif %}>Female</option>
-        </select>
+  <div class="w-full max-w-5xl px-4 py-16 mx-auto space-y-8">
+    {{ render_animal_filter(true) }}
+    <div class="sm:flex sm:items-center">
+      <div class="sm:flex-auto">
+        <h1 class="text-2xl font-bold leading-6 text-gray-900">Animals ({{ total_count }})</h1>
       </div>
       <div class="relative">
         <select class="w-full text-md select select-bordered" name="type">
@@ -131,9 +125,9 @@
       {% endfor %}
     </div>
     {% if view_type == "card" %}
-      {{ render_animal_cards(animals) }}
+      {{ render_animal_cards(animals, true) }}
     {% else %}
-      {{ render_animal_tables(animals) }}
+      {{ render_animal_tables(animals, true) }}
     {% endif %}
   </div>
 {% endblock content %}

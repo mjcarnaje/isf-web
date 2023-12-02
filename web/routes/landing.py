@@ -1,13 +1,13 @@
 from flask import (Blueprint, current_app, flash, redirect, render_template,
-                   request, url_for)
+                   request, session, url_for)
 from flask_login import current_user, login_required, login_user
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from ..models import (AdoptionApplication, Animal, Donation, Event, User,
                       UserRole)
 from ..utils import (anonymous_required, check_verification_token,
-                     generate_verification_token, send_verification_email,
-                     user_verified_required, get_active_filter_count)
+                     generate_verification_token, get_active_filter_count,
+                     send_verification_email, user_verified_required)
 from ..validations import (AddDonation_In_Kind, AddDonationMoney,
                            NewEmailValidation, UserLoginValidation,
                            UserSignupValidation)
@@ -50,6 +50,8 @@ def adopt():
 @anonymous_required
 def animals():
   page = request.args.get('page', 1, type=int)
+  view_type = session.get('view_type')
+  
   filters = {
       'query': request.args.get('query', '', type=str),
       'for_adoption': request.args.get('for_adoption') == 'on',
@@ -82,7 +84,8 @@ def animals():
                           has_next_page=has_next_page, 
                           total_count=total_count,
                           filters=filters,
-                          active_filters=get_active_filter_count(filters)
+                          active_filters=get_active_filter_count(filters),
+                          view_type=view_type
                           )
 
 @landing_bp.route('/<int:id>', methods=['GET'])
@@ -253,4 +256,11 @@ def sign_up():
 
 
   return render_template('user/sign_up.html', form=form)
+
+
+@landing_bp.route("/set_view_type/<string:view_type>", methods=['POST'])
+def set_view_type(view_type):
+  session['view_type'] = view_type
+  current_app.logger.info("Done setting view type")
+  return 'ok'
 

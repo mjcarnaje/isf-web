@@ -1,20 +1,27 @@
-{% macro render_animal_cards(animals) %}
-  <dialog id="delete-modal-card" class="z-20 modal">
-    <div class="bg-white modal-box">
-      <h3 class="text-lg font-bold">Delete Animal</h3>
-      <p class="py-4">Are you sure you want to delete this animal?</p>
-      <div class="modal-action">
-        <form method="dialog">
-          <button class="btn">Cancel</button>
-        </form>
-        <button id="delete-anyway-card" class="text-white btn btn-error">Delete Anyway</button>
+{% macro render_animal_cards(animals, is_admin) %}
+  {% if is_admin %}
+    <dialog id="delete-modal-card" class="z-20 modal">
+      <div class="bg-white modal-box">
+        <h3 class="text-lg font-bold">Delete Animal</h3>
+        <p class="py-4">Are you sure you want to delete this animal?</p>
+        <div class="modal-action">
+          <form method="dialog">
+            <button class="btn">Cancel</button>
+          </form>
+          <button id="delete-anyway-card" class="text-white btn btn-error">Delete Anyway</button>
+        </div>
       </div>
-    </div>
-  </dialog>
+    </dialog>
+  {% endif %}
   <div class="grid w-full grid-cols-4 gap-10 mx-auto">
     {% for animal in animals %}
+      {% if is_admin %}
+        {% set href = url_for('admin.animals.view_animal', id=animal.id) %}
+      {% else %}
+        {% set href = url_for('user.animals.view_animal', id=animal.id) %}
+      {% endif %}
       <div class="flex flex-col cursor-pointer group">
-        <a href="{{ url_for('admin.animal.view_animal', id=animal.id) }}">
+        <a href="{{ href }}">
           <div class="h-full overflow-hidden border aspect-square rounded-xl">
             <img class="object-cover h-full transition-all duration-300 group-hover:scale-105"
                  src="{{ get_image(animal.photo_url) }}"
@@ -25,31 +32,43 @@
         </a>
         <div class="flex-1 py-2 space-y-0.5">
           <div class="flex items-center justify-between">
-            <a href="{{ url_for('admin.animal.view_animal', id=animal.id) }}"
-               class="text-lg font-bold">{{ animal.name }}</a>
-            <div class="dropdown">
-              <label tabindex="0">
-                <div class="flex items-center justify-center w-6 h-6 rounded-full cursor-pointer hover:bg-gray-300 aspect-square">
-                  <i class="fa-solid fa-ellipsis"></i>
-                </div>
-              </label>
-              <ul tabindex="0"
-                  class="dropdown-content z-[1] menu p-2 border bg-base-100 rounded-box w-32">
-                <li>
-                  <a href="{{ url_for('admin.animal.edit_animal', id=animal.id) }}">Edit</a>
-                </li>
-                <li>
-                  <button id="open-delete-modal-card" data-animal-id="{{ animal.id }}">Delete</button>
-                </li>
-              </ul>
-            </div>
+            <a href="{{ href }}" class="text-lg font-bold">{{ animal.name }}</a>
+            {% if is_admin %}
+              <div class="dropdown">
+                <label tabindex="0">
+                  <div class="flex items-center justify-center w-6 h-6 rounded-full cursor-pointer hover:bg-gray-300 aspect-square">
+                    <i class="fa-solid fa-ellipsis"></i>
+                  </div>
+                </label>
+                <ul tabindex="0"
+                    class="dropdown-content z-[1] menu p-2 border bg-base-100 rounded-box w-32">
+                  <li>
+                    <a href="{{ url_for('admin.animals.edit_animal', id=animal.id) }}">Edit</a>
+                  </li>
+                  <li>
+                    <button id="open-delete-modal-card" data-animal-id="{{ animal.id }}">Delete</button>
+                  </li>
+                </ul>
+              </div>
+            {% endif %}
           </div>
           <p class="text-sm text-gray-600">{{ animal.description | truncate(60) }}</p>
         </div>
       </div>
     {% endfor %}
   </div>
-  <script>
+  {% if animals | length == 0 %}
+    <div class="flex flex-col items-center justify-center gap-8 p-12 my-16">
+      <img class="w-full max-w-sm"
+           src="{{ url_for('static', filename='images/empty_list.png') }}"
+           alt="Kid hugging her dog"
+           width="auto"
+           height="auto" />
+      <h3 class="text-lg font-medium">No Animal Found.</h3>
+    </div>
+  {% endif %}
+  {% if is_admin %}
+    <script>
     const deleteButtons = document.getElementById("open-delete-modal-card");
     const deleteModal = document.getElementById("delete-modal-card")
     const deleteAnyway = document.getElementById("delete-anyway-card")
@@ -58,7 +77,7 @@
       deleteButton.addEventListener("click", function () {
         deleteModal.showModal();
         deleteAnyway.addEventListener("click", async function () {
-          await fetch(`/admin.animal.${deleteButton.dataset.animalId}/delete`, {
+          await fetch(`/admin.animals.${deleteButton.dataset.animalId}/delete`, {
             method: "DELETE",
             headers: {
               "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
@@ -68,5 +87,6 @@
         });
       });
     });
-  </script>
+    </script>
+  {% endif %}
 {% endmacro %}

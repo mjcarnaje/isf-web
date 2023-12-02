@@ -25,13 +25,13 @@
   
   radios.forEach((radio) => {
     radio.addEventListener("change", () => {
-    const existingQueryStrings = window.location.search;
-    const existingUrlParams = new URLSearchParams(existingQueryStrings);
-    const formData = new FormData(viewForm);
-    existingUrlParams.set("view_type", formData.get("view_type"));
-    const url = new URL(window.location.href);
-    url.search = existingUrlParams;
-    window.location.href = url;
+      fetch(`/set_view_type/${radio.value}`, {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
+        },
+      })
+      .then(() => window.location.reload())
     })
   })
   </script>

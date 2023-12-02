@@ -1,14 +1,14 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, session
 from ...models import Animal
 from ...utils import user_verified_required, get_active_filter_count
 
-user_animal_bp = Blueprint("animal", __name__, url_prefix='/animal')
+user_animal_bp = Blueprint("animals", __name__, url_prefix='/animal')
 
 @user_animal_bp.route('', methods=['GET'])
 @user_verified_required
 def animals():
     page = request.args.get('page', 1, type=int)
-    view_type = request.args.get('view_type', 'table', type=str)
+    view_type = session.get('view_type')
 
     filters = {
         'query': request.args.get('query', '', type=str),
@@ -50,4 +50,38 @@ def animals():
 def view_animal(id):
   animal = Animal.find_by_id(id)
   return render_template('/user/animal/animal.html', animal=animal)  
-  
+
+@user_animal_bp.route('/adoptions', methods=['GET'])
+@user_verified_required
+def adoptions():
+    page = request.args.get('page', 1, type=int)
+    view_type = session.get('view_type')
+
+    filters = {
+        'query': request.args.get('query', '', type=str),
+        'for_adoption': True,
+        'is_dead': False,
+    }
+
+    animals_query = Animal.find_all(
+        page_number=page,
+        page_size=12,
+        filters=filters
+    )
+
+    animals = animals_query.get("data")
+    has_previous_page = animals_query.get("has_previous_page")
+    has_next_page = animals_query.get("has_next_page")
+    total_count = animals_query.get("total_count")
+
+    return render_template('user/animal/adoptions.html', 
+                            animals=animals,
+                            page_number=page,
+                            has_previous_page=has_previous_page,
+                            has_next_page=has_next_page,
+                            total_count=total_count,
+                            filters=filters,
+                            active_filters=get_active_filter_count(filters),
+                            view_type=view_type
+                            )
+

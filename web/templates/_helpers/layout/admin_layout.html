@@ -10,27 +10,27 @@
       },
       {
         'name': 'Animals',
-        'url': url_for('admin.animal.animals'),
+        'url': url_for('admin.animals.animals'),
         'icon': 'fa-solid fa-dog',
         'page': '' ,
         'children': [
           {
             'name': 'All Animals',
-            'url': url_for('admin.animal.animals'),
+            'url': url_for('admin.animals.animals'),
             'icon': 'fa-solid fa-list',
-            'page': 'admin.animal.animals' ,
+            'page': 'admin.animals.animals' ,
           },
           {
             'name': 'Adoption Application',
-            'url': url_for('admin.animal.adoption_applications_animals'),
+            'url': url_for('admin.animals.adoption_applications_animals'),
             'icon': 'fa-solid fa-list-check',
-            'page': 'admin.animal.for_adoption_animals' ,
+            'page': 'admin.animals.for_adoption_animals' ,
           },
           {
             'name': 'Add Animal',
-            'url': url_for('admin.animal.add_animal'),
+            'url': url_for('admin.animals.add_animal'),
             'icon': 'fa-sharp fa-solid fa-circle-plus',
-            'page': 'admin.animal.add_animal'
+            'page': 'admin.animals.add_animal'
           },
         ]
       },
