@@ -3543,8 +3543,8 @@ details.collapse summary::-webkit-details-marker {
   max-width: 244px;
 }
 
-.max-w-\[320px\] {
-  max-width: 320px;
+.max-w-\[288px\] {
+  max-width: 288px;
 }
 
 .max-w-\[60px\] {
@@ -3814,10 +3814,6 @@ details.collapse summary::-webkit-details-marker {
   overflow: hidden;
 }
 
-.overflow-x-auto {
-  overflow-x: auto;
-}
-
 .truncate {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -3946,6 +3942,11 @@ details.collapse summary::-webkit-details-marker {
   background-color: rgb(242 140 37 / var(--tw-bg-opacity));
 }
 
+.bg-red-200 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(254 202 202 / var(--tw-bg-opacity));
+}
+
 .bg-slate-200 {
   --tw-bg-opacity: 1;
   background-color: rgb(226 232 240 / var(--tw-bg-opacity));
@@ -4062,6 +4063,11 @@ details.collapse summary::-webkit-details-marker {
 .py-1 {
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
+}
+
+.py-10 {
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
 }
 
 .py-12 {
@@ -4534,11 +4540,6 @@ details.collapse summary::-webkit-details-marker {
   font-weight: 500;
 }
 
-.hover\:\!text-primary-800:hover {
-  --tw-text-opacity: 1 !important;
-  color: rgb(223 118 13 / var(--tw-text-opacity)) !important;
-}
-
 .hover\:text-opacity-80:hover {
   --tw-text-opacity: 0.8;
 }
@@ -4556,16 +4557,6 @@ details.collapse summary::-webkit-details-marker {
 .focus\:outline-none:focus {
   outline: 2px solid transparent;
   outline-offset: 2px;
-}
-
-.active\:\!bg-gray-50:active {
-  --tw-bg-opacity: 1 !important;
-  background-color: rgb(249 250 251 / var(--tw-bg-opacity)) !important;
-}
-
-.active\:\!text-primary-800:active {
-  --tw-text-opacity: 1 !important;
-  color: rgb(223 118 13 / var(--tw-text-opacity)) !important;
 }
 
 .group:hover .group-hover\:scale-105 {
@@ -4589,6 +4580,11 @@ details.collapse summary::-webkit-details-marker {
 
   .sm\:items-center {
     align-items: center;
+  }
+
+  .sm\:px-6 {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
   }
 
   .sm\:pl-0 {
@@ -4666,6 +4662,14 @@ details.collapse summary::-webkit-details-marker {
 }
 
 @media (min-width: 1024px) {
+  .lg\:block {
+    display: block;
+  }
+
+  .lg\:w-8\/12 {
+    width: 66.666667%;
+  }
+
   .lg\:space-y-20 > :not([hidden]) ~ :not([hidden]) {
     --tw-space-y-reverse: 0;
     margin-top: calc(5rem * calc(1 - var(--tw-space-y-reverse)));
@@ -4677,6 +4681,11 @@ details.collapse summary::-webkit-details-marker {
     padding-right: 3rem;
   }
 
+  .lg\:px-8 {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
   .lg\:py-12 {
     padding-top: 3rem;
     padding-bottom: 3rem;
@@ -4685,5 +4694,9 @@ details.collapse summary::-webkit-details-marker {
   .lg\:py-20 {
     padding-top: 5rem;
     padding-bottom: 5rem;
+  }
+
+  .lg\:pl-72 {
+    padding-left: 18rem;
   }
 }

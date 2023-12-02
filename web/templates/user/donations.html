@@ -4,7 +4,7 @@
   Donations
 {% endblock title %}
 {% block content %}
-  <div class="max-w-3xl min-h-screen py-20 mx-auto space-y-8">
+  <div class="flex flex-col w-full gap-8">
     <h1 class="text-3xl font-bold">Donations</h1>
     <div class="flex flex-col space-y-4">
       {% for donation in donations %}
@@ -42,6 +42,16 @@
           <p class="text-sm italic text-gray-700">{{ donation.created_at or "No Date" }}</p>
         </div>
       {% endfor %}
+      {% if donations | length == 0 %}
+        <div class="flex flex-col items-center justify-center gap-8 p-12 my-16">
+          <img class="w-full max-w-sm"
+               src="{{ url_for('static', filename='images/empty_list.png') }}"
+               alt="Kid hugging her dog"
+               width="auto"
+               height="auto" />
+          <h3 class="text-lg font-medium">No Donations Yet.</h3>
+        </div>
+      {% endif %}
     </div>
   </div>
 {% endblock content %}

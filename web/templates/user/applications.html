@@ -5,45 +5,57 @@
   Donations
 {% endblock title %}
 {% block content %}
-  <div class="max-w-4xl min-h-screen py-20 mx-auto space-y-8">
+  <div class="flex flex-col gap-8">
     <h1 class="text-3xl font-bold">Applications</h1>
-    <div class="overflow-x-auto">
-      <table class="table">
-        <thead>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Animal Name</th>
+          <th>Gender</th>
+          <th>Reason To Adopt</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for application in applications %}
           <tr>
-            <th>Animal Name</th>
-            <th>Gender</th>
-            <th>Reason To Adopt</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for application in applications %}
-            <tr>
-              <td>
-                <div class="flex items-center gap-3">
-                  <div class="avatar">
-                    <div class="w-12 h-12 mask mask-squircle">
-                      <img src="{{ get_image(application.photo_url) }}"
-                           alt="Avatar Tailwind CSS Component" />
-                    </div>
-                  </div>
-                  <div>
-                    <div class="font-bold">{{ application.name }}</div>
-                    <div class="text-sm opacity-50">{{ application.type }}</div>
+            <td>
+              <div class="flex items-center gap-3">
+                <div class="avatar">
+                  <div class="w-12 h-12 mask mask-squircle">
+                    <img src="{{ get_image(application.photo_url) }}"
+                         alt="Avatar Tailwind CSS Component"
+                         height="auto"
+                         width="auto" />
                   </div>
                 </div>
-              </td>
-              <td>{{ application.gender }}</td>
-              <td>
-                {{ application.reason_to_adopt }}
-                <br />
-              </td>
-              <th>{{ status_badge(application.status) }}</th>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
+                <div>
+                  <div class="font-bold">{{ application.name }}</div>
+                  <div class="text-sm opacity-50">{{ application.type }}</div>
+                </div>
+              </div>
+            </td>
+            <td>{{ application.gender }}</td>
+            <td>
+              {{ application.reason_to_adopt }}
+              <br />
+            </td>
+            <th>{{ status_badge(application.status) }}</th>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% if applications | length == 0 %}
+      <div class="flex flex-col items-center justify-center gap-8 p-12 my-16">
+        <img class="w-full max-w-sm"
+             src="{{ url_for('static', filename='images/empty_list.png') }}"
+             alt="Kid hugging her dog"
+             width="auto"
+             height="auto" />
+        <h3 class="text-lg font-medium">No Application Found.</h3>
+        <a href="{{ url_for('user.animals.adoptions',) }}"
+           class="text-white btn btn-primary">Adopt an animal</a>
+      </div>
+    {% endif %}
   </div>
 {% endblock content %}

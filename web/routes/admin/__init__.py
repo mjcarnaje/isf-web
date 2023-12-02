@@ -20,7 +20,7 @@ admin_bp.register_blueprint(admin_donations_bp)
 @admin_required
 def index(): 
    animal_stats = Animal.get_stats()
-   return render_template('/admin/index.html', animal_stats=animal_stats)
+   return render_template('/admin/dashboard.html', animal_stats=animal_stats)
 
 @admin_bp.route('/login', methods=['GET', 'POST'])
 def login():
