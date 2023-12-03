@@ -1,0 +1,78 @@
+{% set active_page = "user.animals.adoptions" %}
+{% from './_helpers/macros/custom_input.html' import render_field %}
+{% from './_helpers/macros/adoption_status_badge.html' import status_badge %}
+{% extends "./_helpers/layout/user_layout.html" %}
+{% block title %}
+  Animal
+{% endblock title %}
+{% block content %}
+  <div class="flex flex-col items-center justify-center w-full gap-8">
+    <div class="flex w-full gap-8 p-8 bg-white border rounded-2xl">
+      <div>
+        <img src="{{ get_image(animal.photo_url) }}"
+             class="w-48 border rounded-2xl aspect-square"
+             alt="Animal's photo"
+             width="auto"
+             height="auto" />
+      </div>
+      <div class="flex flex-col space-y-1">
+        <h2 class="text-xl font-bold text-gray-900">{{ animal.name }}</h2>
+        <p class="text-gray-800">{{ animal.description }}</p>
+      </div>
+    </div>
+    {% if active_application %}
+      <div id="application-view"
+           class="w-full p-8 space-y-4 bg-white border rounded-2xl {{ 'hidden' if not active_application }}">
+        <div class="flex items-center justify-between">
+          <h3 class="italic">
+            You have already applied. Reference Number <span>#{{ active_application.id }}</span>
+          </h3>
+          <button id="edit-btn" class="text-white btn btn-primary btn-sm">Edit</button>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="badge badge-lg badge-ghost">{{ active_application.interview_type_preference }}</div>
+          <div class="badge badge-lg badge-ghost">{{ active_application.interview_preferred_date.strftime("%b %d, %Y") }}</div>
+          <div class="badge badge-lg badge-ghost">{{ active_application.interview_preferred_time }}</div>
+          {{ status_badge(active_application.status, size="lg") }}
+        </div>
+      </div>
+    {% endif %}
+    <form id="application-form"
+          class="w-full p-8 space-y-4 bg-white border borderm rounded-2xl {{ 'hidden' if active_application }}"
+          method="post"
+          novalidate>
+      {% if active_application %}{{ form.id }}{% endif %}
+      {{ form.csrf_token() }}
+      {{ render_field(form.interview_type_preference) }}
+      <div class="flex items-center gap-4">
+        {{ render_field(form.interview_preferred_date) }}
+        {{ render_field(form.interview_preferred_time) }}
+      </div>
+      <p class="text-sm italic text-gray-700">We can't guarantee the availability of your requested time.</p>
+      {{ render_field(form.reason_to_adopt) }}
+      <div class="flex justify-end gap-4">
+        <button type="button" id="cancel-btn" class="hidden btn">Cancel</button>
+        <button class="text-white btn btn-primary">Apply</button>
+      </div>
+    </form>
+  </div>
+  <script>
+  const editButton = document.getElementById("edit-btn")
+  const cancelButton = document.getElementById("cancel-btn")
+  const applicationView = document.getElementById("application-view")
+  const applicationForm = document.getElementById("application-form")
+  
+  if (editButton) {
+    editButton.addEventListener("click", () => {
+      applicationForm.classList.toggle("hidden")
+      applicationView.classList.toggle("hidden")
+      cancelButton.classList.toggle("hidden")
+    })
+  }
+  cancelButton.addEventListener("click", () => {
+    applicationForm.classList.toggle("hidden")
+    applicationView.classList.toggle("hidden")
+    cancelButton.classList.toggle("hidden")
+  })
+  </script>
+{% endblock content %}

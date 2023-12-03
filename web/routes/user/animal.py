@@ -1,8 +1,12 @@
-from flask import Blueprint, render_template, request, session
-from ...models import Animal
-from ...utils import user_verified_required, get_active_filter_count
+from flask import (Blueprint, redirect, render_template, request, session,
+                   url_for)
+from flask_login import current_user
 
-user_animal_bp = Blueprint("animals", __name__, url_prefix='/animal')
+from ...models import AdoptionApplication, Animal
+from ...utils import get_active_filter_count, user_verified_required
+from ...validations import AdoptApplicationValidation
+
+user_animal_bp = Blueprint("animals", __name__, url_prefix='/animals')
 
 @user_animal_bp.route('', methods=['GET'])
 @user_verified_required
@@ -34,7 +38,7 @@ def animals():
     has_next_page = animals_query.get("has_next_page")
     total_count = animals_query.get("total_count")
 
-    return render_template('user/animal/animals.html', 
+    return render_template('user/animals/animals.html', 
                             animals=animals,
                             page_number=page,
                             has_previous_page=has_previous_page,
@@ -49,7 +53,7 @@ def animals():
 @user_verified_required
 def view_animal(id):
   animal = Animal.find_by_id(id)
-  return render_template('/user/animal/animal.html', animal=animal)  
+  return render_template('/user/animals/animal.html', animal=animal)  
 
 @user_animal_bp.route('/adoptions', methods=['GET'])
 @user_verified_required
@@ -63,10 +67,11 @@ def adoptions():
         'is_dead': False,
     }
 
-    animals_query = Animal.find_all(
+    animals_query = Animal.find_all_adoptions(
         page_number=page,
         page_size=12,
-        filters=filters
+        filters=filters,
+        user_id=current_user.id
     )
 
     animals = animals_query.get("data")
@@ -74,7 +79,7 @@ def adoptions():
     has_next_page = animals_query.get("has_next_page")
     total_count = animals_query.get("total_count")
 
-    return render_template('user/animal/adoptions.html', 
+    return render_template('user/animals/adoptions.html', 
                             animals=animals,
                             page_number=page,
                             has_previous_page=has_previous_page,
@@ -85,3 +90,33 @@ def adoptions():
                             view_type=view_type
                             )
 
+@user_animal_bp.route('/adoptions/<int:id>', methods=['GET', 'POST'])
+@user_verified_required
+def adopt_me(id):
+  animal = Animal.find_by_id(id)
+  active_application = AdoptionApplication.find_by_user_animal(user_id=current_user.id, animal_id=animal.id)
+
+  form = AdoptApplicationValidation()
+
+  if form.validate_on_submit():
+    new_application = AdoptionApplication(user_id=current_user.id,
+                                          animal_id=animal.id, 
+                                          reason_to_adopt=form.reason_to_adopt.data, 
+                                          interview_type_preference=form.interview_type_preference.data, 
+                                          interview_preferred_date=form.interview_preferred_date.data, 
+                                          interview_preferred_time=form.interview_preferred_time.data)
+    if active_application: 
+      new_application.update(new_application)
+    else:
+      new_application.insert(new_application)
+
+    return redirect(url_for('user.applications'))
+
+  if not form.is_submitted() and active_application:
+     form.id.data = active_application.id
+     form.reason_to_adopt.data = active_application.reason_to_adopt  
+     form.interview_type_preference.data = active_application.interview_type_preference   
+     form.interview_preferred_date.data = active_application.interview_preferred_date  
+     form.interview_preferred_time.data = active_application.interview_preferred_time  
+  
+  return render_template('/user/animals/adopt_me.html', animal=animal, active_application=active_application, form=form)

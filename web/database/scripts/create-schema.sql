@@ -1,17 +1,3 @@
-CREATE TABLE IF NOT EXISTS user (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    email VARCHAR(256) UNIQUE NOT NULL,
-    google_id VARCHAR(64),
-    username VARCHAR(256) NOT NULL,
-    first_name VARCHAR(256) NOT NULL,
-    last_name VARCHAR(256) NOT NULL,
-    password VARCHAR(256) NOT NULL,
-    photo_url VARCHAR(256),
-    is_verified BOOLEAN DEFAULT 0,
-    contact_number VARCHAR(12) UNIQUE NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-
 CREATE TABLE IF NOT EXISTS role (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(16) UNIQUE NOT NULL -- 'member' | 'donor' | 'volunteer' | 'adopter' | 'admin'
@@ -24,6 +10,20 @@ CREATE TABLE IF NOT EXISTS user_role (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user(id),
     FOREIGN KEY (role_id) REFERENCES role(id)
+);
+
+CREATE TABLE IF NOT EXISTS user (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(256) UNIQUE NOT NULL,
+    google_id VARCHAR(64),
+    username VARCHAR(256) NOT NULL,
+    first_name VARCHAR(256) NOT NULL,
+    last_name VARCHAR(256) NOT NULL,
+    password VARCHAR(256) NOT NULL,
+    photo_url VARCHAR(256),
+    is_verified BOOLEAN DEFAULT 0,
+    contact_number VARCHAR(12) UNIQUE NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS animal (

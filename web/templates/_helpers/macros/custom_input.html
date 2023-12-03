@@ -1,7 +1,7 @@
 {% macro render_field(field, container_class, footer_text) %}
   <div class="{{ container_class }} w-full form-control">
     {% if field.type != "BooleanField" %}
-      {% if field.render_kw.label %}
+      {% if field.render_kw %}
         {{ field.label(class="text-sm text-gray-500 label label-text", text=field.render_kw.label) }}
       {% else %}
         {{ field.label(class="text-sm text-gray-500 label label-text") }}

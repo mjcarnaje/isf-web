@@ -63,6 +63,35 @@ class AdoptionApplication:
         db.connection.commit()
 
     @classmethod
+    def update(cls, application):
+        sql = """
+            UPDATE adoption_application 
+            SET application_date = %(application_date)s,
+                status = %(status)s,
+                interview_type_preference = %(interview_type_preference)s,
+                interview_preferred_date = %(interview_preferred_date)s,
+                interview_preferred_time = %(interview_preferred_time)s,
+                reason_to_adopt = %(reason_to_adopt)s,
+                admin_notes = %(admin_notes)s
+            WHERE user_id = %(user_id)s AND animal_id = %(animal_id)s
+        """
+        params = {
+            'user_id': application.user_id,
+            'animal_id': application.animal_id,
+            'application_date': application.application_date,
+            'status': application.status,
+            'interview_type_preference': application.interview_type_preference, 
+            'interview_preferred_date': application.interview_preferred_date,
+            'interview_preferred_time': application.interview_preferred_time,
+            'reason_to_adopt': application.reason_to_adopt,
+            'admin_notes': application.admin_notes
+        }
+        cur = db.new_cursor(dictionary=True)
+        cur.execute(sql, params)
+        db.connection.commit()
+
+
+    @classmethod
     def set_all_under_review(cls, animal_id):
         sql = """
             UPDATE adoption_application

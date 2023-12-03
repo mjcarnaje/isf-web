@@ -1,7 +1,7 @@
 {% set active_page = "user.animals.adoptions" %}
 {% extends "./_helpers/layout/user_layout.html" %}
-{% from "./_helpers/macros/render_animal_cards.html" import render_animal_cards with context %}
-{% from "./_helpers/macros/render_animal_tables.html" import render_animal_tables with context %}
+{% from "./_helpers/macros/render_animal_cards_adoption.html" import render_animal_cards_adoption with context %}
+{% from "./_helpers/macros/render_animal_tables_adoption.html" import render_animal_tables_adoption with context %}
 {% from "./_helpers/macros/render_animal_filter.html" import render_animal_filter with context %}
 {% block title %}
   User - Adoptions
@@ -16,9 +16,9 @@
       {% include "./_helpers/partials/view_form.html" %}
     </div>
     {% if view_type == "card" %}
-      {{ render_animal_cards(animals) }}
+      {{ render_animal_cards_adoption(animals) }}
     {% else %}
-      {{ render_animal_tables(animals) }}
+      {{ render_animal_tables_adoption(animals) }}
     {% endif %}
   </div>
 {% endblock content %}

@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import TextAreaField, validators, SelectField, DateField
+from wtforms import TextAreaField, validators, SelectField, DateField, HiddenField
 from datetime import datetime, timedelta
 
 def get_select_time(start, end, interval):
@@ -18,6 +18,7 @@ def get_select_time(start, end, interval):
 
 
 class AdoptApplicationValidation(FlaskForm):
+  id = HiddenField("Id")
   interview_type_preference = SelectField("Interview Type Preference", choices=[('Phone', 'Phone'), ('Zoom', 'Zoom'), ('Google Meet', 'Google Meet')], validate_choice=False)
   interview_preferred_date = DateField('Interview Preffered Date', validators=[
     validators.DataRequired(),

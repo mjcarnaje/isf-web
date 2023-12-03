@@ -2858,6 +2858,14 @@ details.collapse summary::-webkit-details-marker {
   padding-right: 0.688rem;
 }
 
+.btn-xs {
+  height: 1.5rem;
+  min-height: 1.5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  font-size: 0.75rem;
+}
+
 .btn-sm {
   height: 2rem;
   min-height: 2rem;
@@ -3619,6 +3627,10 @@ details.collapse summary::-webkit-details-marker {
   flex-direction: column;
 }
 
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
 .items-start {
   align-items: flex-start;
 }
@@ -3698,6 +3710,10 @@ details.collapse summary::-webkit-details-marker {
 
 .gap-y-5 {
   row-gap: 1.25rem;
+}
+
+.gap-y-4 {
+  row-gap: 1rem;
 }
 
 .space-x-3 > :not([hidden]) ~ :not([hidden]) {
@@ -3970,6 +3986,11 @@ details.collapse summary::-webkit-details-marker {
 .bg-yellow-100 {
   --tw-bg-opacity: 1;
   background-color: rgb(254 249 195 / var(--tw-bg-opacity));
+}
+
+.bg-red-50 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(254 242 242 / var(--tw-bg-opacity));
 }
 
 .bg-our-rescue-1 {

@@ -151,6 +151,74 @@ class Animal():
         }
 
         
+
+    @staticmethod
+    def find_all_adoptions(page_number: int, page_size: int, filters: dict, user_id: str):
+        offset = (page_number - 1) * page_size
+
+        where_clauses = []
+        filter_params = []
+
+        filter_params.append(user_id)
+
+        if filters: 
+            for key, value in filters.items():
+                if key == "query" and value:
+                    where_clauses.append("name LIKE %s")
+                    filter_params.append(f"%{value}%")
+                    continue
+    
+                if value:
+                    where_clauses.append(f"{key} = %s")
+                    filter_params.append(value)
+
+        where_clause = " AND ".join(where_clauses) if where_clauses else ""
+
+        sql = """
+            SELECT 
+                animal.*,
+                IF(adoption_application.id IS NOT NULL, 1, 0) AS is_applied
+            FROM 
+                animal
+            LEFT JOIN 
+                adoption_application ON animal.id = adoption_application.animal_id AND adoption_application.user_id = %s
+            """
+        
+        if where_clause:
+            sql += f" WHERE {where_clause}"
+        sql += " LIMIT %s OFFSET %s"
+
+        cur = db.new_cursor(dictionary=True)
+        cur.execute(sql, filter_params + [page_size, offset])
+
+        data = cur.fetchall()
+
+        count_sql = f"""
+            SELECT 
+                COUNT(*)
+            FROM 
+                animal
+            LEFT JOIN 
+                adoption_application ON animal.id = adoption_application.animal_id AND adoption_application.user_id = %s
+            """
+
+        if where_clause:
+            count_sql += f" WHERE {where_clause}"
+
+        cur.execute(count_sql, filter_params)
+        total_count = cur.fetchone()['COUNT(*)']
+
+        has_previous_page = offset > 0
+        has_next_page = (offset + page_size) < total_count
+
+        return {
+            'data': data,
+            'has_previous_page': has_previous_page,
+            'has_next_page': has_next_page,
+            'total_count': total_count
+        }
+
+        
     @classmethod
     def edit(cls, animal):
         sql = """

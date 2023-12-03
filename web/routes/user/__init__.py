@@ -1,10 +1,9 @@
 from flask import Blueprint, render_template, redirect, url_for
 from flask_login import current_user, logout_user
 
-from ...models import AdoptionApplication, Donation, Animal
+from ...models import AdoptionApplication, Donation
 from ...utils import user_verified_required
 
-from ...validations import AdoptApplicationValidation
 from .animal import user_animal_bp
 
 user_bp = Blueprint("user", __name__, url_prefix='/user')
@@ -18,28 +17,6 @@ def index():
 @user_verified_required
 def dashboard():
   return render_template('user/dashboard.html')
-
-@user_bp.route('/animals/adoptions/adopt/<int:id>', methods=['GET', 'POST'])
-@user_verified_required
-def adopt_me(id):
-  animal = Animal.find_by_id(id)
-
-  form = AdoptApplicationValidation()
-
-  if form.validate_on_submit():
-    new_application = AdoptionApplication(user_id=current_user.id,
-                                          animal_id=animal.id, 
-                                          reason_to_adopt=form.reason_to_adopt.data, 
-                                          interview_type_preference=form.interview_type_preference.data, 
-                                          interview_preferred_date=form.interview_preferred_date.data, 
-                                          interview_preferred_time=form.interview_preferred_time.data)
-    new_application.insert(new_application)
-    redirect(url_for('user.applications'))
-  
-  active_application = AdoptionApplication.find_by_user_animal(user_id=current_user.id, animal_id=animal.id)
-  
-  return render_template('/landing/adopt/adopt.html', animal=animal, active_application=active_application, form=form)
-
 
 @user_bp.route('/donations', methods=['GET', 'POST'])
 @user_verified_required
