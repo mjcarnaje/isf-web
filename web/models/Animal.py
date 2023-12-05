@@ -177,11 +177,11 @@ class Animal():
         sql = """
             SELECT 
                 animal.*,
-                IF(adoption_application.id IS NOT NULL, 1, 0) AS is_applied
+                IF(adoption.id IS NOT NULL, 1, 0) AS is_applied
             FROM 
                 animal
             LEFT JOIN 
-                adoption_application ON animal.id = adoption_application.animal_id AND adoption_application.user_id = %s
+                adoption ON animal.id = adoption.animal_id AND adoption.user_id = %s
             """
         
         if where_clause:
@@ -199,7 +199,7 @@ class Animal():
             FROM 
                 animal
             LEFT JOIN 
-                adoption_application ON animal.id = adoption_application.animal_id AND adoption_application.user_id = %s
+                adoption ON animal.id = adoption.animal_id AND adoption.user_id = %s
             """
 
         if where_clause:
@@ -305,7 +305,7 @@ class Animal():
                 SUM(CASE WHEN is_neutered THEN 1 ELSE 0 END) AS neutered_count,
                 SUM(CASE WHEN in_shelter THEN 1 ELSE 0 END) AS in_shelter_count,
                 SUM(CASE WHEN is_rescued THEN 1 ELSE 0 END) AS rescued_count,
-                SUM(CASE WHEN for_adoption THEN 1 ELSE 0 END) AS for_adoption_count
+                SUM(CASE WHEN for_adoption THEN 1 ELSE 0 END) AS for_adoptioncount
             FROM animal
         """
 

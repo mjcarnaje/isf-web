@@ -17,9 +17,9 @@ def get_select_time(start, end, interval):
     return result
 
 
-class AdoptApplicationValidation(FlaskForm):
+class AdoptionValidation(FlaskForm):
   id = HiddenField("Id")
-  interview_type_preference = SelectField("Interview Type Preference", choices=[('Phone', 'Phone'), ('Zoom', 'Zoom'), ('Google Meet', 'Google Meet')], validate_choice=False)
+  interview_preference = SelectField("Interview Type Preference", choices=[('Phone', 'Phone'), ('Zoom', 'Zoom'), ('Google Meet', 'Google Meet')], validate_choice=False)
   interview_preferred_date = DateField('Interview Preffered Date', validators=[
     validators.DataRequired(),
   ])

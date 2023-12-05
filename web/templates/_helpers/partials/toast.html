@@ -1,7 +1,6 @@
 {% block toast %}
   {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      <style>
+    <style>
         @keyframes smoothFadeOut {
           0%   { opacity: 1; transform: translateY(0) scale(1); }
           50%  { scale: 1; }
@@ -11,7 +10,8 @@
           animation: smoothFadeOut 0.5s cubic-bezier(0.455, 0.03, 0.515, 0.955);     
         }
         
-      </style>
+    </style>
+    {% if messages %}
       <div class="toast toast-center toast-top" id="toastContainer">
         {% for category, message in messages %}
           {% if category == 'error' %}
@@ -45,6 +45,8 @@
           }, 3000)
         });
       </script>
+    {% else %}
+      <div class="toast toast-center toast-top" id="toastContainer"></div>
     {% endif %}
   {% endwith %}
 {% endblock toast %}

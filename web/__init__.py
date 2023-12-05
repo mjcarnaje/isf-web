@@ -1,7 +1,7 @@
 import cloudinary
 from cloudinary.uploader import upload as cloudinary_upload
 from cloudinary.utils import cloudinary_url
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, flash, request
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 from oauthlib.oauth2 import WebApplicationClient
@@ -20,7 +20,7 @@ def create_app():
     db.init_app(app)
     mail.init_app(app)
     
-    @app.cli.command("reset-db")
+    @app.cli.command("reset")
     def reset_db():
         db.execute_sql(f"DROP DATABASE IF EXISTS {Config.MYSQL_DATABASE};")
         db.execute_sql(f"CREATE DATABASE {Config.MYSQL_DATABASE};")
@@ -49,7 +49,7 @@ def create_app():
     def utility_processor():
         def get_image(public_id):
             source = public_id if public_id else f"{Config.CLOUDINARY_FOLDER}/default"
-            url, options = cloudinary_url(public_id, format="jpg", crop="fill")
+            url, options = cloudinary_url(source, format="jpg", crop="fill")
             return url
         return dict(get_image=get_image)
 
@@ -57,19 +57,31 @@ def create_app():
     def upload_to_cloudinary():
         file = request.files.get('upload')
 
-        if file:
-            upload_result = cloudinary_upload(
-                file, folder=Config.CLOUDINARY_FOLDER)
-
+        if not file:
             return jsonify({
-                'is_success': True,
-                'public_id': upload_result['public_id'],
-                'url': upload_result['secure_url']
+                'is_success': False,
+                'error': 'Missing file'
             })
+        
+        size = len(file.read())
+        file.seek(0)
+
+        MAX_FILE_SIZE = 1000 * 1000 * 4 # 4mb
+
+        if size > MAX_FILE_SIZE:
+            return jsonify({
+                'is_success': False,
+                'error': 'File too large'
+            }), 413
+
+        
+        upload_result = cloudinary_upload(
+            file, folder=Config.CLOUDINARY_FOLDER)
 
         return jsonify({
-            'is_success': False,
-            'error': 'Missing file'
+            'is_success': True,
+            'public_id': upload_result['public_id'],
+            'url': upload_result['secure_url']
         })
 
     from .routes import admin_bp, landing_bp, user_bp

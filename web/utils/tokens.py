@@ -26,3 +26,5 @@ def check_verification_token(token: str):
         }
     
 
+    serializer.loads('IkxlbmFyZCI.ZW7uiA.aLrc9PYPad88HlQdO8DDTh51P98', salt='verify', max_age=3600)
+

@@ -1,11 +1,11 @@
-{% set active_page = "admin.animals.for_adoption_animals" %}
+{% set active_page = "admin.animals.for_adoptionanimals" %}
 {% from './_helpers/macros/adoption_status_badge.html' import status_badge %}
 {% extends "./_helpers/layout/admin_layout.html" %}
 {% block title %}
   Animal
 {% endblock title %}
 {% block content %}
-  <div class="flex flex-col items-center justify-center w-full p-12 space-y-16">
+  <div class="flex flex-col items-center justify-center w-full gap-16">
     <div class="w-full max-w-4xl space-y-8">
       <div class="flex gap-8">
         <div class="w-full max-w-sm">
@@ -102,9 +102,9 @@
                 </div>
               </td>
               <td>{{ application.contact_number }}</td>
-              <td>{{ application.interview_type_preference }}</td>
+              <td>{{ application.interview_preference }}</td>
               <td>{{ application.interview_preferred_date.strftime("%b %d, %Y") }} - {{ application.interview_preferred_time }}</td>
-              <td>{{ status_badge(application.status) }}</td>
+              <td>{{ status_badge(application.current_status) }}</td>
               <td>
                 <div class="dropdown dropdown-bottom dropdown-end">
                   <label tabindex="0">
@@ -117,6 +117,7 @@
                     <li>
                       <button id="reject"
                               type="submit"
+                              data-id="{{ application.id }}"
                               data-animal-id="{{ application.animal_id }}"
                               data-user-id="{{ application.user_id }}">Reject</button>
                     </li>
@@ -124,6 +125,7 @@
                     <li>
                       <button id="under-review"
                               type="submit"
+                              data-id="{{ application.id }}"
                               data-animal-id="{{ application.animal_id }}"
                               data-user-id="{{ application.user_id }}">Set as Under Review</button>
                     </li>
@@ -131,6 +133,7 @@
                     <li>
                       <button id="approve"
                               type="submit"
+                              data-id="{{ application.id }}"
                               data-animal-id="{{ application.animal_id }}"
                               data-user-id="{{ application.user_id }}">Approve</button>
                     </li>
@@ -138,6 +141,7 @@
                     <li>
                       <button id="turnover"
                               type="submit"
+                              data-id="{{ application.id }}"
                               data-animal-id="{{ application.animal_id }}"
                               data-user-id="{{ application.user_id }}">Turnovered</button>
                     </li>
@@ -152,20 +156,24 @@
     </div>
   </div>
   <script>
-    const array_btns = ['reject', 'under-review', 'approve', 'turnover'];
+    const statuses = ['reject', 'under-review', 'approve', 'turnover'];
 
-    array_btns.forEach((btn) => {
-      const buttons = document.querySelectorAll(`#${btn}`);
+    statuses.forEach((status) => {
+      const buttons = document.querySelectorAll(`#${status}`);
       buttons.forEach((button) => {
         button.addEventListener("click", async function () {
           try {
-            await fetch(`/admin/animal/adoption-animals/${button.dataset.animalId}/${btn}/${button.dataset.userId}`, {
+            const formData = new FormData();
+            formData.append('user_id', button.dataset.userId)
+            formData.append('adoption_id', button.dataset.adoptionId)
+            formData.append('remarks', '')
+            await fetch(`/admin/animals/adoptions/${button.dataset.animalId}/${status}`, {
               method: "POST",
               headers: {
                 "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
               },
+              body: formData
             });
-            window.location.reload();
           } catch (error) {
             console.error('Error during fetch:', error);
           }

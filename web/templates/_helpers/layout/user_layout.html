@@ -1,61 +1,93 @@
 {% extends "./_helpers/layout/base.html" %}
+{% set main_navigations = [
+  { 'name': 'Dashboard', 'url': url_for('user.dashboard'), 'icon': 'fa-solid fa-house', 'page': 'user.dashboard'},
+  { 'name': 'Animals', 'url': url_for('user.animals.animals'), 'icon': 'fa-solid fa-dog', 'page': 'user.animals.animals'},
+  { 'name': 'Adoptions', 'url': url_for('user.animals.adoptions'), 'icon': 'fa-solid fa-hands-holding', 'page': 'user.animals.adoptions'},
+] %}
+{% set my_navigations = [
+  {
+    'name': 'Notifications',
+    'url': url_for('user.notifications'),
+    'icon': 'fa-solid fa-bell',
+    'page': 'user.notifications',
+    'count': current_user.unread_notification_count
+  },
+  { 'name': 'My Applications',
+    'url': url_for('user.applications'),
+    'icon': 'fa-solid fa-file-invoice',
+    'page': 'user.applications'
+  },
+  { 'name': 'My Donations',
+    'url': url_for('user.donations'),
+    'icon': 'fa-solid fa-hand-holding-heart',
+    'page': 'user.donations'
+  },
+] %}
 {% block body %}
-  {% set main_navigations = [
-      { 'name': 'Dashboard', 'url': url_for('user.dashboard'), 'icon': 'fa-solid fa-house', 'page': 'user.dashboard'},
-      { 'name': 'Animals', 'url': url_for('user.animals.animals'), 'icon': 'fa-solid fa-dog', 'page': 'user.animals.animals'},
-      { 'name': 'Adoptions', 'url': url_for('user.animals.adoptions'), 'icon': 'fa-solid fa-hands-holding', 'page': 'user.animals.adoptions'},
-    ] %}
-  {% set my_navigations = [
-      { 'name': 'My Applications', 'url': url_for('user.applications'), 'icon': 'fa-solid fa-file-invoice', 'page': 'user.applications'},
-      { 'name': 'My Donations', 'url': url_for('user.donations'), 'icon': 'fa-solid fa-hand-holding-heart', 'page': 'user.donations'},
-    ] %}
   <div class="relative flex w-full min-h-screen">
-    {% if current_user.is_verified %}
-      <aside class="max-w-[288px] hidden lg:block fixed left-0 top-0 p-4 w-full border-r min-h-screen">
-        <div class="flex flex-col gap-y-5">
-          <div class="w-full py-2">
-            <a href="{{ url_for('landing.index',) }}">
-              <img src="{{ url_for('static', filename='svgs/logo.svg') }}"
-                   alt="ISF logo"
-                   class="object-cover h-auto w-52"
-                   height="auto"
-                   width="auto" />
-            </a>
-          </div>
-          <ul class="flex flex-col w-full gap-y-5">
-            <ul class="flex flex-col w-full gap-2">
-              {% for navigation in main_navigations %}
-                <li>
-                  <a href="{{ navigation.url }}"
-                     class="flex items-center gap-3 py-3 px-2 font-medium rounded-lg cursor-pointer hover:bg-gray-50 {{ 'font-bold text-primary-500 bg-gray-50' if active_page == navigation.page else '' }}">
+    <aside class="max-w-[288px] h-full bg-white z-20 hidden lg:block fixed left-0 top-0 p-4 w-full border-r min-h-screen">
+      <div class="flex flex-col justify-between h-full gap-y-5">
+        <div class="w-full py-2">
+          <a href="{{ url_for('landing.index',) }}">
+            <img src="{{ url_for('static', filename='svgs/logo.svg') }}"
+                 alt="ISF logo"
+                 class="object-cover h-auto w-52"
+                 height="auto"
+                 width="auto" />
+          </a>
+        </div>
+        <ul class="flex flex-col flex-1 w-full gap-y-5">
+          <ul class="flex flex-col w-full gap-2">
+            {% for navigation in main_navigations %}
+              <li>
+                <a href="{{ navigation.url }}"
+                   class="flex items-center justify-between gap-3 py-3 px-2 font-medium rounded-lg cursor-pointer hover:bg-gray-50 {{ 'font-bold text-primary-500 bg-gray-50' if active_page == navigation.page else '' }}">
+                  <div class="flex items-center gap-3">
                     <div class="w-4">
                       <i class="{{ navigation.icon }}"></i>
                     </div>
                     {{ navigation.name }}
-                  </a>
-                </li>
-              {% endfor %}
-            </ul>
-            <ul class="flex flex-col gap-3">
-              <p class="text-sm font-semibold leading-6 text-primary-600">Your List</p>
-              <ul class="flex flex-col w-full gap-2">
-                {% for navigation in my_navigations %}
-                  <li>
-                    <a href="{{ navigation.url }}"
-                       class="flex items-center gap-3 py-3 px-2 font-medium rounded-lg cursor-pointer hover:bg-gray-50 {{ 'font-bold text-primary-500 bg-gray-50' if active_page == navigation.page else '' }}">
+                  </div>
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+          <ul class="flex flex-col gap-3">
+            <p class="text-sm font-semibold leading-6 text-primary-600">Your List</p>
+            <ul class="flex flex-col w-full gap-2">
+              {% for navigation in my_navigations %}
+                <li>
+                  <a href="{{ navigation.url }}"
+                     class="flex items-center justify-between gap-3 py-3 px-2 font-medium rounded-lg cursor-pointer hover:bg-gray-50 {{ 'font-bold text-primary-500 bg-gray-50' if active_page == navigation.page else '' }}">
+                    <div class="flex items-center gap-3">
                       <div class="w-4">
                         <i class="{{ navigation.icon }}"></i>
                       </div>
                       {{ navigation.name }}
-                    </a>
-                  </li>
-                </ul>
-              {% endfor %}
-            </ul>
+                    </div>
+                    {% if navigation.count %}
+                      <div id="notification-count"
+                           class="flex items-center justify-center w-5 h-5 rounded-full bg-error">
+                        <span class="text-sm font-bold text-white">{{ navigation.count }}</span>
+                      </div>
+                    {% endif %}
+                  </a>
+                </li>
+              </ul>
+            {% endfor %}
           </ul>
-        </div>
-      </aside>
-    {% endif %}
+        </ul>
+        <a href="{{ url_for('user.logout',) }}"
+           class="flex items-center justify-between gap-3 px-2 py-3 font-medium rounded-lg cursor-pointer hover:bg-gray-50">
+          <div class="flex items-center gap-3">
+            <div class="w-4">
+              <i class="fa-solid fa-right-from-bracket"></i>
+            </div>
+            Log out
+          </div>
+        </a>
+      </div>
+    </aside>
     <main class="w-full py-10 lg:pl-72">
       <div class="w-full px-4 sm:px-6 lg:px-8">
         {% block content %}

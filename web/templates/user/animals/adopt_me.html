@@ -30,10 +30,10 @@
           <button id="edit-btn" class="text-white btn btn-primary btn-sm">Edit</button>
         </div>
         <div class="flex items-center gap-2">
-          <div class="badge badge-lg badge-ghost">{{ active_application.interview_type_preference }}</div>
+          <div class="badge badge-lg badge-ghost">{{ active_application.interview_preference }}</div>
           <div class="badge badge-lg badge-ghost">{{ active_application.interview_preferred_date.strftime("%b %d, %Y") }}</div>
           <div class="badge badge-lg badge-ghost">{{ active_application.interview_preferred_time }}</div>
-          {{ status_badge(active_application.status, size="lg") }}
+          {{ status_badge(active_application.current_status, size="lg") }}
         </div>
       </div>
     {% endif %}
@@ -43,7 +43,7 @@
           novalidate>
       {% if active_application %}{{ form.id }}{% endif %}
       {{ form.csrf_token() }}
-      {{ render_field(form.interview_type_preference) }}
+      {{ render_field(form.interview_preference) }}
       <div class="flex items-center gap-4">
         {{ render_field(form.interview_preferred_date) }}
         {{ render_field(form.interview_preferred_time) }}

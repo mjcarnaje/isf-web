@@ -6,7 +6,21 @@ from ..database import db
 
 
 class User(UserMixin):
-    def __init__(self, email: str = None, google_id: str = None, username: str = None, first_name: str = None, last_name: str = None, password: str = None, photo_url: str | None = None, contact_number: str = None, is_verified: bool = False, roles: [str] = [], id: int | None = None, created_at: datetime.date | None = None):
+    def __init__(
+            self, 
+            email: str = None, 
+            google_id: str = None, 
+            username: str = None, 
+            first_name: str = None, 
+            last_name: str = None, 
+            password: str = None, 
+            photo_url: str | None = None, 
+            contact_number: str = None, 
+            is_verified: bool = False, 
+            unread_notification_count: int = 0,
+            roles: [str] = [], 
+            id: int | None = None, 
+            created_at: datetime.date | None = None):
         self.id = id
         self.email = email
         self.google_id = google_id
@@ -17,6 +31,9 @@ class User(UserMixin):
         self.is_verified = is_verified
         self.photo_url = photo_url
         self.contact_number = contact_number
+        self.unread_notification_count = unread_notification_count
+        self.roles = roles
+        self.created_at = created_at
         
     @classmethod
     def find_by_id(cls, user_id: int):
@@ -43,17 +60,17 @@ class User(UserMixin):
         sql = """
             INSERT INTO user (
                 email, username, first_name, last_name, password, photo_url, contact_number
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s)
+            ) VALUES (%(email)s, %(username)s, %(first_name)s, %(last_name)s, %(password)s, %(photo_url)s, %(contact_number)s)
         """
-        params = (
-            user.email,
-            user.username,
-            user.first_name,
-            user.last_name,
-            user.password,
-            user.photo_url,
-            user.contact_number,
-        )            
+        params = {
+            'email': user.email,
+            'username': user.username,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'password': user.password,
+            'photo_url': user.photo_url,
+            'contact_number': user.contact_number,
+        }            
 
         cur = db.new_cursor()
         cur.execute(sql, params)
@@ -69,8 +86,13 @@ class User(UserMixin):
             WHERE id = %(user_id)s
         """
 
+        params = {
+            'email': email, 
+            'user_id': user_id
+        }
+
         cur = db.new_cursor(dictionary=True)
-        cur.execute(sql, {'email': email, 'user_id': user_id})
+        cur.execute(sql, params)
         db.connection.commit()
 
 

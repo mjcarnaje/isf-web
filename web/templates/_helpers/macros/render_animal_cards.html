@@ -1,19 +1,19 @@
 {% macro render_animal_cards(animals, is_admin) %}
-  {% if is_admin %}
-    <dialog id="delete-modal-card" class="z-20 modal">
-      <div class="bg-white modal-box">
-        <h3 class="text-lg font-bold">Delete Animal</h3>
-        <p class="py-4">Are you sure you want to delete this animal?</p>
-        <div class="modal-action">
-          <form method="dialog">
-            <button class="btn">Cancel</button>
-          </form>
-          <button id="delete-anyway-card" class="text-white btn btn-error">Delete Anyway</button>
-        </div>
-      </div>
-    </dialog>
-  {% endif %}
   <div class="grid w-full grid-cols-4 gap-10 mx-auto">
+    {% if is_admin %}
+      <dialog id="delete-modal-card" class="z-20 modal">
+        <div class="bg-white modal-box">
+          <h3 class="text-lg font-bold">Delete Animal</h3>
+          <p class="py-4">Are you sure you want to delete this animal?</p>
+          <div class="modal-action">
+            <form method="dialog">
+              <button class="btn">Cancel</button>
+            </form>
+            <button id="delete-anyway-card" class="text-white btn btn-error">Delete Anyway</button>
+          </div>
+        </div>
+      </dialog>
+    {% endif %}
     {% for animal in animals %}
       {% if is_admin %}
         {% set href = url_for('admin.animals.view_animal', id=animal.id) %}

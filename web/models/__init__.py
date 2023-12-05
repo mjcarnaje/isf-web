@@ -4,4 +4,5 @@ from .Role import Role
 from .UserRole import UserRole
 from .Donation import Donation
 from .Event import Event
-from .AdoptionApplication import AdoptionApplication
+from .Adoption import Adoption
+from .Notification import Notification

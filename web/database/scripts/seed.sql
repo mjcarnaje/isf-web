@@ -47,21 +47,11 @@ VALUES
     ('Purrfect Picnic', 'Enjoy a Purrfect Picnic with cats! Bring your feline friends, indulge in tasty treats, and relax in a cat-friendly outdoor setting.', 'isf/default-event', '2023-10-15 22:00:00', '2023-10-16 03:00:00', 'Cat Garden', @admin_user_id, 0, 1);
 
 -- Insert member 1
-INSERT IGNORE INTO user (email, google_id, username, first_name, last_name, password, photo_url, contact_number)
-VALUES ('member1@gmail.com', NULL, 'member1', 'Member', 'One', 'pbkdf2:sha256:600000$41AT9RlTuc6cKm5B$b6c91de61e1304dd5fd520c1465d097bf297441c00434ec650fed81c72013f8b', NULL, '09999999999');
+INSERT IGNORE INTO user (email, google_id, username, first_name, last_name, password, photo_url, contact_number, is_verified)
+VALUES ('member@gmail.com', NULL, 'member', 'Member', 'One', 'pbkdf2:sha256:600000$HlUCxEFlIYIljcQu$30e2e9b977dfec36cc29233fee4f4d8c0b68d324bbd629fbf9497f91393178b2', NULL, '09999999999', 1);
 
 -- Get the ID of the newly created member
-SET @member1_user_id = LAST_INSERT_ID();
+SET @member_user_id = LAST_INSERT_ID();
 
 -- Associate member 1 with 'member' role
-INSERT IGNORE INTO user_role (user_id, role_id) VALUES (@member1_user_id, (SELECT id FROM role WHERE name = 'member'));
-
--- Insert member 2
-INSERT IGNORE INTO user (email, google_id, username, first_name, last_name, password, photo_url, contact_number)
-VALUES ('member2@gmail.com', NULL, 'member2', 'Member', 'Two', 'pbkdf2:sha256:600000$41AT9RlTuc6cKm5B$b6c91de61e1304dd5fd520c1465d097bf297441c00434ec650fed81c72013f8b', NULL, '09999999999');
-
--- Get the ID of the newly created member
-SET @member2_user_id = LAST_INSERT_ID();
-
--- Associate member 2 with 'member' role
-INSERT IGNORE INTO user_role (user_id, role_id) VALUES (@member2_user_id, (SELECT id FROM role WHERE name = 'member'));
+INSERT IGNORE INTO user_role (user_id, role_id) VALUES (@member_user_id, (SELECT id FROM role WHERE name = 'member'));

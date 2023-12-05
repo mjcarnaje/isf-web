@@ -43,38 +43,36 @@
           formData.append("upload", file);
           formData.append("csrf_token", csrfToken);
 
-          try {
-            const response = await fetch("{{ url_for('upload_to_cloudinary') }}", {
-              method: "POST",
-              body: formData,
-            });
+          const response = await fetch("{{ url_for('upload_to_cloudinary') }}", {
+            method: "POST",
+            body: formData,
+          });
 
-            const data = await response.json();
+          const data = await response.json();
 
-            if (data?.is_success) {
-              const ul = document.getElementById("multi-pictures");
+          if (data?.is_success) {
+            const ul = document.getElementById("multi-pictures");
 
-              // Create a new li element with the new image
-              const newLi = document.createElement("li");
-              const newInput = document.createElement("input");
-              const newImage = document.createElement("img");
+            // Create a new li element with the new image
+            const newLi = document.createElement("li");
+            const newInput = document.createElement("input");
+            const newImage = document.createElement("img");
 
-              newInput.setAttribute("name", `pictures-${ul.children.length}`);
-              newInput.setAttribute("type", "text");
-              newInput.setAttribute("id", `pictures-${ul.children.length}`);
-              newInput.setAttribute("value", data.public_id);
-              newInput.classList.add("hidden")
+            newInput.setAttribute("name", `pictures-${ul.children.length}`);
+            newInput.setAttribute("type", "text");
+            newInput.setAttribute("id", `pictures-${ul.children.length}`);
+            newInput.setAttribute("value", data.public_id);
+            newInput.classList.add("hidden")
 
-              newImage.src = data.url
-              newImage.classList.add("object-cover", "w-full", "h-auto", "border", "cursor-pointer", "hover:shadow-sm", "rounded-xl", "bg-gray-50");
-              newImage.alt = data.public_id
+            newImage.src = data.url
+            newImage.classList.add("object-cover", "w-full", "h-auto", "border", "cursor-pointer", "hover:shadow-sm", "rounded-xl", "bg-gray-50");
+            newImage.alt = data.public_id
 
-              newLi.appendChild(newInput);
-              newLi.appendChild(newImage);
-              ul.insertBefore(newLi, ul.lastElementChild)
-            }
-          } catch (error) {
-            console.error("Error uploading photo:", error);
+            newLi.appendChild(newInput);
+            newLi.appendChild(newImage);
+            ul.insertBefore(newLi, ul.lastElementChild)
+          } else {
+            showToast('error', data.error)
           }
         }
       });

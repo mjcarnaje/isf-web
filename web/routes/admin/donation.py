@@ -11,7 +11,7 @@ admin_donations_bp = Blueprint("donation", __name__, url_prefix='/donations')
 @admin_required
 def donations():
     donations = Donation.get_donations()
-    return render_template('admin/donation/list.html', donations=donations)
+    return render_template('admin/donation/donations.html', donations=donations)
 
 
 @admin_donations_bp.route('/confirm/<int:id>', methods=['POST'])

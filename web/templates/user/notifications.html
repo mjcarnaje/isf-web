@@ -1,0 +1,9 @@
+{% set active_page = "user.notifications" %}
+{% extends "./_helpers/layout/user_layout.html" %}
+{% from "./_helpers/macros/notifications.html" import render_notifications with context %}
+{% block title %}
+  Notifications
+{% endblock title %}
+{% block content %}
+  {{ render_notifications(notifications, 'user') }}
+{% endblock content %}

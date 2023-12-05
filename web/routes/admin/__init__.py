@@ -1,8 +1,8 @@
 from flask import Blueprint, redirect, render_template, request, url_for
-from flask_login import login_required, login_user, logout_user
+from flask_login import current_user, login_user, logout_user
 from werkzeug.security import check_password_hash
 
-from ...models import Animal, User
+from ...models import Animal, Notification, User
 from ...utils import admin_required
 from ...validations import AdminLoginValidation
 
@@ -21,6 +21,24 @@ admin_bp.register_blueprint(admin_donations_bp)
 def index(): 
    animal_stats = Animal.get_stats()
    return render_template('/admin/dashboard.html', animal_stats=animal_stats)
+
+@admin_bp.route('/notifications', methods=['GET'])
+@admin_required
+def notifications(): 
+   notifications = Notification.get_notifications(user_id=current_user.id, limit=10)
+   return render_template('/admin/notifications.html', notifications=notifications)
+
+@admin_bp.route('/notifications/mark-as-read/<int:id>', methods=['PUT'])
+@admin_required
+def mark_as_read_notifcation(id):
+   Notification.mark_as_read(notification_id=id, user_id=current_user.id)
+   return "success"
+
+@admin_bp.route('/notifications/mark-all-as-read', methods=['PUT'])
+@admin_required
+def mark_all_as_read_notification():
+   Notification.mark_all_as_read(user_id=current_user.id)
+   return "success"
 
 @admin_bp.route('/login', methods=['GET', 'POST'])
 def login():

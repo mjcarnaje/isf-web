@@ -1,17 +1,3 @@
-CREATE TABLE IF NOT EXISTS role (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(16) UNIQUE NOT NULL -- 'member' | 'donor' | 'volunteer' | 'adopter' | 'admin'
-);
-
-CREATE TABLE IF NOT EXISTS user_role (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT,
-    role_id INT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES user(id),
-    FOREIGN KEY (role_id) REFERENCES role(id)
-);
-
 CREATE TABLE IF NOT EXISTS user (
     id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(256) UNIQUE NOT NULL,
@@ -22,8 +8,23 @@ CREATE TABLE IF NOT EXISTS user (
     password VARCHAR(256) NOT NULL,
     photo_url VARCHAR(256),
     is_verified BOOLEAN DEFAULT 0,
+    unread_notification_count INT DEFAULT 0,
     contact_number VARCHAR(12) UNIQUE NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS role (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name ENUM('Member', 'Donor', 'Volunteer', 'Adopter', 'Admin') DEFAULT 'Member'
+);
+
+CREATE TABLE IF NOT EXISTS user_role (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    role_id INT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES user(id),
+    FOREIGN KEY (role_id) REFERENCES role(id)
 );
 
 CREATE TABLE IF NOT EXISTS animal (
@@ -48,20 +49,29 @@ CREATE TABLE IF NOT EXISTS animal (
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS adoption_application (
+CREATE TABLE IF NOT EXISTS adoption (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     animal_id INT NOT NULL,
     application_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    status ENUM('Pending', 'Under Review', 'Approved', 'Rejected', 'Turnovered') DEFAULT 'Pending',
-    interview_type_preference ENUM('Phone', 'Zoom', 'Google Meet') DEFAULT 'Phone',
+    current_status ENUM('Pending', 'Under Review', 'Approved', 'Rejected', 'Turnovered') DEFAULT 'Pending',
+    interview_preference ENUM('Phone', 'Zoom', 'Google Meet') DEFAULT 'Phone',
     interview_preferred_date DATETIME NOT NULL,
     interview_preferred_time VARCHAR(256) NOT NULL,
     reason_to_adopt TEXT,
-    admin_notes TEXT,
     is_active BOOLEAN NOT NULL DEFAULT true,
     FOREIGN KEY (user_id) REFERENCES user(id),
     FOREIGN KEY (animal_id) REFERENCES animal(id)
+);
+
+CREATE TABLE IF NOT EXISTS adoption_status_history (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    application_id INT NOT NULL,
+    previous_status ENUM('Pending', 'Under Review', 'Approved', 'Rejected', 'Turnovered') NOT NULL,
+    status ENUM('Pending', 'Under Review', 'Approved', 'Rejected', 'Turnovered') NOT NULL,
+    remarks TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (application_id) REFERENCES adoption(id)
 );
 
 CREATE TABLE IF NOT EXISTS event (
@@ -107,4 +117,25 @@ CREATE TABLE IF NOT EXISTS donation_pictures (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (donation_id, photo_url),
     CONSTRAINT unique_donation_photo_url UNIQUE (donation_id, photo_url)
+);
+
+
+CREATE TABLE IF NOT EXISTS notification (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    type ENUM('ADOPTION_REQUEST', 'ADOPTION_STATUS_UPDATE', 'ADD_DONATION', 'DONATION_STATUS_UPDATE'),
+    animal_id INT,
+    adoption_id INT,
+    adoption_status_history_id INT,
+    donation_id INT,
+    user_who_fired_event_id INT NOT NULL,
+    user_to_notify_id INT NOT NULL,
+    is_read BOOLEAN DEFAULT false,
+    FOREIGN KEY (animal_id) REFERENCES animal(id),
+    FOREIGN KEY (adoption_id) REFERENCES adoption(id),
+    FOREIGN KEY (adoption_status_history_id) REFERENCES adoption_status_history(id),
+    FOREIGN KEY (donation_id) REFERENCES donation(id),
+    FOREIGN KEY (user_who_fired_event_id) REFERENCES user(id),
+    FOREIGN KEY (user_to_notify_id) REFERENCES user(id),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

@@ -1,38 +1,35 @@
 import datetime
 
-from ..database import \
-    db  # Make sure to import your database module or connection here
+from ..database import db
 
 
-class AdoptionApplication:
+class Adoption:
     def __init__(self, 
             id=None, 
             user_id=None,
             animal_id=None,
             application_date=None,
-            status='Pending',
-            interview_type_preference=None,
+            current_status='Pending',
+            interview_preference=None,
             interview_preferred_date=None,
             interview_preferred_time=None,
             reason_to_adopt=None,
             is_active=None,
-            admin_notes=None
         ):
         self.id = id
         self.user_id = user_id
         self.animal_id = animal_id
         self.application_date = application_date or datetime.datetime.now()
-        self.status = status
-        self.interview_type_preference = interview_type_preference
+        self.current_status = current_status
+        self.interview_preference = interview_preference
         self.interview_preferred_date = interview_preferred_date
         self.interview_preferred_time = interview_preferred_time
         self.reason_to_adopt = reason_to_adopt
         self.is_active = is_active
-        self.admin_notes = admin_notes
 
     @classmethod
     def find_by_id(cls, application_id):
-        sql = "SELECT * FROM adoption_application WHERE id = %s"
+        sql = "SELECT * FROM adoption WHERE id = %s"
         cur = db.new_cursor(dictionary=True)
         cur.execute(sql, (application_id,))
         row = cur.fetchone()
@@ -43,48 +40,46 @@ class AdoptionApplication:
     @classmethod
     def insert(cls, application):
         sql = """
-            INSERT INTO adoption_application 
-                (user_id, animal_id, application_date, status, interview_type_preference, interview_preferred_date, interview_preferred_time, reason_to_adopt, admin_notes) 
-            VALUES (%(user_id)s, %(animal_id)s, %(application_date)s, %(status)s, %(interview_type_preference)s, %(interview_preferred_date)s, %(interview_preferred_time)s, %(reason_to_adopt)s, %(admin_notes)s)
+            INSERT INTO adoption 
+                (user_id, animal_id, application_date, current_status, interview_preference, interview_preferred_date, interview_preferred_time, reason_to_adopt) 
+            VALUES (%(user_id)s, %(animal_id)s, %(application_date)s, %(current_status)s, %(interview_preference)s, %(interview_preferred_date)s, %(interview_preferred_time)s, %(reason_to_adopt)s)
         """
         params = {
             'user_id': application.user_id,
             'animal_id': application.animal_id,
             'application_date': application.application_date,
-            'status': application.status,
-            'interview_type_preference': application.interview_type_preference, 
+            'current_status': application.current_status,
+            'interview_preference': application.interview_preference, 
             'interview_preferred_date': application.interview_preferred_date,
             'interview_preferred_time': application.interview_preferred_time,
             'reason_to_adopt': application.reason_to_adopt,
-            'admin_notes': application.admin_notes
         }
         cur = db.new_cursor(dictionary=True)
         cur.execute(sql, params)
         db.connection.commit()
+        return cur.lastrowid
 
     @classmethod
     def update(cls, application):
         sql = """
-            UPDATE adoption_application 
+            UPDATE adoption 
             SET application_date = %(application_date)s,
-                status = %(status)s,
-                interview_type_preference = %(interview_type_preference)s,
+                current_status = %(current_status)s,
+                interview_preference = %(interview_preference)s,
                 interview_preferred_date = %(interview_preferred_date)s,
                 interview_preferred_time = %(interview_preferred_time)s,
-                reason_to_adopt = %(reason_to_adopt)s,
-                admin_notes = %(admin_notes)s
+                reason_to_adopt = %(reason_to_adopt)s
             WHERE user_id = %(user_id)s AND animal_id = %(animal_id)s
         """
         params = {
             'user_id': application.user_id,
             'animal_id': application.animal_id,
             'application_date': application.application_date,
-            'status': application.status,
-            'interview_type_preference': application.interview_type_preference, 
+            'current_status': application.current_status,
+            'interview_preference': application.interview_preference, 
             'interview_preferred_date': application.interview_preferred_date,
             'interview_preferred_time': application.interview_preferred_time,
             'reason_to_adopt': application.reason_to_adopt,
-            'admin_notes': application.admin_notes
         }
         cur = db.new_cursor(dictionary=True)
         cur.execute(sql, params)
@@ -94,8 +89,8 @@ class AdoptionApplication:
     @classmethod
     def set_all_under_review(cls, animal_id):
         sql = """
-            UPDATE adoption_application
-            SET status = 'Under Review'
+            UPDATE adoption
+            SET current_status = 'Under Review'
             WHERE animal_id = %s
         """
         cur = db.new_cursor()
@@ -103,21 +98,44 @@ class AdoptionApplication:
         db.connection.commit()
 
     @classmethod
-    def set_under_review(cls, animal_id, user_id):
+    def set_under_review(cls, animal_id, user_id, remarks):
         sql = """
-            UPDATE adoption_application
-            SET status = 'Under Review'
-            WHERE animal_id = %s AND user_id = %s
+            UPDATE adoption
+            SET current_status = 'Under Review'
+            WHERE animal_id = %(animal_id)s AND user_id = %(user_id)s
         """
+
+        params = {
+            'animal_id': animal_id,
+            'user_id': user_id
+        }
+
         cur = db.new_cursor()
-        cur.execute(sql, (animal_id, user_id))
+        id = cur.execute(sql, params)
+
+        sql = """
+            INSERT INTO adoption_status_history
+                (application_id, previous_status, status, remarks)
+            VALUES
+                (%(application_id)s, %(previous_status)s, %(status)s, %(remarks)s)
+        """
+
+        params = {
+            'application_id': id,
+            'previous_status': 'Pending',
+            'status': 'Under Review', 
+            'remarks': remarks
+        }
+
+        cur.execute(sql, params)
+
         db.connection.commit()
 
     @classmethod
     def set_approved_and_reject_others(cls, animal_id, user_id):
         sql_reject_others = """
-            UPDATE adoption_application
-            SET status = 'Rejected'
+            UPDATE adoption
+            SET current_status = 'Rejected'
             WHERE animal_id = %s AND user_id != %s
         """
         cur_reject_others = db.new_cursor()
@@ -125,8 +143,8 @@ class AdoptionApplication:
 
         # Approve the specified application
         sql_approve = """
-            UPDATE adoption_application
-            SET status = 'Approved'
+            UPDATE adoption
+            SET current_status = 'Approved'
             WHERE animal_id = %s AND user_id = %s
         """
         cur_approve = db.new_cursor()
@@ -137,8 +155,8 @@ class AdoptionApplication:
     @classmethod
     def set_rejected(cls, animal_id, user_id):
         sql = """
-            UPDATE adoption_application
-            SET status = 'Rejected'
+            UPDATE adoption
+            SET current_status = 'Rejected'
             WHERE animal_id = %s AND user_id = %s
         """
         cur = db.new_cursor()
@@ -148,8 +166,8 @@ class AdoptionApplication:
     @classmethod
     def set_turnovered(cls, animal_id, user_id):
         sql = """
-            UPDATE adoption_application
-            SET status = 'Turnovered'
+            UPDATE adoption
+            SET current_status = 'Turnovered'
             WHERE animal_id = %s AND user_id = %s
         """
         cur = db.new_cursor()
@@ -168,9 +186,9 @@ class AdoptionApplication:
     def get_user_applications(user_id):
         sql = """
                 SELECT * 
-                FROM adoption_application 
-                LEFT JOIN animal ON adoption_application.animal_id = animal.id
-                WHERE adoption_application.user_id = %s
+                FROM adoption 
+                LEFT JOIN animal ON adoption.animal_id = animal.id
+                WHERE adoption.user_id = %s
             """        
         cur = db.new_cursor(dictionary=True)
         cur.execute(sql, (user_id,))
@@ -182,9 +200,9 @@ class AdoptionApplication:
         sql = """
                 SELECT 
                     animal.*, 
-                    COUNT(adoption_application.user_id) AS user_count
+                    COUNT(adoption.user_id) AS user_count
                 FROM animal 
-                LEFT JOIN adoption_application ON adoption_application.animal_id = animal.id
+                LEFT JOIN adoption ON adoption.animal_id = animal.id
                 WHERE animal.is_adopted = 0 and animal.for_adoption = 1
                 GROUP BY animal.id
             """   
@@ -197,9 +215,9 @@ class AdoptionApplication:
     def get_animal_applications(animal_id):
         sql = """
                 SELECT *
-                FROM adoption_application 
-                LEFT JOIN user ON adoption_application.user_id = user.id
-                WHERE adoption_application.animal_id = %s
+                FROM adoption 
+                LEFT JOIN user ON adoption.user_id = user.id
+                WHERE adoption.animal_id = %s
         """
         cur = db.new_cursor(dictionary=True)
         cur.execute(sql, (animal_id,))
@@ -208,15 +226,15 @@ class AdoptionApplication:
 
     @staticmethod
     def get_applications():
-        sql = "SELECT * FROM adoption_application"
+        sql = "SELECT * FROM adoption"
         cur = db.new_cursor(dictionary=True)
         cur.execute(sql)
         rows = cur.fetchall()
-        return [AdoptionApplication(**row) for row in rows]
+        return [Adoption(**row) for row in rows]
     
     @classmethod
     def find_by_user_animal(cls, user_id, animal_id):
-        sql = "SELECT * FROM adoption_application WHERE user_id = %s AND animal_id = %s"
+        sql = "SELECT * FROM adoption WHERE user_id = %s AND animal_id = %s"
         cur = db.new_cursor(dictionary=True)
         cur.execute(sql, (user_id, animal_id))
         row = cur.fetchone()

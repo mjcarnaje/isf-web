@@ -7,122 +7,13 @@
   Admin - Animals
 {% endblock title %}
 {% block content %}
-  <div class="w-full max-w-5xl px-4 py-16 mx-auto space-y-8">
+  <div class="flex flex-col w-full gap-8">
     {{ render_animal_filter(true) }}
     <div class="sm:flex sm:items-center">
       <div class="sm:flex-auto">
         <h1 class="text-2xl font-bold leading-6 text-gray-900">Animals ({{ total_count }})</h1>
       </div>
-      <div class="relative">
-        <select class="w-full text-md select select-bordered" name="type">
-          <option value="">Select Type</option>
-          <option value="Dog" {% if type == "Dog" %}selected{% endif %}>Dog</option>
-          <option value="Cat" {% if type == "Cat" %}selected{% endif %}>Cat</option>
-        </select>
-      </div>
-      <div class="grid grid-cols-2 gap-4">
-        <label class="cursor-pointer label">
-          <span class="label-text">For Adoption</span>
-          <input name="for_adoption"
-                 type="checkbox"
-                 {% if for_adoption is true %}checked='checked'{% endif %}
-                 class="checkbox" />
-        </label>
-        <label class="cursor-pointer label">
-          <span class="label-text">Rescued</span>
-          <input name="is_rescued"
-                 type="checkbox"
-                 {% if is_rescued is true %}checked='checked'{% endif %}
-                 class="checkbox" />
-        </label>
-        <label class="cursor-pointer label">
-          <span class="label-text">Deceased</span>
-          <input name="is_dead"
-                 type="checkbox"
-                 {% if is_dead is true %}checked='checked'{% endif %}
-                 class="checkbox" />
-        </label>
-        <label class="cursor-pointer label">
-          <span class="label-text">Dewormed</span>
-          <input name="is_dewormed"
-                 type="checkbox"
-                 {% if is_dewormed is true %}checked='checked'{% endif %}
-                 class="checkbox" />
-        </label>
-        <label class="cursor-pointer label">
-          <span class="label-text">Neutered</span>
-          <input name="is_neutered"
-                 type="checkbox"
-                 {% if is_neutered is true %}checked='checked'{% endif %}
-                 class="checkbox" />
-        </label>
-        <label class="cursor-pointer label">
-          <span class="label-text">Shelter</span>
-          <input name="in_shelter"
-                 type="checkbox"
-                 {% if in_shelter is true %}checked='checked'{% endif %}
-                 class="checkbox" />
-        </label>
-        <label class="cursor-pointer label">
-          <span class="label-text">Adoption</span>
-          <input name="is_adopted"
-                 type="checkbox"
-                 {% if is_adopted is true %}checked='checked'{% endif %}
-                 class="checkbox" />
-        </label>
-      </div>
-      <button class="btn">Search</button>
-    </form>
-    <h1 class="text-2xl font-bold">Animals ({{ total_count }})</h1>
-    <dialog id="deleteModal" class="z-20 modal">
-      <div class="bg-white modal-box">
-        <h3 class="text-lg font-bold">Delete Animal</h3>
-        <p class="py-4">Are you sure you want to delete this animal?</p>
-        <div class="modal-action">
-          <form method="dialog">
-            <button class="btn">Cancel</button>
-          </form>
-          <button id="deleteAnyway" class="text-white btn btn-error">Delete Anyway</button>
-        </div>
-      </div>
-    </dialog>
-    <div class="grid w-full grid-cols-3 gap-8 mx-auto">
-      {% for animal in animals %}
-        <div class="flex flex-col bg-white border cursor-pointer group rounded-xl hover:shadow-sm">
-          <a href="{{ url_for('admin.animal.view_animal', id=animal.id) }}">
-            <div class="h-full overflow-hidden border-b aspect-square rounded-t-xl">
-              <img class="object-cover h-full transition-all duration-300 group-hover:scale-105"
-                   src="{{ get_image(animal.photo_url) }}"
-                   alt="Animal Photo"
-                   width="auto"
-                   height="auto" />
-            </div>
-          </a>
-          <div class="flex-1 py-2 px-3 space-y-0.5">
-            <div class="flex items-center justify-between">
-              <a href="{{ url_for('admin.animal.view_animal', id=animal.id) }}"
-                 class="text-xl font-bold text-primary-800">{{ animal.name }}</a>
-              <div class="dropdown">
-                <label tabindex="0">
-                  <div class="flex items-center justify-center w-6 h-6 rounded-full cursor-pointer hover:bg-gray-300 aspect-square">
-                    <i class="fa-solid fa-ellipsis"></i>
-                  </div>
-                </label>
-                <ul tabindex="0"
-                    class="dropdown-content z-[1] menu p-2 border bg-base-100 rounded-box w-32">
-                  <li>
-                    <a href="{{ url_for('admin.animal.edit_animal', id=animal.id) }}">Edit</a>
-                  </li>
-                  <li>
-                    <button class="open-delete-modal" data-animal-id="{{ animal.id }}">Delete</button>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <p class="text-gray-600">{{ animal.description | truncate(60) }}</p>
-          </div>
-        </div>
-      {% endfor %}
+      {% include "./_helpers/partials/view_form.html" %}
     </div>
     {% if view_type == "card" %}
       {{ render_animal_cards(animals, true) }}

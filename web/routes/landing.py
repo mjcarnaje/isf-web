@@ -3,8 +3,7 @@ from flask import (Blueprint, current_app, flash, redirect, render_template,
 from flask_login import current_user, login_required, login_user
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from ..models import (AdoptionApplication, Animal, Donation, Event, User,
-                      UserRole)
+from ..models import (Animal, Donation, Event, User, UserRole)
 from ..utils import (anonymous_required, check_verification_token,
                      generate_verification_token, get_active_filter_count,
                      send_verification_email, user_verified_required)
@@ -68,7 +67,7 @@ def animals():
   
   animals_query = Animal.find_all(
               page_number=page, 
-              page_size=12,
+              page_size=4,
               filters=filters
             )
   

@@ -1,11 +1,12 @@
-from flask import Blueprint, redirect, render_template, request, url_for, session
+from flask import Blueprint, redirect, render_template, request, url_for, session, request
 from flask_login import current_user
 
-from ...models import Animal, AdoptionApplication
+from ...models import Animal, Adoption, Notification
 from ...utils import admin_required, get_active_filter_count
 from ...validations import AddAnimalValidation, EditAnimalValidation
-
-admin_animal_bp = Blueprint("animals", __name__, url_prefix='/animal')
+from ...enums import NotificationType
+ 
+admin_animal_bp = Blueprint("animals", __name__, url_prefix='/animals')
 
 @admin_animal_bp.route('', methods=['GET'])
 @admin_required
@@ -46,50 +47,6 @@ def animals():
                             active_filters=get_active_filter_count(filters),
                             view_type=view_type
                         )
-
-
-@admin_animal_bp.route('/adoption-animals', methods=['GET'])
-@admin_required
-def adoption_applications_animals():
-    page = request.args.get('page', 1, type=int)
-    query = request.args.get('query', '', type=str)
-
-    animals = AdoptionApplication.get_animals_applications()
-    return render_template('admin/animal/adoption_applications_animals.html', animals=animals)
-
-
-@admin_animal_bp.route('/adoption-animals/<int:id>', methods=['GET'])
-@admin_required
-def adoption_applications_animal(id):
-    animal = Animal.find_by_id(id)
-    applications = AdoptionApplication.get_animal_applications(id)
-    return render_template('admin/animal/adoption_applications_animal.html', animal=animal, applications=applications)
-
-@admin_animal_bp.route('/adoption-animals/<int:id>/under-review/<int:user_id>', methods=['POST'])
-@admin_required
-def set_under_review(id, user_id):
-    print(id, user_id)
-    AdoptionApplication.set_under_review(animal_id=id, user_id=user_id)
-    return redirect(url_for('admin.animals.adoption_applications_animal', id=id))
-
-@admin_animal_bp.route('/adoption-animals/<int:id>/approve/<int:user_id>', methods=['POST'])
-@admin_required
-def set_approved(id, user_id):
-    AdoptionApplication.set_approved_and_reject_others(animal_id=id, user_id=user_id)
-    return redirect(url_for('admin.animals.adoption_applications_animal', id=id))
-
-@admin_animal_bp.route('/adoption-animals/<int:id>/turnover/<int:user_id>', methods=['POST'])
-@admin_required
-def set_turnovered(id, user_id):
-    AdoptionApplication.set_turnovered(animal_id=id, user_id=user_id)
-    return redirect(url_for('admin.animals.adoption_applications_animal', id=id))
-
-@admin_animal_bp.route('/adoption-animals/<int:id>/reject/<int:user_id>', methods=['POST'])
-@admin_required
-def set_rejected(id, user_id):
-    AdoptionApplication.set_rejected(animal_id=id, user_id=user_id)
-    return redirect(url_for('admin.animals.adoption_applications_animal', id=id))
-
 
 @admin_animal_bp.route('/<int:id>', methods=['GET'])
 @admin_required
@@ -204,3 +161,59 @@ def delete_animal(id):
     
     return True
 
+@admin_animal_bp.route('/adoptions', methods=['GET'])
+@admin_required
+def adoptions():
+    page = request.args.get('page', 1, type=int)
+    query = request.args.get('query', '', type=str)
+
+    animals = Adoption.get_animals_applications()
+    return render_template('/admin/animal/adoptions.html', animals=animals)
+
+
+@admin_animal_bp.route('/adoptions/<int:id>', methods=['GET'])
+@admin_required
+def adoption(id):
+    animal = Animal.find_by_id(id)
+    applications = Adoption.get_animal_applications(id)
+    return render_template('admin/animal/adoption.html', animal=animal, applications=applications)
+
+@admin_animal_bp.route('/adoptions/<int:animal_id>/under-review', methods=['POST'])
+@admin_required
+def set_under_review(animal_id):
+    remarks = request.form.get('remarks')
+    user_id = request.form.get('user_id')
+    adoption_id = request.form.get('adoption_id')
+
+    Adoption.set_under_review(adoption_id=adoption_id, user_id=user_id, remarks=remarks)
+    notification = Notification(type=NotificationType.ADOPTION_STATUS_UPDATE.value, animal_id=animal_id, adoption_id=adoption_id, user_who_fired_event_id=1, user_to_notify_id=user_id)
+    notification.insert(notification)
+    notification.increment_count(notification)
+    return redirect(url_for('admin.animals.adoption', id=id))
+
+@admin_animal_bp.route('/adoptions/<int:animal_id>/approve', methods=['POST'])
+@admin_required
+def set_approved(id, user_id):
+    Adoption.set_approved_and_reject_others(animal_id=id, user_id=user_id)
+    notification = Notification(type=NotificationType.ADOPTION_STATUS_UPDATE.value,  adoption_id=id, user_who_fired_event_id=1, user_to_notify_id=user_id)
+    notification.insert(notification)
+    notification.increment_count(notification)
+    return redirect(url_for('admin.animals.adoption', id=id))
+
+@admin_animal_bp.route('/adoptions/<int:animal_id>/turnover', methods=['POST'])
+@admin_required
+def set_turnovered(id, user_id):
+    Adoption.set_turnovered(animal_id=id, user_id=user_id)
+    notification = Notification(type=NotificationType.ADOPTION_STATUS_UPDATE.value,  adoption_id=id, user_who_fired_event_id=1, user_to_notify_id=user_id)
+    notification.insert(notification)
+    notification.increment_count(notification)
+    return redirect(url_for('admin.animals.adoption', id=id))
+
+@admin_animal_bp.route('/adoptions/<int:animal_id>/reject', methods=['POST'])
+@admin_required
+def set_rejected(id, user_id):
+    Adoption.set_rejected(animal_id=id, user_id=user_id)
+    notification = Notification(type=NotificationType.ADOPTION_STATUS_UPDATE.value,  adoption_id=id, user_who_fired_event_id=1, user_to_notify_id=user_id)
+    notification.insert(notification)
+    notification.increment_count(notification)
+    return redirect(url_for('admin.animals.adoption', id=id))
