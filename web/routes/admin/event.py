@@ -26,10 +26,11 @@ def edit_event(id):
         event.start_date=form.start_date.data
         event.end_date=form.end_date.data
         event.location=form.location.data
-        event.show_in_landing=form.show_in_landing.data
+        event.status=form.status.data
+        event.who_can_see_it=form.who_can_see_it.data
+        event.volunteer_only=form.volunteer_only.data
         new_pictures = [photo.data for photo in form.pictures.entries if photo.data not in event.pictures]
         event.pictures.extend(new_pictures)        
-        event.is_done=False 
         Event.edit(event)
         return redirect(url_for("admin.event.events"))
     
@@ -41,7 +42,9 @@ def edit_event(id):
         form.start_date.data = event.start_date.date()
         form.end_date.data = event.end_date.date()
         form.location.data = event.location
-        form.show_in_landing.data = event.show_in_landing == 1 
+        form.status.data = event.status
+        form.who_can_see_it.data = event.who_can_see_it
+        form.volunteer_only.data = event.volunteer_only == 1 
 
         for photo_url in event.pictures:
             form.pictures.append_entry(data=photo_url)
@@ -61,9 +64,10 @@ def add_event():
             author_id=current_user.id,
             end_date=form.end_date.data,
             location=form.location.data,
-            show_in_landing=form.show_in_landing.data,
+            status=form.status.data,
+            who_can_see_it=form.who_can_see_it.data,
+            volunteer_only=form.volunteer_only.data,            
             pictures=form.pictures.data,
-            is_done=False    
         )
         Event.insert(new_event)
         return redirect(url_for("admin.event.events"))

@@ -1,8 +1,24 @@
 from ..database import db
-import datetime
+import datetime       
 
 class Event():
-    def __init__(self, id=None, name=None, description=None, cover_photo_url=None, start_date=None, end_date=None, location=None, author_id=None, is_done=None, show_in_landing=None, pictures:[str] = [], created_at=None, updated_at=None,):
+    def __init__(
+            self, 
+            id=None, 
+            name=None, 
+            description=None, 
+            cover_photo_url=None, 
+            start_date=None, 
+            end_date=None, 
+            location=None, 
+            author_id=None, 
+            status=None,
+            who_can_see_it=None,
+            volunteer_only=None,
+            pictures:[str] = [], 
+            created_at=None, 
+            updated_at=None
+        ):
         self.id = id
         self.name = name
         self.description = description
@@ -11,19 +27,19 @@ class Event():
         self.end_date = end_date
         self.location = location
         self.author_id = author_id
-        self.is_done = is_done
-        self.show_in_landing = show_in_landing
+        self.status = status
+        self.who_can_see_it = who_can_see_it
+        self.volunteer_only = volunteer_only
         self.pictures = pictures
         self.created_at = created_at
         self.updated_at = updated_at
-        
 
     @staticmethod
     def find_all(show_landing_page_only: bool = False):
         sql = "SELECT * FROM event"
         
         if show_landing_page_only:
-            sql += " WHERE show_in_landing = 1"
+            sql += " WHERE who_can_see_it = Public"
 
         cur = db.new_cursor(dictionary=True)
         cur.execute(sql)
@@ -54,20 +70,42 @@ class Event():
     def insert(cls, event):
         sql = """
             INSERT INTO event (
-                name, description, cover_photo_url, start_date, end_date, location, author_id, is_done, show_in_landing
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                name, 
+                description, 
+                cover_photo_url, 
+                start_date, 
+                end_date, 
+                location, 
+                status,
+                who_can_see_it,
+                volunteer_only,
+                author_id
+            ) 
+            VALUES (
+                %(name)s, 
+                %(description)s,
+                %(cover_photo_url)s,
+                %(start_date)s,
+                %(end_date)s,
+                %(location)s,
+                %(status)s,
+                %(who_can_see_it)s,
+                %(volunteer_only)s,
+                %(author_id)s
+            )
         """
-        params = (
-            event.name,
-            event.description,
-            event.cover_photo_url,
-            event.start_date,
-            event.end_date,
-            event.location,
-            event.author_id,
-            event.is_done,
-            event.show_in_landing,
-        )
+        params = {
+            'name': event.name,
+            'description': event.description,
+            'cover_photo_url': event.cover_photo_url,
+            'start_date': event.start_date,
+            'end_date': event.end_date,
+            'location': event.location,
+            'status': event.status,
+            'who_can_see_it': event.who_can_see_it,
+            'volunteer_only': event.volunteer_only,
+            'author_id': event.author_id,
+        }
 
         cur = db.new_cursor()
         cur.execute(sql, params)
@@ -111,9 +149,10 @@ class Event():
                 start_date = %s,
                 end_date = %s,
                 location = %s,
+                status = %s,
+                who_can_see_it = %s,
+                volunteer_only = %s,
                 author_id = %s,
-                is_done = %s,
-                show_in_landing = %s,
                 updated_at = CURRENT_TIMESTAMP
             WHERE
                 id = %s
@@ -125,9 +164,10 @@ class Event():
             event.start_date,
             event.end_date,
             event.location,
+            event.status,
+            event.who_can_see_it,
+            event.volunteer_only,
             event.author_id,
-            event.is_done,
-            event.show_in_landing,
             event.id
         )
         cur = db.new_cursor()

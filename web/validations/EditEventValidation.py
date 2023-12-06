@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, validators, DateField, BooleanField, TextAreaField, HiddenField, FieldList
+from wtforms import StringField, validators, DateField, BooleanField, SelectField, TextAreaField, HiddenField, FieldList
 
 from ..models import Event
 from datetime import date
@@ -24,7 +24,17 @@ class EditEventValidation(FlaskForm):
     location = StringField("Location", validators=[
         validators.DataRequired()
     ])
-    show_in_landing = BooleanField("Show in Landing")
+    status = SelectField('Status', choices=[
+                         ("Scheduled", "Scheduled"), 
+                         ("In Progress", "In Progress"),
+                         ("Completed", "Completed"),
+                         ("Cancelled", "Cancelled")
+                         ], validators=[validators.DataRequired()])
+    who_can_see_it = SelectField('Who can see it?', choices=[
+                         ("Public", "Public"), 
+                         ("Verified User", "Verified User"),
+                         ], validators=[validators.DataRequired()])
+    volunteer_only = BooleanField("Volunteer Only?")
     pictures = FieldList(StringField(), label="Photos")    
     
     def validate_end_date(form, field):

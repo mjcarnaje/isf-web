@@ -85,11 +85,19 @@ CREATE TABLE IF NOT EXISTS event (
     start_date DATETIME NOT NULL,
     end_date DATETIME NOT NULL,
     location VARCHAR(256),
+    status ENUM('Scheduled', 'In Progress', 'Completed', 'Cancelled'),
+    who_can_see_it ENUM('Public', 'Verified User') DEFAULT 'Public',
+    volunteer_only BOOLEAN,
     author_id INT NOT NULL REFERENCES user(id),
-    is_done BOOLEAN NOT NULL,
-    show_in_landing BOOLEAN NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS event_volunteer (
+    event_id INT NOT NULL REFERENCES event(id),
+    volunteer_id INT NOT NULL REFERENCES user(id),
+    approval_status ENUM('Pending', 'Approved', 'Rejected') DEFAULT 'Pending',
+    PRIMARY KEY (event_id, volunteer_id)
 );
 
 CREATE TABLE IF NOT EXISTS event_pictures (

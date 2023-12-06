@@ -5,6 +5,7 @@ from ...models import Adoption, Donation, Notification
 from ...utils import user_verified_required
 
 from .animal import user_animal_bp
+from .event import user_event_bp
 
 user_bp = Blueprint("user", __name__, url_prefix='/user')
 
@@ -55,3 +56,4 @@ def logout():
 
 
 user_bp.register_blueprint(user_animal_bp)
+user_bp.register_blueprint(user_event_bp)
