@@ -106,6 +106,7 @@ def adopt_me(id):
                         reason_to_adopt=form.reason_to_adopt.data, 
                         interview_preference=form.interview_preference.data, 
                         interview_preferred_date=form.interview_preferred_date.data, 
+                        phone_number=form.phone_number.data,
                         interview_preferred_time=form.interview_preferred_time.data
                       )
     if active_application: 
@@ -125,10 +126,14 @@ def adopt_me(id):
     return redirect(url_for('user.applications'))
 
   if not form.is_submitted() and active_application:
-     form.id.data = active_application.id
-     form.reason_to_adopt.data = active_application.reason_to_adopt  
-     form.interview_preference.data = active_application.interview_preference   
-     form.interview_preferred_date.data = active_application.interview_preferred_date  
-     form.interview_preferred_time.data = active_application.interview_preferred_time  
+    form.id.data = active_application.id
+    form.reason_to_adopt.data = active_application.reason_to_adopt  
+    form.phone_number.data = active_application.phone_number
+    form.interview_preference.data = active_application.interview_preference   
+    form.interview_preferred_date.data = active_application.interview_preferred_date  
+    form.interview_preferred_time.data = active_application.interview_preferred_time  
+  else:
+    form.phone_number.data = current_user.contact_number
+
   
   return render_template('/user/animals/adopt_me.html', animal=animal, active_application=active_application, form=form)

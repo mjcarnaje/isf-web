@@ -113,39 +113,29 @@
                     </div>
                   </label>
                   <ul tabindex="0"
-                      class="dropdown-content z-[1] menu p-2 border bg-base-100 rounded-box w-64">
+                      class="dropdown-content shadow-md z-[1] menu p-2 border bg-base-100 rounded-box w-56">
+                    {% if application.current_status != "Interview" %}
+                      <li>
+                        <button id="interview_button"
+                                data-id="{{ application.id }}"
+                                data-interview-preference="{{ application.interview_preference }}"
+                                data-user-id="{{ application.user_id }}"
+                                data-animal-id="{{ application.animal_id }}">Confirm</button>
+                      </li>
+                    {% endif %}
                     <li>
-                      <button id="reject"
-                              type="submit"
-                              data-id="{{ application.id }}"
-                              data-animal-id="{{ application.animal_id }}"
-                              data-user-id="{{ application.user_id }}">Reject</button>
+                      <button id="reject" onclick="reject_modal.showModal()">Reject</button>
                     </li>
-                    {# {% if application.status == "Pending" %} #}
-                    <li>
-                      <button id="under-review"
-                              type="submit"
-                              data-id="{{ application.id }}"
-                              data-animal-id="{{ application.animal_id }}"
-                              data-user-id="{{ application.user_id }}">Set as Under Review</button>
-                    </li>
-                    {# {% elif application.status == "Under Review" %} #}
-                    <li>
-                      <button id="approve"
-                              type="submit"
-                              data-id="{{ application.id }}"
-                              data-animal-id="{{ application.animal_id }}"
-                              data-user-id="{{ application.user_id }}">Approve</button>
-                    </li>
-                    {# {% elif application.status == "Approved" %} #}
-                    <li>
-                      <button id="turnover"
-                              type="submit"
-                              data-id="{{ application.id }}"
-                              data-animal-id="{{ application.animal_id }}"
-                              data-user-id="{{ application.user_id }}">Turnovered</button>
-                    </li>
-                    {# {% endif %} #}
+                    {% if application.current_status == "Interview" %}
+                      <li>
+                        <button id="approve" onclick="approve_modal.showModal()">Approve</button>
+                      </li>
+                    {% endif %}
+                    {% if application.current_status == "Approved" %}
+                      <li>
+                        <button id="turnover" onclick="turnover_modal.showModal()">Turnovered</button>
+                      </li>
+                    {% endif %}
                   </ul>
                 </div>
               </td>
@@ -153,32 +143,110 @@
           {% endfor %}
         </tbody>
       </table>
+      <dialog id="reject_modal" class="modal">
+        <div class="modal-box">
+          <form id="reject_form" method="post" class="flex flex-col gap-4">
+            <h3 class="text-lg font-bold">Application Rejected</h3>
+            <p>This will send an email notifying the applicant of the rejection status.</p>
+            <div class="form-control">
+              <label for="remarks" class="text-sm text-gray-500 label label-text">Remarks (Optional)</label>
+              <input class="w-full input input-bordered" type="text" name="remarks" />
+            </div>
+            <button class="w-full text-white btn btn-primary">Submit</button>
+          </form>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+          <button>Close</button>
+        </form>
+      </dialog>
+      <dialog id="interview_modal" class="modal">
+        <div class="modal-box">
+          <form id="interview_form" method="post" class="flex flex-col gap-4">
+            <h3 class="text-lg font-bold">Application Interview</h3>
+            <p>This will send an email indicating that the application is currently Interview.</p>
+            <div class="form-control">
+              <label for="remarks" class="text-sm text-gray-500 label label-text">Remarks (Optional)</label>
+              <input class="w-full input input-bordered" type="text" name="remarks" />
+            </div>
+            <div class="form-control">
+              <label for="external_url" class="text-sm text-gray-500 label label-text">External Url</label>
+              <input class="w-full input input-bordered" type="text" name="external_url" />
+            </div>
+            <button class="w-full text-white btn btn-primary">Submit</button>
+          </form>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+          <button>Close</button>
+        </form>
+      </dialog>
+      <dialog id="approve_modal" class="modal">
+        <div class="modal-box">
+          <h3 class="text-lg font-bold">Application Approved</h3>
+          <p class="py-4">This will send an email confirming the approval of the application.</p>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+          <button>Close</button>
+        </form>
+      </dialog>
+      <dialog id="turnover_modal" class="modal">
+        <div class="modal-box">
+          <h3 class="text-lg font-bold">Application Turned Over</h3>
+          <p class="py-4">This will send an email notifying the applicant about the turnover status of the application.</p>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+          <button>Close</button>
+        </form>
+      </dialog>
     </div>
   </div>
   <script>
-    const statuses = ['reject', 'under-review', 'approve', 'turnover'];
+  const interviewModal = document.getElementById("interview_modal");
+  const interviewForm = document.getElementById("interview_form");
+  const interviewButtons = document.querySelectorAll("#interview_button");
+  const rejectModal = document.getElementById("reject_modal");
 
-    statuses.forEach((status) => {
-      const buttons = document.querySelectorAll(`#${status}`);
-      buttons.forEach((button) => {
-        button.addEventListener("click", async function () {
-          try {
-            const formData = new FormData();
-            formData.append('user_id', button.dataset.userId)
-            formData.append('adoption_id', button.dataset.adoptionId)
-            formData.append('remarks', '')
-            await fetch(`/admin/animals/adoptions/${button.dataset.animalId}/${status}`, {
-              method: "POST",
-              headers: {
-                "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
-              },
-              body: formData
-            });
-          } catch (error) {
-            console.error('Error during fetch:', error);
-          }
+  interviewButtons.forEach((button) => {
+    button.addEventListener("click", handleInterviewButtonClick);
+  });
+
+  function handleInterviewButtonClick(element) {
+    interviewModal.showModal();
+    const { id, userId, animalId, interviewPreference } = element.target.dataset;
+    
+    const externalUrlLabel = interviewForm.querySelector("label[for='external_url']");
+
+    if (interviewPreference == "Phone") {
+      externalUrlLabel.parentElement.classList.add("hidden");
+    }
+
+    const linkType = interviewPreference === "Google Meet" ? " (Google Meet Link)" : interviewPreference === "Zoom" ? " (Zoom Link)" : "";
+    externalUrlLabel.innerHTML += linkType;
+    
+    interviewForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      
+      const externalUrl = interviewForm.querySelector("input[name='external_url']").value;
+      const remarks = interviewForm.querySelector("input[name='remarks']").value;
+
+      try {
+        const formData = new FormData();
+        formData.append("user_id", userId);
+        formData.append("adoption_id", id);
+        formData.append("remarks", remarks);
+        formData.append("google_meet_url", interviewPreference === "Google Meet" ? externalUrl : "");
+        formData.append("zoom_url", interviewPreference === "Zoom" ? externalUrl : ""); 
+               
+        await fetch(`/admin/animals/adoptions/${animalId}/interview`, {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
+          },
+          body: formData,
         });
-      });
+      } catch (error) {
+        showToast("error", error);
+      }
     });
+  }
   </script>
 {% endblock content %}

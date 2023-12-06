@@ -53,25 +53,28 @@ CREATE TABLE IF NOT EXISTS adoption (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     animal_id INT NOT NULL,
-    application_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    current_status ENUM('Pending', 'Under Review', 'Approved', 'Rejected', 'Turnovered') DEFAULT 'Pending',
+    current_status ENUM('Pending', 'Interview', 'Approved', 'Rejected', 'Turnovered') DEFAULT 'Pending',
     interview_preference ENUM('Phone', 'Zoom', 'Google Meet') DEFAULT 'Phone',
     interview_preferred_date DATETIME NOT NULL,
     interview_preferred_time VARCHAR(256) NOT NULL,
     reason_to_adopt TEXT,
     is_active BOOLEAN NOT NULL DEFAULT true,
+    zoom_url TEXT, 
+    google_meet_url TEXT,
+    phone_number VARCHAR(20),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user(id),
     FOREIGN KEY (animal_id) REFERENCES animal(id)
 );
 
 CREATE TABLE IF NOT EXISTS adoption_status_history (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    application_id INT NOT NULL,
-    previous_status ENUM('Pending', 'Under Review', 'Approved', 'Rejected', 'Turnovered') NOT NULL,
-    status ENUM('Pending', 'Under Review', 'Approved', 'Rejected', 'Turnovered') NOT NULL,
+    adoption_id INT NOT NULL,
+    previous_status ENUM('Pending', 'Interview', 'Approved', 'Rejected', 'Turnovered') NOT NULL,
+    status ENUM('Pending', 'Interview', 'Approved', 'Rejected', 'Turnovered') NOT NULL,
     remarks TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (application_id) REFERENCES adoption(id)
+    FOREIGN KEY (adoption_id) REFERENCES adoption(id)
 );
 
 CREATE TABLE IF NOT EXISTS event (

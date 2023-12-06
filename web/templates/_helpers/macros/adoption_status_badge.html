@@ -1,16 +1,21 @@
 {% macro status_badge(status, size) %}
   {% if status == 'Pending' %}
-    <div class="badge badge-{{ size }} badge-ghost">Pending</div>
-  {% elif status == 'Under Review' %}
-    <div class="badge badge-{{ size }} badge-warning">Under Review</div>
+    <div class="flex items-center justify-center px-2 py-1 font-bold text-gray-700 border border-gray-200 rounded-lg bg-gray-50">
+      Pending
+    </div>
+  {% elif status == 'Interview' %}
+    <div class="flex items-center justify-center px-2 py-1 font-bold text-white rounded-lg bg-primary-600">
+      To Be Interview
+    </div>
   {% elif status == 'Approved' %}
-    <div class="text-white badge badge-{{ size }} badge-info">Approved</div>
+    <div class="flex items-center justify-center px-2 py-1 font-bold text-white rounded-lg bg-lime-500">Approved</div>
   {% elif status == 'Turnovered' %}
-    <div class="text-white badge badge-{{ size }} badge-success">Turnovered</div>
+    <div class="flex items-center justify-center px-2 py-1 font-bold text-white bg-green-500 rounded-lg">Turnovered</div>
   {% elif status == 'Rejected' %}
-    <div class="text-white badge badge-{{ size }} badge-error">Rejected</div>
+    <div class="flex items-center justify-center px-2 py-1 font-bold text-white bg-red-500 rounded-lg">Rejected</div>
   {% else %}
     <div class="badge">Unknown Status</div>
   {% endif %}
-  <div class="hidden badge-lg badge-sm"></div>
+  <div class="sr-only badge-sm"></div>
+  <div class="sr-only badge-lg"></div>
 {% endmacro %}

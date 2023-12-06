@@ -24,13 +24,18 @@ class Notification:
         self.first_name = kwargs.get('user_first_name')
         self.last_name = kwargs.get('user_last_name')
         self.user_photo_url = kwargs.get('user_photo_url')
+
         self.animal_name = kwargs.get('animal_name')
         self.animal_photo_url = kwargs.get('animal_photo_url')
+
         self.adoption_status = kwargs.get('adoption_status')
+        self.adoption_interview_preference = kwargs.get('adoption_interview_preference')
+        self.previous_status = kwargs.get('previous_status')
+        
         self.donation_amount = kwargs.get('donation_amount')
 
-        self.created_at = kwargs.get('created_at', datetime.datetime.now())
-        self.updated_at = kwargs.get('updated_at', datetime.datetime.now())
+        self.created_at = pretty_date(kwargs.get('created_at', datetime.datetime.now()))
+        self.updated_at = pretty_date(kwargs.get('updated_at', datetime.datetime.now()))
         
     @classmethod
     def increment_count(cls, notification):
@@ -103,8 +108,22 @@ class Notification:
     def insert(clc, notification):
         sql = """
             INSERT INTO notification (
-                type, animal_id, adoption_id, adoption_status_history_id, donation_id, user_who_fired_event_id, user_to_notify_id
-            ) VALUES (%(type)s, %(animal_id)s, %(adoption_id)s, %(adoption_status_history_id)s, %(donation_id)s, %(user_who_fired_event_id)s, %(user_to_notify_id)s)
+                type,
+                animal_id,
+                adoption_id,
+                adoption_status_history_id,
+                donation_id,
+                user_who_fired_event_id,
+                user_to_notify_id
+            ) VALUES (
+                %(type)s, 
+                %(animal_id)s, 
+                %(adoption_id)s, 
+                %(adoption_status_history_id)s, 
+                %(donation_id)s, 
+                %(user_who_fired_event_id)s, 
+                %(user_to_notify_id)s
+            )
         """
         
         params = {
@@ -133,7 +152,9 @@ class Notification:
                 user.photo_url as user_photo_url,
                 animal.name as animal_name,
                 animal.photo_url as animal_photo_url,
+                adoption_status_history.previous_status as previous_status, 
                 adoption_status_history.status as adoption_status, 
+                adoption.interview_preference as adoption_interview_preference, 
                 donation.amount as donation_amount
             FROM 
                 notification
@@ -162,27 +183,9 @@ class Notification:
 
         notifications = [
             cls(
-                id=row['id'],
-                type=row['type'],
-                animal_id=row['animal_id'],
-                adoption_id=row['adoption_id'],
-                adoption_status_history_id=row['adoption_status_history_id'],
-                donation_id=row['donation_id'],
-                user_who_fired_event_id=row['user_who_fired_event_id'],
-                user_to_notify_id=row['user_to_notify_id'],
-                is_read=row['is_read'],
+                **row,
                 message=cls.get_message_for_type_and_info(row['type'], row),
                 redirect_url=cls.get_redirect_url(row['type'], row),
-                user_username=row['user_username'],
-                user_first_name=row['user_first_name'],
-                user_last_name=row['user_last_name'],
-                user_photo_url=row['user_photo_url'],
-                animal_name=row['animal_name'],
-                animal_photo_url=row['animal_photo_url'],
-                adoption_status=row['adoption_status'],
-                donation_amount=row['donation_amount'],
-                created_at=pretty_date(row['created_at']),
-                updated_at=pretty_date(row['updated_at'])
             ) for row in rows
         ]
 
@@ -191,12 +194,19 @@ class Notification:
     @staticmethod
     def get_message_for_type_and_info(notification_type, info):
         message_templates = {
-            'ADOPTION_REQUEST': f'{info["user_first_name"]} {info["user_last_name"]} requested to adopt {info["animal_name"]}',
-            'ADOPTION_STATUS_UPDATE': f'The status of your adoption application is now {info["adoption_status"]}.',
+            'ADOPTION_REQUEST': f'{info["user_first_name"]} {info["user_last_name"]} has requested to adopt {info["animal_name"]}.',
+            'ADOPTION_STATUS_UPDATE': f'The status of your adoption application is now {info["adoption_status"]} (previously {info["previous_status"]}).',
             'ADD_DONATION': f'A new donation of {info["donation_amount"]} has been added.',
             'DONATION_STATUS_UPDATE': 'The status of your donation has been updated.',
         }
-        return message_templates.get(notification_type, 'Unknown notification type.')
+
+        base_message = message_templates.get(notification_type, 'Unknown notification type.')
+
+        if notification_type == 'ADOPTION_STATUS_UPDATE' and info['adoption_status'] == "Interview":
+            base_message += f" Please check the {info['adoption_interview_preference']} link and save it for the interview date and time."
+
+        return base_message
+
 
     @staticmethod
     def get_redirect_url(notification_type, info):
@@ -207,5 +217,5 @@ class Notification:
             'ADD_DONATION': 'admin.animals.adopt' if is_admin else 'user.animals.adopt_me',
             'DONATION_STATUS_UPDATE': 'admin.animals.adopt' if is_admin else 'user.animals.adopt_me',
         }
-        id_key = 'adoption_id' if notification_type in {'ADOPTION_REQUEST', 'ADOPTION_STATUS_UPDATE'} else 'donation_id'
+        id_key = 'animal_id' if notification_type in {'ADOPTION_REQUEST', 'ADOPTION_STATUS_UPDATE'} else 'donation_id'
         return url_for(redirect_url_templates.get(notification_type, 'Unknown notification type.'), id=info[id_key])

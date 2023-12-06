@@ -1,50 +1,14 @@
 {% set active_page = "user.applications" %}
 {% extends "./_helpers/layout/user_layout.html" %}
 {% from './_helpers/macros/adoption_status_badge.html' import status_badge %}
+{% from './_helpers/macros/render_applications_table.html' import render_applications_table with context %}
 {% block title %}
   Donations
 {% endblock title %}
 {% block content %}
   <div class="flex flex-col gap-8">
     <h1 class="text-3xl font-bold">Applications</h1>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Animal Name</th>
-          <th>Gender</th>
-          <th>Reason To Adopt</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for application in applications %}
-          <tr>
-            <td>
-              <div class="flex items-center gap-3">
-                <div class="avatar">
-                  <div class="w-12 h-12 mask mask-squircle">
-                    <img src="{{ get_image(application.photo_url) }}"
-                         alt="Avatar Tailwind CSS Component"
-                         height="auto"
-                         width="auto" />
-                  </div>
-                </div>
-                <div>
-                  <div class="font-bold">{{ application.name }}</div>
-                  <div class="text-sm opacity-50">{{ application.type }}</div>
-                </div>
-              </div>
-            </td>
-            <td>{{ application.gender }}</td>
-            <td>
-              {{ application.reason_to_adopt }}
-              <br />
-            </td>
-            <th>{{ status_badge(application.current_status) }}</th>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    {{ render_applications_table(applications) }}
     {% if applications | length == 0 %}
       <div class="flex flex-col items-center justify-center gap-8 p-12 my-16">
         <img class="w-full max-w-sm"

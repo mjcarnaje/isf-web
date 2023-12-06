@@ -44,6 +44,7 @@
       {% if active_application %}{{ form.id }}{% endif %}
       {{ form.csrf_token() }}
       {{ render_field(form.interview_preference) }}
+      {{ render_field(form.phone_number) }}
       <div class="flex items-center gap-4">
         {{ render_field(form.interview_preferred_date) }}
         {{ render_field(form.interview_preferred_time) }}
@@ -57,10 +58,27 @@
     </form>
   </div>
   <script>
+  let isRendered = false;
+  
   const editButton = document.getElementById("edit-btn")
   const cancelButton = document.getElementById("cancel-btn")
   const applicationView = document.getElementById("application-view")
   const applicationForm = document.getElementById("application-form")
+  
+  const interviewPreferenceField = document.querySelector("[name='interview_preference']");
+  const phoneNumberField = document.querySelector("[name='phone_number']");
+
+
+  function handleInterviewPreferenceChange() {
+    if (interviewPreferenceField.value === 'Phone') {
+      phoneNumberField.parentElement.style.display = 'block';
+    } else {
+      phoneNumberField.parentElement.style.display = 'none';
+    }
+  }
+
+  handleInterviewPreferenceChange();
+  interviewPreferenceField.addEventListener('change', handleInterviewPreferenceChange);
   
   if (editButton) {
     editButton.addEventListener("click", () => {
