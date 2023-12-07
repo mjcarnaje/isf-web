@@ -212,10 +212,10 @@ class Notification:
     def get_redirect_url(notification_type, info):
         is_admin = info['user_to_notify_id'] == 1
         redirect_url_templates = {
-            'ADOPTION_REQUEST': 'admin.animals.adoption' if is_admin else 'user.animals.adopt_me',
-            'ADOPTION_STATUS_UPDATE': 'admin.animals.adoption' if is_admin else 'user.animals.adopt_me',
-            'ADD_DONATION': 'admin.animals.adopt' if is_admin else 'user.animals.adopt_me',
-            'DONATION_STATUS_UPDATE': 'admin.animals.adopt' if is_admin else 'user.animals.adopt_me',
+            'ADOPTION_REQUEST': 'admin.animals.adoption' if is_admin else 'user.adoptions.adopt_me',
+            'ADOPTION_STATUS_UPDATE': 'admin.animals.adoption' if is_admin else 'user.adoptions.adopt_me',
+            'ADD_DONATION': 'admin.animals.adopt' if is_admin else 'user.adoptions.adopt_me',
+            'DONATION_STATUS_UPDATE': 'admin.animals.adopt' if is_admin else 'user.adoptions.adopt_me',
         }
         id_key = 'animal_id' if notification_type in {'ADOPTION_REQUEST', 'ADOPTION_STATUS_UPDATE'} else 'donation_id'
         return url_for(redirect_url_templates.get(notification_type, 'Unknown notification type.'), id=info[id_key])

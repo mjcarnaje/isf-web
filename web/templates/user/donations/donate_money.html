@@ -1,4 +1,4 @@
-{% set active_page = "user.donations.donate" %}
+{% set active_page = "user.donations" %}
 {% extends "./_helpers/layout/user_layout.html" %}
 {% from './_helpers/macros/custom_input.html' import render_field %}
 {% from './_helpers/macros/photo_input.html' import render_photo_field with context %}
@@ -7,40 +7,39 @@
   Donate
 {% endblock title %}
 {% block content %}
-    <div class="w-full max-w-4xl px-8 py-12 space-y-8">
-      <p class="text-2xl font-bold text-center">How to contribute through Money Donation?</p>
-      <p class="italic text-center">Simply scan the QR code with Maya or GCash</p>
-      <div class="grid grid-cols-4 gap-5 gap">
-        <img src="{{ url_for('static', filename='/images/qrs/gcash.png') }}"
-             class="col-span-1 rounded-lg"
-             alt="gcash"
-             width="auto"
-             height="auto" />
-        <img src="{{ url_for('static', filename='/images/qrs/maya.png') }}"
-             class="col-span-1 rounded-lg"
-             alt="paymaya"
-             width="auto"
-             height="auto" />
-        <img src="{{ url_for('static', filename='/images/qrs/bpi.png') }}"
-             class="col-span-1 rounded-lg"
-             alt="paymaya"
-             width="auto"
-             height="auto" />
-        <img src="{{ url_for('static', filename='/images/qrs/bdo.png') }}"
-             class="col-span-1 rounded-lg"
-             alt="paymaya"
-             width="auto"
-             height="auto" />
-      </div>
+  <div class="w-full max-w-4xl px-8 py-12 mx-auto space-y-8">
+    <p class="text-2xl font-bold text-center">How to contribute through Money Donation?</p>
+    <p class="italic text-center">Simply scan the QR code with Maya or GCash</p>
+    <div class="grid grid-cols-4 gap-5 gap">
+      <img src="{{ url_for('static', filename='/images/qrs/gcash.png') }}"
+           class="col-span-1 rounded-lg"
+           alt="gcash"
+           width="auto"
+           height="auto" />
+      <img src="{{ url_for('static', filename='/images/qrs/maya.png') }}"
+           class="col-span-1 rounded-lg"
+           alt="paymaya"
+           width="auto"
+           height="auto" />
+      <img src="{{ url_for('static', filename='/images/qrs/bpi.png') }}"
+           class="col-span-1 rounded-lg"
+           alt="paymaya"
+           width="auto"
+           height="auto" />
+      <img src="{{ url_for('static', filename='/images/qrs/bdo.png') }}"
+           class="col-span-1 rounded-lg"
+           alt="paymaya"
+           width="auto"
+           height="auto" />
     </div>
-    <form class="w-full max-w-4xl p-8 space-y-4 bg-white border shadow-lg borderm rounded-2xl"
-          method="post"
-          novalidate>
-      {{ render_field(form.amount) }}
-      {{ render_field(form.remarks) }}
-      {{ render_multiple_photo_field(form.pictures) }}
-      {{ form.csrf_token() }}
-      <button type="submit" class="w-full text-white btn-primary btn btn-md">Submit</button>
-    </form>
   </div>
+  <form class="w-full max-w-4xl p-8 mx-auto space-y-4 bg-white border shadow-lg borderm rounded-2xl"
+        method="post"
+        novalidate>
+    {{ render_field(form.amount) }}
+    {{ render_field(form.remarks) }}
+    {{ render_multiple_photo_field(form.pictures) }}
+    {{ form.csrf_token() }}
+    <button type="submit" class="w-full text-white btn-primary btn btn-md">Submit</button>
+  </form>
 {% endblock content %}

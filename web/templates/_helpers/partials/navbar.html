@@ -57,8 +57,11 @@
           </ul>
         </div>
       {% else %}
-        <a href="{{ url_for('landing.login',) }}"
-           class="text-white btn btn-primary btn-sm">Login</a>
+        <div class="flex items-center gap-2">
+          <a href="{{ url_for('landing.login',) }}" class="btn btn-sm">Login</a>
+          <a href="{{ url_for('landing.sign_up',) }}"
+             class="text-white btn btn-primary btn-sm">Sign up</a>
+        </div>
       {% endif %}
       <button id="menu-button" class="flex md:hidden">
         <svg xmlns="http://www.w3.org/2000/svg"

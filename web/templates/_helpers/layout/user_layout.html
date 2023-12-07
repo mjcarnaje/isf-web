@@ -1,10 +1,35 @@
 {% extends "./_helpers/layout/base.html" %}
 {% set main_navigations = [
-  { 'name': 'Dashboard', 'url': url_for('user.dashboard'), 'icon': 'fa-solid fa-house', 'page': 'user.dashboard'},
-  { 'name': 'Animals', 'url': url_for('user.animals.animals'), 'icon': 'fa-solid fa-dog', 'page': 'user.animals.animals'},
-  { 'name': 'Adoptions', 'url': url_for('user.animals.adoptions'), 'icon': 'fa-solid fa-hands-holding', 'page': 'user.animals.adoptions'},
-  { 'name': 'Events', 'url': url_for('user.events.events'), 'icon': 'fa-solid fa-calendar-days', 'page': 'user.events'},
-  { 'name': 'Donations', 'url': url_for('user.donations.donate'), 'icon': 'fa-solid fa-hand-holding-heart', 'page': 'user.donations.donate'},
+  {
+    'name': 'Dashboard',
+    'url': url_for('user.dashboard'),
+    'icon': 'fa-solid fa-house',
+    'page': 'user.dashboard'
+  },
+  {
+    'name': 'Animals',
+    'url': url_for('user.animals.animals'),
+    'icon': 'fa-solid fa-dog',
+    'page': 'user.animals'
+  },
+  {
+    'name': 'Adoptions',
+    'url': url_for('user.adoptions.adoptions'),
+    'icon': 'fa-solid fa-hands-holding',
+    'page': 'user.adoptions'
+  },
+  {
+    'name': 'Events',
+    'url': url_for('user.events.events'),
+    'icon': 'fa-solid fa-calendar-days',
+    'page': 'user.events'
+  },
+  {
+    'name': 'Donations',
+    'url': url_for('user.donations.donate'),
+    'icon': 'fa-solid fa-hand-holding-heart',
+    'page': 'user.donations'
+  },
 ] %}
 {% set my_navigations = [
   {
@@ -90,7 +115,7 @@
         </a>
       </div>
     </aside>
-    <main class="w-full py-10 lg:pl-72">
+    <main class="flex w-full h-full min-h-screen py-10 lg:pl-72">
       <div class="w-full px-4 sm:px-6 lg:px-8">
         {% block content %}
         {% endblock content %}

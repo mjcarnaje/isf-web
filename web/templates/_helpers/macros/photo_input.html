@@ -48,6 +48,8 @@
     <span class="absolute left-0 right-0 z-10 w-full h-full m-auto skeleton"></span>
     `;
 
+    addPhoto.innerText = "Uploading.."
+
     const response = await fetch("{{ url_for('upload_to_cloudinary') }}", {
       method: "POST",
       body: formData,
@@ -59,11 +61,12 @@
       photoPreview.innerHTML = `<img src="${data.url}" class="object-cover w-full h-full" height="auto" width="auto" alt="" />`;
       photo.value = data.public_id;
       removePhoto.classList.toggle("hidden")
+      addPhoto.innerText = "Replace photo"
     } else {
       photoPreview.innerHTML = `<i class="text-7xl fa-regular fa-image text-slate-600"></i>`
       showToast('error', data.error)
+      addPhoto.innerText = "{{ add_text }}"
     }
-    
   });
 
   addPhoto.addEventListener("click", () => {

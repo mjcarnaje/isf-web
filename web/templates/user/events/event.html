@@ -1,4 +1,4 @@
-{% set active_page = "admin.event.events" %}
+{% set active_page = "user.events" %}
 {% extends "./_helpers/layout/user_layout.html" %}
 {% block title %}
   Event
@@ -6,7 +6,11 @@
 {% block content %}
   <div class="flex justify-center min-h-screen py-12">
     <div class="flex flex-col w-full max-w-3xl space-y-6">
-      <img src="{{ get_image(event.cover_photo_url) }}" class="object-contain" />
+      <img src="{{ get_image(event.cover_photo_url) }}"
+           class="object-contain"
+           alt="Event"
+           width="auto"
+           height="auto" />
       <h1>{{ event.name }}</h1>
       <p class="w-8/12">{{ event.description }}</p>
       <div class="flex items-center gap-1">

@@ -95,7 +95,7 @@
                 </span>
               </td>
               <td class="px-3 py-5 text-sm text-right text-gray-500 whitespace-nowrap">
-                <a href="{{ url_for('user.animals.adopt_me', id=animal.id) }}"
+                <a href="{{ url_for('user.adoptions.adopt_me', id=animal.id) }}"
                    class="w-full btn btn-sm {{ '' if animal.is_applied else 'btn-primary text-white' }}">{{ "Applied" if animal.is_applied else 'Apply' }}</a>
               </td>
               <td class="relative py-5 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-0">

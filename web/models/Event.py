@@ -39,7 +39,7 @@ class Event():
         sql = "SELECT * FROM event"
         
         if show_landing_page_only:
-            sql += " WHERE who_can_see_it = Public"
+            sql += " WHERE who_can_see_it = 'Public'"
 
         cur = db.new_cursor(dictionary=True)
         cur.execute(sql)
