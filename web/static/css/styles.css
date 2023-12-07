@@ -4557,6 +4557,14 @@ details.collapse summary::-webkit-details-marker {
 
 /* Hide scrollbar for IE, Edge and Firefox */
 
+.\[--chkfg\:orange\] {
+  --chkfg: orange;
+}
+
+.\[--chkfg\:white\] {
+  --chkfg: white;
+}
+
 /* Define the styles for the scrollbar */
 
 ::-webkit-scrollbar {
@@ -4662,6 +4670,11 @@ details.collapse summary::-webkit-details-marker {
 .last\:rounded-b-lg:last-child {
   border-bottom-right-radius: 0.5rem;
   border-bottom-left-radius: 0.5rem;
+}
+
+.checked\:text-white:checked {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
 .hover\:scale-105:hover {

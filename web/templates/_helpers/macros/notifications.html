@@ -47,10 +47,20 @@
           </div>
         </div>
       {% endfor %}
+      {% if notifications | length == 0 %}
+        <div class="flex flex-col items-center justify-center gap-8 p-12 my-16">
+          <img class="w-full max-w-sm"
+               src="{{ url_for('static', filename='images/empty_list.png') }}"
+               alt="Kid hugging her dog"
+               width="auto"
+               height="auto" />
+          <h3 class="text-lg font-medium">No Notification Found.</h3>
+        </div>
+      {% endif %}
     </div>
   </div>
   <script>
-    async function markAllAsRead() {
+      async function markAllAsRead() {
         try {
           await fetch("/{{ type }}/notifications/mark-all-as-read", {
             method: "PUT",
@@ -81,7 +91,10 @@
             if (notificationCount) {
               notificationCount.remove()
             }
+
           });
+          
+          showToast("success", "All notifications marked as read successfully.");
         } catch (error) {
           console.error('Fetch error:', error);
         }

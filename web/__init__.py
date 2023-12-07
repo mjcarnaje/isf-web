@@ -48,10 +48,11 @@ def create_app():
 
     CSRFProtect(app)
 
-    cloudinary.config(cloud_name=Config.CLOUDINARY_CLOUD_NAME,
-                    api_key=Config.CLOUDINARY_API_KEY,
-                    api_secret=Config.CLOUDINARY_API_SECRET,
-                    )
+    cloudinary.config(
+        cloud_name=Config.CLOUDINARY_CLOUD_NAME,
+        api_key=Config.CLOUDINARY_API_KEY,
+        api_secret=Config.CLOUDINARY_API_SECRET,
+    )
     
     client = WebApplicationClient(Config.GOOGLE_CLIENT_ID)
         

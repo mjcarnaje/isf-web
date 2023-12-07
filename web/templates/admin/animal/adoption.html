@@ -115,7 +115,7 @@
                   <ul tabindex="0"
                       class="dropdown-content shadow-md z-[1] menu p-2 border bg-base-100 rounded-box w-56">
                     {% if application.current_status != "Rejected" %}
-                      {% if application.current_status != "Interview" %}
+                      {% if application.current_status != "Interview" and application.current_status != "Approved" %}
                         <li>
                           <button id="interview_button"
                                   data-id="{{ application.id }}"
@@ -124,21 +124,31 @@
                                   data-animal-id="{{ application.animal_id }}">Confirm</button>
                         </li>
                       {% endif %}
-                      <li>
-                        <button id="reject_button"
-                                data-id="{{ application.id }}"
-                                data-user-id="{{ application.user_id }}"
-                                data-previous-status="{{ application.current_status }}"
-                                data-animal-id="{{ application.animal_id }}">Reject</button>
-                      </li>
+                      {% if application.current_status == "Pending" or application.current_status == "Interview" %}
+                        <li>
+                          <button id="reject_button"
+                                  data-id="{{ application.id }}"
+                                  data-user-id="{{ application.user_id }}"
+                                  data-previous-status="{{ application.current_status }}"
+                                  data-animal-id="{{ application.animal_id }}">Reject</button>
+                        </li>
+                      {% endif %}
                       {% if application.current_status == "Interview" %}
                         <li>
-                          <button id="approve" onclick="approve_modal.showModal()">Approve</button>
+                          <button id="approve_button"
+                                  data-id="{{ application.id }}"
+                                  data-user-id="{{ application.user_id }}"
+                                  data-previous-status="{{ application.current_status }}"
+                                  data-animal-id="{{ application.animal_id }}">Approve</button>
                         </li>
                       {% endif %}
                       {% if application.current_status == "Approved" %}
                         <li>
-                          <button id="turnover" onclick="turnover_modal.showModal()">Turnovered</button>
+                          <button id="turnover_button"
+                                  data-id="{{ application.id }}"
+                                  data-user-id="{{ application.user_id }}"
+                                  data-previous-status="{{ application.current_status }}"
+                                  data-animal-id="{{ application.animal_id }}">Turnovered</button>
                         </li>
                       {% endif %}
                     {% else %}
@@ -191,8 +201,15 @@
       </dialog>
       <dialog id="approve_modal" class="modal">
         <div class="modal-box">
-          <h3 class="text-lg font-bold">Application Approved</h3>
-          <p class="py-4">This will send an email confirming the approval of the application.</p>
+          <form id="approve_form" method="post" class="flex flex-col gap-4">
+            <h3 class="text-lg font-bold">Application Approved</h3>
+            <p>This will send an email confirming the approval of the application.</p>
+            <div class="form-control">
+              <label for="remarks" class="text-sm text-gray-500 label label-text">Remarks (Optional)</label>
+              <input class="w-full input input-bordered" type="text" name="remarks" />
+            </div>
+            <button type="submit" class="w-full text-white btn btn-primary">Submit</button>
+          </form>
         </div>
         <form method="dialog" class="modal-backdrop">
           <button>Close</button>
@@ -200,8 +217,15 @@
       </dialog>
       <dialog id="turnover_modal" class="modal">
         <div class="modal-box">
-          <h3 class="text-lg font-bold">Application Turned Over</h3>
-          <p class="py-4">This will send an email notifying the applicant about the turnover status of the application.</p>
+          <form id="turnover_form" method="post" class="flex flex-col gap-4">
+            <h3 class="text-lg font-bold">Application Turnovered</h3>
+            <p>This will send an email notifying the applicant about the turnover status of the application.</p>
+            <div class="form-control">
+              <label for="remarks" class="text-sm text-gray-500 label label-text">Remarks (Optional)</label>
+              <input class="w-full input input-bordered" type="text" name="remarks" />
+            </div>
+            <button type="submit" class="w-full text-white btn btn-primary">Submit</button>
+          </form>
         </div>
         <form method="dialog" class="modal-backdrop">
           <button>Close</button>
@@ -299,6 +323,84 @@
       
     })
     
+  }
+
+  const approveModal = document.getElementById("approve_modal");
+  const approveForm = document.getElementById("approve_form");
+  const approveButtons = document.querySelectorAll("#approve_button");
+
+  approveButtons.forEach((button) => {
+    button.addEventListener("click", handleApproveButtonClick)
+  })
+
+  function handleApproveButtonClick(element) {
+    approveModal.showModal();
+    const { id, userId, previousStatus, animalId} = element.target.dataset;
+
+    approveForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      
+      const remarks = approveForm.querySelector("input[name='remarks']").value;
+
+      try {
+        const formData = new FormData();
+        formData.append("adoption_id", id);
+        formData.append("user_id", userId);
+        formData.append("previous_status", previousStatus);
+        formData.append("remarks", remarks);
+
+        await fetch(`/admin/animals/adoptions/${animalId}/approve`, {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
+          },
+          body: formData,
+        });
+
+        window.location.reload();
+      } catch (error) {
+        showToast("error", "Something went wrong when approving the application.")
+      }
+    })
+  }
+
+  const turnoverModal = document.getElementById("turnover_modal");
+  const turnoverForm = document.getElementById("turnover_form");
+  const turnoverButtons = document.querySelectorAll("#turnover_button");
+
+  turnoverButtons.forEach((button) => {
+    button.addEventListener("click", handleTurnovernButtonClick)
+  })
+
+  function handleTurnovernButtonClick(element) {
+    turnoverModal.showModal();
+    const { id, userId, previousStatus, animalId} = element.target.dataset;
+
+    turnoverForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      
+      const remarks = turnoverForm.querySelector("input[name='remarks']").value;
+
+      try {
+        const formData = new FormData();
+        formData.append("adoption_id", id);
+        formData.append("user_id", userId);
+        formData.append("previous_status", previousStatus);
+        formData.append("remarks", remarks);
+
+        await fetch(`/admin/animals/adoptions/${animalId}/turnover`, {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
+          },
+          body: formData,
+        });
+
+        window.location.reload();
+      } catch (error) {
+        showToast("error", "Something went wrong when approving the application.")
+      }
+    })
   }
 
 

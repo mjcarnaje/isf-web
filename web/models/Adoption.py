@@ -210,51 +210,113 @@ class Adoption:
         return cur.lastrowid
 
 
-    @classmethod
-    def set_approved_and_reject_others(cls, animal_id, user_id):
-        sql_reject_others = """
-            UPDATE adoption
-            SET current_status = 'Rejected'
-            WHERE animal_id = %s AND user_id != %s
-        """
-        cur_reject_others = db.new_cursor()
-        cur_reject_others.execute(sql_reject_others, (animal_id, user_id))
-
-        # Approve the specified application
-        sql_approve = """
+    @staticmethod
+    def set_approved(adoption_id, remarks, previous_status):
+        sql = """
             UPDATE adoption
             SET 
                 current_status = 'Approved'
             WHERE 
-                animal_id = %s AND user_id = %s
+                id = %(adoption_id)s
         """
-        cur_approve = db.new_cursor()
-        cur_approve.execute(sql_approve, (animal_id, user_id))
 
+        params = {
+            'adoption_id': adoption_id
+        }
+        
+        cur = db.new_cursor()
+        cur.execute(sql, params)
+
+        sql = """
+            INSERT INTO adoption_status_history (
+                adoption_id,
+                previous_status,
+                status,
+                remarks
+            )
+            VALUES (
+                %(adoption_id)s,
+                %(previous_status)s,
+                %(status)s,
+                %(remarks)s
+            )
+        """
+
+        params = {
+            'adoption_id': adoption_id,
+            'previous_status': previous_status,
+            'status': 'Approved', 
+            'remarks': remarks
+        }
+
+        cur.execute(sql, params)
+        
         db.connection.commit()
 
-    @classmethod
-    def set_turnovered(cls, animal_id, user_id):
+        return cur.lastrowid
+
+
+    @staticmethod
+    def set_turnovered(adoption_id, remarks, previous_status, animal_id):
         sql = """
             UPDATE adoption
             SET 
                 current_status = 'Turnovered'
             WHERE 
-                animal_id = %s AND user_id = %s
+                id = %(adoption_id)s
         """
+
+        params = {
+            'adoption_id': adoption_id
+        }
+        
         cur = db.new_cursor()
-        cur.execute(sql, (animal_id, user_id))
-        animal_sql = """
+        cur.execute(sql, params)
+
+        sql = """
             UPDATE animal
             SET 
                 is_adopted = 1,
                 for_adoption = 0,
                 in_shelter = 0
             WHERE 
-                id = %s
+                id = %(animal_id)s
         """
-        cur.execute(animal_sql, (animal_id,))
+
+        params = {
+            'animal_id': animal_id
+        }
+        
+        cur.execute(sql, params)
+
+        sql = """
+            INSERT INTO adoption_status_history (
+                adoption_id,
+                previous_status,
+                status,
+                remarks
+            )
+            VALUES (
+                %(adoption_id)s,
+                %(previous_status)s,
+                %(status)s,
+                %(remarks)s
+            )
+        """
+
+        params = {
+            'adoption_id': adoption_id,
+            'previous_status': previous_status,
+            'status': 'Approved', 
+            'remarks': remarks
+        }
+
+        cur.execute(sql, params)
+        
         db.connection.commit()
+
+        return cur.lastrowid
+
 
     @staticmethod
     def get_user_applications(user_id):

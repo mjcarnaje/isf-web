@@ -203,7 +203,10 @@ class Notification:
         base_message = message_templates.get(notification_type, 'Unknown notification type.')
 
         if notification_type == 'ADOPTION_STATUS_UPDATE' and info['adoption_status'] == "Interview":
-            base_message += f" Please check the {info['adoption_interview_preference']} link and save it for the interview date and time."
+            if info['adoption_interview_preference'] == "Zoom" or info['adoption_interview_preference'] == "Google Meet":
+                base_message += f" Please check the {info['adoption_interview_preference']} link and save it for the interview date and time."
+            else:
+                base_message += f" Check your phone the admin might call you!."
 
         return base_message
 

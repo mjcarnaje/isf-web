@@ -237,18 +237,55 @@ def set_rejected(animal_id):
 
 @admin_animal_bp.route('/adoptions/<int:animal_id>/approve', methods=['POST'])
 @admin_required
-def set_approved(id, user_id):
-    Adoption.set_approved_and_reject_others(animal_id=id, user_id=user_id)
-    notification = Notification(type=NotificationType.ADOPTION_STATUS_UPDATE.value,  adoption_id=id, user_who_fired_event_id=1, user_to_notify_id=user_id)
+def set_approved(animal_id):
+    user_id = request.form.get('user_id')
+    adoption_id = request.form.get('adoption_id')
+    previous_status = request.form.get('previous_status')
+    remarks = request.form.get('remarks')
+    
+    adoption_status_history_id = Adoption.set_approved(
+        adoption_id=adoption_id,
+        previous_status=previous_status,
+        remarks=remarks
+    )
+    notification = Notification(
+        type=NotificationType.ADOPTION_STATUS_UPDATE.value,
+        animal_id=animal_id,
+        adoption_id=adoption_id,
+        adoption_status_history_id=adoption_status_history_id,
+        user_who_fired_event_id=1,
+        user_to_notify_id=user_id
+    )
     notification.insert(notification)
     notification.increment_count(notification)
-    return redirect(url_for('admin.animals.adoption', id=id))
+
+    return jsonify({ 'is_success': True })
+
 
 @admin_animal_bp.route('/adoptions/<int:animal_id>/turnover', methods=['POST'])
 @admin_required
-def set_turnovered(id, user_id):
-    Adoption.set_turnovered(animal_id=id, user_id=user_id)
-    notification = Notification(type=NotificationType.ADOPTION_STATUS_UPDATE.value,  adoption_id=id, user_who_fired_event_id=1, user_to_notify_id=user_id)
+def set_turnovered(animal_id):
+    user_id = request.form.get('user_id')
+    adoption_id = request.form.get('adoption_id')
+    previous_status = request.form.get('previous_status')
+    remarks = request.form.get('remarks')
+    
+    adoption_status_history_id = Adoption.set_turnovered(
+        adoption_id=adoption_id, 
+        animal_id=animal_id, 
+        previous_status=previous_status, 
+        remarks=remarks
+    )
+    notification = Notification(
+        type=NotificationType.ADOPTION_STATUS_UPDATE.value,
+        animal_id=animal_id,
+        adoption_id=adoption_id,
+        adoption_status_history_id=adoption_status_history_id,
+        user_who_fired_event_id=1,
+        user_to_notify_id=user_id
+    )    
     notification.insert(notification)
     notification.increment_count(notification)
-    return redirect(url_for('admin.animals.adoption', id=id))
+
+    return jsonify({ 'is_success': True })
+
