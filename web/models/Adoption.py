@@ -163,6 +163,52 @@ class Adoption:
         db.connection.commit()
         
         return cur.lastrowid
+    
+    @staticmethod
+    def set_rejected(adoption_id, remarks, previous_status):
+        sql = """
+            UPDATE adoption
+            SET 
+                current_status = 'Rejected'
+            WHERE 
+                id = %(adoption_id)s
+        """
+
+        params = {
+            'adoption_id': adoption_id
+        }
+        
+        cur = db.new_cursor()
+        cur.execute(sql, params)
+
+        sql = """
+            INSERT INTO adoption_status_history (
+                adoption_id,
+                previous_status,
+                status,
+                remarks
+            )
+            VALUES (
+                %(adoption_id)s,
+                %(previous_status)s,
+                %(status)s,
+                %(remarks)s
+            )
+        """
+
+        params = {
+            'adoption_id': adoption_id,
+            'previous_status': previous_status,
+            'status': 'Rejected', 
+            'remarks': remarks
+        }
+
+        cur.execute(sql, params)
+        
+        db.connection.commit()
+
+        return cur.lastrowid
+
 
     @classmethod
     def set_approved_and_reject_others(cls, animal_id, user_id):
@@ -185,19 +231,6 @@ class Adoption:
         cur_approve = db.new_cursor()
         cur_approve.execute(sql_approve, (animal_id, user_id))
 
-        db.connection.commit()
-
-    @classmethod
-    def set_rejected(cls, animal_id, user_id):
-        sql = """
-            UPDATE adoption
-            SET 
-                current_status = 'Rejected'
-            WHERE 
-                animal_id = %s AND user_id = %s
-        """
-        cur = db.new_cursor()
-        cur.execute(sql, (animal_id, user_id))
         db.connection.commit()
 
     @classmethod

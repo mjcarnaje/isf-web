@@ -36,7 +36,8 @@
           </div>
           <div class="flex items-center justify-end w-2/12 gap-4">
             {% if not notification.is_read %}
-              <div id="status-icon" class="w-4 h-4 rounded-full bg-cyan-500 rouned-full"></div>
+              <div id="status-icon"
+                   class="w-4 h-4 rounded-full bg-primary-500 rouned-full"></div>
             {% endif %}
             <img class="object-cover w-16 h-16 border aspect-square rounded-2xl bg-gray-50"
                  src="{{ get_image(notification.animal_photo_url) }}"

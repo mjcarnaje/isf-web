@@ -114,26 +114,36 @@
                   </label>
                   <ul tabindex="0"
                       class="dropdown-content shadow-md z-[1] menu p-2 border bg-base-100 rounded-box w-56">
-                    {% if application.current_status != "Interview" %}
+                    {% if application.current_status != "Rejected" %}
+                      {% if application.current_status != "Interview" %}
+                        <li>
+                          <button id="interview_button"
+                                  data-id="{{ application.id }}"
+                                  data-interview-preference="{{ application.interview_preference }}"
+                                  data-user-id="{{ application.user_id }}"
+                                  data-animal-id="{{ application.animal_id }}">Confirm</button>
+                        </li>
+                      {% endif %}
                       <li>
-                        <button id="interview_button"
+                        <button id="reject_button"
                                 data-id="{{ application.id }}"
-                                data-interview-preference="{{ application.interview_preference }}"
                                 data-user-id="{{ application.user_id }}"
-                                data-animal-id="{{ application.animal_id }}">Confirm</button>
+                                data-previous-status="{{ application.current_status }}"
+                                data-animal-id="{{ application.animal_id }}">Reject</button>
                       </li>
-                    {% endif %}
-                    <li>
-                      <button id="reject" onclick="reject_modal.showModal()">Reject</button>
-                    </li>
-                    {% if application.current_status == "Interview" %}
+                      {% if application.current_status == "Interview" %}
+                        <li>
+                          <button id="approve" onclick="approve_modal.showModal()">Approve</button>
+                        </li>
+                      {% endif %}
+                      {% if application.current_status == "Approved" %}
+                        <li>
+                          <button id="turnover" onclick="turnover_modal.showModal()">Turnovered</button>
+                        </li>
+                      {% endif %}
+                    {% else %}
                       <li>
-                        <button id="approve" onclick="approve_modal.showModal()">Approve</button>
-                      </li>
-                    {% endif %}
-                    {% if application.current_status == "Approved" %}
-                      <li>
-                        <button id="turnover" onclick="turnover_modal.showModal()">Turnovered</button>
+                        <p>Nothing in here.</p>
                       </li>
                     {% endif %}
                   </ul>
@@ -152,7 +162,7 @@
               <label for="remarks" class="text-sm text-gray-500 label label-text">Remarks (Optional)</label>
               <input class="w-full input input-bordered" type="text" name="remarks" />
             </div>
-            <button class="w-full text-white btn btn-primary">Submit</button>
+            <button type="submit" class="w-full text-white btn btn-primary">Submit</button>
           </form>
         </div>
         <form method="dialog" class="modal-backdrop">
@@ -203,7 +213,6 @@
   const interviewModal = document.getElementById("interview_modal");
   const interviewForm = document.getElementById("interview_form");
   const interviewButtons = document.querySelectorAll("#interview_button");
-  const rejectModal = document.getElementById("reject_modal");
 
   interviewButtons.forEach((button) => {
     button.addEventListener("click", handleInterviewButtonClick);
@@ -230,8 +239,8 @@
 
       try {
         const formData = new FormData();
-        formData.append("user_id", userId);
         formData.append("adoption_id", id);
+        formData.append("user_id", userId);
         formData.append("remarks", remarks);
         formData.append("google_meet_url", interviewPreference === "Google Meet" ? externalUrl : "");
         formData.append("zoom_url", interviewPreference === "Zoom" ? externalUrl : ""); 
@@ -243,10 +252,55 @@
           },
           body: formData,
         });
+
+        window.location.reload();
       } catch (error) {
         showToast("error", error);
       }
     });
   }
+  
+  const rejectModal = document.getElementById("reject_modal");
+  const rejectForm = document.getElementById("reject_form");
+  const rejectButtons = document.querySelectorAll("#reject_button");
+
+  rejectButtons.forEach((button) => {
+    button.addEventListener("click", handleRejectButtonClick)
+  })
+
+  function handleRejectButtonClick(element) {
+    rejectModal.showModal();
+    const { id, userId, previousStatus, animalId} = element.target.dataset;
+
+    rejectForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      
+      const remarks = rejectForm.querySelector("input[name='remarks']").value;
+
+      try {
+        const formData = new FormData();
+        formData.append("adoption_id", id);
+        formData.append("user_id", userId);
+        formData.append("previous_status", previousStatus);
+        formData.append("remarks", remarks);
+
+        await fetch(`/admin/animals/adoptions/${animalId}/reject`, {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
+          },
+          body: formData,
+        });
+
+        window.location.reload();
+      } catch (error) {
+        showToast("error", "Something went wrong when rejecting the application.")
+      }
+      
+    })
+    
+  }
+
+
   </script>
 {% endblock content %}
