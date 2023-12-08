@@ -1,15 +1,14 @@
-from flask import (Blueprint, jsonify, redirect, render_template, request,
-                   session, url_for)
+from flask import (Blueprint, redirect, render_template, request, session,
+                   url_for)
 from flask_login import current_user
 
-from ...enums import NotificationType
-from ...models import Adoption, Animal, Notification
+from ...models import Animal
 from ...utils import admin_required, get_active_filter_count
 from ...validations import AddAnimalValidation, EditAnimalValidation
 
-admin_animal_bp = Blueprint("animals", __name__, url_prefix='/animals')
+animal_bp = Blueprint("animals", __name__, url_prefix='/animals')
 
-@admin_animal_bp.route('', methods=['GET'])
+@animal_bp.route('', methods=['GET'])
 @admin_required
 def animals():
     page = request.args.get('page', 1, type=int)
@@ -49,13 +48,13 @@ def animals():
                             view_type=view_type
                         )
 
-@admin_animal_bp.route('/<int:id>', methods=['GET'])
+@animal_bp.route('/<int:id>', methods=['GET'])
 @admin_required
 def view_animal(id):
   animal = Animal.find_by_id(id)
   return render_template('/admin/animal/animal.html', animal=animal)  
   
-@admin_animal_bp.route('/add-animal', methods=['GET', 'POST'])
+@animal_bp.route('/add-animal', methods=['GET', 'POST'])
 @admin_required
 def add_animal():
   form = AddAnimalValidation()
@@ -103,7 +102,7 @@ def add_animal():
 
   return render_template('admin/animal/add.html', form=form)
 
-@admin_animal_bp.route('/<int:id>/edit', methods=['GET', 'POST'])
+@animal_bp.route('/<int:id>/edit', methods=['GET', 'POST'])
 @admin_required
 def edit_animal(id):
     animal = Animal.find_by_id(id)
@@ -150,7 +149,7 @@ def edit_animal(id):
             
     return render_template('admin/animal/edit.html', form=form)
 
-@admin_animal_bp.route('/<int:id>/delete', methods=['DELETE'])
+@animal_bp.route('/<int:id>/delete', methods=['DELETE'])
 @admin_required
 def delete_animal(id):
     animal = Animal.find_by_id(id)
@@ -161,131 +160,3 @@ def delete_animal(id):
     Animal.delete(id)
     
     return True
-
-@admin_animal_bp.route('/adoptions', methods=['GET'])
-@admin_required
-def adoptions():
-    page = request.args.get('page', 1, type=int)
-    query = request.args.get('query', '', type=str)
-
-    animals = Adoption.get_animals_applications()
-    return render_template('/admin/animal/adoptions.html', animals=animals)
-
-
-@admin_animal_bp.route('/adoptions/<int:id>', methods=['GET'])
-@admin_required
-def adoption(id):
-    animal = Animal.find_by_id(id)
-    applications = Adoption.get_animal_applications(id)
-    return render_template('admin/animal/adoption.html', animal=animal, applications=applications)
-
-@admin_animal_bp.route('/adoptions/<string:animal_id>/interview', methods=['POST'])
-@admin_required
-def set_interview(animal_id):
-    user_id = request.form.get('user_id')
-    adoption_id = request.form.get('adoption_id')
-    remarks = request.form.get('remarks')
-    google_meet_url = request.form.get('google_meet_url')
-    zoom_url = request.form.get('zoom_url')
-
-    adoption_status_history_id = Adoption.set_interview(
-        adoption_id=adoption_id, 
-        remarks=remarks,
-        google_meet_url=google_meet_url,
-        zoom_url=zoom_url,
-    )
-    notification = Notification(
-        type=NotificationType.ADOPTION_STATUS_UPDATE.value, 
-        animal_id=animal_id, 
-        adoption_id=adoption_id, 
-        adoption_status_history_id=adoption_status_history_id,
-        user_who_fired_event_id=1, 
-        user_to_notify_id=user_id
-    )
-    notification.insert(notification)
-    notification.increment_count(notification)
-
-    return jsonify({ 'is_success': True })
-
-
-@admin_animal_bp.route('/adoptions/<string:animal_id>/reject', methods=['POST'])
-@admin_required
-def set_rejected(animal_id):
-    user_id = request.form.get('user_id')
-    adoption_id = request.form.get('adoption_id')
-    previous_status = request.form.get('previous_status')
-    remarks = request.form.get('remarks')
-    
-    adoption_status_history_id = Adoption.set_rejected(
-        adoption_id=adoption_id,
-        previous_status=previous_status,
-        remarks=remarks
-    )
-    notification = Notification(
-        type=NotificationType.ADOPTION_STATUS_UPDATE.value, 
-        animal_id=animal_id, 
-        adoption_id=adoption_id, 
-        adoption_status_history_id=adoption_status_history_id,
-        user_who_fired_event_id=1, 
-        user_to_notify_id=user_id
-    )    
-    notification.insert(notification)
-    notification.increment_count(notification)
-    
-    return jsonify({ 'is_success': True })
-
-
-@admin_animal_bp.route('/adoptions/<int:animal_id>/approve', methods=['POST'])
-@admin_required
-def set_approved(animal_id):
-    user_id = request.form.get('user_id')
-    adoption_id = request.form.get('adoption_id')
-    previous_status = request.form.get('previous_status')
-    remarks = request.form.get('remarks')
-    
-    adoption_status_history_id = Adoption.set_approved(
-        adoption_id=adoption_id,
-        previous_status=previous_status,
-        remarks=remarks
-    )
-    notification = Notification(
-        type=NotificationType.ADOPTION_STATUS_UPDATE.value,
-        animal_id=animal_id,
-        adoption_id=adoption_id,
-        adoption_status_history_id=adoption_status_history_id,
-        user_who_fired_event_id=1,
-        user_to_notify_id=user_id
-    )
-    notification.insert(notification)
-    notification.increment_count(notification)
-
-    return jsonify({ 'is_success': True })
-
-
-@admin_animal_bp.route('/adoptions/<int:animal_id>/turnover', methods=['POST'])
-@admin_required
-def set_turnovered(animal_id):
-    user_id = request.form.get('user_id')
-    adoption_id = request.form.get('adoption_id')
-    previous_status = request.form.get('previous_status')
-    remarks = request.form.get('remarks')
-    
-    adoption_status_history_id = Adoption.set_turnovered(
-        adoption_id=adoption_id, 
-        animal_id=animal_id, 
-        previous_status=previous_status, 
-        remarks=remarks
-    )
-    notification = Notification(
-        type=NotificationType.ADOPTION_STATUS_UPDATE.value,
-        animal_id=animal_id,
-        adoption_id=adoption_id,
-        adoption_status_history_id=adoption_status_history_id,
-        user_who_fired_event_id=1,
-        user_to_notify_id=user_id
-    )    
-    notification.insert(notification)
-    notification.increment_count(notification)
-
-    return jsonify({ 'is_success': True })
-

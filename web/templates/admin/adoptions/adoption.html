@@ -1,4 +1,4 @@
-{% set active_page = "admin.animals.for_adoptionanimals" %}
+{% set active_page = "admin.adoptions" %}
 {% from './_helpers/macros/adoption_status_badge.html' import status_badge %}
 {% extends "./_helpers/layout/admin_layout.html" %}
 {% block title %}
@@ -6,7 +6,7 @@
 {% endblock title %}
 {% block content %}
   <div class="flex flex-col items-center justify-center w-full gap-16">
-    <div class="w-full max-w-4xl space-y-8">
+    <div class="w-full space-y-8">
       <div class="flex gap-8">
         <div class="w-full max-w-sm">
           <img class="object-cover w-full border rounded-lg"
@@ -269,7 +269,7 @@
         formData.append("google_meet_url", interviewPreference === "Google Meet" ? externalUrl : "");
         formData.append("zoom_url", interviewPreference === "Zoom" ? externalUrl : ""); 
                
-        await fetch(`/admin/animals/adoptions/${animalId}/interview`, {
+        await fetch(`/admin/adoptions/${animalId}/interview`, {
           method: "POST",
           headers: {
             "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
@@ -308,7 +308,7 @@
         formData.append("previous_status", previousStatus);
         formData.append("remarks", remarks);
 
-        await fetch(`/admin/animals/adoptions/${animalId}/reject`, {
+        await fetch(`/admin/adoptions/${animalId}/reject`, {
           method: "POST",
           headers: {
             "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
@@ -349,7 +349,7 @@
         formData.append("previous_status", previousStatus);
         formData.append("remarks", remarks);
 
-        await fetch(`/admin/animals/adoptions/${animalId}/approve`, {
+        await fetch(`/admin/adoptions/${animalId}/approve`, {
           method: "POST",
           headers: {
             "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
@@ -388,7 +388,7 @@
         formData.append("previous_status", previousStatus);
         formData.append("remarks", remarks);
 
-        await fetch(`/admin/animals/adoptions/${animalId}/turnover`, {
+        await fetch(`/admin/adoptions/${animalId}/turnover`, {
           method: "POST",
           headers: {
             "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,

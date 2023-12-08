@@ -5,16 +5,16 @@ from ...models import Donation
 from ...utils import admin_required
 from ...validations import AddEventValidation
 
-admin_donations_bp = Blueprint("donation", __name__, url_prefix='/donations')
+donations_bp = Blueprint("donation", __name__, url_prefix='/donations')
 
-@admin_donations_bp.route('/', methods=['GET'])
+@donations_bp.route('', methods=['GET'])
 @admin_required
 def donations():
     donations = Donation.get_donations()
     return render_template('admin/donation/donations.html', donations=donations)
 
 
-@admin_donations_bp.route('/confirm/<int:id>', methods=['POST'])
+@donations_bp.route('/confirm/<int:id>', methods=['POST'])
 @admin_required
 def set_is_confirmed(id):
     Donation.set_is_confirmed(donation_id=id)

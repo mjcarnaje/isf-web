@@ -5,15 +5,15 @@ from ...models import Event
 from ...utils import admin_required
 from ...validations import AddEventValidation, EditEventValidation
 
-admin_event_bp = Blueprint("event", __name__, url_prefix='/event')
+event_bp = Blueprint("event", __name__, url_prefix='/event')
 
-@admin_event_bp.route('/', methods=['GET'])
+@event_bp.route('/', methods=['GET'])
 @admin_required
 def events():
     events = Event.find_all()
     return render_template('/admin/event/events.html', events=events.get('data'))
 
-@admin_event_bp.route('/<int:id>/edit', methods=['GET', 'POST'])
+@event_bp.route('/<int:id>/edit', methods=['GET', 'POST'])
 @admin_required
 def edit_event(id):
     event = Event.find_by_id(id)
@@ -51,7 +51,7 @@ def edit_event(id):
             
     return render_template('/admin/event/edit.html', form=form)
 
-@admin_event_bp.route('/add-event', methods=['GET', 'POST'])
+@event_bp.route('/add-event', methods=['GET', 'POST'])
 @admin_required
 def add_event():
     form = AddEventValidation()
@@ -74,7 +74,7 @@ def add_event():
     
     return render_template('/admin/event/add.html', form=form)
 
-@admin_event_bp.route('/<int:id>/delete', methods=['DELETE'])
+@event_bp.route('/<int:id>/delete', methods=['DELETE'])
 @admin_required
 def delete_event(id):
     event = Event.find_by_id(id)

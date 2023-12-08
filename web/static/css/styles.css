@@ -3626,8 +3626,8 @@ details.collapse summary::-webkit-details-marker {
   max-width: 80rem;
 }
 
-.max-w-\[244px\] {
-  max-width: 244px;
+.max-w-\[264px\] {
+  max-width: 264px;
 }
 
 .max-w-\[288px\] {
@@ -3652,10 +3652,6 @@ details.collapse summary::-webkit-details-marker {
 
 .max-w-xl {
   max-width: 36rem;
-}
-
-.max-w-\[264px\] {
-  max-width: 264px;
 }
 
 .flex-1 {
@@ -4004,11 +4000,6 @@ details.collapse summary::-webkit-details-marker {
   background-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-bg-opacity)));
 }
 
-.bg-cyan-500 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(6 182 212 / var(--tw-bg-opacity));
-}
-
 .bg-error {
   --tw-bg-opacity: 1;
   background-color: var(--fallback-er,oklch(var(--er)/var(--tw-bg-opacity)));
@@ -4092,21 +4083,6 @@ details.collapse summary::-webkit-details-marker {
 .bg-yellow-100 {
   --tw-bg-opacity: 1;
   background-color: rgb(254 249 195 / var(--tw-bg-opacity));
-}
-
-.bg-red-300 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(252 165 165 / var(--tw-bg-opacity));
-}
-
-.bg-red-50 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(254 242 242 / var(--tw-bg-opacity));
-}
-
-.bg-red-100 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(254 226 226 / var(--tw-bg-opacity));
 }
 
 .bg-our-rescue-1 {
@@ -4557,10 +4533,6 @@ details.collapse summary::-webkit-details-marker {
 
 /* Hide scrollbar for IE, Edge and Firefox */
 
-.\[--chkfg\:orange\] {
-  --chkfg: orange;
-}
-
 .\[--chkfg\:white\] {
   --chkfg: white;
 }
@@ -4670,11 +4642,6 @@ details.collapse summary::-webkit-details-marker {
 .last\:rounded-b-lg:last-child {
   border-bottom-right-radius: 0.5rem;
   border-bottom-left-radius: 0.5rem;
-}
-
-.checked\:text-white:checked {
-  --tw-text-opacity: 1;
-  color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
 .hover\:scale-105:hover {

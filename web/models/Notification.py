@@ -215,8 +215,8 @@ class Notification:
     def get_redirect_url(notification_type, info):
         is_admin = info['user_to_notify_id'] == 1
         redirect_url_templates = {
-            'ADOPTION_REQUEST': 'admin.animals.adoption' if is_admin else 'user.adoptions.adopt_me',
-            'ADOPTION_STATUS_UPDATE': 'admin.animals.adoption' if is_admin else 'user.adoptions.adopt_me',
+            'ADOPTION_REQUEST': 'admin.adoptions.adoption' if is_admin else 'user.adoptions.adopt_me',
+            'ADOPTION_STATUS_UPDATE': 'admin.adoptions.adoption' if is_admin else 'user.adoptions.adopt_me',
             'ADD_DONATION': 'admin.animals.adopt' if is_admin else 'user.adoptions.adopt_me',
             'DONATION_STATUS_UPDATE': 'admin.animals.adopt' if is_admin else 'user.adoptions.adopt_me',
         }
