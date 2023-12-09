@@ -40,3 +40,12 @@ function showToast(category, message) {
     });
   }, 3000);
 }
+
+function setSelectedValue(selectElement, value) {
+  for (var i = 0; i < selectElement.options.length; i++) {
+    if (selectElement.options[i].text == value) {
+      selectElement.options[i].selected = true;
+      return;
+    }
+  }
+}

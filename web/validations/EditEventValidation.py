@@ -24,17 +24,11 @@ class EditEventValidation(FlaskForm):
     location = StringField("Location", validators=[
         validators.DataRequired()
     ])
-    status = SelectField('Status', choices=[
-                         ("Scheduled", "Scheduled"), 
-                         ("In Progress", "In Progress"),
-                         ("Completed", "Completed"),
-                         ("Cancelled", "Cancelled")
-                         ], validators=[validators.DataRequired()])
     who_can_see_it = SelectField('Who can see it?', choices=[
                          ("Public", "Public"), 
                          ("Verified User", "Verified User"),
                          ], validators=[validators.DataRequired()])
-    volunteer_only = BooleanField("Volunteer Only?")
+    who_can_join = SelectField('Who can join?', choices=[("Anyone", "Anyone"), ("Interested", "Interested")], validators=[validators.DataRequired()])
     pictures = FieldList(StringField(), label="Photos")    
     
     def validate_end_date(form, field):

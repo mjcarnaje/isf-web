@@ -85,9 +85,9 @@ CREATE TABLE IF NOT EXISTS event (
     start_date DATETIME NOT NULL,
     end_date DATETIME NOT NULL,
     location VARCHAR(256),
-    status ENUM('Scheduled', 'In Progress', 'Completed', 'Cancelled'),
     who_can_see_it ENUM('Public', 'Verified User') DEFAULT 'Public',
-    volunteer_only BOOLEAN,
+    who_can_join ENUM('Anyone', 'Interested') DEFAULT 'Anyone',
+    is_cancelled BOOLEAN DEFAULT false,
     author_id INT NOT NULL REFERENCES user(id),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP

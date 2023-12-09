@@ -13,8 +13,9 @@ class Event():
             location=None, 
             author_id=None, 
             status=None,
+            is_cancelled=None,
             who_can_see_it=None,
-            volunteer_only=None,
+            who_can_join=None,
             pictures:[str] = [], 
             created_at=None, 
             updated_at=None
@@ -28,15 +29,39 @@ class Event():
         self.location = location
         self.author_id = author_id
         self.status = status
+        self.is_cancelled = is_cancelled
         self.who_can_see_it = who_can_see_it
-        self.volunteer_only = volunteer_only
+        self.who_can_join = who_can_join
         self.pictures = pictures
         self.created_at = created_at
         self.updated_at = updated_at
 
     @staticmethod
     def find_all(show_landing_page_only: bool = False):
-        sql = "SELECT * FROM event"
+        sql = """
+            SELECT
+                id,
+                name,
+                description,
+                cover_photo_url,
+                start_date,
+                end_date,
+                location,
+                who_can_see_it,
+                who_can_join,
+                is_cancelled,
+                author_id,
+                created_at,
+                updated_at,
+                CASE
+                    WHEN is_cancelled = true THEN 'Cancelled'
+                    WHEN start_date > NOW() THEN 'Scheduled'
+                    WHEN start_date <= NOW() AND end_date >= NOW() THEN 'In Progress'
+                    WHEN end_date < NOW() THEN 'Completed'
+                END AS status
+                FROM
+                event;
+        """
         
         if show_landing_page_only:
             sql += " WHERE who_can_see_it = 'Public'"
@@ -76,9 +101,8 @@ class Event():
                 start_date, 
                 end_date, 
                 location, 
-                status,
                 who_can_see_it,
-                volunteer_only,
+                who_can_join,
                 author_id
             ) 
             VALUES (
@@ -88,9 +112,8 @@ class Event():
                 %(start_date)s,
                 %(end_date)s,
                 %(location)s,
-                %(status)s,
                 %(who_can_see_it)s,
-                %(volunteer_only)s,
+                %(who_can_join)s,
                 %(author_id)s
             )
         """
@@ -101,9 +124,8 @@ class Event():
             'start_date': event.start_date,
             'end_date': event.end_date,
             'location': event.location,
-            'status': event.status,
             'who_can_see_it': event.who_can_see_it,
-            'volunteer_only': event.volunteer_only,
+            'who_can_join': event.who_can_join,
             'author_id': event.author_id,
         }
 
@@ -149,9 +171,8 @@ class Event():
                 start_date = %s,
                 end_date = %s,
                 location = %s,
-                status = %s,
                 who_can_see_it = %s,
-                volunteer_only = %s,
+                who_can_join = %s,
                 author_id = %s,
                 updated_at = CURRENT_TIMESTAMP
             WHERE
@@ -164,9 +185,8 @@ class Event():
             event.start_date,
             event.end_date,
             event.location,
-            event.status,
             event.who_can_see_it,
-            event.volunteer_only,
+            event.who_can_join,
             event.author_id,
             event.id
         )

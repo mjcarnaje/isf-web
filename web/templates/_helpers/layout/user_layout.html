@@ -36,18 +36,18 @@
     'name': 'Notifications',
     'url': url_for('user.notifications'),
     'icon': 'fa-solid fa-bell',
-    'page': 'user.notifications',
+    'page': 'user.list.notifications',
     'count': current_user.unread_notification_count
   },
   { 'name': 'My Applications',
     'url': url_for('user.applications'),
     'icon': 'fa-solid fa-file-invoice',
-    'page': 'user.applications'
+    'page': 'user.list.applications'
   },
   { 'name': 'My Donations',
     'url': url_for('user.donations'),
     'icon': 'fa-solid fa-hand-holding-heart',
-    'page': 'user.donations'
+    'page': 'user.list.donations'
   },
 ] %}
 {% block body %}

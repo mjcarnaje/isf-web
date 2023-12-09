@@ -11,7 +11,9 @@
     {# ################################ #}
     {% if field.type == "SelectField" %}
       <div class="relative">
-        <select class="w-full text-md select select-bordered" name="{{ field.name }}">
+        <select style="font-size: 16px"
+                class="w-full select select-bordered"
+                name="{{ field.name }}">
           <option value="">Select {{ field.label.text }}</option>
           {% for key, value in field.choices %}
             <option value="{{ key }}"
@@ -44,7 +46,8 @@
       </div>
     {% elif field.type == "TextAreaField" %}
       <div class="relative">
-        <textarea class="w-full textarea textarea-bordered"
+        <textarea class="w-full textarea text-md textarea-bordered"
+                  style="font-size: 16px"
                   placeholder="{{ field.render_kw.placeholder }}"
                   name="{{ field.name }}">{{field.data or ""}}</textarea>
       </div>

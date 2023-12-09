@@ -4,45 +4,66 @@
   Admin - Events
 {% endblock title %}
 {% block content %}
-  <div class="flex justify-center min-h-screen py-12">
-    <div class="flex flex-col max-w-3xl gap-12">
-      <div class="text-3xl font-bold text-primary-800">Events</div>
-      <dialog id="deleteModal" class="z-20 modal">
-        <div class="bg-white modal-box">
-          <h3 class="text-lg font-bold">Delete Event</h3>
-          <p class="py-4">Are you sure you want to delete this event?</p>
-          <div class="modal-action">
-            <form method="dialog">
-              <button class="btn">Cancel</button>
-            </form>
-            <button id="deleteAnyway" class="text-white btn btn-error">Delete Anyway</button>
-          </div>
+  <div class="flex flex-col gap-12">
+    <div class="text-3xl font-bold text-primary-800">Events</div>
+    <dialog id="deleteModal" class="z-20 modal">
+      <div class="bg-white modal-box">
+        <h3 class="text-lg font-bold">Delete Event</h3>
+        <p class="py-4">Are you sure you want to delete this event?</p>
+        <div class="modal-action">
+          <form method="dialog">
+            <button class="btn">Cancel</button>
+          </form>
+          <button id="deleteAnyway" class="text-white btn btn-error">Delete Anyway</button>
         </div>
-      </dialog>
+      </div>
+    </dialog>
+    <div class="grid grid-cols-3 gap-10">
       {% for event in events %}
-        <div class="flex gap-8">
-          <div class="overflow-hidden w-96">
-            <a href="{{ url_for('landing.view_event', id=event.id) }}"
-               class="overflow-hidden rounded-lg w-96">
-              <img class="object-cover w-full overflow-hidden transition-all duration-300 border aspect-video bg-gray-50 hover:scale-105"
-                   src="{{ get_image(event.cover_photo_url) }}"
-                   alt="Cover Photo"
-                   width="auto"
-                   height="auto" />
-            </a>
-          </div>
-          <div class="flex flex-col w-full gap-2">
-            <a href="{{ url_for('landing.view_event', id=event.id) }}"
-               class="text-2xl font-bold text-primary-800">{{ event.name }}</a>
-            <p class="leading-6">{{ event.description }}</p>
-            <p class="text-primary-800">
-              {{ event.start_date.strftime("%b %d, %Y") }} - {{ event.end_date.strftime("%b %d, %Y") }}
-            </p>
-            <p class="text-primary-800">{{ event.location }}</p>
-            <div class="flex items-center gap-2">
-              <a href="{{ url_for('admin.event.edit_event', id=event.id) }}"
-                 class="btn btn-sm">Edit</a>
-              <button class="btn open-delete-modal btn-sm" data-event-id="{{ event.id }}">Delete</button>
+        <div class="flex flex-col grid-cols-1 gap-2">
+          <a href="{{ url_for('landing.view_event', id=event.id) }}"
+             class="w-full overflow-hidden rounded-lg">
+            <img class="object-cover w-full transition-all duration-300 border rounded-lg aspect-video bg-gray-50 hover:scale-105"
+                 src="{{ get_image(event.cover_photo_url) }}"
+                 alt="Cover Photo"
+                 width="auto"
+                 height="auto" />
+          </a>
+          <div class="flex flex-col w-full gap-y-2">
+            <div class="flex items-center justify-between">
+              <a href="{{ url_for('landing.view_event', id=event.id) }}"
+                 class="text-lg font-bold ">{{ event.name }}</a>
+              <div class="dropdown">
+                <label tabindex="0">
+                  <div class="flex items-center justify-center w-6 h-6 rounded-full cursor-pointer hover:bg-gray-300 aspect-square">
+                    <i class="fa-solid fa-ellipsis"></i>
+                  </div>
+                </label>
+                <ul tabindex="0"
+                    class="dropdown-content z-[1] menu p-2 border bg-base-100 rounded-box w-32">
+                  <li>
+                    <a href="{{ url_for('admin.event.edit_event', id=event.id) }}">Edit</a>
+                  </li>
+                  <li>
+                    <button id="open-delete-modal" data-event-id="{{ event.id }}">Delete</button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <p class="text-sm leading-5 text-justify text-gray-600">{{ event.description }}</p>
+            <div class="flex flex-wrap gap-3">
+              <div class="px-2 py-.5 border rounded-lg">
+                <span class="text-sm">{{ event.location }}</span>
+              </div>
+              <div class="px-2 py-.5 border rounded-lg">
+                <span class="text-sm">{{ event.status }}</span>
+              </div>
+              <div class="px-2 py-.5 border rounded-lg">
+                <span class="text-sm">{{ event.who_can_see_it }}</span>
+              </div>
+              <div class="px-2 py-.5 border rounded-lg">
+                <span class="text-sm">{{ event.start_date.strftime("%b %d, %Y") }} - {{ event.end_date.strftime("%b %d, %Y") }}</span>
+              </div>
             </div>
           </div>
         </div>
