@@ -1,4 +1,4 @@
-{% macro render_animal_cards(animals, is_admin) %}
+{% macro animal_cards(animals, is_admin) %}
   <div class="grid w-full grid-cols-4 gap-10 mx-auto">
     {% if is_admin %}
       <dialog id="delete-modal-card" class="z-20 modal">

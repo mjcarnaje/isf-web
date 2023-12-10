@@ -1,24 +1,26 @@
 {% set active_page = "admin.animals.animals" %}
 {% extends "./_helpers/layout/admin_layout.html" %}
-{% from "./_helpers/macros/render_animal_cards.html" import render_animal_cards with context %}
-{% from "./_helpers/macros/render_animal_tables.html" import render_animal_tables with context %}
-{% from "./_helpers/macros/render_animal_filter.html" import render_animal_filter with context %}
+{% from "./_helpers/macros/animal_cards.html" import animal_cards with context %}
+{% from "./_helpers/macros/animal_tables.html" import animal_tables with context %}
+{% from "./_helpers/macros/animal_filters.html" import animal_filters with context %}
+{% from "./_helpers/macros/pagination_buttons.html" import pagination_buttons with context %}
 {% block title %}
   Admin - Animals
 {% endblock title %}
 {% block content %}
   <div class="flex flex-col w-full gap-8">
-    {{ render_animal_filter(true) }}
+    {{ animal_filters(true) }}
     <div class="sm:flex sm:items-center">
       <div class="sm:flex-auto">
-        <h1 class="text-2xl font-bold leading-6 text-gray-900">Animals ({{ total_count }})</h1>
+        <h1 class="text-2xl font-bold leading-6 text-gray-900">Animals ({{ pagination['total_count'] }})</h1>
       </div>
       {% include "./_helpers/partials/view_form.html" %}
     </div>
     {% if view_type == "card" %}
-      {{ render_animal_cards(animals, true) }}
+      {{ animal_cards(animals, true) }}
     {% else %}
-      {{ render_animal_tables(animals, true) }}
+      {{ animal_tables(animals, true) }}
     {% endif %}
+    {{ pagination_buttons() }}
   </div>
 {% endblock content %}

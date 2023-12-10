@@ -143,14 +143,10 @@ class Animal():
         cur.execute(count_sql, filter_params)
         total_count = cur.fetchone()['COUNT(*)']
 
-        has_previous_page = offset > 0
-        has_next_page = (offset + page_size) < total_count
-
         return {
             'data': data,
-            'has_previous_page': has_previous_page,
-            'has_next_page': has_next_page,
-            'total_count': total_count
+            'total_count': total_count,
+            'offset': offset
         }
 
         
@@ -211,14 +207,10 @@ class Animal():
         cur.execute(count_sql, filter_params)
         total_count = cur.fetchone()['COUNT(*)']
 
-        has_previous_page = offset > 0
-        has_next_page = (offset + page_size) < total_count
-
         return {
             'data': data,
-            'has_previous_page': has_previous_page,
-            'has_next_page': has_next_page,
-            'total_count': total_count
+            'total_count': total_count,
+            'offset': offset
         }
 
         

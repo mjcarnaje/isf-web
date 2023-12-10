@@ -1,4 +1,4 @@
-{% macro render_animal_cards_adoption(animals) %}
+{% macro animal_cards_adoption(animals) %}
   <div class="grid w-full grid-cols-4 gap-5 mx-auto">
     {% for animal in animals %}
       {% set href = url_for('user.animals.view_animal', id=animal.id) %}

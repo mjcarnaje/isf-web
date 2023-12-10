@@ -1,4 +1,4 @@
-{% macro render_animal_tables(animals, is_admin) %}
+{% macro animal_tables_adoption(animals, is_admin) %}
   {% if is_admin %}
     <dialog id="delete-modal-table" class="z-20 modal">
       <div class="bg-white modal-box">
@@ -23,10 +23,6 @@
             <th scope="col"
                 class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Type</th>
             <th scope="col"
-                class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Adopted</th>
-            <th scope="col"
-                class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Deceased</th>
-            <th scope="col"
                 class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Dewormed</th>
             <th scope="col"
                 class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Neutered</th>
@@ -34,24 +30,19 @@
                 class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">In Shelter</th>
             <th scope="col"
                 class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Rescued</th>
-            <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-0">
-              <span class="sr-only">Edit</span>
-            </th>
+            <th scope="col"
+                class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Action</th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
           {% for animal in animals %}
-            {% if is_admin %}
-              {% set href = url_for('admin.animals.view_animal', id=animal.id) %}
-            {% else %}
-              {% set href = url_for('user.animals.view_animal', id=animal.id) %}
-            {% endif %}
+            {% set href = url_for('user.animals.view_animal', id=animal.id) %}
             <tr>
               <td class="py-5 pl-4 pr-3 text-sm whitespace-nowrap sm:pl-0">
                 <div class="flex items-center">
                   <a href="{{ href }}">
                     <div class="flex-shrink-0 h-11 w-11">
-                      <img class="rounded-full h-11 w-11"
+                      <img class="border rounded-full h-11 w-11"
                            src="{{ get_image(animal.photo_url) }}"
                            alt=""
                            height="auto"
@@ -67,24 +58,6 @@
                 </div>
               </td>
               <td class="px-3 py-5 text-sm text-gray-500 whitespace-nowrap">{{ animal.type }}</td>
-              <td class="px-3 py-5 text-sm text-right text-gray-500 whitespace-nowrap">
-                <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-700 rounded-md bg-gray-50 ring-1 ring-inset ring-gray-600/20">
-                  {% if animal.is_adopted %}
-                    Adopted
-                  {% else %}
-                    Not Adopted
-                  {% endif %}
-                </span>
-              </td>
-              <td class="px-3 py-5 text-sm text-right text-gray-500 whitespace-nowrap">
-                <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-700 rounded-md bg-gray-50 ring-1 ring-inset ring-gray-600/20">
-                  {% if animal.is_dead %}
-                    Deceased
-                  {% else %}
-                    Alive
-                  {% endif %}
-                </span>
-              </td>
               <td class="px-3 py-5 text-sm text-right text-gray-500 whitespace-nowrap">
                 <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-700 rounded-md bg-gray-50 ring-1 ring-inset ring-gray-600/20">
                   {% if animal.is_dewormed %}
@@ -120,6 +93,10 @@
                     Not Rescued
                   {% endif %}
                 </span>
+              </td>
+              <td class="px-3 py-5 text-sm text-right text-gray-500 whitespace-nowrap">
+                <a href="{{ url_for('user.adoptions.adopt_me', id=animal.id) }}"
+                   class="w-full btn btn-sm {{ '' if animal.is_applied else 'btn-primary text-white' }}">{{ "Applied" if animal.is_applied else 'Apply' }}</a>
               </td>
               <td class="relative py-5 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-0">
                 {% if is_admin %}
@@ -167,7 +144,7 @@
       deleteButton.addEventListener("click", function () {
         deleteModal.showModal();
         deleteAnyway.addEventListener("click", async function () {
-          await fetch(`/admin.animals.${deleteButton.dataset.animalId}/delete`, {
+          await fetch(`/admin/animals/${deleteButton.dataset.animalId}/delete`, {
             method: "DELETE",
             headers: {
               "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,

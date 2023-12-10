@@ -1,14 +1,14 @@
 {% set active_page = "user.adoptions" %}
 {% extends "./_helpers/layout/user_layout.html" %}
-{% from "./_helpers/macros/render_animal_cards_adoption.html" import render_animal_cards_adoption with context %}
-{% from "./_helpers/macros/render_animal_tables_adoption.html" import render_animal_tables_adoption with context %}
-{% from "./_helpers/macros/render_animal_filter.html" import render_animal_filter with context %}
+{% from "./_helpers/macros/animal_cards_adoption.html" import animal_cards_adoption with context %}
+{% from "./_helpers/macros/animal_tables_adoption.html" import animal_tables_adoption with context %}
+{% from "./_helpers/macros/animal_filters.html" import animal_filters with context %}
 {% block title %}
   User - Adoptions
 {% endblock title %}
 {% block content %}
   <div class="flex flex-col w-full gap-8">
-    {{ render_animal_filter(false) }}
+    {{ animal_filters(false) }}
     <div class="sm:flex sm:items-center">
       <div class="sm:flex-auto">
         <h1 class="text-2xl font-bold leading-6 text-gray-900">Adoptions ({{ total_count }})</h1>
@@ -16,9 +16,9 @@
       {% include "./_helpers/partials/view_form.html" %}
     </div>
     {% if view_type == "card" %}
-      {{ render_animal_cards_adoption(animals) }}
+      {{ animal_cards_adoption(animals) }}
     {% else %}
-      {{ render_animal_tables_adoption(animals) }}
+      {{ animal_tables_adoption(animals) }}
     {% endif %}
   </div>
 {% endblock content %}

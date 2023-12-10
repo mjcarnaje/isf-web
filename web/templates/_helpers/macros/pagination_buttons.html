@@ -47,7 +47,6 @@
           {% endfor %}
           {# ============================= #}
           <a href="{{ pagination['next_url'] }}"
-             aria-disabled="{{ 'true' if pagination['next_url'] is not none else 'false' }}"
              class="relative inline-flex items-center px-2 py-2 text-gray-400 rounded-r-md ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 {{ 'pointer-events-none cursor-not-allowed opacity-50' if pagination['next_url'] == '' else '' }}">
             <span class="sr-only">Next</span>
             <svg class="w-5 h-5"

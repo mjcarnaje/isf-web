@@ -1,13 +1,13 @@
 {% set active_page = "user.applications" %}
 {% extends "./_helpers/layout/user_layout.html" %}
 {% from './_helpers/macros/adoption_status_badge.html' import status_badge %}
-{% from './_helpers/macros/render_applications_table.html' import render_applications_table with context %}
+{% from './_helpers/macros/applications_table.html' import applications_table with context %}
 {% block title %}
   Donations
 {% endblock title %}
 {% block content %}
   <div class="flex flex-col gap-8">
     <h1 class="text-3xl font-bold">Applications</h1>
-    {{ render_applications_table(applications) }}
+    {{ applications_table(applications) }}
   </div>
 {% endblock content %}
