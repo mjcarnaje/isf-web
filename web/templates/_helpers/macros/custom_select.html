@@ -1,0 +1,18 @@
+{% macro custom_select(label, name, options, current_selected) %}
+  <div class="flex flex-col gap-2">
+    <label class="label-text">{{ label }}</label>
+    <div class="relative">
+      <select class="w-full text-md select select-bordered" name="{{ name }}">
+        <option value="">Select {{ label }}</option>
+        {% for option in options %}
+          {% set is_selected = current_selected == option %}
+          {% if is_selected %}
+            <option value="{{ option }}" selected>{{ option }}</option>
+          {% else %}
+            <option value="{{ option }}">{{ option }}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+{% endmacro %}

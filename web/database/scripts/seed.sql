@@ -35,7 +35,7 @@ VALUES
 -- Generate 10 dummy events
 INSERT IGNORE INTO event (name, description, cover_photo_url, start_date, end_date, location, author_id, is_cancelled, who_can_see_it, who_can_join)
 VALUES
-    ('Pet Adoption Day', 'Join us for a day filled with love and furry friends! Meet adorable cats and dogs looking for their forever homes.', 'isf/default-event', '2023-01-15 10:00:00', '2023-01-15 15:00:00', 'Local Shelter', @admin_user_id, 0, "Public", "Anyone"),
+    ('Pet Adoption Day', 'Join us for a day filled with love and furry friends! Meet adorable cats and dogs looking for their forever homes.', 'isf/default-event', '2024-01-15 10:00:00', '2024-01-15 15:00:00', 'Local Shelter', @admin_user_id, 0, "Public", "Anyone"),
     ('Paws and Play', 'Bring your pets and let them socialize at our pet-friendly event. Enjoy games, treats, and a day of fun with fellow pet lovers.', 'isf/default-event', '2023-02-10 12:00:00', '2023-02-10 17:00:00', 'City Park', @admin_user_id, 0, "Verified User", "Anyone"),
     ('Feline Fiesta', 'Celebrate all things cat-related at our Feline Fiesta! Cat lovers unite for a day of catnip, toys, and adorable furry friends.', 'isf/default-event', '2023-03-20 14:00:00', '2023-03-20 19:00:00', 'Community Center', @admin_user_id, 0, "Public", "Anyone"),
     ('Canine Carnival', 'Step right up to the Canine Carnival! Enjoy games, treats, and a day filled with tail-wagging fun for dogs and their human companions.', 'isf/default-event', '2023-04-15 10:00:00', '2023-04-15 15:00:00', 'Dog Park', @admin_user_id, 0, "Public", "Anyone"),

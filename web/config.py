@@ -29,3 +29,5 @@ class Config:
     MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
     MAIL_USE_TLS = True
     MAIL_USE_SSL = False
+
+    DEFAULT_PAGE_SIZE = 5

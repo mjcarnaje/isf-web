@@ -88,17 +88,16 @@
       </div>
     </form>
   </dialog>
-  <div class="flex items-center justify-between">
-    <form id="search-form"  class="flex items-center gap-4">
-      <input class="input input-bordered"
+  <div class="flex items-center justify-between py-4">
+    <form id="search-form"  class="flex items-center w-full max-w-xl gap-4">
+      <input class="w-full input input-bordered"
              placeholder="Search by name"
              value="{{ filters.query }}"
              name="query" />
       <button id="search-btn" type="submit" class="btn">Search</button>
     </form>
     {% if show_filter %}
-      <button class="relative text-gray-700 btn btn-sm"
-              onclick="filters.showModal()">
+      <button class="relative text-gray-700 btn" onclick="filters.showModal()">
         {% if active_filters == 0 %}
           <i class="fa-solid fa-filter"></i>
         {% else %}

@@ -1,5 +1,5 @@
 from ..database import db
-import datetime       
+from ..utils import pagination
 
 class Event():
     def __init__(
@@ -37,44 +37,92 @@ class Event():
         self.updated_at = updated_at
 
     @staticmethod
-    def find_all(show_landing_page_only: bool = False):
-        sql = """
-            SELECT
-                id,
-                name,
-                description,
-                cover_photo_url,
-                start_date,
-                end_date,
-                location,
-                who_can_see_it,
-                who_can_join,
-                is_cancelled,
-                author_id,
-                created_at,
-                updated_at,
-                CASE
-                    WHEN is_cancelled = true THEN 'Cancelled'
-                    WHEN start_date > NOW() THEN 'Scheduled'
-                    WHEN start_date <= NOW() AND end_date >= NOW() THEN 'In Progress'
-                    WHEN end_date < NOW() THEN 'Completed'
-                END AS status
-                FROM
-                event;
-        """
+    def find_all(page_number: int, page_size: int, filters: dict = None):
+        offset = (page_number - 1) * page_size
+
+        where_clauses = []
+        filter_params = []
         
-        if show_landing_page_only:
-            sql += " WHERE who_can_see_it = 'Public'"
+        for key, value in filters.items():
+            if not value:
+                continue
+
+            if key == "query":
+                where_clauses.append("name LIKE %s")
+                filter_params.append(f"%{value}%")
+                continue
+
+            where_clauses.append(f"{key} = %s")
+            filter_params.append(value)
+
+        where_clause = " AND ".join(where_clauses) if where_clauses else ""
+
+        count_sql = """
+            SELECT COUNT(*) AS total_count
+            FROM (
+                SELECT
+                    who_can_see_it,
+                    CASE
+                        WHEN is_cancelled = true THEN 'Cancelled'
+                        WHEN start_date > NOW() THEN 'Scheduled'
+                        WHEN start_date <= NOW() AND end_date >= NOW() THEN 'In Progress'
+                        WHEN end_date < NOW() THEN 'Completed'
+                    END AS status
+                FROM 
+                    event
+            ) AS subquery
+        """
+
+        if where_clause:
+            count_sql += f" WHERE {where_clause}"
 
         cur = db.new_cursor(dictionary=True)
-        cur.execute(sql)
-        
+        cur.execute(count_sql, filter_params)
+        total_count = cur.fetchone()["total_count"]
+
+        sql = """
+            SELECT *
+            FROM (
+                SELECT
+                    id,
+                    name,
+                    description,
+                    cover_photo_url,
+                    start_date,
+                    end_date,
+                    location,
+                    who_can_see_it,
+                    who_can_join,
+                    is_cancelled,
+                    author_id,
+                    created_at,
+                    updated_at,
+                    CASE
+                        WHEN is_cancelled = true THEN 'Cancelled'
+                        WHEN start_date > NOW() THEN 'Scheduled'
+                        WHEN start_date <= NOW() AND end_date >= NOW() THEN 'In Progress'
+                        WHEN end_date < NOW() THEN 'Completed'
+                    END AS status
+                FROM 
+                    event
+            ) AS subquery
+        """
+
+
+        if where_clause:
+            sql += f" WHERE {where_clause}"
+
+        sql += " LIMIT %s OFFSET %s"
+
+        cur.execute(sql, filter_params + [page_size, offset])
         data = cur.fetchall()
-        
+
         return {
-            'data': data
+            'data': data,
+            'total_count': total_count,
+            'offset': offset
         }
-    
+
     @classmethod
     def find_by_id(cls, event_id):
         sql = "SELECT * FROM event WHERE id = %s"

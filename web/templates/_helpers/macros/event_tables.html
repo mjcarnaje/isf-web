@@ -1,0 +1,82 @@
+{% macro event_tables(events) %}
+  <div class="flow-root">
+    <div class="w-full">
+      <table class="relative min-w-full divide-y divide-gray-300">
+        <thead>
+          <tr>
+            <th scope="col"
+                class="py-3.5 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Name</th>
+            <th scope="col"
+                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Name</th>
+            <th scope="col"
+                class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Location</th>
+            <th scope="col"
+                class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Start Date</th>
+            <th scope="col"
+                class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">End Date</th>
+            <th scope="col"
+                class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Status</th>
+            <th scope="col"
+                class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900 whitespace-nowrap">Who can see</th>
+            <th scope="col"
+                class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900 whitespace-nowrap">Action</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          {% for event in events %}
+            <tr>
+              <td class="py-5 pl-4 pr-3 text-sm whitespace-nowrap sm:pl-0">
+                <a href="{{ url_for('landing.view_event', id=event.id) }}"
+                   class="overflow-hidden rounded-lg">
+                  <img class="object-cover max-w-[80px] transition-all duration-300 border rounded-lg aspect-video bg-gray-50 hover:scale-105"
+                       src="{{ get_image(event.cover_photo_url) }}"
+                       alt="Cover Photo"
+                       width="auto"
+                       height="auto" />
+                </a>
+              </td>
+              <td class="px-3 py-5 text-sm font-bold text-gray-800 whitespace-nowrap">{{ event.name }}</td>
+              <td class="px-3 py-5 text-sm text-right text-gray-600">{{ event.location }}</td>
+              <td class="px-3 py-5 text-sm text-right text-gray-600 whitespace-nowrap">
+                {{ event.start_date.strftime("%b %d, %Y") }}
+              </td>
+              <td class="px-3 py-5 text-sm text-right text-gray-600 whitespace-nowrap">
+                {{ event.end_date.strftime("%b %d, %Y") }}
+              </td>
+              <td class="px-3 py-5 text-sm text-right text-gray-600 whitespace-nowrap">{{ event.status }}</td>
+              <td class="px-3 py-5 text-sm text-right text-gray-600 whitespace-nowrap">{{ event.who_can_see_it }}</td>
+              <td class="px-3 py-5 text-sm text-right text-gray-600 whitespace-nowrap">
+                <div class="dropdown dropdown-end">
+                  <label tabindex="0">
+                    <div class="flex items-center justify-center w-6 h-6 rounded-full cursor-pointer hover:bg-gray-300 aspect-square">
+                      <i class="fa-solid fa-ellipsis"></i>
+                    </div>
+                  </label>
+                  <ul tabindex="0"
+                      class="dropdown-content z-[1] menu p-2 border bg-base-100 rounded-box w-32">
+                    <li>
+                      <a href="{{ url_for('admin.event.edit_event', id=event.id) }}">Edit</a>
+                    </li>
+                    <li>
+                      <button id="open-delete-modal" data-event-id="{{ event.id }}">Delete</button>
+                    </li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        {% endfor %}
+      </table>
+      {% if events | length == 0 %}
+        <div class="flex flex-col items-center justify-center gap-8 p-12 my-16">
+          <img class="w-full max-w-sm"
+               src="{{ url_for('static', filename='images/empty_list.png') }}"
+               alt="Kid hugging her dog"
+               width="auto"
+               height="auto" />
+          <h3 class="text-lg font-medium">No Events Found.</h3>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+{% endmacro %}

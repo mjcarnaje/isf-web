@@ -1,11 +1,8 @@
-from flask import (Blueprint, redirect, render_template, request, session,
-                   url_for)
-from flask_login import current_user
+from flask import (Blueprint, render_template, request, session)
 
-from ...models import Adoption, Animal, Notification
+from ...config import Config
+from ...models import Animal
 from ...utils import get_active_filter_count, user_verified_required
-from ...validations import AdoptionValidation
-from ...enums import NotificationType
 
 user_animal_bp = Blueprint("animals", __name__, url_prefix='/animals')
 
@@ -30,7 +27,7 @@ def animals():
 
     animals_query = Animal.find_all(
         page_number=page,
-        page_size=12,
+        page_size=Config.DEFAULT_PAGE_SIZE,
         filters=filters
     )
 

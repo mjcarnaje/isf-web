@@ -109,27 +109,30 @@ class Animal():
 
         if filters: 
             for key, value in filters.items():
+                if not value:
+                    continue
+
                 if key == "query":
                     where_clauses.append("name LIKE %s")
                     filter_params.append(f"%{value}%")
                     continue
     
-                if value:
-                    where_clauses.append(f"{key} = %s")
-                    filter_params.append(value)
+                where_clauses.append(f"{key} = %s")
+                filter_params.append(value)
 
         where_clause = " AND ".join(where_clauses) if where_clauses else ""
 
         sql = f"""
             SELECT * FROM animal
             """
+
         if where_clause:
             sql += f" WHERE {where_clause}"
+            
         sql += " LIMIT %s OFFSET %s"
 
         cur = db.new_cursor(dictionary=True)
         cur.execute(sql, filter_params + [page_size, offset])
-
         data = cur.fetchall()
 
         count_sql = f"SELECT COUNT(*) FROM animal"

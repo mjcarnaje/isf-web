@@ -2,6 +2,7 @@ from flask import (Blueprint, redirect, render_template, request, session,
                    url_for)
 from flask_login import current_user
 
+from ...config import Config
 from ...enums import NotificationType
 from ...models import Adoption, Animal, Notification
 from ...utils import get_active_filter_count, user_verified_required
@@ -23,7 +24,7 @@ def adoptions():
 
     animals_query = Animal.find_all_adoptions(
         page_number=page,
-        page_size=12,
+        page_size=Config.DEFAULT_PAGE_SIZE,
         filters=filters,
         user_id=current_user.id
     )

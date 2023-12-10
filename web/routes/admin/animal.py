@@ -2,6 +2,7 @@ from flask import (Blueprint, redirect, render_template, request, session,
                    url_for)
 from flask_login import current_user
 
+from ...config import Config
 from ...models import Animal
 from ...utils import admin_required, get_active_filter_count
 from ...validations import AddAnimalValidation, EditAnimalValidation
@@ -29,7 +30,7 @@ def animals():
 
     animals_query = Animal.find_all(
         page_number=page,
-        page_size=12,
+        page_size=Config.DEFAULT_PAGE_SIZE,
         filters=filters
     )
 

@@ -1,17 +1,49 @@
-from flask import Blueprint, redirect, render_template, url_for
+from flask import (Blueprint, redirect, render_template, request, session,
+                   url_for)
 from flask_login import current_user
 
+from ...config import Config
 from ...models import Event
-from ...utils import admin_required
+from ...utils import admin_required, get_active_filter_count, pagination
 from ...validations import AddEventValidation, EditEventValidation
 
 event_bp = Blueprint("event", __name__, url_prefix='/event')
 
-@event_bp.route('/', methods=['GET'])
+@event_bp.route('', methods=['GET'])
 @admin_required
 def events():
-    events = Event.find_all()
-    return render_template('/admin/event/events.html', events=events.get('data'))
+    page = request.args.get('page', 1, type=int)
+    view_type = session.get('view_type')
+
+    filters = {
+        'query': request.args.get('query', '', type=str),
+        'who_can_see_it': request.args.get('who_can_see_it', '', type=str),
+        'status': request.args.get('status', '', type=str)
+    }
+
+    events_query = Event.find_all(
+        page_number=page,
+        page_size=Config.DEFAULT_PAGE_SIZE,
+        filters=filters, 
+    )
+
+    events = events_query.get("data")
+    total_count = events_query.get("total_count")
+    offset = events_query.get("offset")
+
+    return render_template('/admin/event/events.html', 
+        events=events,
+        filters=filters,
+        active_filters=get_active_filter_count(filters),
+        view_type=view_type,
+        pagination = pagination(
+            page_number=page,
+            offset=offset,
+            page_size=Config.DEFAULT_PAGE_SIZE,
+            total_count=total_count,
+            base_url="admin.event.events"
+        ),
+    )
 
 @event_bp.route('/<int:id>/edit', methods=['GET', 'POST'])
 @admin_required

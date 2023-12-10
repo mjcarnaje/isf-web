@@ -3,7 +3,8 @@ from flask import (Blueprint, current_app, flash, redirect, render_template,
 from flask_login import current_user, login_required, login_user
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from ..models import (Animal, Donation, Event, User, UserRole)
+from ..config import Config
+from ..models import Animal, Donation, Event, User, UserRole
 from ..utils import (anonymous_required, check_verification_token,
                      generate_verification_token, get_active_filter_count,
                      send_verification_email, user_verified_required)
@@ -18,7 +19,7 @@ landing_bp = Blueprint("landing", __name__)
 def index():
   animals_query = Animal.find_all(
       page_number=1,
-      page_size=6,
+      page_size=Config.DEFAULT_PAGE_SIZE,
   )
   return render_template('/landing/home.html', animals=animals_query.get('data'))
   
@@ -32,7 +33,7 @@ def adopt():
   page = request.args.get('page', 1, type=int)
   animals_query = Animal.find_all(
               page_number=page, 
-              page_size=12,
+              page_size=Config.DEFAULT_PAGE_SIZE,
               filters={
                 'for_adoption': True
               }
@@ -67,7 +68,7 @@ def animals():
   
   animals_query = Animal.find_all(
               page_number=page, 
-              page_size=4,
+              page_size=Config.DEFAULT_PAGE_SIZE,
               filters=filters
             )
   
@@ -210,7 +211,7 @@ def enter_new_email():
 @anonymous_required
 def login():
   form = UserLoginValidation()
-
+  
   if form.validate_on_submit():
     user = User.find_by_username(username=form.username.data)
 
