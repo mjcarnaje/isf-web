@@ -340,11 +340,17 @@ class Adoption:
         return rows
 
     @staticmethod
-    def get_animals_applications():
+    def get_for_adoptions(page_number: int, page_size: int):
+        offset = (page_number - 1) * page_size
+
         sql = """
                 SELECT 
-                    animal.*, 
-                    COUNT(adoption.user_id) AS user_count
+                    animal.id as id,
+                    description,
+                    is_adopted,
+                    name,
+                    photo_url,
+                    COUNT(adoption.user_id) AS application_count
                 FROM animal 
                 LEFT JOIN 
                     adoption ON adoption.animal_id = animal.id
@@ -352,11 +358,32 @@ class Adoption:
                     animal.is_adopted = 0 and animal.for_adoption = 1
                 GROUP BY 
                     animal.id
-            """   
+                LIMIT %s OFFSET %s
+            """
         cur = db.new_cursor(dictionary=True)
+        cur.execute(sql, [page_size, offset])
+        data = cur.fetchall()
+
+        sql = """
+            SELECT 
+                COUNT(*) as total_count
+            FROM animal 
+            LEFT JOIN 
+                adoption ON adoption.animal_id = animal.id
+            WHERE 
+                animal.is_adopted = 0 and animal.for_adoption = 1
+            GROUP BY 
+                animal.id
+        """
+
         cur.execute(sql)
-        rows = cur.fetchall()
-        return rows
+        total_count = cur.fetchone()['total_count']
+
+        return {
+            'data': data,
+            'total_count': total_count,
+            'offset': offset
+        }
 
     @staticmethod
     def get_animal_applications(animal_id):

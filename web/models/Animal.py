@@ -123,7 +123,9 @@ class Animal():
         where_clause = " AND ".join(where_clauses) if where_clauses else ""
 
         sql = f"""
-            SELECT * FROM animal
+            SELECT 
+                * 
+            FROM animal
             """
 
         if where_clause:
@@ -135,13 +137,17 @@ class Animal():
         cur.execute(sql, filter_params + [page_size, offset])
         data = cur.fetchall()
 
-        count_sql = f"SELECT COUNT(*) FROM animal"
+        count_sql = """
+            SELECT 
+                COUNT(*) as total_count
+            FROM animal
+        """
 
         if where_clause:
             count_sql += f" WHERE {where_clause}"
 
         cur.execute(count_sql, filter_params)
-        total_count = cur.fetchone()['COUNT(*)']
+        total_count = cur.fetchone()['total_count']
 
         return {
             'data': data,
