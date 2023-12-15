@@ -1,16 +1,14 @@
 from flask import (Blueprint, current_app, flash, redirect, render_template,
-                   request, session, url_for)
+                   request, session, url_for, jsonify)
 from flask_login import current_user, login_required, login_user
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from ..config import Config
-from ..enums import DonationFor, DonationType
-from ..models import Animal, Donation, Event, User, UserRole
+from ..models import Animal, Event, User, UserRole
 from ..utils import (anonymous_required, check_verification_token,
                      generate_verification_token, get_active_filter_count,
-                     send_verification_email, user_verified_required)
-from ..validations import (AddDonation_In_Kind, AddDonationMoney,
-                           NewEmailValidation, UserLoginValidation,
+                     send_verification_email)
+from ..validations import (NewEmailValidation, UserLoginValidation,
                            UserSignupValidation)
 
 landing_bp = Blueprint("landing", __name__)
