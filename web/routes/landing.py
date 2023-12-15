@@ -204,7 +204,7 @@ def sign_up():
     )
 
     user_id = User.insert(new_user)
-    UserRole.insert_user_role_by_name(user_id=user_id, role_name="member")
+    UserRole.insert_user_role(user_id=user_id, role_name="Member")
     token = generate_verification_token(user_id=user_id, email=new_user.email)
     send_verification_email(email=new_user.email, token=token, user=new_user)
 

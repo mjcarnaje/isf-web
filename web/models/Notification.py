@@ -15,6 +15,7 @@ class Notification:
         self.animal_id = kwargs.get('animal_id')
         self.adoption_id = kwargs.get('adoption_id')
         self.adoption_status_history_id = kwargs.get('adoption_status_history_id')
+        self.event_id = kwargs.get('event_id')
         self.donation_id = kwargs.get('donation_id')
         self.user_who_fired_event_id = kwargs.get('user_who_fired_event_id')
         self.user_to_notify_id = kwargs.get('user_to_notify_id')
@@ -42,11 +43,14 @@ class Notification:
         self.donation_item_list = kwargs.get('donation_item_list')
         self.donation_thumbnail_url = kwargs.get('donation_thumbnail_url')
 
+        self.event_name = kwargs.get('event_name')
+        self.event_cover_photo = kwargs.get('event_cover_photo')
+
         self.created_at = pretty_date(kwargs.get('created_at', datetime.datetime.now()))
         self.updated_at = pretty_date(kwargs.get('updated_at', datetime.datetime.now()))
         
     @classmethod
-    def increment_count(cls, notification):
+    def increment_count(notification):
         sql = """
             UPDATE user
             SET unread_notification_count = unread_notification_count + 1 
@@ -133,14 +137,15 @@ class Notification:
         db.connection.commit()
 
 
-    @classmethod
-    def insert(clc, notification):
+    @staticmethod
+    def insert_multiple(notifications):
         sql = """
             INSERT INTO notification (
                 type,
                 animal_id,
                 adoption_id,
                 adoption_status_history_id,
+                event_id,
                 donation_id,
                 user_who_fired_event_id,
                 user_to_notify_id
@@ -149,24 +154,49 @@ class Notification:
                 %(animal_id)s, 
                 %(adoption_id)s, 
                 %(adoption_status_history_id)s, 
+                %(event_id)s, 
                 %(donation_id)s, 
                 %(user_who_fired_event_id)s, 
                 %(user_to_notify_id)s
             )
         """
-        
-        params = {
-            'type': notification.type,
-            'animal_id': notification.animal_id,
-            'adoption_id': notification.adoption_id,
-            'adoption_status_history_id': notification.adoption_status_history_id,
-            'donation_id': notification.donation_id,
-            'user_who_fired_event_id': notification.user_who_fired_event_id,
-            'user_to_notify_id': notification.user_to_notify_id
-        }
 
         cur = db.new_cursor()
-        cur.execute(sql, params)
+
+        data = []
+
+        for notification in notifications:
+            params = {
+                'type': notification.type,
+                'animal_id': notification.animal_id,
+                'adoption_id': notification.adoption_id,
+                'adoption_status_history_id': notification.adoption_status_history_id,
+                'event_id': notification.event_id,
+                'donation_id': notification.donation_id,
+                'user_who_fired_event_id': notification.user_who_fired_event_id,
+                'user_to_notify_id': notification.user_to_notify_id
+            }
+            data.append(params)
+
+        cur.executemany(sql, data)
+
+        sql = """
+            UPDATE user
+            SET 
+                unread_notification_count = unread_notification_count + 1 
+            WHERE id = %(user_id)s
+        """
+
+        data = []
+
+        for notification in notifications:
+            params = {
+                'user_id': notification.user_to_notify_id
+            }
+            data.append(params)
+
+        cur.executemany(sql, data)
+        
         db.connection.commit()
 
         socketio.emit("notification")
@@ -202,7 +232,9 @@ class Notification:
                 adoption.interview_preference as adoption_interview_preference, 
                 donation.amount as donation_amount,
                 donation.item_list as donation_item_list,
-                donation.thumbnail_url as donation_thumbnail_url
+                donation.thumbnail_url as donation_thumbnail_url,
+                event.name as event_name,
+                event.cover_photo_url as event_cover_photo_url
             FROM 
                 notification
             LEFT JOIN 
@@ -215,6 +247,8 @@ class Notification:
                 adoption_status_history ON notification.adoption_status_history_id = adoption_status_history.id
             LEFT JOIN 
                 donation ON notification.donation_id = donation.id
+            LEFT JOIN 
+                event ON notification.event_id = event.id
         """
 
         if where_clause:
@@ -257,6 +291,8 @@ class Notification:
                 image_url = info['donation_thumbnail_url']
             case NotificationType.DONATION_STATUS_UPDATE.value:
                 image_url = ''
+            case NotificationType.EVENT_INVITED.value:
+                image_url = info['event_cover_photo_url']
             case _:
                 image_url = ''
                 
@@ -284,6 +320,8 @@ class Notification:
                 message += f"{full_name} has donated {info['donation_item_list']}."
             case NotificationType.DONATION_STATUS_UPDATE.value:
                 message += "Donate updated"
+            case NotificationType.EVENT_INVITED.value:
+                message += f"You have been invited to {info['event_name']}"
             case _:
                 message += "Unkown message"
         
@@ -323,6 +361,11 @@ class Notification:
                     redirect_url = url_for("admin.adoptions.adoption", id=info['donation_id'])
                 else:
                     redirect_url = url_for("user.adoptions.adopt_me", id=info['donation_id'])
+            case NotificationType.EVENT_INVITED.value:
+                if is_admin:
+                    redirect_url = url_for("admin.events.view_event", id=info['event_id'])
+                else:
+                    redirect_url = url_for("user.events.view_event", id=info['event_id'])
             case _:
                 if is_admin:
                     redirect_url = url_for("admin.adoptions.adoption", id=info['donation_id'])

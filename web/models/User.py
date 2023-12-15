@@ -45,6 +45,24 @@ class User(UserMixin):
             return None
         return cls(**row)    
     
+    @staticmethod
+    def get_member_users():
+        sql = """
+            SELECT 
+                user.id
+            FROM user
+            LEFT JOIN
+                user_role ON user.id = user_role.user_id
+            WHERE 
+                user_role.role_name = 'Member'
+        """
+        cur = db.new_cursor(dictionary=True)
+        cur.execute(sql)
+        members = cur.fetchall()
+        return members
+
+
+    
     @classmethod
     def find_by_username(cls, username: str):
         sql = "SELECT * FROM user WHERE username = %s"

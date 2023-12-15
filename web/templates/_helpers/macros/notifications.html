@@ -17,7 +17,7 @@
             <div class="flex items-center gap-4">
               <div class="relative h-16 aspect-square">
                 <img class="object-cover w-full h-full border rounded-full bg-gray-50"
-                     src="{{ get_image(notification.user_photo_url) }}"
+                     src="{{ get_image(notification.user_photo_url, true if notification.user_username == 'admin' else false) }}"
                      alt="user's avatar"
                      height="auto"
                      width="auto" />
@@ -36,6 +36,10 @@
                 {% elif notification.type == 'ADD_DONATION_IN_KIND' %}
                   <div class="absolute flex items-center justify-center w-8 h-8 rounded-full shadow bg-violet-500 -bottom-1 -right-1">
                     <i class="text-white fa-solid fa-hand-holding-heart"></i>
+                  </div>
+                {% elif notification.type == 'EVENT_INVITED' %}
+                  <div class="absolute flex items-center justify-center w-8 h-8 bg-red-500 rounded-full shadow -bottom-1 -right-1">
+                    <i class="text-white fa-solid fa-calendar-day"></i>
                   </div>
                 {% endif %}
               </div>
@@ -61,7 +65,7 @@
             <div>
               <div class="drop-down" data-dropdown>
                 <div data-dropdown-button
-                     class="flex items-center justify-center w-10 h-10 transition-all duration-200 border rounded-full shadow opacity-0 drop-down-button group-hover:opacity-100 bg-gray-50">
+                     class="flex items-center justify-center w-10 h-10 transition-all duration-200 border rounded-full opacity-50 hover:shadow drop-down-button group-hover:opacity-100 bg-gray-50">
                   <i class="text-lg pointer-events-none fa-solid fa-ellipsis"></i>
                 </div>
                 <ul data-dropdown-content tabindex="0" class="drop-down-content">

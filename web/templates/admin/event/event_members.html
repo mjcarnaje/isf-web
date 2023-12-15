@@ -1,0 +1,78 @@
+{% set active_page = "user.events" %}
+{% extends "./_helpers/layout/user_layout.html" %}
+{% block title %}
+  Event
+{% endblock title %}
+{% block content %}
+  <div class="flex flex-col items-center gap-8">
+    <div class="w-full aspect-[800/320] relative shadow-sm">
+      <img src="{{ get_image(event.cover_photo_url) }}"
+           alt="Event Cover Photo"
+           class="object-cover w-full rounded-xl aspect-[800/320]"
+           height="auto"
+           width="auto">
+      <div class="absolute z-10 flex flex-col overflow-hidden bg-white shadow-lg w-36 h-36 left-6 -bottom-8 rounded-3xl">
+        <div class="flex items-center justify-center h-10 bg-red-500">
+          <h1 class="text-white">{{ event.start_date.strftime("%B") }}</h1>
+        </div>
+        <div class="flex items-center justify-center flex-1 w-full">
+          <h1 class="text-5xl font-bold">{{ event.start_date.strftime("%d") }}</h1>
+        </div>
+      </div>
+    </div>
+    <div class="w-full max-w-5xl">
+      <div class="flex flex-col gap-8 pt-12">
+        <div class="flex flex-col w-full gap-4 p-8 rounded-lg shadow bg-gray-50">
+          <div class="flex items-center justify-around gap-4 divide-x-2">
+            <div class="flex flex-col items-center justify-center w-full gap-1 p-2">
+              <h1 class="text-2xl font-bold">{{ statistics.invited_count }}</h1>
+              <h2>Invited</h2>
+            </div>
+            <div class="flex flex-col items-center justify-center w-full gap-1 p-2">
+              <h1 class="text-2xl font-bold">{{ statistics.going_count }}</h1>
+              <h2>Going</h2>
+            </div>
+            <div class="flex flex-col items-center justify-center w-full gap-1 p-2">
+              <h1 class="text-2xl font-bold">{{ statistics.maybe_count }}</h1>
+              <h2>Maybe</h2>
+            </div>
+            <div class="flex flex-col items-center justify-center w-full gap-1 p-2">
+              <h1 class="text-2xl font-bold">{{ statistics.cant_go_count }}</h1>
+              <h2>Can't Go</h2>
+            </div>
+          </div>
+        </div>
+        <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+          <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+            <div class="overflow-hidden shadow sm:rounded-lg">
+              <table class="min-w-full divide-y divide-gray-300 table-auto">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th scope="col"
+                        class="py-3.5 pl-4 pr-3 text-left font-semibold text-gray-900 sm:pl-6">Name</th>
+                    <th scope="col" class="px-3 py-3.5 text-left font-semibold text-gray-900">Status</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  {% for volunteer in volunteers %}
+                    <tr>
+                      <td class="flex items-center gap-3 py-4 pl-4 pr-3 font-medium text-gray-900 whitespace-nowrap sm:pl-6">
+                        <img class="object-cover w-10 h-10 rounded-full"
+                             src="{{ get_image(volunteer.photo_url) }}"
+                             alt="Volunteer's Image"
+                             height="auto"
+                             width="auto" />
+                        {{ volunteer.name }}
+                      </td>
+                      <td class="px-3 py-4 text-gray-500 whitespace-nowrap">{{ volunteer.status }}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

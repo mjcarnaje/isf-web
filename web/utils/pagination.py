@@ -61,7 +61,7 @@ def pagination(page_number, total_count, offset, page_size, base_url):
     for page in pages:
         item = {}
         item['label'] = page
-        item['url'] = url_for(base_url, **request_args, page=page) if page is not "..." else ""
+        item['url'] = url_for(base_url, **request_args, page=page) if page != "..." else ""
         item['is_active'] = page == page_number
         pages_with_url.append(item)
     

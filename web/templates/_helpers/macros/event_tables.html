@@ -26,9 +26,9 @@
           {% for event in events %}
             <tr>
               <td class="py-5 pl-4 pr-3 text-sm whitespace-nowrap sm:pl-0">
-                <a href="{{ url_for('landing.view_event', id=event.id) }}"
+                <a href="{{ url_for('admin.event.view_event', id=event.id) }}"
                    class="overflow-hidden rounded-lg">
-                  <img class="object-cover max-w-[80px] transition-all duration-300 border rounded-lg aspect-video bg-gray-50 hover:scale-105"
+                  <img class="object-contain max-w-[80px] transition-all duration-300 border rounded-lg aspect-video bg-gray-50 hover:scale-105"
                        src="{{ get_image(event.cover_photo_url) }}"
                        alt="Cover Photo"
                        width="auto"

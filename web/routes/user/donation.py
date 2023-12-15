@@ -1,10 +1,10 @@
-from flask import (Blueprint, flash, redirect, render_template, url_for)
+from flask import Blueprint, flash, redirect, render_template, url_for
 from flask_login import current_user
 
+from ...enums import DonationFor, DonationType, NotificationType
 from ...models import Donation, Notification
-from ...utils import (user_verified_required)
-from ...validations import (AddDonation_In_Kind, AddDonationMoney)
-from ...enums import NotificationType, DonationType, DonationFor
+from ...utils import user_verified_required
+from ...validations import AddDonation_In_Kind, AddDonationMoney
 
 user_donation_bp = Blueprint("donations", __name__, url_prefix="/donations")
 
@@ -34,9 +34,8 @@ def donate_money():
       user_who_fired_event_id=current_user.id,
       user_to_notify_id=1
     )
-    notification.insert(notification)
-    notification.increment_count(notification)
-    
+    Notification.insert_multiple([notification])
+
     flash("Successfully added a donation", "success")
 
     return redirect(url_for('user.donations'))
@@ -67,8 +66,8 @@ def donate_in_kind():
       user_who_fired_event_id=current_user.id,
       user_to_notify_id=1
     )
-    notification.insert(notification)
-    notification.increment_count(notification)
+    Notification.insert_multiple([notification])
+
 
     flash("Successfully added a donation", "success")
     

@@ -28,7 +28,7 @@ class AddEventValidation(FlaskForm):
                          ("Verified User", "Verified User"),
                          ], validators=[validators.DataRequired()])
     
-    who_can_join = SelectField('Who can join?', choices=[("Anyone", "Anyone"), ("Interested", "Interested")], validators=[validators.DataRequired()])
+    who_can_join = SelectField('Who can join?', choices=[("Anyone", "Anyone"), ("Invite Only", "Invite Only (Invite All Volunteers)")], validators=[validators.DataRequired()])
 
     pictures = FieldList(StringField(), label="Photos")    
     

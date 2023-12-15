@@ -11,10 +11,10 @@ class Role(UserMixin):
         self.name = name
 
     @classmethod
-    def find_by_id(cls, role_id: int):
+    def find_by_id(cls, role_name: int):
         sql = "SELECT * FROM role WHERE id  = %s"
         cur = db.new_cursor(dictionary=True)
-        cur.execute(sql, (role_id,))
+        cur.execute(sql, (role_name,))
         row = cur.fetchone()
         if not row:
             return None
@@ -40,19 +40,19 @@ class Role(UserMixin):
         return cur.lastrowid
 
     @classmethod
-    def update_role(cls, role_id: int, new_name: str):
+    def update_role(cls, role_name: int, new_name: str):
         sql = "UPDATE role SET name = %s WHERE id = %s"
-        params = [new_name, role_id]
+        params = [new_name, role_name]
 
         cur = db.new_cursor()
         cur.execute(sql, params)
         db.connection.commit()
 
     @classmethod
-    def delete_role(cls, role_id: int):
+    def delete_role(cls, role_name: int):
         sql = "DELETE FROM role WHERE id = %s"
         cur = db.new_cursor()
-        cur.execute(sql, (role_id,))
+        cur.execute(sql, (role_name,))
         db.connection.commit()
 
     @staticmethod

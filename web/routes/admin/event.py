@@ -3,9 +3,10 @@ from flask import (Blueprint, redirect, render_template, request, session,
 from flask_login import current_user
 
 from ...config import Config
-from ...models import Event
+from ...models import Event, User, Notification
 from ...utils import admin_required, get_active_filter_count, pagination
 from ...validations import AddEventValidation, EditEventValidation
+from ...enums import WhoCanJoinEvent, NotificationType
 
 event_bp = Blueprint("event", __name__, url_prefix='/event')
 
@@ -44,6 +45,24 @@ def events():
             base_url="admin.event.events"
         ),
     )
+
+
+@event_bp.route('/<int:id>', methods=['GET'])
+@admin_required
+def view_event(id):
+    event = Event.find_by_id(id)
+    statistics = Event.get_statistics(id)
+
+    return render_template('/admin/event/event.html', event=event, statistics=statistics)
+
+@event_bp.route('/<int:id>/members', methods=['GET'])
+@admin_required
+def event_members(id):
+    event = Event.find_by_id(id)
+    statistics = Event.get_statistics(id)
+    volunteers = Event.get_volunteers(id)
+
+    return render_template('/admin/event/event_members.html', event=event, statistics=statistics, volunteers=volunteers)
 
 @event_bp.route('/<int:id>/edit', methods=['GET', 'POST'])
 @admin_required
@@ -98,7 +117,25 @@ def add_event():
             who_can_join=form.who_can_join.data,            
             pictures=form.pictures.data,
         )
-        Event.insert(new_event)
+        event_id = Event.insert(new_event)
+
+        if form.who_can_join.data == WhoCanJoinEvent.INVITE_ONLY.value:
+            members = User.get_member_users()
+            Event.invite_users(event_id=event_id, user_ids=[user['id'] for user in members])
+
+            invite_notifications = []
+
+            for member in members:
+                notification = Notification(
+                    type=NotificationType.EVENT_INVITED.value,
+                    event_id=event_id,
+                    user_who_fired_event_id=1,
+                    user_to_notify_id=member['id']
+                )
+                invite_notifications.append(notification)
+            Notification.insert_multiple(notifications=invite_notifications)
+ 
+            
         return redirect(url_for("admin.event.events"))
     
     return render_template('/admin/event/add.html', form=form)

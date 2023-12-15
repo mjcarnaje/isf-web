@@ -1,12 +1,7 @@
 -- Insert admin role
-INSERT IGNORE INTO role (name) VALUES ('member');
-INSERT IGNORE INTO role (name) VALUES ('donor');
-INSERT IGNORE INTO role (name) VALUES ('volunteer');
-INSERT IGNORE INTO role (name) VALUES ('adopter');
-INSERT IGNORE INTO role (name) VALUES ('admin');
-
--- Get the ID of the 'admin' role
-SET @admin_role_id = LAST_INSERT_ID();
+INSERT IGNORE INTO role (name) VALUES ('Member');
+INSERT IGNORE INTO role (name) VALUES ('Non-Member');
+INSERT IGNORE INTO role (name) VALUES ('Admin');
 
 -- Insert user
 INSERT IGNORE INTO user (email, google_id, username, first_name, last_name, password, photo_url, contact_number)
@@ -16,7 +11,7 @@ VALUES ('admin@example.com', NULL, 'admin', 'admin', 'admin', 'pbkdf2:sha256:600
 SET @admin_user_id = LAST_INSERT_ID();
 
 -- Associate user with admin role
-INSERT IGNORE INTO user_role (user_id, role_id) VALUES (@admin_user_id, @admin_role_id);
+INSERT IGNORE INTO user_role (user_id, role_name) VALUES (@admin_user_id, 'Admin');
 
 -- Generate 10 dummy animals
 INSERT IGNORE INTO animal (name, type, estimated_birth_month, estimated_birth_year, photo_url, gender, is_adopted, is_dead, is_dewormed, is_neutered, in_shelter, is_rescued, for_adoption, description, appearance, author_id)
@@ -54,4 +49,4 @@ VALUES ('member@gmail.com', NULL, 'member', 'Member', 'One', 'pbkdf2:sha256:6000
 SET @member_user_id = LAST_INSERT_ID();
 
 -- Associate member 1 with 'member' role
-INSERT IGNORE INTO user_role (user_id, role_id) VALUES (@member_user_id, (SELECT id FROM role WHERE name = 'member'));
+INSERT IGNORE INTO user_role (user_id, role_name) VALUES (@member_user_id, 'Member');
