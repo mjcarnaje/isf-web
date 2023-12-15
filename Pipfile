@@ -21,6 +21,7 @@ itsdangerous = "*"
 flask-mail = "*"
 flask-socketio = "*"
 babel = "*"
+waitress = "*"
 
 [dev-packages]
 
