@@ -4,15 +4,36 @@ from ..database import db
 
 
 class Donation():
-    def __init__(self, type: str = None,  user_id: int = None, donation_type: str = None, amount: int | None = None, delivery_type: str = None, pick_up_location: str = None, remarks: str = None, pictures: [str] = None, is_confirmed: bool = False, created_at=None, id: int | None = None):
+    def __init__(
+        self, 
+        type: str = None,
+        user_id: int = None,
+        animal_id: int = None,
+        event_id: int = None,
+        donation_type: str = None,
+        amount: int | None = None,
+        item_list: str | None = None,
+        delivery_type: str = None,
+        pick_up_location: str = None,
+        remarks: str = None,
+        thumbnail_url: str = None,
+        pictures: [str] = None,
+        is_confirmed: bool = False,
+        created_at=None,
+        id: int | None = None
+    ):
         self.id = id
         self.type = type
+        self.animal_id = animal_id
+        self.event_id = event_id
         self.amount = amount
+        self.item_list = item_list
         self.user_id = user_id
         self.donation_type = donation_type
         self.delivery_type = delivery_type
         self.pick_up_location = pick_up_location
         self.remarks = remarks
+        self.thumbnail_url = thumbnail_url
         self.pictures = pictures 
         self.is_confirmed = is_confirmed
         self.created_at = created_at or datetime.datetime.now()
@@ -31,25 +52,49 @@ class Donation():
     
     @classmethod
     def insert(cls, donation):
-        donation_sql = """
+        sql = """
             INSERT INTO donation (
-                type, user_id, donation_type, amount, delivery_type, pick_up_location, remarks, is_confirmed, created_at
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                type,
+                user_id,
+                donation_type,
+                amount,
+                item_list,
+                delivery_type,
+                pick_up_location,
+                remarks,
+                is_confirmed,
+                thumbnail_url,
+                created_at
+            ) VALUES (
+                %(type)s,
+                %(user_id)s,
+                %(donation_type)s,
+                %(amount)s,
+                %(item_list)s,
+                %(delivery_type)s,
+                %(pick_up_location)s,
+                %(remarks)s,
+                %(is_confirmed)s,
+                %(thumbnail_url)s,
+                %(created_at)s
+            )
         """
-        donation_params = (
-            donation.type,
-            donation.user_id,
-            donation.donation_type,
-            donation.amount,
-            donation.delivery_type,
-            donation.pick_up_location,
-            donation.remarks,
-            donation.is_confirmed,
-            donation.created_at,
-        )
+        params = {
+            'type': donation.type,
+            'user_id': donation.user_id,
+            'donation_type': donation.donation_type,
+            'amount': donation.amount,
+            'item_list': donation.item_list,
+            'delivery_type': donation.delivery_type,
+            'pick_up_location': donation.pick_up_location,
+            'remarks': donation.remarks,
+            'is_confirmed': donation.is_confirmed,
+            'thumbnail_url': donation.pictures[0],
+            'created_at': donation.created_at,
+        }
 
         cur = db.new_cursor()
-        cur.execute(donation_sql, donation_params)
+        cur.execute(sql, params)
         db.connection.commit()
 
         donation_id = cur.lastrowid
@@ -68,48 +113,64 @@ class Donation():
         return donation_id
     
     @staticmethod
-    def get_user_donations(user_id):
-        donation_sql = """
-            SELECT * FROM donation WHERE user_id = %s ORDER BY created_at DESC
-        """
+    def find_all(page_number: int, page_size: int, filters: dict = None):
+        offset = (page_number - 1) * page_number
+        
+        where_clauses = []
+        filter_params = []
 
-        picture_sql = """
-            SELECT photo_url FROM donation_pictures WHERE donation_id = %s
-        """
-
-        cur = db.new_cursor(dictionary=True)
-        cur.execute(donation_sql, (user_id,))
-        donations = cur.fetchall()
-
-        for donation in donations:
-            donation_id = donation['id']
-            cur.execute(picture_sql, (donation_id,))
-            pictures = [row['photo_url'] for row in cur.fetchall()]
-            donation['pictures'] = pictures
-
-        return [Donation(**donation) for donation in donations]
+        if filters: 
+            for key, value in filters.items():
+                if not value:
+                    continue
     
-    @staticmethod
-    def get_donations():
-        donation_sql = """
-            SELECT * FROM donation ORDER BY created_at DESC
+                where_clauses.append(f"{key} = %s")
+                filter_params.append(value)
+
+        where_clause = " AND ".join(where_clauses) if where_clauses else ""
+        
+        sql = """
+            SELECT 
+                donation.id as id,
+                donation_type,
+                amount,
+                item_list,
+                is_confirmed,
+                user.photo_url as user_photo_url,
+                user.first_name as user_first_name,
+                user.last_name as user_last_name
+            FROM donation 
+            LEFT JOIN
+                user on donation.user_id = user.id
         """
 
-        picture_sql = """
-            SELECT photo_url FROM donation_pictures WHERE donation_id = %s
-        """
+        if where_clause:
+            sql += f" WHERE {where_clause}"
+
+        sql += " LIMIT %s OFFSET %s"
 
         cur = db.new_cursor(dictionary=True)
-        cur.execute(donation_sql)
-        donations = cur.fetchall()
+        cur.execute(sql, filter_params + [page_size, offset])
+        data = cur.fetchall()
 
-        for donation in donations:
-            donation_id = donation['id']
-            cur.execute(picture_sql, (donation_id,))
-            pictures = [row['photo_url'] for row in cur.fetchall()]
-            donation['pictures'] = pictures
+        count_sql = """
+            SELECT 
+                COUNT(*) as total_count
+            FROM donation
+        """
 
-        return [Donation(**donation) for donation in donations]
+        if where_clause:
+            count_sql += f" WHERE {where_clause}"
+
+        cur.execute(count_sql, filter_params)
+        total_count = cur.fetchone()['total_count']
+
+        return {
+            'data': data,
+            'total_count': total_count,
+            'offset': offset
+        }
+
 
 
     @staticmethod

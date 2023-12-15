@@ -1,0 +1,90 @@
+{% macro user_donation_tables(donations) %}
+  <div class="flow-root">
+    <div class="w-full">
+      <table class="relative min-w-full divide-y divide-gray-300">
+        <thead>
+          <tr>
+            <th class="py-3.5 px-3 text-left text-sm font-semibold text-gray-900">Type</th>
+            <th class="py-3.5 px-3 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">Remarks</th>
+            <th class="py-3.5 px-3 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">Amount / Item List</th>
+            <th class="py-3.5 px-3 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">Status</th>
+            <th class="py-3.5 px-3 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">Donated by</th>
+            <th class="py-3.5 px-3 text-right text-sm font-semibold text-gray-900 whitespace-nowrap">Action</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          {% for donation in donations %}
+            <tr>
+              <td class="px-3 py-5 text-sm text-gray-800 whitespace-nowrap">
+                <div class="flex items-center gap-2">
+                  {% if donation.donation_type == 'Money' %}
+                    <div class="flex items-center justify-center w-10 h-10 bg-green-100 rounded-full">
+                      <i class="text-green-600 fa-solid fa-money-bill"></i>
+                    </div>
+                  {% else %}
+                    <div class="flex items-center justify-center w-10 h-10 bg-yellow-100 rounded-full">
+                      <i class="text-yellow-600 fa-solid fa-hand-holding-heart"></i>
+                    </div>
+                  {% endif %}
+                  {{ donation.donation_type }}
+                </div>
+              </td>
+              <td class="px-3 py-5 text-sm text-left text-gray-800 whitespace-nowrap">{{ donation.remarks or "No remarks" }}</td>
+              <td class="px-3 py-5 text-sm text-left text-gray-800 whitespace-nowrap">
+                {% if donation.amount %}
+                  {{ donation.amount | format_currency }}
+                {% else %}
+                  {{ donation.item_list }}
+                {% endif %}
+              </td>
+              <td class="px-3 py-5 text-sm text-left text-gray-800 whitespace-nowrap">
+                {% if donation.is_confirmed %}
+                  Confirmed
+                {% else %}
+                  Not Confirm
+                {% endif %}
+              </td>
+              <td class="px-3 py-5 text-sm text-left text-gray-800 whitespace-nowrap">
+                <div class="flex items-center gap-3">
+                  <img src="{{ get_image(donation.user_photo_url) }}"
+                       class="object-cover w-8 h-8 rounded-full"
+                       alt="Donated by avatar"
+                       height="auto"
+                       width="auto" />
+                  {{ donation.user_first_name }} {{ donation.user_last_name }}
+                </div>
+              </td>
+              <td class="px-3 py-5 text-sm text-right text-gray-600 whitespace-nowrap">
+                <div class="dropdown dropdown-end">
+                  <label tabindex="0">
+                    <div class="flex items-center justify-center w-6 h-6 rounded-full cursor-pointer hover:bg-gray-300 aspect-square">
+                      <i class="fa-solid fa-ellipsis"></i>
+                    </div>
+                  </label>
+                  <ul tabindex="0"
+                      class="dropdown-content z-[1] menu p-2 border bg-base-100 rounded-box w-32">
+                    {% if not donation.is_confirmed %}
+                      <li>
+                        <a href="{{ url_for('admin.donations.donation', id=donation.id) }}">Edit</a>
+                      </li>
+                    {% endif %}
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        {% endfor %}
+      </table>
+      {% if donations | length == 0 %}
+        <div class="flex flex-col items-center justify-center gap-8 p-12 border-t">
+          <img class="w-full max-w-sm"
+               src="{{ url_for('static', filename='images/empty_list.png') }}"
+               alt="Kid hugging her dog"
+               width="auto"
+               height="auto" />
+          <h3 class="text-lg font-medium">No Events Found.</h3>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+{% endmacro %}

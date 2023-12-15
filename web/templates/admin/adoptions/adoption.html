@@ -6,79 +6,35 @@
 {% endblock title %}
 {% block content %}
   <div class="flex flex-col items-center justify-center w-full gap-16">
-    <div class="w-full space-y-8">
-      <div class="flex gap-8">
-        <div class="w-full max-w-sm">
-          <img class="object-cover w-full border rounded-lg"
-               src="{{ get_image(animal.photo_url) }}"
-               alt=""
-               height="auto"
-               width="auto" />
-        </div>
-        <div class="flex flex-col w-full py-4 space-y-6">
-          <h1 class="text-3xl font-bold">{{ animal.name }}</h1>
-          <div class="flex items-center gap-2">
-            <p class="text-sm">Sex:</p>
-            <p class="font-bold">{{ animal.gender }}</p>
-          </div>
-          <div class="flex items-center gap-2">
-            <p class="text-sm">Birthday (Appx):</p>
-            <p class="font-bold">{{ animal.estimated_birth_month }} {{ animal.estimated_birth_year }}</p>
-          </div>
-          <div class="flex w-full gap-4">
-            <p class="text-sm">Appearance:</p>
-            {% set appearances = animal.appearance.split(',') %}
-            <ul class="w-full">
-              {% for item in appearances %}
-                <li>
-                  <p class="font-bold">- {{ item }}</p>
-                </li>
-              {% endfor %}
-            </ul>
-          </div>
-          <div class="py-3">
-            <p class="italic leading-6">{{ animal.description }}</p>
-          </div>
-          <div class="grid grid-cols-2 gap-6">
-            <p class="font-medium">
-              Adopted: <span class="px-2 py-1 ml-2 text-gray-800 bg-gray-300 rounded">{{ 'Yes' if animal.is_adopted == 1 else 'No' }}</span>
-            </p>
-            <p class="font-medium">
-              Deceased: <span class="px-2 py-1 ml-2 text-gray-800 bg-gray-300 rounded">{{ 'Yes' if animal.is_dead == 1 else 'No' }}</span>
-            </p>
-            <p class="font-medium">
-              Dewormed: <span class="px-2 py-1 ml-2 text-gray-800 bg-gray-300 rounded">{{ 'Yes' if animal.is_dewormed == 1 else 'No' }}</span>
-            </p>
-            <p class="font-medium">
-              Neutered: <span class="px-2 py-1 ml-2 text-gray-800 bg-gray-300 rounded">{{ 'Yes' if animal.is_neutered == 1 else 'No' }}</span>
-            </p>
-            <p class="font-medium">
-              Shelter: <span class="px-2 py-1 ml-2 text-gray-800 bg-gray-300 rounded">{{ 'Yes' if animal.in_shelter == 1 else 'No' }}</span>
-            </p>
-            <p class="font-medium">
-              Rescued: <span class="px-2 py-1 ml-2 text-gray-800 bg-gray-300 rounded">{{ 'Yes' if animal.is_rescued == 1 else 'No' }}</span>
-            </p>
-          </div>
-        </div>
+    <div class="flex w-full gap-8 p-8 bg-white border rounded-2xl">
+      <div>
+        <img src="{{ get_image(animal.photo_url) }}"
+             class="w-48 border rounded-2xl aspect-square"
+             alt="Animal's photo"
+             width="auto"
+             height="auto" />
+      </div>
+      <div class="flex flex-col space-y-1">
+        <h2 class="text-xl font-bold text-gray-900">{{ animal.name }}</h2>
+        <p class="text-gray-800">{{ animal.description }}</p>
       </div>
     </div>
-    <div class="w-full space-y-8">
-      <h1 class="text-3xl font-bold">Applications</h1>
+    <div class="w-full">
       <table class="table">
         <thead>
           <tr>
-            <th>Full Name</th>
-            <th>Contact Number</th>
-            <th>Interview Type</th>
-            <th>Preffered Interview Date & Time</th>
-            <th>Status</th>
-            <th>Action</th>
+            <th class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Full Name</th>
+            <th class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Contact Number</th>
+            <th class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Interview Type</th>
+            <th class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Preffered Interview Date & Time</th>
+            <th class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status</th>
+            <th class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Action</th>
           </tr>
         </thead>
         <tbody>
           {% for application in applications %}
             <tr>
-              <td>
+              <td class="px-3 py-5 text-sm text-left text-gray-600">
                 <div class="flex items-center gap-3">
                   <div class="avatar">
                     <div class="w-12 h-12 mask mask-squircle">
@@ -101,11 +57,13 @@
                   </div>
                 </div>
               </td>
-              <td>{{ application.contact_number }}</td>
-              <td>{{ application.interview_preference }}</td>
-              <td>{{ application.interview_preferred_date.strftime("%b %d, %Y") }} - {{ application.interview_preferred_time }}</td>
-              <td>{{ status_badge(application.current_status) }}</td>
-              <td>
+              <td class="px-3 py-5 text-sm text-left text-gray-600">{{ application.contact_number }}</td>
+              <td class="px-3 py-5 text-sm text-left text-gray-600">{{ application.interview_preference }}</td>
+              <td class="px-3 py-5 text-sm text-left text-gray-600">
+                {{ application.interview_preferred_date.strftime("%b %d, %Y") }} - {{ application.interview_preferred_time }}
+              </td>
+              <td class="px-3 py-5 text-sm text-left text-gray-600">{{ status_badge(application.current_status) }}</td>
+              <td class="px-3 py-5 text-sm text-right text-gray-600">
                 <div class="dropdown dropdown-bottom dropdown-end">
                   <label tabindex="0">
                     <div class="flex items-center justify-center w-6 h-6 rounded-full cursor-pointer hover:bg-gray-300 aspect-square">

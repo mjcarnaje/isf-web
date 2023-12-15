@@ -108,17 +108,21 @@ CREATE TABLE IF NOT EXISTS event_pictures (
     CONSTRAINT unique_event_photo_url UNIQUE (event_id, photo_url)
 );
 
-
 CREATE TABLE IF NOT EXISTS donation (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    type VARCHAR(16) NOT NULL, -- 'event' or 'org'
+    type ENUM('General', 'Event', 'Animal') NOT NULL, -- 'event' or 'org'
+    animal_id INT,
+    event_id INT,
     user_id INT NOT NULL REFERENCES user(id),
-    donation_type VARCHAR(16) NOT NULL, -- 'money' or 'in_kind'
-    delivery_type VARCHAR(16), -- 'pickup' or 'deliver' (if in_kind)
+    donation_type ENUM('Money', 'In-Kind') NOT NULL, -- 'money' or 'in_kind'
+    delivery_type ENUM('Pick-up', 'Deliver'), -- (if in_kind)
     pick_up_location VARCHAR(256), -- optional, depending on delivery_type
     amount INT, -- (if money)
+    item_list TEXT, -- (if in-kind) [comma-seprated]
     remarks TEXT,
     is_confirmed BOOLEAN,
+    FOREIGN KEY (animal_id) REFERENCES animal(id),
+    FOREIGN KEY (event_id) REFERENCES event(id),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -130,17 +134,18 @@ CREATE TABLE IF NOT EXISTS donation_pictures (
     CONSTRAINT unique_donation_photo_url UNIQUE (donation_id, photo_url)
 );
 
-
 CREATE TABLE IF NOT EXISTS notification (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    type ENUM('ADOPTION_REQUEST', 'ADOPTION_STATUS_UPDATE', 'ADD_DONATION', 'DONATION_STATUS_UPDATE'),
+    type ENUM('ADOPTION_REQUEST', 'ADOPTION_STATUS_UPDATE', 'ADD_DONATION_MONEY', 'ADD_DONATION_IN_KIND', 'DONATION_STATUS_UPDATE'),
     animal_id INT,
+    event_id INT,
     adoption_id INT,
     adoption_status_history_id INT,
     donation_id INT,
     user_who_fired_event_id INT NOT NULL,
     user_to_notify_id INT NOT NULL,
     is_read BOOLEAN DEFAULT false,
+    is_archived BOOLEAN DEFAULT false,
     FOREIGN KEY (animal_id) REFERENCES animal(id),
     FOREIGN KEY (adoption_id) REFERENCES adoption(id),
     FOREIGN KEY (adoption_status_history_id) REFERENCES adoption_status_history(id),
@@ -150,3 +155,7 @@ CREATE TABLE IF NOT EXISTS notification (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+
+ALTER TABLE donation
+ADD thumbnail_url VARCHAR(256) DEFAULT NULL;

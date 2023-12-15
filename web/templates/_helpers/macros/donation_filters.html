@@ -1,0 +1,71 @@
+{% from "./_helpers/macros/custom_select.html" import custom_select with context %}
+{% macro donation_filters() %}
+  <dialog id="filters" class="modal modal-bottom sm:modal-middle">
+    <form id="filter-form" class="modal-box">
+      <div class="pb-4 border-b">
+        <h3 class="text-lg font-bold">Filters</h3>
+      </div>
+      <div class="flex flex-col gap-6 pt-4">
+        {{ custom_select(label="Donation Type", name="donation_type", options=['Money', 'In-Kind'], current_selected=filters['donation_type']) }}
+      </div>
+      <div class="modal-action">
+        <form method="dialog">
+          <button type="button" id="reset-filter-form" class="btn">Clear Filter</button>
+          <button class="btn">Search</button>
+        </form>
+      </div>
+    </form>
+  </dialog>
+  <div class="flex items-center justify-end py-4">
+    <button class="relative text-gray-700 btn" onclick="filters.showModal()">
+      {% if active_filters == 0 %}
+        <i class="fa-solid fa-filter"></i>
+      {% else %}
+        <div class="flex items-center justify-center w-4 h-4 rounded-full bg-primary-500">
+          <span class="text-xs font-medium text-white">{{ active_filters }}</span>
+        </div>
+      {% endif %}
+      Filters
+    </button>
+  </div>
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const filterForm = document.getElementById('filter-form');
+    const resetFilterForm = document.getElementById('reset-filter-form')
+
+    resetFilterForm?.addEventListener('click', () => {
+      const filterFormData = new FormData(filterForm);
+      const url = new URL(window.location.href);
+      const params = new URLSearchParams(window.location.search);
+      filterFormData?.forEach((item, key) => {
+        if (params.get(key)){
+          params.delete(key)
+        }
+      })
+      url.search = params;
+      window.location.href = url;
+    })
+    
+    function setParams() {
+      const filterFormData = new FormData(filterForm);
+      const filteredFormData = {};
+
+      filterFormData.forEach((value, key) => {
+        if (value !== "") {
+          filteredFormData[key] = value;
+        }
+      });
+
+      const url = new URL(window.location.href);
+      const params = new URLSearchParams(filteredFormData);
+      url.search = params;
+      window.location.href = url;
+    }
+  
+    filterForm?.addEventListener("submit", function(event) {
+      event.preventDefault();
+      setParams()
+    });
+  });
+  </script>
+{% endmacro %}

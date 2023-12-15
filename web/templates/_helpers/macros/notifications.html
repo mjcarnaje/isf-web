@@ -8,47 +8,85 @@
       {% for notification in notifications %}
         <div data-id="{{ notification.id }}"
              data-redirect-url="{{ notification.redirect_url }}"
-             class="flex items-center justify-between w-full p-4 shadow first:border-t first:rounded-t-lg last:rounded-b-lg {{ 'bg-slate-50' if notification.is_read else 'bg-white' }} border-l border-r border-b cursor-pointer hover:bg-gray-50 notification-item">
-          <div class="flex items-center w-10/12 gap-4">
-            <div class="relative h-16 aspect-square">
-              <img class="object-cover w-full h-full border rounded-full bg-gray-50"
-                   src="{{ get_image(notification.user_photo_url) }}"
-                   alt="user's avatar"
-                   height="auto"
-                   width="auto" />
-              {% if notification.type == 'ADOPTION_REQUEST' %}
-                <div class="absolute flex items-center justify-center w-8 h-8 rounded-full shadow -bottom-1 -right-1 bg-primary-500">
-                  <i class="text-white fa-solid fa-file-invoice"></i>
-                </div>
-              {% elif notification.type == 'ADOPTION_STATUS_UPDATE' %}
-                <div class="absolute flex items-center justify-center w-8 h-8 rounded-full shadow -bottom-1 -right-1 bg-primary-500">
-                  <i class="text-white fa-solid fa-calendar-days"></i>
-                </div>
-              {% endif %}
+             data-is-read="{{ notification.is_read }}"
+             class="flex group items-center justify-between w-full py-4 pl-3 pr-4 shadow first:border-t first:rounded-t-lg last:rounded-b-lg {{ 'bg-slate-50' if notification.is_read else 'bg-white' }} border-l border-r border-b cursor-pointer hover:bg-gray-50 notification-item">
+          <div class="flex items-center w-10/12 gap-2">
+            <div id="status-icon"
+                 class="w-3 h-3 rounded-full rouned-full {{ 'bg-primary-500' if not notification.is_read else 'bg-transparent' }}">
             </div>
-            <div class="flex flex-col gap-1">
-              <p class="{{ 'text-gray-600' if notification.is_read else 'font-medium' }}">{{ notification.message }}</p>
-              <p id="notification-date"
-                 class="text-sm {{ 'text-gray-400' if notification.is_read else 'text-primary-500' }}">
-                {{ notification.created_at }}
-              </p>
+            <div class="flex items-center gap-4">
+              <div class="relative h-16 aspect-square">
+                <img class="object-cover w-full h-full border rounded-full bg-gray-50"
+                     src="{{ get_image(notification.user_photo_url) }}"
+                     alt="user's avatar"
+                     height="auto"
+                     width="auto" />
+                {% if notification.type == 'ADOPTION_REQUEST' %}
+                  <div class="absolute flex items-center justify-center w-8 h-8 rounded-full shadow -bottom-1 -right-1 bg-primary-500">
+                    <i class="text-white fa-solid fa-file-invoice"></i>
+                  </div>
+                {% elif notification.type == 'ADOPTION_STATUS_UPDATE' %}
+                  <div class="absolute flex items-center justify-center w-8 h-8 rounded-full shadow -bottom-1 -right-1 bg-primary-500">
+                    <i class="text-white fa-solid fa-calendar-days"></i>
+                  </div>
+                {% elif notification.type == 'ADD_DONATION_MONEY' %}
+                  <div class="absolute flex items-center justify-center w-8 h-8 bg-green-500 rounded-full shadow -bottom-1 -right-1">
+                    <i class="text-white fa-solid fa-money-bill"></i>
+                  </div>
+                {% elif notification.type == 'ADD_DONATION_IN_KIND' %}
+                  <div class="absolute flex items-center justify-center w-8 h-8 rounded-full shadow bg-violet-500 -bottom-1 -right-1">
+                    <i class="text-white fa-solid fa-hand-holding-heart"></i>
+                  </div>
+                {% endif %}
+              </div>
+              <div class="flex flex-col gap-1">
+                <p class="{{ 'text-gray-600' if notification.is_read else 'font-medium' }}">{{ notification.message }}</p>
+                <p id="notification-date"
+                   class="text-sm {{ 'text-gray-400' if notification.is_read else 'text-primary-500' }}">
+                  {{ notification.created_at }}
+                </p>
+              </div>
             </div>
           </div>
-          <div class="flex items-center justify-end w-2/12 gap-4">
-            {% if not notification.is_read %}
-              <div id="status-icon"
-                   class="w-4 h-4 rounded-full bg-primary-500 rouned-full"></div>
-            {% endif %}
-            <img class="object-cover w-16 h-16 border aspect-square rounded-2xl bg-gray-50"
-                 src="{{ get_image(notification.animal_photo_url) }}"
-                 alt="user's avatar"
-                 height="auto"
-                 width="auto" />
+          <div class="flex items-center gap-4">
+            <div class="flex items-center justify-end gap-4">
+              {% if notification.preview_image_url %}
+                <img class="object-cover w-16 h-16 border aspect-square rounded-2xl bg-gray-50"
+                     src="{{ get_image(notification.preview_image_url) }}"
+                     alt="user's avatar"
+                     height="auto"
+                     width="auto" />
+              {% endif %}
+            </div>
+            <div>
+              <div class="drop-down" data-dropdown>
+                <div data-dropdown-button
+                     class="flex items-center justify-center w-10 h-10 transition-all duration-200 border rounded-full shadow opacity-0 drop-down-button group-hover:opacity-100 bg-gray-50">
+                  <i class="text-lg pointer-events-none fa-solid fa-ellipsis"></i>
+                </div>
+                <ul data-dropdown-content tabindex="0" class="drop-down-content">
+                  <li id="mark-as-read"
+                      role="button"
+                      tabindex="0"
+                      class="flex items-center gap-3 p-2 rounded-sm hover:bg-slate-100">
+                    <i class="fa-solid fa-check"></i>
+                    <span class="text-sm pointer-events-none">Mark as read</span>
+                  </li>
+                  <li id="mark-as-archived"
+                      role="button"
+                      tabindex="0"
+                      class="flex items-center gap-3 p-2 rounded-sm hover:bg-slate-100">
+                    <i class="fa-solid fa-box-archive"></i>
+                    <span class="text-sm pointer-events-none">Hide this notification</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       {% endfor %}
       {% if notifications | length == 0 %}
-        <div class="flex flex-col items-center justify-center gap-8 p-12 my-16">
+        <div class="flex flex-col items-center justify-center gap-8 p-12 border-t">
           <img class="w-full max-w-sm"
                src="{{ url_for('static', filename='images/empty_list.png') }}"
                alt="Kid hugging her dog"
@@ -68,14 +106,56 @@
               "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
             },
           });
-          
-          const container = document.getElementById("notifications-container");
-          const notificationCount = document.getElementById("notification-count")
+        } catch (error) {
+          console.error('Fetch error:', error);
+        }
+      }
 
-          Array.from(container.children).forEach(async (notificationElement) => {
-            console.log(notificationElement)
-            const notificationId = notificationElement.dataset.id;
+      async function markAsRead(id) {
+        try {
+          const response = await fetch(`/{{ type }}/notifications/mark-as-read/${id}`, {
+            method: "PUT",
+            headers: {
+              "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
+            },
+          });
+          return response;
+        } catch (error) {
+          console.error('Fetch error:', error);
+        }
+      }
+      
+      async function markAsArchived(id, isRead) {
+        try {
+          const response = await fetch(`/{{ type }}/notifications/mark-as-archived/${id}`, {
+            method: "PUT",
+            headers: {
+              "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
+            },
+          });
+          return response;
+        } catch (error) {
+          console.error('Fetch error:', error);
+        }
+      }
 
+      function updateNotificationDOM(params) {
+        const container = document.getElementById("notifications-container");
+        const notificationCount = document.getElementById("notification-count")
+
+        Array.from(container.children).forEach(async (notificationElement) => {
+          const notificationId = notificationElement.dataset.id;
+
+          if (params.id && notificationId != params.id) {
+            return;
+          }
+
+          if (params.id && params.markAsArchived) {
+            notificationElement.remove();
+            if (container.children.length == 0) {
+              window.location.reload();
+            }
+          } else {
             notificationElement.classList.remove("bg-white");
             notificationElement.classList.add("bg-slate-50");
 
@@ -85,40 +165,26 @@
             dateElement.classList.replace("text-primary-500", "text-gray-400");
 
             if (statusElement) {
-              statusElement.remove();
+              statusElement.classList.remove("bg-primary-500");
+              statusElement.classList.add("bg-transparent");
+              notificationElement.setAttribute("[data-is-read]", true)
             }
-
-            if (notificationCount) {
-              notificationCount.remove()
-            }
-
-          });
-          
-          showToast("success", "All notifications marked as read successfully.");
-        } catch (error) {
-          console.error('Fetch error:', error);
-        }
-      }
-
-      
-      async function markAsRead(id, redirect_url) {
-        try {
-          const response = await fetch(`/{{ type }}/notifications/mark-as-read/${id}`, {
-            method: "PUT",
-            headers: {
-              "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
-            },
-          });
-
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
           }
 
-          console.log('Redirecting to:', redirect_url);
-          window.location.href = redirect_url;
-        } catch (error) {
-          console.error('Fetch error:', error);
-        }
+
+          if (notificationCount) {
+            if (params.markAllAsRead) {
+              notificationCount.remove();
+            } else {
+              const updatedCount = Number(notificationCount.innerText) - 1;
+              if (updatedCount == 0) {
+                notificationCount.remove();
+              } else {
+                notificationCount.firstElementChild.innerText = updatedCount;
+              }
+            }
+          }
+        });   
       }
 
       
@@ -126,15 +192,38 @@
       const markAllAsReadBtn = document.getElementById("mark-all-as-read")
 
       notificationItems.forEach((element) => {
-        element.addEventListener('click', () => {
+        element.addEventListener('click', async (e) => {
           const id = element.getAttribute("data-id");
           const redirectUrl = element.getAttribute("data-redirect-url");
-          markAsRead(id, redirectUrl)
+          const isRead = element.getAttribute("data-is-read") == "1"
+          
+          if (e.target.matches("[data-dropdown-button]")) return;
+          if (e.target.matches("[id='mark-as-read']")) {
+            await markAsRead(id);
+            updateNotificationDOM({ id });
+            return;
+          }
+          if (e.target.matches("[id='mark-as-archived']")) {
+            if(!isRead) {
+              await markAsRead(id);
+            }
+            await markAsArchived(id);
+            updateNotificationDOM({ id, markAsArchived: true });
+            return;
+          }
+        
+          try {
+            await markAsRead(id);
+            window.location.href = redirectUrl;
+          } catch (err) {
+            showToast("error", "Something went wrong!")
+          }
         })
       })
 
-      markAllAsReadBtn.addEventListener('click', () => {
-        markAllAsRead();
+      markAllAsReadBtn.addEventListener('click', async () => {
+        await markAllAsRead();
+        updateNotificationDOM({ markAllAsRead: true })
       })
   </script>
 {% endmacro %}

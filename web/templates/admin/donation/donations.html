@@ -1,65 +1,26 @@
-{% set active_page = "admin.donation.donations" %}
+{% set active_page = "admin.donations.donations" %}
 {% extends "./_helpers/layout/admin_layout.html" %}
+{% from "./_helpers/macros/donation_tables.html" import donation_tables with context %}
+{% from "./_helpers/macros/donation_filters.html" import donation_filters with context %}
+{% from "./_helpers/macros/pagination_buttons.html" import pagination_buttons with context %}
 {% block title %}
   Donations
 {% endblock title %}
 {% block content %}
-  <div class="flex flex-col">
-    <h1 class="text-2xl font-bold">Donations</h1>
-    <div class="flex flex-col space-y-4">
-      {% for donation in donations %}
-        <div class="flex flex-col w-full gap-4 p-5 bg-white border shadow-md rounded-xl">
-          <div class="flex justify-between w-full">
-            <div class="flex items-center w-full gap-4">
-              {% if donation.donation_type == 'money' %}
-                <div class="flex items-center justify-center w-10 h-10 bg-green-100 rounded-full">
-                  <i class="text-green-600 fa-solid fa-money-bill"></i>
-                </div>
-                <p class="font-bold">Money</p>
-              {% else %}
-                <div class="flex items-center justify-center w-10 h-10 bg-yellow-100 rounded-full">
-                  <i class="text-yellow-600 fa-solid fa-hand-holding-heart"></i>
-                </div>
-                <p class="font-bold">In-kind</p>
-              {% endif %}
-            </div>
-            <div class="flex items-center gap-3">
-              {% if donation.is_confirmed %}
-                <div class="gap-2 p-3 font-bold text-white badge badge-success">Confirmed</div>
-              {% else %}
-                <div class="gap-2 p-3 font-bold text-white badge badge-info">Unconfirmed</div>
-                <button id="confirmButtons"
-                        class="btn btn-sm btn-square btn-success"
-                        data-donation-id="{{ donation.id }}">
-                  <i class="text-lg text-white fa-solid fa-check"></i>
-                </button>
-              {% endif %}
-            </div>
-          </div>
-          <div class="flex gap-2">
-            {% for picture in donation.pictures %}
-              <img src="{{ get_image(picture) }}"
-                   class="object-cover w-full max-w-[60px] h-auto border cursor-pointer hover:shadow-sm rounded-lg bg-gray-50"
-                   alt=""
-                   height="auto"
-                   width="auto" />
-            {% endfor %}
-          </div>
-          <p class="text-sm italic text-gray-700">{{ donation.remarks }}</p>
-          <p class="text-sm italic text-gray-700">{{ donation.created_at or "No Date" }}</p>
-        </div>
-      {% endfor %}
-      {% if donations | length == 0 %}
-        <div class="flex flex-col items-center justify-center gap-8 p-12 my-16">
-          <img class="w-full max-w-sm"
-               src="{{ url_for('static', filename='images/empty_list.png') }}"
-               alt="Kid hugging her dog"
-               width="auto"
-               height="auto" />
-          <h3 class="text-lg font-medium">No Donation Found.</h3>
-        </div>
-      {% endif %}
+  <div class="flex flex-col gap-12">
+    {{ donation_filters() }}
+    <div class="sm:flex sm:items-center">
+      <div class="sm:flex-auto">
+        <h1 class="text-2xl font-bold leading-6 text-gray-900">Donations ({{ pagination['total_count'] }})</h1>
+      </div>
+      {% include "./_helpers/partials/view_form.html" %}
     </div>
+    {% if view_type == "card" %}
+      {{ donation_tables(donations) }}
+    {% else %}
+      {{ donation_tables(donations) }}
+    {% endif %}
+    {{ pagination_buttons() }}
   </div>
   <script>
   const confirmButton = document.querySelectorAll("#confirmButtons");

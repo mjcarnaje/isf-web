@@ -307,7 +307,7 @@ class Adoption:
         params = {
             'adoption_id': adoption_id,
             'previous_status': previous_status,
-            'status': 'Approved', 
+            'status': 'Turnovered', 
             'remarks': remarks
         }
 

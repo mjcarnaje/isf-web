@@ -13,6 +13,16 @@ def get_range(start, end):
     return list(range(start, end + 1))
 
 def pagination(page_number, total_count, offset, page_size, base_url):
+    if total_count == 0:
+        return {
+            'page_count': [0, 0],
+            'current_page': 1,
+            'total_count': 0,
+            'pages': [],
+            'prev_url': '',
+            'next_url': ''
+        }
+    
     page_count = ceil(total_count / page_size)
 
     delta = 7 if page_count <= 7 else 2 if 4 < page_number < page_count - 3 else 4

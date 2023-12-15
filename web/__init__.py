@@ -1,16 +1,18 @@
 import cloudinary
 from cloudinary.uploader import upload as cloudinary_upload
 from cloudinary.utils import cloudinary_url
-from flask import Flask, jsonify, flash, request
+from flask import Flask, jsonify, request
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 from oauthlib.oauth2 import WebApplicationClient
 
+from .commands import set_up_commands
 from .config import Config
 from .database import db
-from .database.run_sql import run_sql
 from .mail import mail
 from .models import User
+from .socket import socketio
+from .utils import currency
 
 
 def create_app():    
@@ -19,33 +21,9 @@ def create_app():
     app.config.from_object(Config)
     db.init_app(app)
     mail.init_app(app)
+    socketio.init_app(app)
     
-    @app.cli.command("reset")
-    def reset_db():
-        try:
-            app.logger.info("Dropping Database...")
-            db.execute_sql(f"DROP DATABASE IF EXISTS {Config.MYSQL_DATABASE};")
-            app.logger.info("Database dropped successfully!")
-            app.logger.info("---")
-
-            app.logger.info("Creating Database...")
-            db.execute_sql(f"CREATE DATABASE {Config.MYSQL_DATABASE};")
-            app.logger.info("Database created successfully!")
-            app.logger.info("---")
-
-            app.logger.info("Adding tables...")
-            run_sql(app, 'create-schema.sql')
-            app.logger.info("Tables created successfully!")
-
-            app.logger.info("Seeding data...")
-            run_sql(app, 'seed.sql')
-            app.logger.info("Seeding completed successfully!")
-
-            app.logger.info("Database reset completed!")
-        except Exception as e:
-            app.logger.error(f"Error during database reset: {str(e)}")
-
-
+    set_up_commands(app)
     CSRFProtect(app)
 
     cloudinary.config(
@@ -71,6 +49,10 @@ def create_app():
             url, options = cloudinary_url(source, format="jpg", crop="fill")
             return url
         return dict(get_image=get_image)
+    
+    @app.template_filter('format_currency')
+    def format_currency(n):
+        return currency.format_currency(n)
 
     @app.route('/upload/cloudinary', methods=['POST'])
     def upload_to_cloudinary():

@@ -5,7 +5,7 @@ from flask_login import current_user
 from ...config import Config
 from ...enums import NotificationType
 from ...models import Adoption, Animal, Notification
-from ...utils import get_active_filter_count, user_verified_required
+from ...utils import get_active_filter_count, user_verified_required, pagination
 from ...validations import AdoptionValidation
 
 user_adoption_bp = Blueprint("adoptions", __name__, url_prefix='/adoptions')
@@ -30,20 +30,22 @@ def adoptions():
     )
 
     animals = animals_query.get("data")
-    has_previous_page = animals_query.get("has_previous_page")
-    has_next_page = animals_query.get("has_next_page")
+    offset = animals_query.get("offset")
     total_count = animals_query.get("total_count")
 
     return render_template('user/adoptions/adoptions.html', 
-                            animals=animals,
-                            page_number=page,
-                            has_previous_page=has_previous_page,
-                            has_next_page=has_next_page,
-                            total_count=total_count,
-                            filters=filters,
-                            active_filters=get_active_filter_count(filters),
-                            view_type=view_type
-                            )
+        animals=animals,
+        filters=filters,
+        active_filters=get_active_filter_count(filters),
+        view_type=view_type,
+        pagination = pagination(
+            page_number=page,
+            offset=offset,
+            page_size=Config.DEFAULT_PAGE_SIZE,
+            total_count=total_count,
+            base_url="user.adoptions.adoptions"
+        ),
+    )
 
 @user_adoption_bp.route('/adoptions/<int:id>', methods=['GET', 'POST'])
 @user_verified_required
@@ -68,12 +70,12 @@ def adopt_me(id):
     else:
       application_id =  application.insert(application)
       notification = Notification(
-                              type=NotificationType.ADOPTION_REQUEST.value,
-                              animal_id=animal.id,
-                              adoption_id=application_id,
-                              user_who_fired_event_id=current_user.id,
-                              user_to_notify_id=1
-                            )
+        type=NotificationType.ADOPTION_REQUEST.value,
+        animal_id=animal.id,
+        adoption_id=application_id,
+        user_who_fired_event_id=current_user.id,
+        user_to_notify_id=1
+      )
       notification.insert(notification)
       notification.increment_count(notification)
 

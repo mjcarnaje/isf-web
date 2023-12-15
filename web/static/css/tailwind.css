@@ -64,3 +64,16 @@
     transform: translate(calc(-50% - .5rem));
   }
 }
+
+.drop-down {
+  @apply relative
+}
+
+.drop-down-content {
+  @apply absolute pointer-events-none opacity-0 bg-white shadow-md p-2 rounded-md top-[calc(100%+4px)] right-0 z-50 min-w-[240px]
+}
+
+.drop-down.active>.drop-down-content,
+.drop-down.active>.drop-down-button {
+  @apply opacity-100 pointer-events-auto;
+}

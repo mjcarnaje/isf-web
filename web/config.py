@@ -30,4 +30,4 @@ class Config:
     MAIL_USE_TLS = True
     MAIL_USE_SSL = False
 
-    DEFAULT_PAGE_SIZE = 5
+    DEFAULT_PAGE_SIZE = 12

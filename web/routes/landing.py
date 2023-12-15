@@ -4,6 +4,7 @@ from flask_login import current_user, login_required, login_user
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from ..config import Config
+from ..enums import DonationFor, DonationType
 from ..models import Animal, Donation, Event, User, UserRole
 from ..utils import (anonymous_required, check_verification_token,
                      generate_verification_token, get_active_filter_count,
@@ -99,47 +100,6 @@ def view_animal(id):
 def donate():
   return render_template('/landing/donate/donate.html')
 
-
-@landing_bp.route('/money', methods=['GET', 'POST'])
-@user_verified_required
-def donate_money():
-  form = AddDonationMoney()
-    
-  if form.validate_on_submit():
-    new_donation = Donation(
-      remarks=form.remarks.data,
-      amount=form.amount.data,
-      pictures=form.pictures.data,
-      donation_type='money',
-      type='org',
-      user_id=current_user.id
-    )
-    Donation.insert(new_donation)
-    return redirect(url_for('user.dashboard'))
-
-  return render_template('/landing/donate/donate_money.html', form=form)
-
-
-@landing_bp.route('/in-kind', methods=['GET', 'POST'])
-@user_verified_required
-def donate_in_kind():
-  form = AddDonation_In_Kind()
-    
-  if form.validate_on_submit():
-    new_donation = Donation(
-      remarks=form.remarks.data,
-      pictures=form.pictures.data,
-      delivery_type=form.delivery_type.data,
-      pick_up_location=form.pick_up_location.data,
-      donation_type='in_kind',
-      type='org',
-      user_id=current_user.id
-    )
-    Donation.insert(new_donation)
-    return redirect(url_for('user.dashboard'))
-  
-  return render_template('/landing/donate/landing.donate_in_kind.html', form=form)
-   
 @landing_bp.route('/events', methods=['GET'])
 @anonymous_required
 def events():

@@ -168,14 +168,16 @@ class Animal():
 
         if filters: 
             for key, value in filters.items():
-                if key == "query" and value:
+                if not value:
+                    continue
+                
+                if key == "query":
                     where_clauses.append("name LIKE %s")
                     filter_params.append(f"%{value}%")
                     continue
     
-                if value:
-                    where_clauses.append(f"{key} = %s")
-                    filter_params.append(value)
+                where_clauses.append(f"{key} = %s")
+                filter_params.append(value)
 
         where_clause = " AND ".join(where_clauses) if where_clauses else ""
 
@@ -183,14 +185,14 @@ class Animal():
             SELECT 
                 animal.*,
                 IF(adoption.id IS NOT NULL, 1, 0) AS is_applied
-            FROM 
-                animal
+            FROM animal
             LEFT JOIN 
                 adoption ON animal.id = adoption.animal_id AND adoption.user_id = %s
             """
         
         if where_clause:
             sql += f" WHERE {where_clause}"
+
         sql += " LIMIT %s OFFSET %s"
 
         cur = db.new_cursor(dictionary=True)
@@ -200,7 +202,7 @@ class Animal():
 
         count_sql = f"""
             SELECT 
-                COUNT(*)
+                COUNT(*) as total_count
             FROM 
                 animal
             LEFT JOIN 
@@ -211,7 +213,7 @@ class Animal():
             count_sql += f" WHERE {where_clause}"
 
         cur.execute(count_sql, filter_params)
-        total_count = cur.fetchone()['COUNT(*)']
+        total_count = cur.fetchone()['total_count']
 
         return {
             'data': data,

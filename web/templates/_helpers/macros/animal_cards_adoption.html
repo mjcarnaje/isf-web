@@ -50,7 +50,7 @@
     {% endfor %}
   </div>
   {% if animals | length == 0 %}
-    <div class="flex flex-col items-center justify-center gap-8 p-12 my-16">
+    <div class="flex flex-col items-center justify-center gap-8 p-12 border-t">
       <img class="w-full max-w-sm"
            src="{{ url_for('static', filename='images/empty_list.png') }}"
            alt="Kid hugging her dog"

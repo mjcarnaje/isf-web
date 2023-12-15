@@ -1,10 +1,11 @@
-from flask import Blueprint, redirect, render_template, request, url_for
+from flask import Blueprint, redirect, render_template, request, url_for, session
 from flask_login import current_user, login_user, logout_user
 from werkzeug.security import check_password_hash
 
 from ...models import Animal, Notification, User
-from ...utils import admin_required
+from ...utils import admin_required, get_active_filter_count, pagination
 from ...validations import AdminLoginValidation
+from ...config import Config
 
 admin_bp = Blueprint("admin", __name__, url_prefix='/admin')
 
@@ -26,14 +27,30 @@ def index():
 
 @admin_bp.route('/notifications', methods=['GET'])
 @admin_required
-def notifications(): 
-   notifications = Notification.get_notifications(user_id=current_user.id, limit=10)
-   return render_template('/admin/notifications.html', notifications=notifications)
+def notifications():  
+   notifications = Notification.find_all(
+      page_number=1,
+      page_size=Config.DEFAULT_PAGE_SIZE,
+      filters={
+         'user_to_notify_id': 1,
+         'is_archived': 0
+      }
+   )
+
+   return render_template('/admin/notifications.html', 
+      notifications=notifications
+   )
 
 @admin_bp.route('/notifications/mark-as-read/<int:id>', methods=['PUT'])
 @admin_required
 def mark_as_read_notifcation(id):
    Notification.mark_as_read(notification_id=id, user_id=current_user.id)
+   return "success"
+
+@admin_bp.route('/notifications/mark-as-archived/<int:id>', methods=['PUT'])
+@admin_required
+def mark_as_archived_notification(id):
+   Notification.mark_as_archived(notification_id=id, user_id=current_user.id)
    return "success"
 
 @admin_bp.route('/notifications/mark-all-as-read', methods=['PUT'])
