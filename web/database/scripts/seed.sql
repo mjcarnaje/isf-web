@@ -48,5 +48,9 @@ VALUES ('member@gmail.com', NULL, 'member', 'Member', 'One', 'pbkdf2:sha256:6000
 -- Get the ID of the newly created member
 SET @member_user_id = LAST_INSERT_ID();
 
+-- 
+INSERT INTO notification_settings (user_id, adoption_request_web, adoption_status_update_web, add_donation_money_web, add_donation_in_kind_web, donation_status_update_web, event_invited_web, adoption_request_email, adoption_status_update_email, add_donation_money_email, add_donation_in_kind_email, donation_status_update_email, event_invited_email)
+VALUES (@member_user_id, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+
 -- Associate member 1 with 'member' role
 INSERT IGNORE INTO user_role (user_id, role_name) VALUES (@member_user_id, 'Member');

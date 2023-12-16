@@ -13,6 +13,26 @@ CREATE TABLE IF NOT EXISTS user (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS notification_settings (
+    user_id INT PRIMARY KEY,
+    
+    adoption_request_web BOOLEAN DEFAULT 1,
+    adoption_status_update_web BOOLEAN DEFAULT 1,
+    add_donation_money_web BOOLEAN DEFAULT 1,
+    add_donation_in_kind_web BOOLEAN DEFAULT 1,
+    donation_status_update_web BOOLEAN DEFAULT 1,
+    event_invited_web BOOLEAN DEFAULT 1,
+
+    adoption_request_email BOOLEAN DEFAULT 1,
+    adoption_status_update_email BOOLEAN DEFAULT 1,
+    add_donation_money_email BOOLEAN DEFAULT 1,
+    add_donation_in_kind_email BOOLEAN DEFAULT 1,
+    donation_status_update_email BOOLEAN DEFAULT 1,
+    event_invited_email BOOLEAN DEFAULT 1,
+    
+    FOREIGN KEY (user_id) REFERENCES user(id)
+);
+
 CREATE TABLE IF NOT EXISTS role (
     name ENUM('Admin', 'Member', 'Non-Member') DEFAULT 'Member' PRIMARY KEY
 );

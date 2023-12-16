@@ -1,34 +1,30 @@
-{% macro event_tables(events) %}
+{% macro event_tables(events, is_user=False) %}
   <div class="flow-root">
     <div class="w-full">
       <table class="relative min-w-full divide-y divide-gray-300">
         <thead>
           <tr>
-            <th scope="col"
-                class="py-3.5 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Name</th>
-            <th scope="col"
-                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Name</th>
-            <th scope="col"
-                class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Location</th>
-            <th scope="col"
-                class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Start Date</th>
-            <th scope="col"
-                class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">End Date</th>
-            <th scope="col"
-                class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Status</th>
-            <th scope="col"
-                class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900 whitespace-nowrap">Who can see</th>
-            <th scope="col"
-                class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900 whitespace-nowrap">Action</th>
+            <th class="py-3.5 px-3 text-left text-sm font-semibold text-gray-900">Name</th>
+            <th class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Name</th>
+            <th class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Location</th>
+            <th class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Start Date</th>
+            <th class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">End Date</th>
+            <th class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Status</th>
+            <th class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900 whitespace-nowrap">Who can see</th>
+            <th class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900 whitespace-nowrap">Action</th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
           {% for event in events %}
+            {% if is_user %}
+              {% set href = "{{ url_for('user.events.view_event', id=event.id) }}" %}
+            {% else %}
+              {% set href = "{{ url_for('admin.event.view_event', id=event.id) }}" %}
+            {% endif %}
             <tr>
-              <td class="py-5 pl-4 pr-3 text-sm whitespace-nowrap sm:pl-0">
-                <a href="{{ url_for('admin.event.view_event', id=event.id) }}"
-                   class="overflow-hidden rounded-lg">
-                  <img class="object-contain max-w-[80px] transition-all duration-300 border rounded-lg aspect-video bg-gray-50 hover:scale-105"
+              <td class="py-5 pl-4 pr-3 text-sm whitespace-nowrap">
+                <a href="{{ href }}">
+                  <img class="transition-all duration-300 border object-cover rounded-lg aspect-[800/320] w-36 bg-gray-50 hover:scale-105"
                        src="{{ get_image(event.cover_photo_url) }}"
                        alt="Cover Photo"
                        width="auto"

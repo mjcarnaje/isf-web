@@ -1,11 +1,12 @@
 import datetime
 
-from flask import url_for
+from flask import url_for, current_app
 
 from ..database import db
 from ..enums import NotificationType
-from ..socket import socketio
-from ..utils import format_currency, pretty_date
+from ..utils import format_currency, pretty_date, send_notification_email
+from .NotificationSettings import NotificationSettings
+
 
 
 class Notification:
@@ -161,11 +162,38 @@ class Notification:
             )
         """
 
+        web_notifications = []
+        email_notifications = []
+
+        for notification in notifications:
+            notification_settings = NotificationSettings.find_one(user_id=notification.user_to_notify_id)
+
+            if notification_settings[f"{notification.type.lower()}_web"]:
+                current_app.logger.info("Appending web notification..")
+                web_notifications.append(notification)
+
+            if notification_settings[f"{notification.type.lower()}_email"]:
+                current_app.logger.info("Appending email notification..")
+                current_app.logger.info(notification_settings)
+                email_notifications.append(notification_settings)
+        
+        for email_notification in email_notifications:
+            send_notification_email(
+                subject='Notification', 
+                recipients=[email_notification['user_email']],
+                data={
+                    'title': 'Notification from ISF',
+                    'first_name': email_notification['user_first_name'],
+                    'description': 'This is sample'
+                }
+            )            
+
+
         cur = db.new_cursor()
 
         data = []
 
-        for notification in notifications:
+        for notification in web_notifications:
             params = {
                 'type': notification.type,
                 'animal_id': notification.animal_id,
@@ -189,7 +217,7 @@ class Notification:
 
         data = []
 
-        for notification in notifications:
+        for notification in web_notifications:
             params = {
                 'user_id': notification.user_to_notify_id
             }
@@ -198,9 +226,6 @@ class Notification:
         cur.executemany(sql, data)
         
         db.connection.commit()
-
-        socketio.emit("notification")
-
 
     @classmethod
     def find_all(cls, page_number: int, page_size: int, filters: dict = None):

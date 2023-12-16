@@ -32,9 +32,12 @@
     </div>
   </div>
   <script>
+    let isRendered = false;
+
     const whoCanSeeItField = document.querySelector("[name='who_can_see_it']");
     const whoCanJoinField = document.querySelector("[name='who_can_join']");
     whoCanSeeItField.addEventListener("change", (e) => {
+      if (!isRendered) return;
       isPublic = e.target.value == "Public";
       if (isPublic) {
         setSelectedValue(whoCanJoinField, "Anyone")
@@ -42,6 +45,7 @@
       } else {
         whoCanJoinField.disabled = false;
       }
+      isRendered = true;
     })
   </script>
 {% endblock content %}

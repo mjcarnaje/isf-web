@@ -104,15 +104,43 @@
             {% endfor %}
           </ul>
         </ul>
-        <a href="{{ url_for('user.logout',) }}"
-           class="flex items-center justify-between gap-3 px-2 py-3 font-medium rounded-lg cursor-pointer hover:bg-gray-50">
-          <div class="flex items-center gap-3">
-            <div class="w-4">
-              <i class="fa-solid fa-right-from-bracket"></i>
-            </div>
-            Log out
+        <div class="dropdown dropdown-top">
+          <div tabindex="0"
+               role="button"
+               class="flex items-center gap-4 p-2 mt-2 transition-colors duration-200 rounded-lg hover:bg-slate-100">
+            <img src="{{ get_image(current_user.photo_url) }}"
+                 class="object-cover w-12 h-12 p-1 rounded-full ring-2 ring-primary-500"
+                 height="auto"
+                 width="auto"
+                 alt="Hello world" />
+            <p class="font-medium">{{ current_user.first_name }} {{ current_user.last_name }}</p>
           </div>
-        </a>
+          <ul tabindex="0"
+              class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-full">
+            <li>
+              <a href="{{ url_for('user.settings',) }}"
+                 class="flex items-center justify-between gap-3 p-4 font-medium rounded-lg cursor-pointer hover:bg-gray-50">
+                <div class="flex items-center gap-3">
+                  <div class="w-4">
+                    <i class="fa-solid fa-cog"></i>
+                  </div>
+                  Settings
+                </div>
+              </a>
+            </li>
+            <li>
+              <a href="{{ url_for('user.logout',) }}"
+                 class="flex items-center justify-between gap-3 p-4 font-medium rounded-lg cursor-pointer hover:bg-gray-50">
+                <div class="flex items-center gap-3">
+                  <div class="w-4">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                  </div>
+                  Log out
+                </div>
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
     </aside>
     <main class="flex w-full h-full min-h-screen py-10 lg:pl-72">

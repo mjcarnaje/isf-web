@@ -1,14 +1,15 @@
-from flask import Blueprint, render_template, redirect, url_for, request, session
+from flask import Blueprint, render_template, redirect, url_for, request, session, flash
 from flask_login import current_user, logout_user
 from ...config import Config
 
-from ...models import Adoption, Donation, Notification
+from ...models import Adoption, Donation, Notification, NotificationSettings
 from ...utils import user_verified_required, get_active_filter_count, pagination
 
 from .animal import user_animal_bp
 from .event import user_event_bp
 from .donation import user_donation_bp
 from .adoption import user_adoption_bp
+from ...validations import NotificationSettingsValidation
 
 user_bp = Blueprint("user", __name__, url_prefix='/user')
 
@@ -93,6 +94,45 @@ def donations():
 def applications():
   applications = Adoption.get_user_applications(current_user.id)
   return render_template('user/applications.html', applications=applications)
+
+@user_bp.route('/settings', methods=['GET', 'POST'])
+@user_verified_required
+def settings():
+  return redirect(url_for('user.account_settings'))
+  
+@user_bp.route('/settings/accounts', methods=['GET', 'POST'])
+@user_verified_required
+def account_settings():
+  return render_template('user/settings/account.html')
+
+@user_bp.route('/settings/notifications', methods=['GET', 'POST'])
+@user_verified_required
+def notifications_settings():
+  form = NotificationSettingsValidation()
+
+  if form.validate_on_submit():
+    NotificationSettings.update_notification_settings(
+      user_id=current_user.id, 
+      adoption_status_update_web=form.adoption_status_update_web.data,
+      donation_status_update_web=form.donation_status_update_web.data,
+      event_invited_web=form.event_invited_web.data,
+      adoption_status_update_email=form.adoption_status_update_email.data,
+      donation_status_update_email=form.donation_status_update_email.data,
+      event_invited_email=form.event_invited_email.data
+    )
+    flash("Notification settings saved.", "success")
+
+  notification_settings = NotificationSettings.find_one(user_id=current_user.id)
+
+  form.adoption_status_update_web.data = notification_settings['adoption_status_update_web'] == 1
+  form.donation_status_update_web.data = notification_settings['donation_status_update_web'] == 1
+  form.event_invited_web.data = notification_settings['event_invited_web'] == 1
+
+  form.adoption_status_update_email.data = notification_settings['adoption_status_update_email'] == 1
+  form.donation_status_update_email.data = notification_settings['donation_status_update_email'] == 1
+  form.event_invited_email.data = notification_settings['event_invited_email'] == 1
+  
+  return render_template('user/settings/notifications.html', form=form)
 
 @user_bp.route("/logout")
 def logout():

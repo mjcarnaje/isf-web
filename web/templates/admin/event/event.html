@@ -1,52 +1,36 @@
-{% set active_page = "user.events" %}
-{% extends "./_helpers/layout/user_layout.html" %}
+{% set active_page = "admin.event.events" %}
+{% extends "./_helpers/layout/admin_layout.html" %}
 {% block title %}
   Event
 {% endblock title %}
 {% block content %}
-  <div class="flex flex-col items-center gap-8">
-    <div class="w-full aspect-[800/320] relative shadow-sm">
-      <img src="{{ get_image(event.cover_photo_url) }}"
-           alt="Event Cover Photo"
-           class="object-cover w-full rounded-xl aspect-[800/320]"
-           height="auto"
-           width="auto">
-      <div class="absolute z-10 flex flex-col overflow-hidden bg-white shadow-lg w-36 h-36 left-6 -bottom-8 rounded-3xl">
-        <div class="flex items-center justify-center h-10 bg-red-500">
-          <h1 class="text-white">{{ event.start_date.strftime("%B") }}</h1>
+  {% include "./_helpers/partials/event_cover.html" %}
+  <div class="w-full max-w-5xl mx-auto mt-12">
+    <div class="flex flex-col gap-8">
+      <h1 class="text-3xl font-bold text-gray-800">{{ event.name }}</h1>
+      <p class="text-lg text-gray-600 ">{{ event.description }}</p>
+      <div class="flex flex-col w-full gap-4 p-8 border shadow rounded-3xl">
+        <div class="flex items-center justify-between">
+          <h1 class="text-2xl font-bold">Guest List</h1>
+          <a href="{{ url_for('admin.event.event_members', id=event.id) }}"
+             class="btn text-primary-500 btn-ghost">See List</a>
         </div>
-        <div class="flex items-center justify-center flex-1 w-full">
-          <h1 class="text-5xl font-bold">{{ event.start_date.strftime("%d") }}</h1>
-        </div>
-      </div>
-    </div>
-    <div class="w-full max-w-5xl">
-      <div class="flex flex-col gap-8 pt-12">
-        <h1 class="text-3xl font-bold text-gray-800">{{ event.name }}</h1>
-        <p class="text-lg text-gray-600 ">{{ event.description }}</p>
-        <div class="flex flex-col w-full gap-4 p-8 rounded-lg shadow bg-gray-50">
-          <div class="flex items-center justify-between">
-            <h1 class="text-2xl font-bold">Guest List</h1>
-            <a href="{{ url_for('admin.event.event_members', id=event.id) }}"
-               class="btn text-primary-500 btn-ghost">See List</a>
+        <div class="flex items-center justify-around gap-8 divide-x-2">
+          <div class="flex flex-col items-center justify-center w-full gap-1 p-5">
+            <h1 class="text-2xl font-bold">{{ statistics.invited_count }}</h1>
+            <h2>Invited</h2>
           </div>
-          <div class="flex items-center justify-around gap-8 divide-x-2">
-            <div class="flex flex-col items-center justify-center w-full gap-1 p-5">
-              <h1 class="text-2xl font-bold">{{ statistics.invited_count }}</h1>
-              <h2>Invited</h2>
-            </div>
-            <div class="flex flex-col items-center justify-center w-full gap-1 p-5">
-              <h1 class="text-2xl font-bold">{{ statistics.going_count }}</h1>
-              <h2>Going</h2>
-            </div>
-            <div class="flex flex-col items-center justify-center w-full gap-1 p-5">
-              <h1 class="text-2xl font-bold">{{ statistics.maybe_count }}</h1>
-              <h2>Maybe</h2>
-            </div>
-            <div class="flex flex-col items-center justify-center w-full gap-1 p-5">
-              <h1 class="text-2xl font-bold">{{ statistics.cant_go_count }}</h1>
-              <h2>Can't Go</h2>
-            </div>
+          <div class="flex flex-col items-center justify-center w-full gap-1 p-5">
+            <h1 class="text-2xl font-bold">{{ statistics.going_count }}</h1>
+            <h2>Going</h2>
+          </div>
+          <div class="flex flex-col items-center justify-center w-full gap-1 p-5">
+            <h1 class="text-2xl font-bold">{{ statistics.maybe_count }}</h1>
+            <h2>Maybe</h2>
+          </div>
+          <div class="flex flex-col items-center justify-center w-full gap-1 p-5">
+            <h1 class="text-2xl font-bold">{{ statistics.cant_go_count }}</h1>
+            <h2>Can't Go</h2>
           </div>
         </div>
       </div>

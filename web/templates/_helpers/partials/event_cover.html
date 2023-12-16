@@ -1,0 +1,17 @@
+{% block event_cover %}
+  <div class="w-full aspect-[800/320] relative">
+    <img src="{{ get_image(event.cover_photo_url) }}"
+         alt="Event Cover Photo"
+         class="object-cover w-full  border rounded-xl aspect-[800/320]"
+         height="auto"
+         width="auto">
+    <div class="absolute z-10 flex flex-col overflow-hidden bg-white shadow-lg w-36 h-36 left-8 -bottom-8 rounded-3xl">
+      <div class="flex items-center justify-center h-10 bg-red-500">
+        <h1 class="text-white">{{ event.start_date.strftime("%B") }}</h1>
+      </div>
+      <div class="flex items-center justify-center flex-1 w-full">
+        <h1 class="text-5xl font-bold">{{ event.start_date.strftime("%d") }}</h1>
+      </div>
+    </div>
+  </div>
+{% endblock event_cover %}

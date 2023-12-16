@@ -1,30 +1,26 @@
 {% set active_page = "user.events" %}
 {% extends "./_helpers/layout/user_layout.html" %}
+{% from "./_helpers/macros/event_cards.html" import event_cards with context %}
+{% from "./_helpers/macros/event_tables.html" import event_tables with context %}
+{% from "./_helpers/macros/event_filters.html" import event_filters with context %}
+{% from "./_helpers/macros/pagination_buttons.html" import pagination_buttons with context %}
 {% block title %}
-  Events
+  Admin - Events
 {% endblock title %}
 {% block content %}
-  <div class="flex justify-center min-h-screen py-12">
-    <div class="flex flex-col gap-12">
-      {% for event in events %}
-        <div class="flex gap-8">
-          <a href="{{ url_for('user.events.view_event', id=event.id) }}"
-             class="overflow-hidden w-96">
-            <img class="object-cover w-full overflow-hidden transition-all duration-300 border rounded-lg aspect-video bg-gray-50 hover:scale-105"
-                 src="{{ get_image(event.cover_photo_url) }}"
-                 alt="Cover Photo"
-                 width="auto"
-                 height="auto" />
-          </a>
-          <div class="flex flex-col w-full gap-2">
-            <a href="{{ url_for('user.events.view_event', id=event.id) }}"
-               class="text-2xl font-bold text-gray-800">{{ event.name }}</a>
-            <p class="leading-6">{{ event.description }}</p>
-            <p class="text-gray-800">{{ event.start_date.strftime("%b %d, %Y") }} - {{ event.end_date.strftime("%b %d, %Y") }}</p>
-            <p class="text-gray-800">{{ event.location }}</p>
-          </div>
-        </div>
-      {% endfor %}
+  <div class="flex flex-col gap-12">
+    {{ event_filters(is_user=True) }}
+    <div class="sm:flex sm:items-center">
+      <div class="sm:flex-auto">
+        <h1 class="text-2xl font-bold leading-6 text-gray-900">Events ({{ pagination['total_count'] }})</h1>
+      </div>
+      {% include "./_helpers/partials/view_form.html" %}
     </div>
+    {% if view_type == "card" %}
+      {{ event_cards(events, is_user=True) }}
+    {% else %}
+      {{ event_tables(events, is_user=True) }}
+    {% endif %}
+    {{ pagination_buttons() }}
   </div>
 {% endblock content %}

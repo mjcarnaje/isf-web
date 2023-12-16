@@ -1,12 +1,14 @@
 {% from "./_helpers/macros/custom_select.html" import custom_select with context %}
-{% macro event_filters() %}
+{% macro event_filters(is_user=False) %}
   <dialog id="filters" class="modal modal-bottom sm:modal-middle">
     <form id="filter-form" class="modal-box">
       <div class="pb-4 border-b">
         <h3 class="text-lg font-bold">Filters</h3>
       </div>
       <div class="flex flex-col gap-6 pt-4">
-        {{ custom_select(label="Who Can See It", name="who_can_see_it", options=['Public', 'Verified User'], current_selected=filters['who_can_see_it']) }}
+        {% if not is_user %}
+          {{ custom_select(label="Who Can See It", name="who_can_see_it", options=['Public', 'Verified User'], current_selected=filters['who_can_see_it']) }}
+        {% endif %}
         {{ custom_select(label="Status", name="status", options=['Scheduled', 'In Progress', 'Completed', 'Cancelled'], current_selected=filters['status']) }}
       </div>
       <div class="modal-action">

@@ -5,7 +5,7 @@
         <thead>
           <tr>
             <th scope="col"
-                class="py-3 pl-4 pr-3 text-sm font-semibold text-left text-gray-900 sm:pl-0">Name</th>
+                class="px-3 py-3.5 text-sm font-semibold text-left text-gray-900">Name</th>
             <th scope="col"
                 class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Description</th>
             <th scope="col"
@@ -18,7 +18,7 @@
           {% for adoption in adoptions %}
             {% set href = url_for('admin.adoptions.adoption', id=adoption.id) %}
             <tr class="transition-all duration-200 hover:cursor-pointer hover:bg-slate-50">
-              <td class="py-5 pl-4 pr-3 text-sm whitespace-nowrap sm:pl-0">
+              <td class="py-5 pl-4 pr-3 text-sm whitespace-nowrap">
                 <div class="flex items-center">
                   <a href="{{ href }}">
                     <div class="flex-shrink-0 h-11 w-11">
@@ -36,7 +36,7 @@
                   </div>
                 </div>
               </td>
-              <td class="px-3 py-5 text-sm text-left text-gray-500">{{ adoption.description }}</td>
+              <td class="px-3 py-5 text-sm text-left text-gray-500">{{ adoption.description | truncate(80) }}</td>
               <td class="px-3 py-5 text-sm text-right text-gray-500 whitespace-nowrap">
                 <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-700 rounded-md bg-gray-50 ring-1 ring-inset ring-gray-600/20">
                   {% if adoption.is_adopted %}

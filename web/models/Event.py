@@ -106,7 +106,7 @@ class Event():
                 FROM 
                     event
                 ORDER BY
-                    created_at DESC
+                    start_date DESC
             ) AS subquery
         """
 
@@ -199,7 +199,7 @@ class Event():
             'user_id': user_id
         })
         row = cur.fetchone()
-        return row['status']
+        return row['status'] if row is not None else ''
 
     @staticmethod
     def update_status(event_id, user_id, status):
