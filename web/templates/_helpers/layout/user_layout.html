@@ -33,21 +33,27 @@
 ] %}
 {% set my_navigations = [
   {
+    'name': 'Profile',
+    'url': url_for('user.view_profile'),
+    'icon': 'fa-solid fa-user',
+    'page': 'user.view_profile',
+  },
+  {
     'name': 'Notifications',
     'url': url_for('user.notifications'),
     'icon': 'fa-solid fa-bell',
-    'page': 'user.list.notifications',
+    'page': 'user.notifications',
     'count': current_user.unread_notification_count
   },
   { 'name': 'My Applications',
     'url': url_for('user.applications'),
     'icon': 'fa-solid fa-file-invoice',
-    'page': 'user.list.applications'
+    'page': 'user.applications'
   },
   { 'name': 'My Donations',
     'url': url_for('user.donations'),
     'icon': 'fa-solid fa-hand-holding-heart',
-    'page': 'user.list.donations'
+    'page': 'user.donations'
   },
 ] %}
 {% block body %}
@@ -100,8 +106,8 @@
                     {% endif %}
                   </a>
                 </li>
-              </ul>
-            {% endfor %}
+              {% endfor %}
+            </ul>
           </ul>
         </ul>
         <div class="dropdown dropdown-top">

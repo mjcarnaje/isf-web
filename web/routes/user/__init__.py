@@ -2,14 +2,14 @@ from flask import Blueprint, render_template, redirect, url_for, request, sessio
 from flask_login import current_user, logout_user
 from ...config import Config
 
-from ...models import Adoption, Donation, Notification, NotificationSettings
+from ...models import Adoption, Donation, Notification, NotificationSettings, User
 from ...utils import user_verified_required, get_active_filter_count, pagination
 
 from .animal import user_animal_bp
 from .event import user_event_bp
 from .donation import user_donation_bp
 from .adoption import user_adoption_bp
-from ...validations import NotificationSettingsValidation
+from ...validations import NotificationSettingsValidation, EditProfileValidation
 
 user_bp = Blueprint("user", __name__, url_prefix='/user')
 
@@ -103,7 +103,26 @@ def settings():
 @user_bp.route('/settings/accounts', methods=['GET', 'POST'])
 @user_verified_required
 def account_settings():
-  return render_template('user/settings/account.html')
+  form = EditProfileValidation()
+
+  if form.validate_on_submit():
+    edited_user = User(
+      id=form.id.data,
+      username=form.username.data,
+      first_name=form.first_name.data,
+      last_name=form.last_name.data,
+      photo_url=form.photo_url.data,
+      contact_number=form.contact_number.data,
+    )
+    edited_user.update(edited_user)
+
+  form.username.data = current_user.username
+  form.first_name.data = current_user.first_name
+  form.last_name.data = current_user.last_name
+  form.photo_url.data = current_user.photo_url
+  form.contact_number.data = current_user.contact_number
+
+  return render_template('user/settings/account.html', form=form)
 
 @user_bp.route('/settings/notifications', methods=['GET', 'POST'])
 @user_verified_required
@@ -133,6 +152,13 @@ def notifications_settings():
   form.event_invited_email.data = notification_settings['event_invited_email'] == 1
   
   return render_template('user/settings/notifications.html', form=form)
+
+@user_bp.route('view-profile')
+@user_verified_required
+def view_profile():
+  
+
+  return render_template('user/view_profile.html')
 
 @user_bp.route("/logout")
 def logout():

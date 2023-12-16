@@ -97,6 +97,37 @@ class User(UserMixin):
         return cur.lastrowid
     
     @classmethod
+    def update(cls, user):
+        sql = """
+            UPDATE user
+            SET
+                email=%(email)s,
+                username=%(username)s,
+                first_name=%(first_name)s,
+                last_name=%(last_name)s,
+                photo_url=%(photo_url)s,
+                contact_number=%(contact_number)s
+            WHERE id=%(id)s
+        """
+
+        params = {
+            'email': user.email,
+            'username': user.username,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'photo_url': user.photo_url,
+            'contact_number': user.contact_number,
+            'id': user.id
+        }
+
+        cur = db.new_cursor()
+        cur.execute(sql, params)
+        db.connection.commit()
+
+        return cur.rowcount
+
+    
+    @classmethod
     def update_email(cls, email, user_id):
         sql = """
             UPDATE user

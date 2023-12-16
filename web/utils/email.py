@@ -10,7 +10,6 @@ sender_name = "ISF Team"
 sender_email = "from@example.com"
 
 
-
 def send_verification_email(email: str, token: str, user):
     try:
         current_app.logger.info("Sending Verification Email")

@@ -10,3 +10,4 @@ from .NewEmailValidation import NewEmailValidation
 from .NotificationSettingsValidation import NotificationSettingsValidation
 from .UserLoginValidation import UserLoginValidation
 from .UserSignupValidation import UserSignupValidation
+from .EditProfileValidation import EditProfileValidation

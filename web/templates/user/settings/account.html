@@ -1,4 +1,6 @@
 {% set active_page = "user.settings" %}
+{% from './_helpers/macros/custom_input.html' import render_field %}
+{% from './_helpers/macros/photo_input.html' import render_photo_field with context %}
 {% extends "./_helpers/layout/user_layout.html" %}
 {% block title %}
   Settings
@@ -22,6 +24,20 @@
         </li>
       </ul>
     </div>
-    <div class="h-full col-span-4 p-6 border rounded-lg shadow"></div>
+    <div class="h-full col-span-4 p-12 border rounded-lg shadow">
+      <form class="flex flex-col w-full space-y-8" method="post" novalidate>
+        <div class="space-y-4">
+          {{ form.csrf_token }}
+          {{ render_photo_field(form.photo_url, add_text="Update photo", remove_text="Remove photo", is_circle=True) }}
+          <div class="flex items-center gap-4">{{ render_field(form.username) }}</div>
+          <div class="flex items-center gap-4">
+            {{ render_field(form.first_name) }}
+            {{ render_field(form.last_name) }}
+          </div>
+          {{ render_field(form.contact_number) }}
+        </div>
+        <button class="text-white btn btn-primary" type="submit">Save Changes</button>
+      </form>
+    </div>
   </div>
 {% endblock content %}
