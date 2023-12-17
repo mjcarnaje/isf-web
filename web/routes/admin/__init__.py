@@ -13,7 +13,9 @@ from .adoption import adoption_bp
 from .animal import animal_bp
 from .donation import donations_bp
 from .event import event_bp
+from .ask_for_help import ask_for_help_bp
 
+admin_bp.register_blueprint(ask_for_help_bp)
 admin_bp.register_blueprint(animal_bp)
 admin_bp.register_blueprint(event_bp)
 admin_bp.register_blueprint(donations_bp)
@@ -76,6 +78,10 @@ def login():
       
       return redirect(url_for('landing.index'))
 
+  if not form.is_submitted():
+      form.username.data = "isf-team"
+      form.password.data = "admin"  
+      
      
   return render_template('admin/login.html', form=form)
 

@@ -155,8 +155,7 @@ class Animal():
             'offset': offset
         }
 
-        
-
+    
     @staticmethod
     def find_all_adoptions(page_number: int, page_size: int, filters: dict, user_id: str):
         offset = (page_number - 1) * page_size

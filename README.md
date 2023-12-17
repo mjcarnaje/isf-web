@@ -104,7 +104,12 @@ To begin your journey with ISF, follow these steps:
     - Run the Flask app:
 
       ```shell
-      python app.py
+      flask run
+      ```
+
+    - Run the Celery:
+      ```
+            celery -A app.celery_app worker --loglevel INFO
       ```
 
 6.  Access the web app in your browser at `http://localhost:5000`.

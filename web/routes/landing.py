@@ -183,6 +183,9 @@ def login():
       
       return redirect(url_for('user.index'))
 
+  if not form.is_submitted():
+    form.username.data = "member"
+    form.password.data = "member"  
      
   return render_template('user/login.html', form=form)
   
@@ -212,7 +215,6 @@ def sign_up():
     flash('Check your email to confirm your account.', 'success')
 
     return redirect(url_for('landing.login'))
-
 
   return render_template('user/sign_up.html', form=form)
 

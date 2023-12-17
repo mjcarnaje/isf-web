@@ -10,7 +10,7 @@ class EditEventValidation(FlaskForm):
     name = StringField("Name", validators=[validators.DataRequired()])
     description = TextAreaField("Description", validators=[
         validators.DataRequired(),
-        validators.Length(min=24)
+        validators.Length(min=10)
     ], render_kw={"placeholder": "Description"})
     cover_photo_url = StringField("Cover Photo", validators=[
         validators.DataRequired()

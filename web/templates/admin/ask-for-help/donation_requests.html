@@ -1,0 +1,39 @@
+{% set active_page = "admin.ask_for_help.index" %}
+{% extends "./_helpers/layout/admin_layout.html" %}
+{% from "./_helpers/macros/pagination_buttons.html" import pagination_buttons with context %}
+{% from "./_helpers/macros/donation_request_card.html" import donation_request_card with context %}
+{% block title %}
+  Ask for help
+{% endblock title %}
+{% block content %}
+  <div>
+    <div class="flex flex-col w-full gap-8">
+      <div class="sm:flex sm:items-center">
+        <div class="sm:flex-auto">
+          <h1 class="text-2xl font-bold leading-6 text-gray-900">Ask for Help ({{ pagination['total_count'] }})</h1>
+        </div>
+        {% include "./_helpers/partials/view_form.html" %}
+      </div>
+      {% if view_type == "card" %}
+        <div class="grid grid-cols-3 gap-8 pb-12">
+          {% for donation_request in donation_requests %}{{ donation_request_card(donation_request) }}{% endfor %}
+        </div>
+      {% else %}
+        <div class="grid grid-cols-3 gap-8 pb-12">
+          {% for donation_request in donation_requests %}{{ donation_request_card(donation_request) }}{% endfor %}
+        </div>
+      {% endif %}
+      {% if donation_requests | length == 0 %}
+        <div class="flex flex-col items-center justify-center gap-8 p-12">
+          <img class="w-full max-w-sm"
+               src="{{ url_for('static', filename='images/empty_list.png') }}"
+               alt="Kid hugging her dog"
+               width="auto"
+               height="auto" />
+          <h3 class="text-lg font-medium">No Ask For Help Yet.</h3>
+        </div>
+      {% endif %}
+    </div>
+    {{ pagination_buttons() }}
+  </div>
+{% endblock content %}

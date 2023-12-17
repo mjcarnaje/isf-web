@@ -162,8 +162,6 @@ def notifications_settings():
 @user_bp.route('view-profile')
 @user_verified_required
 def view_profile():
-  
-
   return render_template('user/view_profile.html')
 
 @user_bp.route("/logout")

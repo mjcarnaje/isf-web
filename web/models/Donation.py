@@ -36,7 +36,7 @@ class Donation():
         self.thumbnail_url = thumbnail_url
         self.pictures = pictures 
         self.is_confirmed = is_confirmed
-        self.created_at = created_at or datetime.datetime.now()
+        self.created_at = created_at
 
         
         
@@ -63,8 +63,7 @@ class Donation():
                 pick_up_location,
                 remarks,
                 is_confirmed,
-                thumbnail_url,
-                created_at
+                thumbnail_url
             ) VALUES (
                 %(type)s,
                 %(user_id)s,
@@ -75,8 +74,7 @@ class Donation():
                 %(pick_up_location)s,
                 %(remarks)s,
                 %(is_confirmed)s,
-                %(thumbnail_url)s,
-                %(created_at)s
+                %(thumbnail_url)s
             )
         """
         params = {
@@ -90,7 +88,6 @@ class Donation():
             'remarks': donation.remarks,
             'is_confirmed': donation.is_confirmed,
             'thumbnail_url': donation.pictures[0],
-            'created_at': donation.created_at,
         }
 
         cur = db.new_cursor()

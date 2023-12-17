@@ -5,7 +5,7 @@
 {% endblock title %}
 {% block content %}
   <div class="relative w-full">
-    <div class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-1/2 left-1/2 bg-blend-darken bg-slate-400 blur-3xl -z-10">
+    <div class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-80 top-1/2 left-1/2 bg-blend-darken bg-slate-400 blur-3xl -z-10">
       <img src="{{ get_image(current_user.photo_url) }}"
            class="w-full "
            height="auto"
@@ -15,7 +15,7 @@
     <div class="relative flex flex-col items-center max-w-5xl gap-8 px-10 py-12 mx-auto bg-white border shadow-md rounded-3xl">
       <div class="w-64 h-64 p-1 border-4 rounded-full border-primary-500">
         <img src="{{ get_image(current_user.photo_url) }}"
-             class="w-full h-full rounded-full"
+             class="object-cover w-full h-full rounded-full"
              height="auto"
              width="auto"
              alt="Image Background">

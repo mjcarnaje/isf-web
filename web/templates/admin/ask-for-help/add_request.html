@@ -1,0 +1,106 @@
+{% set active_page = "admin.ask_for_help.add_request" %}
+{% extends "./_helpers/layout/admin_layout.html" %}
+{% from "./_helpers/macros/custom_input.html" import render_field %}
+{% from "./_helpers/macros/multiple_photo_input.html" import render_multiple_photo_field with context %}
+{% from "./_helpers/macros/pagination_buttons.html" import pagination_buttons with context %}
+{% block title %}
+  Ask for help
+{% endblock title %}
+{% block content %}
+  <dialog id="selectAnimal" class="modal modal-bottom sm:modal-middle">
+    <div id="select-animal" class="modal-box">
+      <h2 class="mb-4 text-2xl font-bold">Animal Options</h2>
+      <div id="animalOptionList" class="flex flex-col gap-2">
+        <!-- Generated animal options will be appended here -->
+      </div>
+    </div>
+  </dialog>
+  <div class="flex flex-col items-center justify-center w-full">
+    <div class="w-full max-w-4xl space-y-8">
+      <div class="flex w-full">
+        <h1 class="text-3xl font-bold">Add Donation Request</h1>
+      </div>
+      <form class="grid w-full grid-cols-1 gap-4 px-12 py-16 border shadow rounded-3xl"
+            method="post"
+            novalidate>
+        {{ form.csrf_token() }}
+        <div class="flex flex-col gap-2">
+          <p class="text-sm text-gray-500 label label-text">Select Animal</p>
+          <div id="selected-animal">
+            <p class="text-sm">No Animal Selected.</p>
+          </div>
+          <div>
+            <button id="toggle-select-animal"
+                    type="button"
+                    class="text-white btn btn-primary btn-sm">Select animal</button>
+          </div>
+        </div>
+        {{ form.animal_id }}
+        {{ render_field(form.description) }}
+        {{ render_field(form.amount) }}
+        {{ render_field(form.item_list) }}
+        {{ render_multiple_photo_field(form.pictures) }}
+        <button type="submit" class="w-full btn btn-md">Submit</button>
+      </form>
+    </div>
+  </div>
+  <script>
+    const animalOptionList = document.querySelector("#animalOptionList");
+    const toggleSelectAnimalButton = document.querySelector("#toggle-select-animal");
+    const animalIDField = document.querySelector("input[name='animal_id']");
+    const selectedAnimal = document.querySelector("#selected-animal")
+
+    toggleSelectAnimalButton.addEventListener("click", ()=> {
+      selectAnimal.showModal();
+      getAnimalOptions();
+    })
+
+function getAnimalOptions() {
+  animalOptionList.innerHTML = `<div>
+    <h1> Loading.. </h1>
+  </div>`;
+
+  fetch("{{ url_for('admin.ask_for_help.get_animal_options') }}", {
+    method: "GET"
+  })
+    .then((response) => response.json())
+    .then((json) => {
+      const data = json.data;
+      if (Array.isArray(data) && data.length > 0) {
+        animalOptionList.innerHTML = "";
+
+        data.forEach((animal) => {
+          const animalOption = document.createElement('div');
+          animalOption.innerHTML = `
+          <div class="flex items-center gap-4 p-2 transition-all duration-300 bg-white border rounded-md cursor-pointer hover:bg-gray-50">
+            <img src="${animal.photo_url}" class="object-cover w-10 h-10 mr-2 rounded-full" alt="${animal.name}">
+            <span class="font-bold">${animal.name}</span>
+          </div>
+          `;
+          animalOption.addEventListener("click", () => {
+            animalIDField.value = animal.id;
+            selectAnimal.close();
+            selectedAnimal.innerHTML = `
+          <div class="flex items-center gap-4 p-2 transition-all duration-300 bg-white border rounded-md cursor-pointer hover:bg-gray-50">
+            <img src="${animal.photo_url}" class="object-cover w-10 h-10 mr-2 rounded-full" alt="${animal.name}">
+            <span class="font-bold">${animal.name}</span>
+          </div>
+          `
+          })
+          animalOptionList.appendChild(animalOption);
+        });
+      } else {
+        animalOptionList.innerHTML = `<div>
+          <h1> No animal options available. </h1>
+        </div>`;
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching animal options:", error);
+      animalOptionList.innerHTML = `<div>
+        <h1> Error loading animal options. </h1>
+      </div>`;
+    });
+}
+  </script>
+{% endblock content %}

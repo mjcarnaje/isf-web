@@ -1,7 +1,8 @@
-{% macro render_multiple_photo_field(field, add_text) %}
+{% macro render_multiple_photo_field(field, add_text, id="1") %}
   <div class="flex flex-col form-control">
     <label class="label label-text">{{ field.label.text }}</label>
     <ul id="multi-pictures"
+        data-id="{{ id }}"
         class="grid w-full grid-cols-2 gap-2 p-4 bg-gray-100 border rounded-lg md:grid-cols-5 {{ 'border-red-500' if field.errors | length > 0 else '' }}">
       {% for entry in field.entries %}
         <li class="w-full h-auto max-w-full">
@@ -17,12 +18,17 @@
       {% endfor %}
       <button type="button"
               id="add-multi-photo"
+              data-id="{{ id }}"
               class="flex flex-col items-center justify-center w-full gap-2 bg-white border border-dashed rounded-lg cursor-pointer aspect-square hover:shadow-sm">
         <i class="text-3xl fa-solid fa-image"></i>
         <p class="text-xs">Add photo</p>
       </button>
     </ul>
-    <input type="file" name="multi_upload" accept="image/*" class="hidden" />
+    <input type="file"
+           name="multi_upload"
+           data-id="{{ id }}"
+           accept="image/*"
+           class="hidden" />
     {% if field.errors %}
       <ul class="mt-2">
         {% for error in field.errors %}<li class="text-xs text-red-500">{{ error }}</li>{% endfor %}
@@ -31,8 +37,8 @@
   </div>
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      const addPhoto = document.getElementById("add-multi-photo");
-      const uploadPhotoInput = document.querySelector("input[name=multi_upload]");
+      const addPhoto = document.querySelector("button[id='add-multi-photo'][data-id='{{ id }}']");
+      const uploadPhotoInput = document.querySelector("input[name='multi_upload'][data-id='{{ id }}']");
       const csrfToken = document.querySelector("meta[name=csrf_token]").content;
 
       uploadPhotoInput.addEventListener("change", async () => {
@@ -51,7 +57,7 @@
           const data = await response.json();
 
           if (data?.is_success) {
-            const ul = document.getElementById("multi-pictures");
+            const ul = document.querySelector("ul[id='multi-pictures'][data-id='{{ id }}']");
 
             // Create a new li element with the new image
             const newLi = document.createElement("li");

@@ -1,0 +1,39 @@
+{% set active_page = "admin.ask_for_help.index" %}
+{% extends "./_helpers/layout/user_layout.html" %}
+{% from "./_helpers/macros/pagination_buttons.html" import pagination_buttons with context %}
+{% from "./_helpers/macros/donation_request_donator.html" import donation_request_donator with context %}
+{% block title %}
+  Ask for help
+{% endblock title %}
+{% block content %}
+  <div class="flex flex-col gap-12">
+    {% include "./_helpers/partials/donation_request_header.html" %}
+    <div class="flex items-center gap-8 p-3 bg-white shadow">
+      <a class="w-full"
+         href="{{ url_for('admin.ask_for_help.view_request_updates', id=data.id) }}">
+        <div class="flex items-center justify-center flex-1 p-3 border rounded-lg">
+          <h1 class="font-bold">Updates</h1>
+        </div>
+      </a>
+      <a class="w-full"
+         href="{{ url_for('admin.ask_for_help.view_request_donations', id=data.id) }}">
+        <div class="flex items-center justify-center flex-1 p-3 border rounded-lg border-primary-100 bg-opacity-5 bg-primary-100">
+          <h1 class="font-bold text-primary-500">Donations</h1>
+        </div>
+      </a>
+    </div>
+    <div class="grid items-center grid-cols-2 gap-4">
+      {% for donation in donations %}{{ donation_request_donator(donation) }}{% endfor %}
+      {% if donations | length == 0 %}
+        <div class="flex flex-col items-center justify-center col-span-2 gap-8 p-12">
+          <img class="w-full max-w-sm"
+               src="{{ url_for('static', filename='images/empty_list.png') }}"
+               alt="Kid hugging her dog"
+               width="auto"
+               height="auto" />
+          <h3 class="text-lg font-medium">No Donations Yet.</h3>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock content %}

@@ -1,0 +1,91 @@
+{% set active_page = "user.donate" %}
+{% extends "./_helpers/layout/user_layout.html" %}
+{% from './_helpers/macros/custom_input.html' import render_field %}
+{% from './_helpers/macros/multiple_photo_input.html' import render_multiple_photo_field with context %}
+{% from "./_helpers/macros/donation_request_donator.html" import donation_request_donator with context %}
+{% block title %}
+  Ask for help
+{% endblock title %}
+{% block content %}
+  <dialog id="add-money-modal" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box">
+      <h2 class="mb-4 text-2xl font-bold">Add Money Donation</h2>
+      <form action="{{ url_for('user.donate.view_request_donations',id=data.id, formid='money') }}"
+            id="add-money"
+            class="grid w-full grid-cols-1 gap-4"
+            method="post"
+            novalidate>
+        {{ money_form.csrf_token() }}
+        {{ render_field(money_form.amount) }}
+        {{ render_multiple_photo_field(money_form.pictures, 'Add Screenshots', 'money') }}
+        <button type="submit" class="w-full btn btn-md">Submit</button>
+      </form>
+    </div>
+  </dialog>
+  <dialog id="add-in-kind-modal" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box">
+      <h2 class="mb-4 text-2xl font-bold">Add In-Kind Donation</h2>
+      <form action="{{ url_for('user.donate.view_request_donations',id=data.id, formid='in-kind') }}"
+            id="add-in-kind"
+            class="grid w-full grid-cols-1 gap-4"
+            method="post"
+            novalidate>
+        {{ in_kind_form.csrf_token() }}
+        {{ render_field(in_kind_form.item_list) }}
+        {{ render_multiple_photo_field(in_kind_form.pictures, 'Add Picture', 'in-kind') }}
+        <button type="submit" class="w-full btn btn-md">Submit</button>
+      </form>
+    </div>
+  </dialog>
+  <div class="flex flex-col gap-12">
+    {% include "./_helpers/partials/donation_request_header.html" %}
+    <div class="flex items-center gap-8 p-3 bg-white shadow">
+      <a class="w-full"
+         href="{{ url_for('user.donate.view_request_updates', id=data.id) }}">
+        <div class="flex items-center justify-center flex-1 p-3 border rounded-lg">
+          <h1 class="font-bold">Updates</h1>
+        </div>
+      </a>
+      <a class="w-full"
+         href="{{ url_for('user.donate.view_request_donations', id=data.id) }}">
+        <div class="flex items-center justify-center flex-1 p-3 border rounded-lg border-primary-100 bg-opacity-5 bg-primary-100">
+          <h1 class="font-bold text-primary-500">Donations</h1>
+        </div>
+      </a>
+    </div>
+    <div class="grid items-center grid-cols-2 gap-4">
+      {% if not data.is_fulfilled %}
+        <div class="flex justify-end w-full col-span-2 gap-3">
+          <button id="add-money-button"  class="text-white btn-sm btn btn-primary">Add Money Donation</button>
+          <button id="add-in-kind-button"  class="text-white btn-sm btn btn-primary">Add In-Kind Donation</button>
+        </div>
+      {% endif %}
+      {% for donation in donations %}{{ donation_request_donator(donation, True) }}{% endfor %}
+    </div>
+    {% if donations | length == 0 %}
+      <div class="flex flex-col items-center justify-center col-span-2 gap-8 p-12">
+        <img class="w-full max-w-sm"
+             src="{{ url_for('static', filename='images/empty_list.png') }}"
+             alt="Kid hugging her dog"
+             width="auto"
+             height="auto" />
+        <h3 class="text-lg font-medium">No Donations Yet.</h3>
+      </div>
+    {% endif %}
+  </div>
+  <script>
+    const addMoneyDonationModal = document.querySelector("#add-money-modal")
+    const addInKindDonationModal = document.querySelector("#add-in-kind-modal")
+    
+    const addMoneyDonationButton = document.querySelector("#add-money-button")
+    const addInKindDonationButton = document.querySelector("#add-in-kind-button")
+
+    addMoneyDonationButton.addEventListener("click", ()=> {
+      addMoneyDonationModal.showModal();
+    })
+
+    addInKindDonationButton.addEventListener("click", ()=> {
+      addInKindDonationModal.showModal();
+    })
+  </script>
+{% endblock content %}

@@ -1,0 +1,49 @@
+{% set active_page = "user.donate" %}
+{% extends "./_helpers/layout/user_layout.html" %}
+{% from "./_helpers/macros/pagination_buttons.html" import pagination_buttons with context %}
+{% from './_helpers/macros/multiple_photo_input.html' import render_multiple_photo_field with context %}
+{% from './_helpers/macros/custom_input.html' import render_field %}
+{% from './_helpers/macros/donation_request_update.html' import donation_request_update with context %}
+{% block title %}
+  Ask for help
+{% endblock title %}
+{% block content %}
+  <div class="flex flex-col gap-12">
+    {% include "./_helpers/partials/donation_request_header.html" %}
+    <div class="flex items-center gap-8 p-3 bg-white shadow">
+      <a class="w-full"
+         href="{{ url_for('user.donate.view_request_updates', id=data.id) }}">
+        <div class="flex items-center justify-center flex-1 p-3 border rounded-lg border-primary-100 bg-opacity-5 bg-primary-100">
+          <h1 class="font-bold text-primary-500">Updates</h1>
+        </div>
+      </a>
+      <a class="w-full"
+         href="{{ url_for('user.donate.view_request_donations', id=data.id) }}">
+        <div class="flex items-center justify-center flex-1 p-3 border rounded-lg">
+          <h1 class="font-bold">Donations</h1>
+        </div>
+      </a>
+    </div>
+    <div class="flex flex-col items-center gap-4">
+      {% for post in posts %}{{ donation_request_update(post) }}{% endfor %}
+      {% if posts | length == 0 %}
+        <div class="flex flex-col items-center justify-center gap-8 p-12">
+          <img class="w-full max-w-sm"
+               src="{{ url_for('static', filename='images/empty_list.png') }}"
+               alt="Kid hugging her dog"
+               width="auto"
+               height="auto" />
+          <h3 class="text-lg font-medium">No Posts Yet.</h3>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  <script>
+    const addPostModal = document.querySelector("#add-post-modal")
+    const addPostButton = document.querySelector("#add-post-button")
+
+    addPostButton.addEventListener("click", ()=> {
+      addPostModal.showModal();
+    })
+  </script>
+{% endblock content %}

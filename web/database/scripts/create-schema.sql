@@ -154,6 +154,63 @@ CREATE TABLE IF NOT EXISTS donation_pictures (
     CONSTRAINT unique_donation_photo_url UNIQUE (donation_id, photo_url)
 );
 
+CREATE TABLE IF NOT EXISTS donation_request (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    animal_id INT NOT NULL REFERENCES animal(id),
+    description TEXT NOT NULL,
+    amount INT, -- (if money)
+    item_list TEXT, -- (if in-kind) [comma-separated]
+    is_fulfilled BOOLEAN DEFAULT false,
+    thumbnail_url VARCHAR(256) DEFAULT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP  
+);
+
+CREATE TABLE IF NOT EXISTS donation_request_pictures (
+    donation_request_id INT NOT NULL REFERENCES donation_request(id),
+    photo_url VARCHAR(256) NOT NULL, 
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (donation_request_id, photo_url),
+    CONSTRAINT unique_donation_request_photo_url UNIQUE (donation_request_id, photo_url)
+);
+
+CREATE TABLE IF NOT EXISTS donation_request_update (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL REFERENCES user(id),
+    donation_request_id INT NOT NULL REFERENCES donation_request(id),
+    update_text TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (donation_request_id) REFERENCES donation_request(id)
+);
+
+CREATE TABLE IF NOT EXISTS donation_request_update_pictures (
+    donation_request_update_id INT NOT NULL REFERENCES donation_request_update(id),
+    photo_url VARCHAR(256) NOT NULL, 
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (donation_request_update_id, photo_url),
+    CONSTRAINT unique_donation_request_update_photo_url UNIQUE (donation_request_update_id, photo_url)
+);
+
+CREATE TABLE IF NOT EXISTS donation_request_donation (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL REFERENCES user(id),
+    donation_request_id INT NOT NULL REFERENCES donation_request(id),
+    donation_type ENUM('Money', 'In-Kind') NOT NULL, -- 'money' or 'in_kind'
+    amount INT, -- (if money)
+    item_list TEXT, -- (if in-kind) [comma-separated]
+    is_confirmed BOOLEAN DEFAULT false,
+    is_rejected BOOLEAN DEFAULT false,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (donation_request_id) REFERENCES donation_request(id)
+);
+
+CREATE TABLE IF NOT EXISTS donation_request_donation_pictures (
+    donation_request_donation_id INT NOT NULL REFERENCES donation_request_donation(id),
+    photo_url VARCHAR(256) NOT NULL, 
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (donation_request_donation_id, photo_url),
+    CONSTRAINT unique_donation_request_donation_photo_url UNIQUE (donation_request_donation_id, photo_url)
+);
+
 CREATE TABLE IF NOT EXISTS notification (
     id VARCHAR(32) PRIMARY KEY,
     type ENUM('ADOPTION_REQUEST', 'ADOPTION_STATUS_UPDATE', 'ADD_DONATION_MONEY', 'ADD_DONATION_IN_KIND', 'DONATION_STATUS_UPDATE', 'EVENT_INVITED'),

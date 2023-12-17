@@ -1,21 +1,48 @@
 {% set active_page = "user.donate" %}
 {% extends "./_helpers/layout/user_layout.html" %}
+{% from "./_helpers/macros/pagination_buttons.html" import pagination_buttons with context %}
+{% from "./_helpers/macros/donation_request_card.html" import donation_request_card with context %}
 {% block title %}
   Donate
 {% endblock title %}
 {% block content %}
-  <div class="flex items-center justify-center h-full">
-    <div class="flex flex-col items-center justify-center p-16 border gap-y-12 rounded-2xl">
-      <h1 class="text-4xl font-bold">Donate for Organization</h1>
-      <div class="flex gap-x-4">
-        <a href="{{ url_for('user.donate.donate_money',) }}"
-           class="gap-3 text-white btn btn-primary btn-wide rounded-xl btn-lg">
-          <i class="fa-solid fa-money-bill"></i>
-        Money</a>
-        <a href="{{ url_for('user.donate.donate_in_kind',) }}"
-           class="gap-3 text-white btn btn-primary btn-wide rounded-xl btn-lg">
-          <i class="fa-solid fa-hand-holding-heart"></i>In-Kind Donation</a>
+  <dialog id="modal" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box">
+      <div class="flex flex-col gap-5">
+        <h2 class="mb-4 text-2xl font-bold">Support Our Mission</h2>
+        <p class="mb-4">Your contribution makes a difference! Choose how you'd like to contribute to our cause.</p>
+        <div class="flex gap-x-4">
+          <a href="{{ url_for('user.donate.donate_money',) }}"
+             class="flex-1 text-white btn btn-primary">
+            <i class="fa-solid fa-money-bill"></i> Monetary Donation
+          </a>
+          <a href="{{ url_for('user.donate.donate_in_kind',) }}"
+             class="flex-1 text-white btn btn-primary">
+            <i class="fa-solid fa-hand-holding-heart"></i> In-Kind Donation
+          </a>
+        </div>
       </div>
     </div>
+  </dialog>
+  <div class="flex flex-col w-full gap-8">
+    <div class="flex justify-end pb-4">
+      <button onclick="modal.showModal()" class="text-white btn btn-primary">Support Organiation</button>
+    </div>
+    <div class="sm:flex sm:items-center">
+      <div class="sm:flex-auto">
+        <h1 class="text-2xl font-bold leading-6 text-gray-900">Asking for Help ({{ pagination['total_count'] }})</h1>
+      </div>
+      {% include "./_helpers/partials/view_form.html" %}
+    </div>
+    {% if view_type == "card" %}
+      <div class="grid grid-cols-3 gap-8 pb-12">
+        {% for donation_request in donation_requests %}{{ donation_request_card(donation_request, True) }}{% endfor %}
+      </div>
+    {% else %}
+      <div class="grid grid-cols-3 gap-8 pb-12">
+        {% for donation_request in donation_requests %}{{ donation_request_card(donation_request, True) }}{% endfor %}
+      </div>
+    {% endif %}
   </div>
+  {{ pagination_buttons() }}
 {% endblock content %}

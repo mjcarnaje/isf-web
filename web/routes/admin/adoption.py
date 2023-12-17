@@ -22,7 +22,7 @@ def adoptions():
     total_count = adoption_query.get("total_count")
     offset = adoption_query.get("offset")
     
-    return render_template('/admin/adoptions/adoptions.html', 
+    return render_template('/admin/adoption/adoptions.html', 
         animals=animals,
         pagination = pagination(
             page_number=page,
@@ -39,7 +39,7 @@ def adoptions():
 def adoption(id):
     animal = Animal.find_by_id(id)
     applications = Adoption.get_animal_applications(id)
-    return render_template('admin/adoptions/adoption.html', animal=animal, applications=applications)
+    return render_template('admin/adoption/adoption.html', animal=animal, applications=applications)
 
 @adoption_bp.route('/<string:animal_id>/interview', methods=['POST'])
 @admin_required

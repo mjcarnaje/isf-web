@@ -34,6 +34,20 @@
       },
     ]
   },
+  {
+    'name': 'Ask For Help',
+    'url': url_for('admin.ask_for_help.index'),
+    'icon': 'fa-solid fa-handshake-angle',
+    'page': 'admin.ask_for_help.index',
+    'children': [
+      {
+        'name': 'Add Request',
+        'url': url_for('admin.ask_for_help.add_request'),
+        'icon': 'fa-sharp fa-solid fa-circle-plus',
+        'page': 'admin.ask_for_help.add_request'
+      },
+    ]
+  },
 ] %}
 {% set my_navigations = [
   {
