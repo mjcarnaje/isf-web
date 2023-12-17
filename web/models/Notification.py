@@ -1,13 +1,12 @@
 import datetime
 
-from flask import url_for, current_app
+from flask import current_app, url_for
 
 from ..database import db
 from ..enums import NotificationType
-from ..utils import format_currency, pretty_date, send_notification_email
+from ..utils import format_currency, pretty_date, get_image
 from .NotificationSettings import NotificationSettings
-
-
+from uuid import uuid4
 
 class Notification:
     def __init__(self, **kwargs):
@@ -26,10 +25,17 @@ class Notification:
         self.message = kwargs.get('message')
         self.redirect_url = kwargs.get('redirect_url')
         
-        self.user_username = kwargs.get('user_username')
-        self.first_name = kwargs.get('user_first_name')
-        self.last_name = kwargs.get('user_last_name')
-        self.user_photo_url = kwargs.get('user_photo_url')
+        self.notifier_email = kwargs.get('notifier_email')
+        self.notifier_username = kwargs.get('notifier_username')
+        self.notifier_photo_url = kwargs.get('notifier_photo_url')
+        self.notifier_first_name = kwargs.get('notifier_first_name')
+        self.notifier_last_name = kwargs.get('notifier_last_name')
+
+        self.notified_email = kwargs.get('notified_email')
+        self.notified_username = kwargs.get('notified_username')
+        self.notified_photo_url = kwargs.get('notified_photo_url')
+        self.notified_first_name = kwargs.get('notified_first_name')
+        self.notified_last_name = kwargs.get('notified_last_name')
 
         self.preview_image_url = kwargs.get('preview_image_url')
 
@@ -138,10 +144,27 @@ class Notification:
         db.connection.commit()
 
 
-    @staticmethod
-    def insert_multiple(notifications):
+    @classmethod
+    def insert_multiple(cls, notifications):
+        web_notifications_ids = []
+        email_notifications_ids = []
+
+        for notification in notifications:
+            user_id = notification.user_to_notify_id
+            notif_type = notification.type.lower()
+            result = NotificationSettings.find_one(user_id=user_id)
+
+            if result and result[f"{notif_type}_web"]:
+                current_app.logger.info(f"Appending user_id ({user_id}) web notification..")
+                web_notifications_ids.append(user_id)
+
+            if result and result[f"{notif_type}_email"]:
+                current_app.logger.info(f"Appending user_id ({user_id}) email notification..")
+                email_notifications_ids.append(user_id)    
+
         sql = """
             INSERT INTO notification (
+                id,
                 type,
                 animal_id,
                 adoption_id,
@@ -149,8 +172,10 @@ class Notification:
                 event_id,
                 donation_id,
                 user_who_fired_event_id,
-                user_to_notify_id
+                user_to_notify_id,
+                is_archived
             ) VALUES (
+                %(id)s,
                 %(type)s, 
                 %(animal_id)s, 
                 %(adoption_id)s, 
@@ -158,43 +183,20 @@ class Notification:
                 %(event_id)s, 
                 %(donation_id)s, 
                 %(user_who_fired_event_id)s, 
-                %(user_to_notify_id)s
+                %(user_to_notify_id)s,
+                %(is_archived)s
             )
         """
 
-        web_notifications = []
-        email_notifications = []
-
-        for notification in notifications:
-            notification_settings = NotificationSettings.find_one(user_id=notification.user_to_notify_id)
-
-            if notification_settings[f"{notification.type.lower()}_web"]:
-                current_app.logger.info("Appending web notification..")
-                web_notifications.append(notification)
-
-            if notification_settings[f"{notification.type.lower()}_email"]:
-                current_app.logger.info("Appending email notification..")
-                current_app.logger.info(notification_settings)
-                email_notifications.append(notification_settings)
-        
-        for email_notification in email_notifications:
-            send_notification_email(
-                subject='Notification', 
-                recipients=[email_notification['user_email']],
-                data={
-                    'title': 'Notification from ISF',
-                    'first_name': email_notification['user_first_name'],
-                    'description': 'This is sample'
-                }
-            )            
-
-
         cur = db.new_cursor()
-
         data = []
 
-        for notification in web_notifications:
+        notification_email_ids = []
+
+        for notification in notifications:
+            id = uuid4().hex
             params = {
+                'id': id,
                 'type': notification.type,
                 'animal_id': notification.animal_id,
                 'adoption_id': notification.adoption_id,
@@ -202,9 +204,13 @@ class Notification:
                 'event_id': notification.event_id,
                 'donation_id': notification.donation_id,
                 'user_who_fired_event_id': notification.user_who_fired_event_id,
-                'user_to_notify_id': notification.user_to_notify_id
+                'user_to_notify_id': notification.user_to_notify_id,
+                'is_archived': notification.user_to_notify_id not in web_notifications_ids
             }
             data.append(params)
+            
+            if notification.user_to_notify_id in email_notifications_ids:
+                notification_email_ids.append(id)
 
         cur.executemany(sql, data)
 
@@ -217,16 +223,97 @@ class Notification:
 
         data = []
 
-        for notification in web_notifications:
+        for notification in notifications:
+            if notification.user_to_notify_id not in web_notifications_ids:
+                continue
             params = {
                 'user_id': notification.user_to_notify_id
             }
             data.append(params)
 
         cur.executemany(sql, data)
-        
+
         db.connection.commit()
 
+        from ..utils import send_notification_email
+
+        for notification_id in notification_email_ids:
+            current_app.logger.info("Sending Notification Email..")
+            result = cls.find_one(notification_id=notification_id)
+            send_notification_email.delay(
+                subject=NotificationType[result.type].get_email_subject(), 
+                recipient_email=result.notified_email, 
+                title=NotificationType[result.type].get_email_title(), 
+                first_name=result.notified_first_name, 
+                message=result.message,
+                preview_image_url=get_image(result.preview_image_url),
+                sender_name=result.notifier_first_name,
+                sender_email=result.notifier_email
+            )
+        
+    
+    @classmethod
+    def find_one(cls, notification_id: str):
+        sql = """
+            SELECT 
+                notification.*, 
+                notifier.email as notifier_email, 
+                notifier.username as notifier_username, 
+                notifier.first_name as notifier_first_name, 
+                notifier.last_name as notifier_last_name, 
+                notifier.photo_url as notifier_photo_url,
+                notified.email as notified_email, 
+                notified.username as notified_username, 
+                notified.username as notified_username, 
+                notified.first_name as notified_first_name, 
+                notified.last_name as notified_last_name, 
+                notified.photo_url as notified_photo_url,
+                animal.name as animal_name,
+                animal.photo_url as animal_photo_url,
+                adoption_status_history.previous_status as previous_status, 
+                adoption_status_history.status as adoption_status, 
+                adoption.interview_preference as adoption_interview_preference, 
+                donation.amount as donation_amount,
+                donation.item_list as donation_item_list,
+                donation.thumbnail_url as donation_thumbnail_url,
+                event.name as event_name,
+                event.cover_photo_url as event_cover_photo_url
+            FROM 
+                notification
+            LEFT JOIN 
+                user as notifier ON notification.user_who_fired_event_id = notifier.id
+            LEFT JOIN 
+                user as notified ON notification.user_to_notify_id = notified.id
+            LEFT JOIN 
+                animal ON notification.animal_id = animal.id
+            LEFT JOIN
+                adoption ON notification.adoption_id = adoption.id
+            LEFT JOIN 
+                adoption_status_history ON notification.adoption_status_history_id = adoption_status_history.id
+            LEFT JOIN 
+                donation ON notification.donation_id = donation.id
+            LEFT JOIN 
+                event ON notification.event_id = event.id
+            WHERE
+                notification.id = %(notification_id)s;
+        """
+
+        cur = db.new_cursor(dictionary=True)
+        cur.execute(sql, {'notification_id': notification_id})
+        row = cur.fetchone()
+
+        if row:
+            notification = cls(
+                **row,
+                message=cls.get_message_for_type_and_info(row['type'], row),
+                redirect_url=cls.get_redirect_url(row['type'], row),
+                preview_image_url=cls.get_preview_image_url(row['type'], row),
+            )
+            return notification
+        else:
+            return None
+
+    
     @classmethod
     def find_all(cls, page_number: int, page_size: int, filters: dict = None):
         offset = (page_number - 1) * page_size
@@ -244,12 +331,19 @@ class Notification:
         where_clause = " AND ".join(where_clauses) if where_clauses else ""
         
         sql = f"""
-            SELECT 
+           SELECT 
                 notification.*, 
-                user.username as user_username, 
-                user.first_name as user_first_name, 
-                user.last_name as user_last_name, 
-                user.photo_url as user_photo_url,
+                notifier.email as notifier_email, 
+                notifier.username as notifier_username, 
+                notifier.first_name as notifier_first_name, 
+                notifier.last_name as notifier_last_name, 
+                notifier.photo_url as notifier_photo_url,
+                notified.email as notified_email, 
+                notified.username as notified_username, 
+                notified.username as notified_username, 
+                notified.first_name as notified_first_name, 
+                notified.last_name as notified_last_name, 
+                notified.photo_url as notified_photo_url,
                 animal.name as animal_name,
                 animal.photo_url as animal_photo_url,
                 adoption_status_history.previous_status as previous_status, 
@@ -263,7 +357,9 @@ class Notification:
             FROM 
                 notification
             LEFT JOIN 
-                user ON notification.user_who_fired_event_id = user.id
+                user as notifier ON notification.user_who_fired_event_id = notifier.id
+            LEFT JOIN 
+                user as notified ON notification.user_to_notify_id = notified.id
             LEFT JOIN 
                 animal ON notification.animal_id = animal.id
             LEFT JOIN
@@ -325,7 +421,7 @@ class Notification:
 
     @staticmethod
     def get_message_for_type_and_info(notification_type, info):
-        full_name = f'{info["user_first_name"]} {info["user_last_name"]}'
+        full_name = f'{info["notifier_first_name"]} {info["notifier_last_name"]}'
 
         message = ""
 

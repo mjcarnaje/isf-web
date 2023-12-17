@@ -140,6 +140,7 @@ CREATE TABLE  IF NOT EXISTS donation (
     item_list TEXT, -- (if in-kind) [comma-seprated]
     remarks TEXT,
     is_confirmed BOOLEAN,
+    thumbnail_url VARCHAR(256) DEFAULT NULL,
     FOREIGN KEY (animal_id) REFERENCES animal(id),
     FOREIGN KEY (event_id) REFERENCES event(id),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -154,7 +155,7 @@ CREATE TABLE IF NOT EXISTS donation_pictures (
 );
 
 CREATE TABLE IF NOT EXISTS notification (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id VARCHAR(32) PRIMARY KEY,
     type ENUM('ADOPTION_REQUEST', 'ADOPTION_STATUS_UPDATE', 'ADD_DONATION_MONEY', 'ADD_DONATION_IN_KIND', 'DONATION_STATUS_UPDATE', 'EVENT_INVITED'),
     animal_id INT,
     event_id INT,
@@ -175,7 +176,3 @@ CREATE TABLE IF NOT EXISTS notification (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
-
-
-ALTER TABLE donation
-ADD thumbnail_url VARCHAR(256) DEFAULT NULL;

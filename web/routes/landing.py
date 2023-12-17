@@ -101,7 +101,7 @@ def donate():
 @landing_bp.route('/events', methods=['GET'])
 @anonymous_required
 def events():
-  events = Event.find_all(show_landing_page_only=True)
+  events = Event.find_all(page_number=1, page_size=12, filters={})
   return render_template('/landing/event/events.html', events=events.get('data'))
 
 @landing_bp.route('/events/<int:id>', methods=['GET'])

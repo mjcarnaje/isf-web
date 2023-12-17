@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, request, sessio
 from flask_login import current_user, logout_user
 from ...config import Config
 
-from ...models import Adoption, Donation, Notification, NotificationSettings, User
+from ...models import Adoption, Donation, Notification, NotificationSettings, Event, User
 from ...utils import user_verified_required, get_active_filter_count, pagination
 
 from .animal import user_animal_bp
@@ -21,7 +21,8 @@ def index():
 @user_bp.route('/dashboard', methods=['GET', 'POST'])
 @user_verified_required
 def dashboard():
-  return render_template('user/dashboard.html')
+  featured_events = Event.get_featured()
+  return render_template('user/dashboard.html', featured_events=featured_events)
 
 @user_bp.route('/notifications', methods=['GET'])
 @user_verified_required
@@ -36,13 +37,13 @@ def notifications():
    )
   return render_template('/user/notifications.html', notifications=notifications)
 
-@user_bp.route('/notifications/mark-as-read/<int:id>', methods=['PUT'])
+@user_bp.route('/notifications/mark-as-read/<string:id>', methods=['PUT'])
 @user_verified_required
 def mark_as_read_notification(id):
    Notification.mark_as_read(notification_id=id, user_id=current_user.id)
    return "success"
 
-@user_bp.route('/notifications/mark-as-archived/<int:id>', methods=['PUT'])
+@user_bp.route('/notifications/mark-as-archived/<string:id>', methods=['PUT'])
 @user_verified_required
 def mark_as_archived_notification(id):
    Notification.mark_as_archived(notification_id=id, user_id=current_user.id)
@@ -108,6 +109,7 @@ def account_settings():
   if form.validate_on_submit():
     edited_user = User(
       id=form.id.data,
+      email=current_user.email,
       username=form.username.data,
       first_name=form.first_name.data,
       last_name=form.last_name.data,
@@ -115,12 +117,16 @@ def account_settings():
       contact_number=form.contact_number.data,
     )
     edited_user.update(edited_user)
+    
+    return redirect(url_for('user.account_settings'))
 
-  form.username.data = current_user.username
-  form.first_name.data = current_user.first_name
-  form.last_name.data = current_user.last_name
-  form.photo_url.data = current_user.photo_url
-  form.contact_number.data = current_user.contact_number
+  if not form.is_submitted():
+      form.id.data = current_user.id
+      form.username.data = current_user.username
+      form.first_name.data = current_user.first_name
+      form.last_name.data = current_user.last_name
+      form.photo_url.data = current_user.photo_url
+      form.contact_number.data = current_user.contact_number
 
   return render_template('user/settings/account.html', form=form)
 

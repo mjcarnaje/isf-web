@@ -2,9 +2,8 @@ from ..database import db
 
 class NotificationSettings:
     DEFAULT_SETTINGS = {
-        'user_email': '',
-        'user_first_name': '',
-        
+        'user_id': '',
+
         'adoption_request_web': True,
         'adoption_status_update_web': True,
         'add_donation_money_web': True,
@@ -30,11 +29,8 @@ class NotificationSettings:
         cur = db.new_cursor(dictionary=True)
         cur.execute("""
             SELECT 
-                notification_settings.*, 
-                user.email as user_email,
-                user.first_name as user_first_name
+                *
             FROM notification_settings
-            LEFT JOIN user ON user.id = notification_settings.user_id 
             WHERE notification_settings.user_id = %(user_id)s
         """, {'user_id': user_id})
         result = cur.fetchone()

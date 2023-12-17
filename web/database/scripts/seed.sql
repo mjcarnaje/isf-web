@@ -5,7 +5,7 @@ INSERT IGNORE INTO role (name) VALUES ('Admin');
 
 -- Insert user
 INSERT IGNORE INTO user (email, google_id, username, first_name, last_name, password, photo_url, contact_number)
-VALUES ('admin@example.com', NULL, 'admin', 'admin', 'admin', 'pbkdf2:sha256:600000$41AT9RlTuc6cKm5B$b6c91de61e1304dd5fd520c1465d097bf297441c00434ec650fed81c72013f8b', NULL, '1234567890');
+VALUES ('team@isf.com', NULL, 'isf-team', 'ISF Team', '', 'pbkdf2:sha256:600000$41AT9RlTuc6cKm5B$b6c91de61e1304dd5fd520c1465d097bf297441c00434ec650fed81c72013f8b', 'isf/logo', '1234567890');
 
 -- Get the ID of the newly created user
 SET @admin_user_id = LAST_INSERT_ID();

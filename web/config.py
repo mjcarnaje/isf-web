@@ -30,4 +30,10 @@ class Config:
     MAIL_USE_TLS = True
     MAIL_USE_SSL = False
 
+    CELERY = dict(
+        broker_url="amqp://guest:guest@localhost//",
+        result_backend="mysql://root:password@localhost/isf",
+        task_ignore_result=True,
+    ),
+
     DEFAULT_PAGE_SIZE = 12

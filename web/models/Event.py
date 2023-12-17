@@ -37,6 +37,46 @@ class Event():
         self.updated_at = updated_at
 
     @staticmethod
+    def get_featured():
+        sql = """
+            SELECT
+                id,
+                name,
+                description,
+                cover_photo_url,
+                start_date,
+                end_date,
+                location,
+                who_can_see_it,
+                who_can_join,
+                is_cancelled,
+                author_id,
+                created_at,
+                updated_at,
+                CASE
+                    WHEN is_cancelled = true THEN 'Cancelled'
+                    WHEN start_date > NOW() THEN 'Scheduled'
+                    WHEN start_date <= NOW() AND end_date >= NOW() THEN 'In Progress'
+                    WHEN end_date < NOW() THEN 'Completed'
+                END AS status
+            FROM 
+                event
+            WHERE
+                start_date <= NOW()
+                AND end_date >= NOW()
+            ORDER BY
+                start_date DESC
+            LIMIT 3
+        """
+
+        cur = db.new_cursor(dictionary=True)
+        cur.execute(sql)
+        featured_data = cur.fetchall()
+
+        return featured_data
+
+
+    @staticmethod
     def find_all(page_number: int, page_size: int, filters: dict = None):
         offset = (page_number - 1) * page_size
 

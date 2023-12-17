@@ -1,8 +1,7 @@
 import cloudinary
 from cloudinary.uploader import upload as cloudinary_upload
-from cloudinary.utils import cloudinary_url
 from flask import Flask, jsonify, request
-from flask_login import LoginManager, current_user
+from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 from oauthlib.oauth2 import WebApplicationClient
 
@@ -12,7 +11,7 @@ from .database import db
 from .mail import mail
 from .models import User
 from .socket import socketio
-from .utils import currency
+from .utils import celery_init_app, currency, get_image
 
 
 def create_app():    
@@ -25,6 +24,8 @@ def create_app():
     
     set_up_commands(app)
     CSRFProtect(app)
+
+    celery_init_app(app)
 
     cloudinary.config(
         cloud_name=Config.CLOUDINARY_CLOUD_NAME,
@@ -44,14 +45,6 @@ def create_app():
 
     @app.context_processor
     def utility_processor():
-        def get_image(public_id, is_admin = False):
-            source = f"{Config.CLOUDINARY_FOLDER}/default"
-            if is_admin:
-                source = 'isf/logo'
-            if public_id: 
-                source = public_id
-            url, options = cloudinary_url(source, format="jpg", crop="fill")
-            return url
         return dict(get_image=get_image)
     
     @app.template_filter('format_currency')

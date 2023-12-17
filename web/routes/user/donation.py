@@ -6,11 +6,11 @@ from ...models import Donation, Notification
 from ...utils import user_verified_required
 from ...validations import AddDonation_In_Kind, AddDonationMoney
 
-user_donation_bp = Blueprint("donations", __name__, url_prefix="/donations")
+user_donation_bp = Blueprint("donate", __name__, url_prefix="/donate")
 
-@user_donation_bp.route('/donate', methods=['GET'])
+@user_donation_bp.route('', methods=['GET'])
 @user_verified_required
-def donate():
+def index():
   return render_template('/user/donations/donate.html')
 
 @user_donation_bp.route('/money', methods=['GET', 'POST'])

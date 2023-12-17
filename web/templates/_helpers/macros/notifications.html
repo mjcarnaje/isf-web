@@ -17,7 +17,7 @@
             <div class="flex items-center gap-4">
               <div class="relative h-16 aspect-square">
                 <img class="object-cover w-full h-full border rounded-full bg-gray-50"
-                     src="{{ get_image(notification.user_photo_url, true if notification.user_username == 'admin' else false) }}"
+                     src="{{ get_image(notification.notifier_photo_url) }}"
                      alt="user's avatar"
                      height="auto"
                      width="auto" />
