@@ -11,7 +11,7 @@ def admin_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
         if current_user.is_authenticated:
-            if UserRole.check_user_role(current_user.id, "admin"):
+            if UserRole.check_user_role(current_user.id, "Admin"):
                 return f(*args, **kwargs)
             else:
                 current_app.logger.info(f"Non-admin user {current_user.id} attempted to access admin-required route.")

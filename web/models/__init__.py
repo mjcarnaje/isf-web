@@ -6,3 +6,4 @@ from .Donation import Donation
 from .Event import Event
 from .Adoption import Adoption
 from .Notification import Notification
+from .NotificationSettings import NotificationSettings

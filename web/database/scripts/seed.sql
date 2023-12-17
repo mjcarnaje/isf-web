@@ -1,22 +1,17 @@
 -- Insert admin role
-INSERT IGNORE INTO role (name) VALUES ('member');
-INSERT IGNORE INTO role (name) VALUES ('donor');
-INSERT IGNORE INTO role (name) VALUES ('volunteer');
-INSERT IGNORE INTO role (name) VALUES ('adopter');
-INSERT IGNORE INTO role (name) VALUES ('admin');
-
--- Get the ID of the 'admin' role
-SET @admin_role_id = LAST_INSERT_ID();
+INSERT IGNORE INTO role (name) VALUES ('Member');
+INSERT IGNORE INTO role (name) VALUES ('Non-Member');
+INSERT IGNORE INTO role (name) VALUES ('Admin');
 
 -- Insert user
 INSERT IGNORE INTO user (email, google_id, username, first_name, last_name, password, photo_url, contact_number)
-VALUES ('admin@example.com', NULL, 'admin', 'admin', 'admin', 'pbkdf2:sha256:600000$41AT9RlTuc6cKm5B$b6c91de61e1304dd5fd520c1465d097bf297441c00434ec650fed81c72013f8b', NULL, '1234567890');
+VALUES ('team@isf.com', NULL, 'isf-team', 'ISF Team', '', 'pbkdf2:sha256:600000$41AT9RlTuc6cKm5B$b6c91de61e1304dd5fd520c1465d097bf297441c00434ec650fed81c72013f8b', 'isf/logo', '1234567890');
 
 -- Get the ID of the newly created user
 SET @admin_user_id = LAST_INSERT_ID();
 
 -- Associate user with admin role
-INSERT IGNORE INTO user_role (user_id, role_id) VALUES (@admin_user_id, @admin_role_id);
+INSERT IGNORE INTO user_role (user_id, role_name) VALUES (@admin_user_id, 'Admin');
 
 -- Generate 10 dummy animals
 INSERT IGNORE INTO animal (name, type, estimated_birth_month, estimated_birth_year, photo_url, gender, is_adopted, is_dead, is_dewormed, is_neutered, in_shelter, is_rescued, for_adoption, description, appearance, author_id)
@@ -53,5 +48,9 @@ VALUES ('member@gmail.com', NULL, 'member', 'Member', 'One', 'pbkdf2:sha256:6000
 -- Get the ID of the newly created member
 SET @member_user_id = LAST_INSERT_ID();
 
+-- 
+INSERT INTO notification_settings (user_id, adoption_request_web, adoption_status_update_web, add_donation_money_web, add_donation_in_kind_web, donation_status_update_web, event_invited_web, adoption_request_email, adoption_status_update_email, add_donation_money_email, add_donation_in_kind_email, donation_status_update_email, event_invited_email)
+VALUES (@member_user_id, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+
 -- Associate member 1 with 'member' role
-INSERT IGNORE INTO user_role (user_id, role_id) VALUES (@member_user_id, (SELECT id FROM role WHERE name = 'member'));
+INSERT IGNORE INTO user_role (user_id, role_name) VALUES (@member_user_id, 'Member');

@@ -64,8 +64,7 @@ def set_interview(animal_id):
         user_who_fired_event_id=1, 
         user_to_notify_id=user_id
     )
-    notification.insert(notification)
-    notification.increment_count(notification)
+    Notification.insert_multiple([notification])
 
     return jsonify({ 'is_success': True })
 
@@ -91,9 +90,9 @@ def set_rejected(animal_id):
         user_who_fired_event_id=1, 
         user_to_notify_id=user_id
     )    
-    notification.insert(notification)
-    notification.increment_count(notification)
-    
+
+    Notification.insert_multiple([notification])
+
     return jsonify({ 'is_success': True })
 
 
@@ -118,8 +117,9 @@ def set_approved(animal_id):
         user_who_fired_event_id=1,
         user_to_notify_id=user_id
     )
-    notification.insert(notification)
-    notification.increment_count(notification)
+
+    Notification.insert_multiple([notification])
+
 
     return jsonify({ 'is_success': True })
 
@@ -146,8 +146,8 @@ def set_turnovered(animal_id):
         user_who_fired_event_id=1,
         user_to_notify_id=user_id
     )    
-    notification.insert(notification)
-    notification.increment_count(notification)
+    
+    Notification.insert_multiple([notification])
 
     return jsonify({ 'is_success': True })
 

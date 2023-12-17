@@ -13,18 +13,37 @@ CREATE TABLE IF NOT EXISTS user (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS notification_settings (
+    user_id INT PRIMARY KEY,
+    
+    adoption_request_web BOOLEAN DEFAULT 1,
+    adoption_status_update_web BOOLEAN DEFAULT 1,
+    add_donation_money_web BOOLEAN DEFAULT 1,
+    add_donation_in_kind_web BOOLEAN DEFAULT 1,
+    donation_status_update_web BOOLEAN DEFAULT 1,
+    event_invited_web BOOLEAN DEFAULT 1,
+
+    adoption_request_email BOOLEAN DEFAULT 1,
+    adoption_status_update_email BOOLEAN DEFAULT 1,
+    add_donation_money_email BOOLEAN DEFAULT 1,
+    add_donation_in_kind_email BOOLEAN DEFAULT 1,
+    donation_status_update_email BOOLEAN DEFAULT 1,
+    event_invited_email BOOLEAN DEFAULT 1,
+    
+    FOREIGN KEY (user_id) REFERENCES user(id)
+);
+
 CREATE TABLE IF NOT EXISTS role (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name ENUM('Member', 'Donor', 'Volunteer', 'Adopter', 'Admin') DEFAULT 'Member'
+    name ENUM('Admin', 'Member', 'Non-Member') DEFAULT 'Member' PRIMARY KEY
 );
 
 CREATE TABLE IF NOT EXISTS user_role (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
-    role_id INT,
+    role_name ENUM('Admin', 'Member', 'Non-Member'),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user(id),
-    FOREIGN KEY (role_id) REFERENCES role(id)
+    FOREIGN KEY (role_name) REFERENCES role(name)
 );
 
 CREATE TABLE IF NOT EXISTS animal (
@@ -86,7 +105,7 @@ CREATE TABLE IF NOT EXISTS event (
     end_date DATETIME NOT NULL,
     location VARCHAR(256),
     who_can_see_it ENUM('Public', 'Verified User') DEFAULT 'Public',
-    who_can_join ENUM('Anyone', 'Interested') DEFAULT 'Anyone',
+    who_can_join ENUM('Anyone', 'Invite Only') DEFAULT 'Anyone',
     is_cancelled BOOLEAN DEFAULT false,
     author_id INT NOT NULL REFERENCES user(id),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -96,7 +115,7 @@ CREATE TABLE IF NOT EXISTS event (
 CREATE TABLE IF NOT EXISTS event_volunteer (
     event_id INT NOT NULL REFERENCES event(id),
     volunteer_id INT NOT NULL REFERENCES user(id),
-    approval_status ENUM('Pending', 'Approved', 'Rejected') DEFAULT 'Pending',
+    status ENUM('Invited', 'Maybe', 'Going', "Cannot Go") DEFAULT 'Invited',
     PRIMARY KEY (event_id, volunteer_id)
 );
 
@@ -108,7 +127,7 @@ CREATE TABLE IF NOT EXISTS event_pictures (
     CONSTRAINT unique_event_photo_url UNIQUE (event_id, photo_url)
 );
 
-CREATE TABLE IF NOT EXISTS donation (
+CREATE TABLE  IF NOT EXISTS donation (
     id INT AUTO_INCREMENT PRIMARY KEY,
     type ENUM('General', 'Event', 'Animal') NOT NULL, -- 'event' or 'org'
     animal_id INT,
@@ -121,6 +140,7 @@ CREATE TABLE IF NOT EXISTS donation (
     item_list TEXT, -- (if in-kind) [comma-seprated]
     remarks TEXT,
     is_confirmed BOOLEAN,
+    thumbnail_url VARCHAR(256) DEFAULT NULL,
     FOREIGN KEY (animal_id) REFERENCES animal(id),
     FOREIGN KEY (event_id) REFERENCES event(id),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -135,8 +155,8 @@ CREATE TABLE IF NOT EXISTS donation_pictures (
 );
 
 CREATE TABLE IF NOT EXISTS notification (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    type ENUM('ADOPTION_REQUEST', 'ADOPTION_STATUS_UPDATE', 'ADD_DONATION_MONEY', 'ADD_DONATION_IN_KIND', 'DONATION_STATUS_UPDATE'),
+    id VARCHAR(32) PRIMARY KEY,
+    type ENUM('ADOPTION_REQUEST', 'ADOPTION_STATUS_UPDATE', 'ADD_DONATION_MONEY', 'ADD_DONATION_IN_KIND', 'DONATION_STATUS_UPDATE', 'EVENT_INVITED'),
     animal_id INT,
     event_id INT,
     adoption_id INT,
@@ -150,12 +170,9 @@ CREATE TABLE IF NOT EXISTS notification (
     FOREIGN KEY (adoption_id) REFERENCES adoption(id),
     FOREIGN KEY (adoption_status_history_id) REFERENCES adoption_status_history(id),
     FOREIGN KEY (donation_id) REFERENCES donation(id),
+    FOREIGN KEY (event_id) REFERENCES event(id),
     FOREIGN KEY (user_who_fired_event_id) REFERENCES user(id),
     FOREIGN KEY (user_to_notify_id) REFERENCES user(id),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
-
-
-ALTER TABLE donation
-ADD thumbnail_url VARCHAR(256) DEFAULT NULL;

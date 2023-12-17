@@ -4,7 +4,7 @@ from flask_login import current_user, login_required, login_user
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from ..config import Config
-from ..models import Animal, Event, User, UserRole
+from ..models import Animal, Event, User, UserRole, NotificationSettings
 from ..utils import (anonymous_required, check_verification_token,
                      generate_verification_token, get_active_filter_count,
                      send_verification_email)
@@ -101,7 +101,7 @@ def donate():
 @landing_bp.route('/events', methods=['GET'])
 @anonymous_required
 def events():
-  events = Event.find_all(show_landing_page_only=True)
+  events = Event.find_all(page_number=1, page_size=12, filters={})
   return render_template('/landing/event/events.html', events=events.get('data'))
 
 @landing_bp.route('/events/<int:id>', methods=['GET'])
@@ -204,7 +204,8 @@ def sign_up():
     )
 
     user_id = User.insert(new_user)
-    UserRole.insert_user_role_by_name(user_id=user_id, role_name="member")
+    UserRole.insert_user_role(user_id=user_id, role_name="Member")
+    NotificationSettings.insert_default(user_id=user_id)
     token = generate_verification_token(user_id=user_id, email=new_user.email)
     send_verification_email(email=new_user.email, token=token, user=new_user)
 

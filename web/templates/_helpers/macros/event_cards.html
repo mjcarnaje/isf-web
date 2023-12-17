@@ -1,10 +1,14 @@
-{% macro event_cards(events) %}
+{% macro event_cards(events, is_user=False) %}
   <div class="grid grid-cols-3 gap-10">
     {% for event in events %}
-      <div class="flex flex-col grid-cols-1 gap-2">
-        <a href="{{ url_for('landing.view_event', id=event.id) }}"
-           class="w-full overflow-hidden rounded-lg">
-          <img class="object-cover w-full transition-all duration-300 border rounded-lg aspect-video bg-gray-50 hover:scale-105"
+      {% if is_user %}
+        {% set event_href = url_for('user.events.view_event', id=event.id) %}
+      {% else %}
+        {% set event_href = url_for('admin.event.view_event', id=event.id) %}
+      {% endif %}
+      <div class="flex flex-col grid-cols-1 gap-4">
+        <a href="{{ event_href }}" class="w-full overflow-hidden rounded-lg">
+          <img class="object-cover w-full transition-all duration-300 border {{ 'border-2 border-green-500' if event['status'] == 'In Progress' else '' }} rounded-lg aspect-[800/320] bg-gray-50 hover:scale-105"
                src="{{ get_image(event.cover_photo_url) }}"
                alt="Cover Photo"
                width="auto"
@@ -12,26 +16,36 @@
         </a>
         <div class="flex flex-col w-full gap-y-2">
           <div class="flex items-center justify-between">
-            <a href="{{ url_for('landing.view_event', id=event.id) }}"
-               class="text-lg font-bold ">{{ event.name }}</a>
-            <div class="dropdown">
-              <label tabindex="0">
-                <div class="flex items-center justify-center w-6 h-6 rounded-full cursor-pointer hover:bg-gray-300 aspect-square">
-                  <i class="fa-solid fa-ellipsis"></i>
+            <div class="relative flex items-center w-full gap-4">
+              <a href="{{ event_href }}" class="w-8/12 text-lg font-bold ">{{ event.name }}</a>
+              {% if event['status'] == 'In Progress' %}
+                <div class="absolute top-.5 right-0 flex items-center justify-center px-2 py-1 bg-green-500 rounded-full flex-nowrap">
+                  <p class="text-xs font-medium text-white">Happening now</p>
                 </div>
-              </label>
-              <ul tabindex="0"
-                  class="dropdown-content z-[1] menu p-2 border bg-base-100 rounded-box w-32">
-                <li>
-                  <a href="{{ url_for('admin.event.edit_event', id=event.id) }}">Edit</a>
-                </li>
-                <li>
-                  <button id="open-delete-modal" data-event-id="{{ event.id }}">Delete</button>
-                </li>
-              </ul>
+              {% endif %}
             </div>
+            {% if not is_user %}
+              <div class="dropdown">
+                <label tabindex="0">
+                  <div class="flex items-center justify-center w-6 h-6 rounded-full cursor-pointer hover:bg-gray-300 aspect-square">
+                    <i class="fa-solid fa-ellipsis"></i>
+                  </div>
+                </label>
+                <ul tabindex="0"
+                    class="dropdown-content z-[1] menu p-2 border bg-base-100 rounded-box w-32">
+                  <li>
+                    <a href="{{ url_for('admin.event.edit_event', id=event.id) }}">Edit</a>
+                  </li>
+                  <li>
+                    <button id="open-delete-modal" data-event-id="{{ event.id }}">Delete</button>
+                  </li>
+                </ul>
+              </div>
+            {% endif %}
           </div>
-          <p class="text-sm leading-5 text-justify text-gray-600">{{ event.description }}</p>
+          <div>
+            <p class="leading-5 text-gray-600 break-all wwhitespace-pre-wrap">{{ event.description }}</p>
+          </div>
           <div class="flex items-center gap-3">
             <div class="flex items-center justify-center w-4 h-4">
               <i class="fa-solid fa-location-dot"></i>
@@ -44,19 +58,21 @@
             </div>
             <span class="text-sm">{{ event.start_date.strftime("%b %d, %Y") }} - {{ event.end_date.strftime("%b %d, %Y") }}</span>
           </div>
-          <div class="flex items-center gap-3">
-            {% if event.who_can_see_it == "Verified User" %}
-              <div class="flex items-center justify-center w-4 h-4">
-                <i class="fa-solid fa-circle-check"></i>
-              </div>
-              <span class="text-sm">{{ event.who_can_see_it }}</span>
-            {% else %}
-              <div class="flex items-center justify-center w-4 h-4">
-                <i class="fa-solid fa-users"></i>
-              </div>
-              <span class="text-sm">{{ event.who_can_see_it }}</span>
-            {% endif %}
-          </div>
+          {% if not is_user %}
+            <div class="flex items-center gap-3">
+              {% if event.who_can_see_it == "Verified User" %}
+                <div class="flex items-center justify-center w-4 h-4">
+                  <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <span class="text-sm">{{ event.who_can_see_it }}</span>
+              {% else %}
+                <div class="flex items-center justify-center w-4 h-4">
+                  <i class="fa-solid fa-users"></i>
+                </div>
+                <span class="text-sm">{{ event.who_can_see_it }}</span>
+              {% endif %}
+            </div>
+          {% endif %}
         </div>
       </div>
     {% endfor %}

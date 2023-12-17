@@ -3,9 +3,11 @@ from .AddDonation_In_Kind import AddDonation_In_Kind
 from .AddDonationMoney import AddDonationMoney
 from .AddEventValidation import AddEventValidation
 from .AdminLoginValidation import AdminLoginValidation
+from .AdoptionValidation import AdoptionValidation
 from .EditAnimalValidation import EditAnimalValidation
 from .EditEventValidation import EditEventValidation
+from .NewEmailValidation import NewEmailValidation
+from .NotificationSettingsValidation import NotificationSettingsValidation
 from .UserLoginValidation import UserLoginValidation
 from .UserSignupValidation import UserSignupValidation
-from .AdoptionValidation import AdoptionValidation
-from .NewEmailValidation import NewEmailValidation
+from .EditProfileValidation import EditProfileValidation

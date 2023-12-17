@@ -37,6 +37,46 @@ class Event():
         self.updated_at = updated_at
 
     @staticmethod
+    def get_featured():
+        sql = """
+            SELECT
+                id,
+                name,
+                description,
+                cover_photo_url,
+                start_date,
+                end_date,
+                location,
+                who_can_see_it,
+                who_can_join,
+                is_cancelled,
+                author_id,
+                created_at,
+                updated_at,
+                CASE
+                    WHEN is_cancelled = true THEN 'Cancelled'
+                    WHEN start_date > NOW() THEN 'Scheduled'
+                    WHEN start_date <= NOW() AND end_date >= NOW() THEN 'In Progress'
+                    WHEN end_date < NOW() THEN 'Completed'
+                END AS status
+            FROM 
+                event
+            WHERE
+                start_date <= NOW()
+                AND end_date >= NOW()
+            ORDER BY
+                start_date DESC
+            LIMIT 3
+        """
+
+        cur = db.new_cursor(dictionary=True)
+        cur.execute(sql)
+        featured_data = cur.fetchall()
+
+        return featured_data
+
+
+    @staticmethod
     def find_all(page_number: int, page_size: int, filters: dict = None):
         offset = (page_number - 1) * page_size
 
@@ -105,6 +145,8 @@ class Event():
                     END AS status
                 FROM 
                     event
+                ORDER BY
+                    start_date DESC
             ) AS subquery
         """
 
@@ -138,6 +180,85 @@ class Event():
         if not row:
             return None
         return cls(**row)
+
+    @staticmethod
+    def get_statistics(event_id):
+        sql = """
+             SELECT
+                COUNT(*) AS invited_count,
+                SUM(CASE WHEN status = 'Maybe' THEN 1 ELSE 0 END) AS maybe_count,
+                SUM(CASE WHEN status = 'Going' THEN 1 ELSE 0 END) AS going_count,
+                SUM(CASE WHEN status = 'Cannot Go' THEN 1 ELSE 0 END) AS cant_go_count
+            FROM event_volunteer
+            WHERE 
+                event_id = %(event_id)s
+        """
+
+        cur = db.new_cursor(dictionary=True)
+        cur.execute(sql, {
+            'event_id': event_id
+        })
+        stats = cur.fetchone()
+
+        return stats
+    
+    @staticmethod
+    def get_volunteers(event_id):
+        sql = """
+            SELECT 
+                status,
+                user.photo_url as photo_url,
+                COALESCE(user.first_name, ' ', user.last_name) as name
+            FROM event_volunteer
+            LEFT JOIN
+                user ON user.id = event_volunteer.volunteer_id
+            WHERE 
+                event_id = %(event_id)s
+        """
+        cur = db.new_cursor(dictionary=True)
+        cur.execute(sql, {
+            'event_id': event_id
+        })
+        data = cur.fetchall()
+        print(data)
+        return data
+
+
+    
+    @staticmethod
+    def check_invite_status(event_id, user_id):
+        sql = """
+                SELECT 
+                    * 
+                FROM event_volunteer 
+                WHERE event_id = %(event_id)s and volunteer_id = %(user_id)s
+            """
+        cur = db.new_cursor(dictionary=True)
+        cur.execute(sql, {
+            'event_id': event_id,
+            'user_id': user_id
+        })
+        row = cur.fetchone()
+        return row['status'] if row is not None else ''
+
+    @staticmethod
+    def update_status(event_id, user_id, status):
+        print(f"Status {status}")
+        sql = """
+            UPDATE event_volunteer 
+            SET
+                status = %(status)s
+            WHERE 
+                event_id = %(event_id)s and volunteer_id = %(user_id)s
+        """
+        cur = db.new_cursor(dictionary=True)
+        cur.execute(sql, {
+            'event_id': event_id,
+            'user_id': user_id,
+            'status': status
+        })
+        db.connection.commit()
+
 
     @classmethod
     def insert(cls, event):
@@ -192,9 +313,32 @@ class Event():
         if event.pictures:
             pictures_params = [(event_id, photo_url) for photo_url in event.pictures]
             cur.executemany(pictures_sql, pictures_params)
-            db.connection.commit()
+        
+        db.connection.commit()
 
         return event_id
+    
+    @staticmethod
+    def invite_users(event_id: int, user_ids: [int]):
+        sql = """
+            INSERT INTO event_volunteer (
+            event_id,  volunteer_id
+            ) VALUES (%(event_id)s, %(volunteer_id)s)
+        """
+
+        cur = db.new_cursor()
+
+        data = [
+            {
+                'event_id': event_id,
+                'volunteer_id': user_id
+            } for user_id in user_ids
+        ]
+
+        cur.executemany(sql, data)
+        
+        db.connection.commit()
+
 
     @staticmethod
     def check_if_event_exists(event_name, id=None):

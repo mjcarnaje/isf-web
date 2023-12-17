@@ -5,3 +5,7 @@ class EventStatus(Enum):
   IN_PROGRESS = 'In Progress'
   COMPLETED = 'Completed'
   CANCELLED = 'Cancelled'
+
+class WhoCanJoinEvent(Enum):
+  ANYONE = 'Anyone'
+  INVITE_ONLY = 'Invite Only'

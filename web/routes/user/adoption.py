@@ -5,7 +5,8 @@ from flask_login import current_user
 from ...config import Config
 from ...enums import NotificationType
 from ...models import Adoption, Animal, Notification
-from ...utils import get_active_filter_count, user_verified_required, pagination
+from ...utils import (get_active_filter_count, pagination,
+                      user_verified_required)
 from ...validations import AdoptionValidation
 
 user_adoption_bp = Blueprint("adoptions", __name__, url_prefix='/adoptions')
@@ -76,8 +77,9 @@ def adopt_me(id):
         user_who_fired_event_id=current_user.id,
         user_to_notify_id=1
       )
-      notification.insert(notification)
-      notification.increment_count(notification)
+      
+    Notification.insert_multiple([notification])
+
 
     return redirect(url_for('user.applications'))
 

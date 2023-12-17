@@ -297,7 +297,7 @@ class Animal():
     
     @staticmethod
     def get_stats():
-        stats_query = """
+        sql = """
             SELECT
                 COUNT(*) AS total_count,
                 SUM(CASE WHEN type = 'cat' THEN 1 ELSE 0 END) AS cat_count,
@@ -313,7 +313,7 @@ class Animal():
         """
 
         cur = db.new_cursor(dictionary=True)
-        cur.execute(stats_query)
+        cur.execute(sql)
         stats = cur.fetchone()
 
         return stats
