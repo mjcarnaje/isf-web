@@ -1,5 +1,5 @@
 {% set active_page = "user.events" %}
-{% extends "./_helpers/layout/user_layout.html" %}
+{% extends "./_helpers/layout/admin_layout.html" %}
 {% block title %}
   Event
 {% endblock title %}
@@ -10,19 +10,19 @@
       <div class="flex flex-col w-full gap-4 p-8 border shadow rounded-3xl">
         <div class="flex items-center justify-around gap-4 divide-x-2">
           <div class="flex flex-col items-center justify-center w-full gap-1 p-2">
-            <h1 class="text-2xl font-bold">{{ statistics.invited_count }}</h1>
+            <h1 class="text-2xl font-bold">{{ statistics.invited_count or "-" }}</h1>
             <h2>Invited</h2>
           </div>
           <div class="flex flex-col items-center justify-center w-full gap-1 p-2">
-            <h1 class="text-2xl font-bold">{{ statistics.going_count }}</h1>
+            <h1 class="text-2xl font-bold">{{ statistics.going_count or "-" }}</h1>
             <h2>Going</h2>
           </div>
           <div class="flex flex-col items-center justify-center w-full gap-1 p-2">
-            <h1 class="text-2xl font-bold">{{ statistics.maybe_count }}</h1>
+            <h1 class="text-2xl font-bold">{{ statistics.maybe_count or "-" }}</h1>
             <h2>Maybe</h2>
           </div>
           <div class="flex flex-col items-center justify-center w-full gap-1 p-2">
-            <h1 class="text-2xl font-bold">{{ statistics.cant_go_count }}</h1>
+            <h1 class="text-2xl font-bold">{{ statistics.cant_go_count or "-" }}</h1>
             <h2>Can't Go</h2>
           </div>
         </div>
@@ -54,6 +54,16 @@
                 {% endfor %}
               </tbody>
             </table>
+            {% if volunteers | length == 0 %}
+              <div class="flex flex-col items-center justify-center gap-8 p-12 border-t">
+                <img class="w-full max-w-sm"
+                     src="{{ url_for('static', filename='images/empty_list.png') }}"
+                     alt="Kid hugging her dog"
+                     width="auto"
+                     height="auto" />
+                <h3 class="text-lg font-medium">No Volunteer Yet.</h3>
+              </div>
+            {% endif %}
           </div>
         </div>
       </div>

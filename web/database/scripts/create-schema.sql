@@ -115,17 +115,27 @@ CREATE TABLE IF NOT EXISTS event (
 CREATE TABLE IF NOT EXISTS event_volunteer (
     event_id INT NOT NULL REFERENCES event(id),
     volunteer_id INT NOT NULL REFERENCES user(id),
-    status ENUM('Invited', 'Maybe', 'Going', "Cannot Go") DEFAULT 'Invited',
+    status ENUM('Invited', 'Maybe', 'Going', 'Cannot Go') DEFAULT 'Invited',
     PRIMARY KEY (event_id, volunteer_id)
 );
 
-CREATE TABLE IF NOT EXISTS event_pictures (
+CREATE TABLE IF NOT EXISTS event_post (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL REFERENCES user(id),
     event_id INT NOT NULL REFERENCES event(id),
+    post_text TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (event_id) REFERENCES event(id)
+);
+
+CREATE TABLE IF NOT EXISTS event_post_pictures (
+    event_post_id INT NOT NULL REFERENCES event_post(id),
     photo_url VARCHAR(256) NOT NULL, 
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (event_id, photo_url),
-    CONSTRAINT unique_event_photo_url UNIQUE (event_id, photo_url)
+    PRIMARY KEY (event_post_id, photo_url),
+    CONSTRAINT unique_event_post_photo_url UNIQUE (event_post_id, photo_url)
 );
+
 
 CREATE TABLE  IF NOT EXISTS donation (
     id INT AUTO_INCREMENT PRIMARY KEY,

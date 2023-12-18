@@ -1,28 +1,29 @@
 {% macro donation_request_donator(donation, is_user=False) %}
-  <dialog id="confirm-modal" class="modal modal-bottom sm:modal-middle">
+  <dialog id="confirm-donation-modal"
+          class="modal modal-bottom sm:modal-middle">
     <div class="modal-box">
       <h2 class="mb-4 text-2xl font-bold">Confirm Donation</h2>
       <p class="mb-4">Are you sure you want to confirm this donation?</p>
       <div class="flex justify-end">
-        <button id="cancel-confirm"
+        <button id="cancel-confirm-donation"
                 class="px-4 py-2 mr-4 font-bold text-gray-800 bg-gray-300 rounded-full hover:bg-gray-400">
           Cancel
         </button>
-        <button id="confirm"
+        <button id="confirm-donation"
                 class="px-4 py-2 font-bold text-white bg-green-500 rounded-full hover:bg-green-600">Confirm</button>
       </div>
     </div>
   </dialog>
-  <dialog id="reject-modal" class="modal modal-bottom sm:modal-middle">
+  <dialog id="reject-donation-modal" class="modal modal-bottom sm:modal-middle">
     <div class="modal-box">
       <h2 class="mb-4 text-2xl font-bold">Reject Donation</h2>
       <p class="mb-4">Are you sure you want to reject this donation?</p>
       <div class="flex justify-end">
-        <button id="cancel-reject"
+        <button id="cancel-reject-donation"
                 class="px-4 py-2 mr-4 font-bold text-gray-800 bg-gray-300 rounded-full hover:bg-gray-400">
           Cancel
         </button>
-        <button id="reject"
+        <button id="reject-donation"
                 class="px-4 py-2 font-bold text-white bg-red-500 rounded-full hover:bg-red-600">Reject</button>
       </div>
     </div>
@@ -49,7 +50,7 @@
         <div>
           <img src="{{ get_image(picture) }}"
                alt="donations picture"
-               class="aspect-video border max-h-[80px]"
+               class="aspect-video object-contain border max-h-[80px]"
                width="auto"
                height="auto">
         </div>
@@ -70,34 +71,34 @@
     {% if not is_user and not is_touched %}
       <div class="flex gap-3">
         <button type="button"
-                id="reject-button-{{ donation.id }}"
+                id="reject-donation-button-{{ donation.id }}"
                 class="flex-1 text-white btn btn-error">Reject</button>
         <button type="button"
-                id="confirm-button-{{ donation.id }}"
+                id="confirm-donation-button-{{ donation.id }}"
                 class="flex-1 text-white btn btn-primary">Set as confirm</button>
       </div>
     {% endif %}
   </div>
   <script>
-    const confirmModal = document.querySelector("#confirm-modal");
-    const rejectModal = document.querySelector("#reject-modal");
+    const confirmDonationModal = document.querySelector("#confirm-donation-modal");
+    const rejectDonationModal = document.querySelector("#reject-donation-modal");
 
     {% if not is_user %}
-      const confirmButton{{ donation.id }} = document.querySelector("#confirm-button-{{ donation.id }}");
-      const rejectButton{{ donation.id }} = document.querySelector("#reject-button-{{ donation.id }}");
+      const confirmButton{{ donation.id }} = document.querySelector("#confirm-donation-button-{{ donation.id }}");
+      const rejectButton{{ donation.id }} = document.querySelector("#reject-donation-button-{{ donation.id }}");
 
       confirmButton{{ donation.id }}.addEventListener("click", () => {
-        confirmModal.showModal();
+        confirmDonationModal.showModal();
       });
 
       rejectButton{{ donation.id }}.addEventListener("click", () => {
-        rejectModal.showModal();
+        rejectDonationModal.showModal();
       });
 
-      const confirmDialogButton = document.querySelector("#confirm");
-      const cancelConfirmButton = document.querySelector("#cancel-confirm");
+      const confirmDonationButton = document.querySelector("#confirm-donation");
+      const cancelConfirmDonationButton = document.querySelector("#cancel-confirm-donation");
 
-      confirmDialogButton.addEventListener("click", () => {
+      confirmDonationButton.addEventListener("click", () => {
         fetch("{{ url_for('admin.ask_for_help.confirm_donation', id=donation.donation_request_id, donator_id=donation.id) }}", {
           method: "POST",
           headers: {
@@ -115,16 +116,16 @@
         });
       });
 
-      cancelConfirmButton.addEventListener("click", () => {
-        rejectModal.close();
+      cancelConfirmDonationButton.addEventListener("click", () => {
+        confirmDonationModal.close();
       });
 
-      const rejectDialogButton = document.querySelector("#reject");
-      const cancelRejectButton = document.querySelector("#cancel-reject");
+      const rejectDonationButton = document.querySelector("#reject-donation");
+      const cancelRejectDonationButton = document.querySelector("#cancel-reject-donation");
 
 
       // Event listener for the rejection dialog button
-      rejectDialogButton.addEventListener("click", () => {
+      rejectDonationButton.addEventListener("click", () => {
         fetch("{{ url_for('admin.ask_for_help.reject_donation', id=donation.donation_request_id, donator_id=donation.id) }}", {
           method: "POST",
           headers: {
@@ -134,7 +135,7 @@
         .then(response => response.json())
         .then(data => {
           showToast(data.status, data.message);
-          rejectModal.close();
+          rejectDonationModal.close();
         })
         .catch(error => {
           console.error("Error rejecting donation:", error);
@@ -143,8 +144,8 @@
       });
 
 
-      cancelRejectButton.addEventListener("click", () => {
-        rejectModal.close();
+      cancelRejectDonationButton.addEventListener("click", () => {
+        rejectDonationModal.close();
       });
     {% endif %}
   </script>

@@ -248,7 +248,9 @@ class Notification:
                 message=result.message,
                 preview_image_url=get_image(result.preview_image_url),
                 sender_name=result.notifier_first_name,
-                sender_email=result.notifier_email
+                sender_email=result.notifier_email,
+                button_text="",
+                button_link=""
             )
         
     

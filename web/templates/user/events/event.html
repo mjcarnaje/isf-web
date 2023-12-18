@@ -9,47 +9,63 @@
     <div class="flex flex-col gap-8 pt-12">
       <h1 class="text-3xl font-bold text-gray-800">{{ event.name }}</h1>
       <p class="text-lg text-gray-600 ">{{ event.description }}</p>
-      {% if event['who_can_join'] == 'Invite Only' and is_invited %}
-        <div class="flex justify-between w-full p-3 bg-gray-100 rounded-lg">
-          <div class="flex items-center gap-3">
-            <img src="{{ get_image('', true) }}"
-                 class="w-12 h-12 rounded-full"
-                 alt="Admin's photo"
-                 height="auto"
-                 width="auto" />
-            <p>
-              <span class="font-bold">Admin</span>
-              invited you
-            </p>
+      {% if event['who_can_join'] == 'Invite Only' %}
+        {% if invited %}
+          <div class="flex justify-between w-full p-3 bg-gray-100 rounded-lg">
+            <div class="flex items-center gap-3">
+              <img src="{{ get_image('', true) }}"
+                   class="w-12 h-12 rounded-full"
+                   alt="Admin's photo"
+                   height="auto"
+                   width="auto" />
+              <p>
+                <span class="font-bold">Admin</span>
+                invited you
+              </p>
+            </div>
+            <div class="flex items-center gap-4">
+              {% set is_cant_go = status == "Cannot Go" %}
+              <button id="invite-btn"
+                      data-status="Going"
+                      class="flex items-center w-36 gap-2 text-gray-800 bg-gray-300 {{ 'bg-green-500 text-white' if status == 'Going' else '' }} btn">
+                <i class="text-lg fa-regular fa-circle-check"></i>
+                Going
+              </button>
+              <button id="invite-btn"
+                      data-status="Maybe"
+                      class="flex items-center w-36 gap-2 text-gray-800 bg-gray-300 {{ 'bg-yellow-500 text-white' if status == 'Maybe' else '' }} btn">
+                <i class="text-lg fa-regular fa-circle-question"></i>
+                Maybe
+              </button>
+              <button id="invite-btn"
+                      data-status="Cannot Go"
+                      class="flex items-center w-36 gap-2 text-gray-800 bg-gray-300 {{ 'bg-red-500 text-white' if is_cant_go else '' }} btn">
+                <i class="text-lg fa-regular fa-circle-xmark"></i>
+                Cannot Go
+              </button>
+            </div>
           </div>
-          <div class="flex items-center gap-4">
-            {% set is_cant_go = status == "Cannot Go" %}
-            <button id="invite-btn"
-                    data-status="Going"
-                    class="flex items-center w-36 gap-2 text-gray-800 bg-gray-300 {{ 'bg-green-500 text-white' if status == 'Going' else '' }} btn">
-              <i class="text-lg fa-regular fa-circle-check"></i>
-              Going
-            </button>
-            <button id="invite-btn"
-                    data-status="Maybe"
-                    class="flex items-center w-36 gap-2 text-gray-800 bg-gray-300 {{ 'bg-yellow-500 text-white' if status == 'Maybe' else '' }} btn">
-              <i class="text-lg fa-regular fa-circle-question"></i>
-              Maybe
-            </button>
-            <button id="invite-btn"
-                    data-status="Cannot Go"
-                    class="flex items-center w-36 gap-2 text-gray-800 bg-gray-300 {{ 'bg-red-500 text-white' if is_cant_go else '' }} btn">
-              <i class="text-lg fa-regular fa-circle-xmark"></i>
-              Cannot Go
-            </button>
+        {% else %}
+          <div class="p-4 rounded-lg bg-primary-300">
+            <h3 class="font-bold text-white ">You are not invited to this event</h3>
           </div>
-        </div>
-      {% else %}
-        <div>
-          <h3>You are not invited to this event</h3>
-        </div>
+        {% endif %}
       {% endif %}
     </div>
+    <div class="divider"></div>
+    <div class="grid grid-cols-2 gap-8">
+      {% for event_post in posts %}{{ event_post_card(event_post) }}{% endfor %}
+    </div>
+    {% if posts | length == 0 %}
+      <div class="flex flex-col items-center justify-center gap-8 p-12">
+        <img class="w-full max-w-sm"
+             src="{{ url_for('static', filename='images/empty_list.png') }}"
+             alt="Kid hugging her dog"
+             width="auto"
+             height="auto" />
+        <h3 class="text-lg font-medium">No Posts Yet.</h3>
+      </div>
+    {% endif %}
   </div>
   <script>const inviteButtons = document.querySelectorAll("button[id='invite-btn']");
   inviteButtons.forEach((button) => {

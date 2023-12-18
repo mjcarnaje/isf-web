@@ -13,6 +13,16 @@
     <div class="flex flex-col gap-5">
       <h2 class="text-lg font-bold">Happening Now Events</h2>
       <div>{{ event_cards(featured_events, is_user=True) }}</div>
+      {% if featured_events | length == 0 %}
+        <div class="flex flex-col items-center justify-center gap-8 p-12">
+          <img class="w-full max-w-[200px]"
+               src="{{ url_for('static', filename='images/empty_list.png') }}"
+               alt="Kid hugging her dog"
+               width="auto"
+               height="auto" />
+          <h3 class="font-medium">No featured events yet.</h3>
+        </div>
+      {% endif %}
       <div class="flex justify-center">
         <a href="{{ url_for('user.events.events',) }}"
            class="text-white btn-primary btn">See All Events</a>

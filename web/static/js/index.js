@@ -71,3 +71,22 @@ const socket = io();
 socket.on("notification", () => {
   showToast("success", "new notification", 15000);
 });
+
+// Equivalent JavaScript for $(".images img").click(...)
+var images = document.querySelectorAll("img[data-can-view='true']");
+images.forEach(function (image) {
+  image.addEventListener("click", function () {
+    var fullImage = document.getElementById("full-image");
+    fullImage.setAttribute("src", this.getAttribute("src"));
+
+    var imageViewer = document.getElementById("image-viewer");
+    imageViewer.style.display = "block";
+  });
+});
+
+// Equivalent JavaScript for $("#image-viewer .close").click(...)
+var closeButton = document.querySelector("#image-viewer .close");
+closeButton.addEventListener("click", function () {
+  var imageViewer = document.getElementById("image-viewer");
+  imageViewer.style.display = "none";
+});

@@ -16,7 +16,6 @@ class Event():
             is_cancelled=None,
             who_can_see_it=None,
             who_can_join=None,
-            pictures:[str] = [], 
             created_at=None, 
             updated_at=None
         ):
@@ -32,7 +31,6 @@ class Event():
         self.is_cancelled = is_cancelled
         self.who_can_see_it = who_can_see_it
         self.who_can_join = who_can_join
-        self.pictures = pictures
         self.created_at = created_at
         self.updated_at = updated_at
 
@@ -168,15 +166,10 @@ class Event():
     @classmethod
     def find_by_id(cls, event_id):
         sql = "SELECT * FROM event WHERE id = %s"
-        picture_sql = "SELECT photo_url FROM event_pictures WHERE event_id = %s"
         cur = db.new_cursor(dictionary=True)
         cur.execute(sql, (event_id,))
         row = cur.fetchone()
 
-        cur.execute(picture_sql, (event_id,))
-        pictures = [row['photo_url'] for row in cur.fetchall()]
-        row['pictures'] = pictures
-        
         if not row:
             return None
         return cls(**row)
@@ -243,7 +236,6 @@ class Event():
 
     @staticmethod
     def update_status(event_id, user_id, status):
-        print(f"Status {status}")
         sql = """
             UPDATE event_volunteer 
             SET
@@ -303,18 +295,6 @@ class Event():
         db.connection.commit()
         
         event_id = cur.lastrowid
-        
-        pictures_sql = """
-            INSERT INTO event_pictures (
-                event_id, photo_url
-            ) VALUES(%s, %s)
-        """
-
-        if event.pictures:
-            pictures_params = [(event_id, photo_url) for photo_url in event.pictures]
-            cur.executemany(pictures_sql, pictures_params)
-        
-        db.connection.commit()
 
         return event_id
     
@@ -386,18 +366,6 @@ class Event():
         cur.execute(sql, params)
         db.connection.commit()
 
-        # Insert new pictures
-        pictures_sql = """
-            INSERT IGNORE INTO event_pictures (
-                event_id, photo_url
-            ) VALUES(%s, %s)
-        """
-
-        if event.pictures:
-            pictures_params = [(event.id, photo_url) for photo_url in event.pictures]
-            cur.executemany(pictures_sql, pictures_params)
-            db.connection.commit()
-
         return event.id
     
     @classmethod
@@ -410,3 +378,4 @@ class Event():
         db.connection.commit()
 
         return cur.rowcount
+    

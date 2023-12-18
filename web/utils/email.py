@@ -39,14 +39,14 @@ def send_verification_email(email: str, token: str, user):
 
 
 @shared_task()
-def send_notification_email(subject, recipient_email, title, first_name, message, preview_image_url, sender_name, sender_email):
+def send_notification_email(subject, recipient_email, title, first_name, message, preview_image_url, sender_name, sender_email, button_link, button_text):
     try:
         msg = Message(
             subject=subject,
             sender=(sender_name, sender_email),
             recipients=[recipient_email]
         )
-        msg.html = render_template('common-notification.html', title=title, first_name=first_name, message=message)
+        msg.html = render_template('common-notification.html', title=title, first_name=first_name, message=message, button_link=button_link, button_text=button_text)
 
         logo_data = get_attach_data('logo.png', 'image/png', 'Logo')
         banner_data = get_attach_data('banner.jpeg', 'image/jpeg', 'Banner', remote_url=preview_image_url)

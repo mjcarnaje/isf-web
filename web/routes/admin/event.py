@@ -3,9 +3,9 @@ from flask import (Blueprint, redirect, render_template, request, session,
 from flask_login import current_user
 
 from ...config import Config
-from ...models import Event, User, Notification
+from ...models import Event, User, Notification, EventPost
 from ...utils import admin_required, get_active_filter_count, pagination
-from ...validations import AddEventValidation, EditEventValidation
+from ...validations import AddEventValidation, EditEventValidation, AddEventPostValidation
 from ...enums import WhoCanJoinEvent, NotificationType
 
 event_bp = Blueprint("event", __name__, url_prefix='/event')
@@ -47,13 +47,25 @@ def events():
     )
 
 
-@event_bp.route('/<int:id>', methods=['GET'])
+@event_bp.route('/<int:id>', methods=['GET', 'POST'])
 @admin_required
 def view_event(id):
+    form = AddEventPostValidation()
+
+    if form.validate_on_submit(): 
+        new_event = EventPost(
+            event_id=id,
+            post_text=form.post_text.data,
+            pictures=form.pictures.data,
+            user_id=current_user.id
+        )
+        new_event.insert(new_event)
+    
     event = Event.find_by_id(id)
     statistics = Event.get_statistics(id)
+    posts = EventPost.find_posts(event_id=id)
 
-    return render_template('/admin/event/event.html', event=event, statistics=statistics)
+    return render_template('/admin/event/event.html', form=form, event=event, statistics=statistics, posts=posts)
 
 @event_bp.route('/<int:id>/members', methods=['GET'])
 @admin_required
@@ -79,8 +91,6 @@ def edit_event(id):
         event.location=form.location.data
         event.who_can_see_it=form.who_can_see_it.data
         event.who_can_join=form.who_can_join.data
-        new_pictures = [photo.data for photo in form.pictures.entries if photo.data not in event.pictures]
-        event.pictures.extend(new_pictures)        
         Event.edit(event)
         return redirect(url_for("admin.event.events"))
     
@@ -94,9 +104,6 @@ def edit_event(id):
         form.location.data = event.location
         form.who_can_see_it.data = event.who_can_see_it
         form.who_can_join.data = event.who_can_join
-
-        for photo_url in event.pictures:
-            form.pictures.append_entry(data=photo_url)
             
     return render_template('/admin/event/edit.html', form=form)
 
@@ -115,7 +122,6 @@ def add_event():
             location=form.location.data,
             who_can_see_it=form.who_can_see_it.data,
             who_can_join=form.who_can_join.data,            
-            pictures=form.pictures.data,
         )
         event_id = Event.insert(new_event)
 

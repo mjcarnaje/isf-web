@@ -451,6 +451,52 @@
                             </tr>
                           </tbody>
                         </table>
+                        {% if button_link and button_text %}
+                          <table style="font-family: arial, helvetica, sans-serif"
+                                 role="presentation"
+                                 cellpadding="0"
+                                 cellspacing="0"
+                                 width="100%"
+                                 border="0">
+                            <tbody>
+                              <tr>
+                                <td class="v-container-padding-padding"
+                                    style="overflow-wrap: break-word;
+                                           word-break: break-word;
+                                           padding: 20px 10px 30px;
+                                           font-family: arial, helvetica, sans-serif"
+                                    align="left">
+                                  <div class="v-text-align" align="center">
+                                    <a href="{{ button_link }}"
+                                       target="_blank"
+                                       class="v-button v-font-size"
+                                       style="box-sizing: border-box;
+                                              display: inline-block;
+                                              text-decoration: none;
+                                              -webkit-text-size-adjust: none;
+                                              text-align: center;
+                                              color: #ffffff;
+                                              background-color: #b45309;
+                                              border-radius: 44px;
+                                              -webkit-border-radius: 44px;
+                                              -moz-border-radius: 44px;
+                                              width: auto;
+                                              max-width: 100%;
+                                              overflow-wrap: break-word;
+                                              word-break: break-word;
+                                              word-wrap: break-word;
+                                              mso-border-alt: none;
+                                              font-size: 14px">
+                                      <span style=" display: block; padding: 20px 70px; line-height: 120%; "><strong><span style="font-family: 'Open Sans', sans-serif;
+             font-size: 14px;
+             line-height: 16.8px">{{ button_text }}</span></strong></span>
+                                    </a>
+                                  </div>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        {% endif %}
                         <table id="u_content_text_3"
                                style="font-family: arial, helvetica, sans-serif"
                                role="presentation"

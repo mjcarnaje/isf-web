@@ -1,10 +1,24 @@
 {% set active_page = "admin.event.events" %}
+{% from './_helpers/macros/custom_input.html' import render_field %}
+{% from './_helpers/macros/multiple_photo_input.html' import render_multiple_photo_field with context %}
+{% from './_helpers/macros/event_post_card.html' import event_post_card with context %}
 {% extends "./_helpers/layout/admin_layout.html" %}
 {% block title %}
   Event
 {% endblock title %}
 {% block content %}
   {% include "./_helpers/partials/event_cover.html" %}
+  <dialog id="addPostModal" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box">
+      <h2 class="mb-4 text-2xl font-bold">Add Post</h2>
+      <form class="grid w-full grid-cols-1 gap-4" method="post" novalidate>
+        {{ form.csrf_token() }}
+        {{ render_field(form.post_text) }}
+        {{ render_multiple_photo_field(form.pictures, 'Pictures') }}
+        <button type="submit" class="w-full btn btn-md">Submit</button>
+      </form>
+    </div>
+  </dialog>
   <div class="w-full max-w-5xl mx-auto mt-12">
     <div class="flex flex-col gap-8">
       <h1 class="text-3xl font-bold text-gray-800">{{ event.name }}</h1>
@@ -17,23 +31,40 @@
         </div>
         <div class="flex items-center justify-around gap-8 divide-x-2">
           <div class="flex flex-col items-center justify-center w-full gap-1 p-5">
-            <h1 class="text-2xl font-bold">{{ statistics.invited_count }}</h1>
+            <h1 class="text-2xl font-bold">{{ statistics.invited_count or "-" }}</h1>
             <h2>Invited</h2>
           </div>
           <div class="flex flex-col items-center justify-center w-full gap-1 p-5">
-            <h1 class="text-2xl font-bold">{{ statistics.going_count }}</h1>
+            <h1 class="text-2xl font-bold">{{ statistics.going_count or "-" }}</h1>
             <h2>Going</h2>
           </div>
           <div class="flex flex-col items-center justify-center w-full gap-1 p-5">
-            <h1 class="text-2xl font-bold">{{ statistics.maybe_count }}</h1>
+            <h1 class="text-2xl font-bold">{{ statistics.maybe_count or "-" }}</h1>
             <h2>Maybe</h2>
           </div>
           <div class="flex flex-col items-center justify-center w-full gap-1 p-5">
-            <h1 class="text-2xl font-bold">{{ statistics.cant_go_count }}</h1>
+            <h1 class="text-2xl font-bold">{{ statistics.cant_go_count or "-" }}</h1>
             <h2>Can't Go</h2>
           </div>
         </div>
       </div>
+      <div class="divider"></div>
+      <div class="flex justify-end">
+        <button onclick="addPostModal.showModal()" class="text-white btn btn-primary">Add Post</button>
+      </div>
+      <div class="grid grid-cols-2 gap-8">
+        {% for event_post in posts %}{{ event_post_card(event_post) }}{% endfor %}
+      </div>
+      {% if posts | length == 0 %}
+        <div class="flex flex-col items-center justify-center gap-8 p-12">
+          <img class="w-full max-w-sm"
+               src="{{ url_for('static', filename='images/empty_list.png') }}"
+               alt="Kid hugging her dog"
+               width="auto"
+               height="auto" />
+          <h3 class="text-lg font-medium">No Posts Yet.</h3>
+        </div>
+      {% endif %}
     </div>
   </div>
 {% endblock content %}

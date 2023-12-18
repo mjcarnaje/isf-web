@@ -10,3 +10,4 @@ from .NotificationSettings import NotificationSettings
 from .AskForHelp import AskForHelp
 from .DonationRequestUpdate import DonationRequestUpdate
 from .DonationRequestDonation import DonationRequestDonation
+from .EventPost import EventPost
