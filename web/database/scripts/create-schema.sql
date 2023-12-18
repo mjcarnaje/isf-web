@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS adoption (
     phone_number VARCHAR(20),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user(id),
-    FOREIGN KEY (animal_id) REFERENCES animal(id)
+    FOREIGN KEY (animal_id) REFERENCES animal(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS adoption_status_history (
@@ -151,7 +151,7 @@ CREATE TABLE  IF NOT EXISTS donation (
     remarks TEXT,
     is_confirmed BOOLEAN,
     thumbnail_url VARCHAR(256) DEFAULT NULL,
-    FOREIGN KEY (animal_id) REFERENCES animal(id),
+    FOREIGN KEY (animal_id) REFERENCES animal(id) ON DELETE CASCADE,
     FOREIGN KEY (event_id) REFERENCES event(id),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
@@ -166,7 +166,7 @@ CREATE TABLE IF NOT EXISTS donation_pictures (
 
 CREATE TABLE IF NOT EXISTS donation_request (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    animal_id INT NOT NULL REFERENCES animal(id),
+    animal_id INT NOT NULL REFERENCES animal(id) ON DELETE CASCADE,
     description TEXT NOT NULL,
     amount INT, -- (if money)
     item_list TEXT, -- (if in-kind) [comma-separated]
@@ -233,7 +233,7 @@ CREATE TABLE IF NOT EXISTS notification (
     user_to_notify_id INT NOT NULL,
     is_read BOOLEAN DEFAULT false,
     is_archived BOOLEAN DEFAULT false,
-    FOREIGN KEY (animal_id) REFERENCES animal(id),
+    FOREIGN KEY (animal_id) REFERENCES animal(id) ON DELETE CASCADE,
     FOREIGN KEY (adoption_id) REFERENCES adoption(id),
     FOREIGN KEY (adoption_status_history_id) REFERENCES adoption_status_history(id),
     FOREIGN KEY (donation_id) REFERENCES donation(id),

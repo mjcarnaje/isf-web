@@ -75,7 +75,7 @@
     const deliveryAddresses = document.querySelector('.delivery_addresses')
     
     function handleDeliveryTypeChange() {
-      if (deliveryTypeField.value === 'pickup') {
+      if (deliveryTypeField.value === 'Pick-up') {
         pickUpLocationField.parentElement.style.display = 'block';
         deliveryAddresses.style.display = 'none';
       } else {
@@ -87,10 +87,8 @@
       isRendered = true;
     }
 
-    // Initial setup
     handleDeliveryTypeChange();
 
-    // Add event listener to detect changes in delivery type
     deliveryTypeField.addEventListener('change', handleDeliveryTypeChange);
   </script>
 {% endblock content %}

@@ -233,7 +233,7 @@ class Event():
             'user_id': user_id
         })
         row = cur.fetchone()
-        return row['status'] if row is not None else ''
+        return row['status']
 
     @staticmethod
     def update_status(event_id, user_id, status):

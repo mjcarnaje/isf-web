@@ -1,4 +1,19 @@
 {% macro donation_tables(donations) %}
+  <dialog id="confirm-donation-modal"
+          class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box">
+      <h2 class="mb-4 text-2xl font-bold">Confirm Donation</h2>
+      <p class="mb-4">Are you sure you want to confirm this donation?</p>
+      <div class="flex justify-end">
+        <button id="cancel-confirm-donation"
+                class="px-4 py-2 mr-4 font-bold text-gray-800 bg-gray-300 rounded-full hover:bg-gray-400">
+          Cancel
+        </button>
+        <button id="confirm-donation"
+                class="px-4 py-2 font-bold text-white bg-green-500 rounded-full hover:bg-green-600">Confirm</button>
+      </div>
+    </div>
+  </dialog>
   <div class="flow-root">
     <div class="w-full">
       <table class="relative min-w-full divide-y divide-gray-300">
@@ -62,19 +77,22 @@
                     </div>
                   </label>
                   <ul tabindex="0"
-                      class="dropdown-content z-[1] menu p-2 border bg-base-100 rounded-box w-32">
-                    <li>
-                      <a href="{{ url_for('admin.donations.donation', id=donation.id) }}">View</a>
-                    </li>
-                    <li>
-                      <button id="open-delete-modal" data-donation-id="{{ donation.id }}">Delete</button>
-                    </li>
+                      class="dropdown-content z-[1] menu p-2 border bg-base-100 rounded-box">
+                    {% if not donation.is_confirmed %}
+                      <li>
+                        <button id="open-confirm-modal" data-donation-id="{{ donation.id }}">Confirm</button>
+                      </li>
+                    {% else %}
+                      <li>
+                        <p>Nothing in here.</p>
+                      </li>
+                    {% endif %}
                   </ul>
                 </div>
               </td>
             </tr>
-          </tbody>
-        {% endfor %}
+          {% endfor %}
+        </tbody>
       </table>
       {% if donations | length == 0 %}
         <div class="flex flex-col items-center justify-center gap-8 p-12 border-t">
@@ -88,4 +106,30 @@
       {% endif %}
     </div>
   </div>
+  <script>
+  const confirmationModal = document.querySelector("#confirm-donation-modal");
+  const deleteButtons = document.querySelectorAll("#open-confirm-modal");
+  const cancelConfirmationModalButton = document.querySelector("#cancel-confirm-donation");
+  const confirmConfirmationModalButton = document.querySelector("#confirm-donation");
+
+  deleteButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const donationId = button.getAttribute("data-donation-id");
+      confirmationModal.showModal();
+      cancelConfirmationModalButton.addEventListener("click", () => {
+        confirmationModal.close();
+      })
+      confirmConfirmationModalButton.addEventListener("click", () => {
+        fetch(`/admin/donations/confirm/${donationId}`, {
+          method: "POST", 
+          headers: {
+              "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
+          }
+        })
+        window.location.reload();
+      })
+    })
+  })
+  
+  </script>
 {% endmacro %}

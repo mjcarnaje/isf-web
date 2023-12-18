@@ -154,7 +154,7 @@ def edit_animal(id):
             
     return render_template('admin/animal/edit.html', form=form)
 
-@animal_bp.route('/<int:id>/delete', methods=['DELETE'])
+@animal_bp.route('/<id>/delete', methods=['DELETE'])
 @admin_required
 def delete_animal(id):
     animal = Animal.find_by_id(id)
@@ -164,4 +164,4 @@ def delete_animal(id):
 
     Animal.delete(id)
     
-    return True
+    return "success"

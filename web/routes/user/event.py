@@ -54,6 +54,16 @@ def view_event(id):
         Event.update_status(event_id=id, status=status, user_id=user_id)
         
     
+    statistics = Event.get_statistics(id)
     posts = EventPost.find_posts(event_id=id)
 
-    return render_template('/user/events/event.html', event=event, posts=posts, is_invited=status is not None, status=status)
+    return render_template('/user/events/event.html', event=event, statistics=statistics, posts=posts, status=status)
+
+@user_event_bp.route('/<int:id>/members', methods=['GET'])
+@user_verified_required
+def event_members(id):
+    event = Event.find_by_id(id)
+    statistics = Event.get_statistics(id)
+    volunteers = Event.get_volunteers(id)
+
+    return render_template('/user/events/event_members.html', event=event, statistics=statistics, volunteers=volunteers)
