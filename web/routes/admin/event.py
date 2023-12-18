@@ -1,4 +1,4 @@
-from flask import (Blueprint, redirect, render_template, request, session,
+from flask import (Blueprint, redirect, render_template, request, session, flash,
                    url_for)
 from flask_login import current_user
 
@@ -92,6 +92,7 @@ def edit_event(id):
         event.who_can_see_it=form.who_can_see_it.data
         event.who_can_join=form.who_can_join.data
         Event.edit(event)
+        flash("Successfuly edited the event.", "success")
         return redirect(url_for("admin.event.events"))
     
     if not form.is_submitted():

@@ -27,19 +27,7 @@
         {{ render_field(form.who_can_see_it) }}
         {{ render_field(form.who_can_join) }}
         <button type="submit" class="w-full col-span-2 btn btn-md">Submit</button>
-      </div>
+      </form>
     </div>
-    <script>
-    const whoCanSeeItField = document.querySelector("[name='who_can_see_it']");
-    const whoCanJoinField = document.querySelector("[name='who_can_join']");
-    whoCanSeeItField.addEventListener("change", (e) => {
-      isPublic = e.target.value == "Public";
-      if (isPublic) {
-        setSelectedValue(whoCanJoinField, "Anyone")
-        whoCanJoinField.disabled = true;
-      } else {
-        whoCanJoinField.disabled = false;
-      }
-    })
-    </script>
-  {% endblock content %}
+  </div>
+{% endblock content %}

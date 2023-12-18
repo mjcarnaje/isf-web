@@ -1,4 +1,4 @@
-{% macro user_donation_tables(donations) %}
+{% macro user_donation_tables(donations, is_user=False) %}
   <div class="flow-root">
     <div class="w-full">
       <table class="relative min-w-full divide-y divide-gray-300">
@@ -9,7 +9,9 @@
             <th class="py-3.5 px-3 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">Amount / Item List</th>
             <th class="py-3.5 px-3 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">Status</th>
             <th class="py-3.5 px-3 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">Donated by</th>
-            <th class="py-3.5 px-3 text-right text-sm font-semibold text-gray-900 whitespace-nowrap">Action</th>
+            {% if is_user %}
+              <th class="py-3.5 px-3 text-right text-sm font-semibold text-gray-900 whitespace-nowrap">Action</th>
+            {% endif %}
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
@@ -55,21 +57,23 @@
                 </div>
               </td>
               <td class="px-3 py-5 text-sm text-right text-gray-600 whitespace-nowrap">
-                <div class="dropdown dropdown-end">
-                  <label tabindex="0">
-                    <div class="flex items-center justify-center w-6 h-6 rounded-full cursor-pointer hover:bg-gray-300 aspect-square">
-                      <i class="fa-solid fa-ellipsis"></i>
-                    </div>
-                  </label>
-                  <ul tabindex="0"
-                      class="dropdown-content z-[1] menu p-2 border bg-base-100 rounded-box w-32">
-                    {% if not donation.is_confirmed %}
-                      <li>
-                        <a href="{{ url_for('admin.donations.donation', id=donation.id) }}">Edit</a>
-                      </li>
-                    {% endif %}
-                  </ul>
-                </div>
+                {% if is_user %}
+                  <div class="dropdown dropdown-end">
+                    <label tabindex="0">
+                      <div class="flex items-center justify-center w-6 h-6 rounded-full cursor-pointer hover:bg-gray-300 aspect-square">
+                        <i class="fa-solid fa-ellipsis"></i>
+                      </div>
+                    </label>
+                    <ul tabindex="0"
+                        class="dropdown-content z-[1] menu p-2 border bg-base-100 rounded-box w-32">
+                      {% if not donation.is_confirmed %}
+                        <li>
+                          <a href="{{ url_for('admin.donations.donation', id=donation.id) }}">Edit</a>
+                        </li>
+                      {% endif %}
+                    </ul>
+                  </div>
+                {% endif %}
               </td>
             </tr>
           </tbody>
@@ -82,7 +86,7 @@
                alt="Kid hugging her dog"
                width="auto"
                height="auto" />
-          <h3 class="text-lg font-medium">No Events Found.</h3>
+          <h3 class="text-lg font-medium">No Donations Found.</h3>
         </div>
       {% endif %}
     </div>

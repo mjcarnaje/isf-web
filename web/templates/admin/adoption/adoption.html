@@ -72,7 +72,7 @@
                   </label>
                   <ul tabindex="0"
                       class="dropdown-content shadow-md z-[1] menu p-2 border bg-base-100 rounded-box w-56">
-                    {% if application.current_status != "Rejected" %}
+                    {% if application.current_status != "Rejected" or application.current_status == "Rejected" %}
                       {% if application.current_status != "Interview" and application.current_status != "Approved" %}
                         <li>
                           <button id="interview_button"
@@ -82,7 +82,7 @@
                                   data-animal-id="{{ application.animal_id }}">Confirm</button>
                         </li>
                       {% endif %}
-                      {% if application.current_status == "Pending" or application.current_status == "Interview" %}
+                      {% if application.current_status == "Pending" or application.current_status != "Turnovered" %}
                         <li>
                           <button id="reject_button"
                                   data-id="{{ application.id }}"

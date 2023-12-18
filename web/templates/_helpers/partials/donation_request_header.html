@@ -37,7 +37,9 @@
         {% else %}
           <span class="inline-block px-2 py-1 text-sm font-semibold text-gray-900 bg-yellow-500 rounded-full">On Going</span>
         {% endif %}
-        <button id="confirm-button" class="btn btn-xs">Set as Fulfilled</button>
+        {% if current_user.id == data.user_id %}
+          <button id="confirm-button" class="btn btn-xs">Set as Fulfilled</button>
+        {% endif %}
       </div>
     </div>
   </div>

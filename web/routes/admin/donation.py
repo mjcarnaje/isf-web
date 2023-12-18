@@ -1,9 +1,7 @@
 from flask import Blueprint, redirect, render_template, request, url_for, session
-from flask_login import current_user
 
 from ...models import Donation
 from ...utils import admin_required, get_active_filter_count, pagination
-from ...validations import AddEventValidation
 from ...config import Config
 
 donations_bp = Blueprint("donations", __name__, url_prefix='/donations')

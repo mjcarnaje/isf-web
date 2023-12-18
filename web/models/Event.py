@@ -99,6 +99,7 @@ class Event():
             SELECT COUNT(*) AS total_count
             FROM (
                 SELECT
+                    name,
                     who_can_see_it,
                     CASE
                         WHEN is_cancelled = true THEN 'Cancelled'

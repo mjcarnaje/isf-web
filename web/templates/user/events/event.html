@@ -1,4 +1,5 @@
 {% set active_page = "user.events" %}
+{% from './_helpers/macros/event_post_card.html' import event_post_card with context %}
 {% extends "./_helpers/layout/user_layout.html" %}
 {% block title %}
   Event

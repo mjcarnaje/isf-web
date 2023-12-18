@@ -113,7 +113,7 @@ CREATE TABLE IF NOT EXISTS event (
 );
 
 CREATE TABLE IF NOT EXISTS event_volunteer (
-    event_id INT NOT NULL REFERENCES event(id),
+    event_id INT NOT NULL REFERENCES event(id) ON DELETE CASCADE,
     volunteer_id INT NOT NULL REFERENCES user(id),
     status ENUM('Invited', 'Maybe', 'Going', 'Cannot Go') DEFAULT 'Invited',
     PRIMARY KEY (event_id, volunteer_id)
@@ -122,14 +122,14 @@ CREATE TABLE IF NOT EXISTS event_volunteer (
 CREATE TABLE IF NOT EXISTS event_post (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL REFERENCES user(id),
-    event_id INT NOT NULL REFERENCES event(id),
+    event_id INT NOT NULL REFERENCES event(id) ON DELETE CASCADE,
     post_text TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (event_id) REFERENCES event(id)
 );
 
 CREATE TABLE IF NOT EXISTS event_post_pictures (
-    event_post_id INT NOT NULL REFERENCES event_post(id),
+    event_post_id INT NOT NULL REFERENCES event_post(id)  ON DELETE CASCADE,
     photo_url VARCHAR(256) NOT NULL, 
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (event_post_id, photo_url),

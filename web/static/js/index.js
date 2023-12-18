@@ -43,7 +43,7 @@ function showToast(category, message, duration = 3000) {
 
 function setSelectedValue(selectElement, value) {
   for (var i = 0; i < selectElement.options.length; i++) {
-    if (selectElement.options[i].text == value) {
+    if (selectElement.options[i].value == value) {
       selectElement.options[i].selected = true;
       return;
     }

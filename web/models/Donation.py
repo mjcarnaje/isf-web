@@ -132,6 +132,7 @@ class Donation():
                 donation_type,
                 amount,
                 item_list,
+                remarks,
                 is_confirmed,
                 user.photo_url as user_photo_url,
                 user.first_name as user_first_name,

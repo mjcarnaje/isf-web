@@ -10,7 +10,7 @@ class AddDonationRequestValidation(FlaskForm):
     amount = IntegerField("Amount", widget=widgets.NumberInput(), validators=[
         validators.DataRequired(),
     ])
-    item_list = TextAreaField("Item List (Separate by comma ,)", validators=[validators.DataRequired()], render_kw={
-        'placeholder': "List all the items (separate by comma ,)",
+    item_list = TextAreaField("Wish list (Optional)", render_kw={
+        'placeholder': "Wish list (separate by comma ,)",
     })
     pictures = FieldList(StringField(), label="Current Status", validators=[validators.DataRequired()])

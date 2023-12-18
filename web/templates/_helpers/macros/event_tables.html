@@ -11,7 +11,9 @@
             <th class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">End Date</th>
             <th class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Status</th>
             <th class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900 whitespace-nowrap">Who can see</th>
-            <th class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900 whitespace-nowrap">Action</th>
+            {% if not is_user %}
+              <th class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900 whitespace-nowrap">Action</th>
+            {% endif %}
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
@@ -44,24 +46,26 @@
               </td>
               <td class="px-3 py-5 text-sm text-right text-gray-600 whitespace-nowrap">{{ event.status }}</td>
               <td class="px-3 py-5 text-sm text-right text-gray-600 whitespace-nowrap">{{ event.who_can_see_it }}</td>
-              <td class="px-3 py-5 text-sm text-right text-gray-600 whitespace-nowrap">
-                <div class="dropdown dropdown-end">
-                  <label tabindex="0">
-                    <div class="flex items-center justify-center w-6 h-6 rounded-full cursor-pointer hover:bg-gray-300 aspect-square">
-                      <i class="fa-solid fa-ellipsis"></i>
-                    </div>
-                  </label>
-                  <ul tabindex="0"
-                      class="dropdown-content z-[1] menu p-2 border bg-base-100 rounded-box w-32">
-                    <li>
-                      <a href="{{ url_for('admin.event.edit_event', id=event.id) }}">Edit</a>
-                    </li>
-                    <li>
-                      <button id="open-delete-modal" data-event-id="{{ event.id }}">Delete</button>
-                    </li>
-                  </ul>
-                </div>
-              </td>
+              {% if not is_user %}
+                <td class="px-3 py-5 text-sm text-right text-gray-600 whitespace-nowrap">
+                  <div class="dropdown dropdown-end">
+                    <label tabindex="0">
+                      <div class="flex items-center justify-center w-6 h-6 rounded-full cursor-pointer hover:bg-gray-300 aspect-square">
+                        <i class="fa-solid fa-ellipsis"></i>
+                      </div>
+                    </label>
+                    <ul tabindex="0"
+                        class="dropdown-content z-[1] menu p-2 border bg-base-100 rounded-box w-32">
+                      <li>
+                        <a href="{{ url_for('admin.event.edit_event', id=event.id) }}">Edit</a>
+                      </li>
+                      <li>
+                        <button id="open-delete-modal" data-event-id="{{ event.id }}">Delete</button>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              {% endif %}
             </tr>
           </tbody>
         {% endfor %}
