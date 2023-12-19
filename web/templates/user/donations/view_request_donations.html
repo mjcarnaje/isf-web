@@ -2,8 +2,8 @@
 {% extends "./_helpers/layout/user_layout.html" %}
 {% from './_helpers/macros/custom_input.html' import render_field %}
 {% from './_helpers/macros/multiple_photo_input.html' import render_multiple_photo_field with context %}
-{% from "./_helpers/macros/donation_request_donator.html" import donation_request_donator with context %}
 {% from "./_helpers/macros/empty_list.html" import empty_list %}
+{% from "./_helpers/macros/donation_request_donations.html" import donation_request_donations with context %}
 {% block title %}
   Ask for help
 {% endblock title %}
@@ -61,7 +61,7 @@
           <button id="add-in-kind-button"  class="text-white btn-sm btn btn-primary">Add In-Kind Donation</button>
         </div>
       {% endif %}
-      {% for donation in donations %}{{ donation_request_donator(donation, True) }}{% endfor %}
+      {{ donation_request_donations(donations, true) }}
     </div>
     {{ empty_list(donations, "No Donations Found.") }}
   </div>

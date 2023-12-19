@@ -50,12 +50,15 @@ class User(UserMixin):
                     continue
 
                 if key == "query":
-                    where_clauses.append("first_name LIKE %s")
-                    filter_params.append(f"%{value}%")
+                    where_clauses.append("first_name LIKE %s OR last_name LIKE %s OR email LIKE %s OR username LIKE %s")
+                    filter_params.extend([f"%{value}%", f"%{value}%", f"%{value}%", f"%{value}%"])
                     continue
     
                 where_clauses.append(f"{key} = %s")
                 filter_params.append(value)
+
+        where_clauses.append("username != %s")
+        filter_params.append("admin")
         
         where_clause = " AND ".join(where_clauses) if where_clauses else ""
 
@@ -69,7 +72,7 @@ class User(UserMixin):
 
         if where_clause:
             sql += f" WHERE {where_clause}"
-            
+        
         sql += " LIMIT %s OFFSET %s"
 
         cur = db.new_cursor(dictionary=True)

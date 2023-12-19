@@ -1,6 +1,6 @@
 {% from "./_helpers/macros/empty_list.html" import empty_list %}
 {% macro render_notifications(notifications, type) %}
-  <div class="flex flex-col gap-8">
+  <div class="flex flex-col w-full gap-8 mx-auto max-w-7xl">
     <h1 class="text-2xl font-bold">Notifications</h1>
     <div class="flex justify-end">
       <button id="mark-all-as-read" class="btn btn-sm">Mark all as read</button>
@@ -163,7 +163,7 @@
             if (statusElement) {
               statusElement.classList.remove("bg-primary-500");
               statusElement.classList.add("bg-transparent");
-              notificationElement.setAttribute("[data-is-read]", true)
+              notificationElement.setAttribute("data-is-read", true)
             }
           }
 

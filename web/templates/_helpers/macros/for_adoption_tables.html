@@ -17,7 +17,7 @@
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
           {% for adoption in adoptions %}
-            {% set href = url_for('admin.adoptions.adoption', id=adoption.id) %}
+            {% set href = url_for('admin.adoption.adoption', id=adoption.id) %}
             <tr class="transition-all duration-200 hover:cursor-pointer hover:bg-slate-50">
               <td class="py-5 pl-4 pr-3 text-sm whitespace-nowrap">
                 <div class="flex items-center">

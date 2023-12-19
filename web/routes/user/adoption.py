@@ -1,5 +1,5 @@
 from flask import (Blueprint, redirect, render_template, request, session,
-                   url_for)
+                   url_for, flash)
 from flask_login import current_user
 
 from ...config import Config
@@ -9,7 +9,7 @@ from ...utils import (get_active_filter_count, pagination,
                       user_verified_required)
 from ...validations import AdoptionValidation
 
-user_adoption_bp = Blueprint("adoptions", __name__, url_prefix='/adoptions')
+user_adoption_bp = Blueprint("adoption", __name__, url_prefix='/adoptions')
 
 @user_adoption_bp.route('', methods=['GET'])
 @user_verified_required
@@ -44,7 +44,7 @@ def adoptions():
             offset=offset,
             page_size=Config.DEFAULT_PAGE_SIZE,
             total_count=total_count,
-            base_url="user.adoptions.adoptions"
+            base_url="user.adoption.adoptions"
         ),
     )
 
@@ -58,16 +58,16 @@ def adopt_me(id):
 
   if form.validate_on_submit():
     application = Adoption(
-                        user_id=current_user.id,
-                        animal_id=animal.id, 
-                        reason_to_adopt=form.reason_to_adopt.data, 
-                        interview_preference=form.interview_preference.data, 
-                        interview_preferred_date=form.interview_preferred_date.data, 
-                        phone_number=form.phone_number.data,
-                        interview_preferred_time=form.interview_preferred_time.data
-                      )
+      user_id=current_user.id,
+      animal_id=animal.id, 
+      reason_to_adopt=form.reason_to_adopt.data, 
+      interview_preference=form.interview_preference.data, 
+      interview_preferred_date=form.interview_preferred_date.data, 
+      phone_number=form.phone_number.data,
+      interview_preferred_time=form.interview_preferred_time.data
+    )
     if active_application: 
-      application.update(application)
+        application.update(application)
     else:
       application_id =  application.insert(application)
       notification = Notification(
@@ -77,12 +77,10 @@ def adopt_me(id):
         user_who_fired_event_id=current_user.id,
         user_to_notify_id=1
       )
-      
-    Notification.insert_multiple([notification])
-
+      Notification.insert_multiple([notification])
 
     return redirect(url_for('user.applications'))
-
+    
   if not form.is_submitted() and active_application:
     form.id.data = active_application.id
     form.reason_to_adopt.data = active_application.reason_to_adopt  

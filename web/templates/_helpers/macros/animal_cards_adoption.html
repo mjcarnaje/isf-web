@@ -43,7 +43,7 @@
             {% endif %}
           </span>
         </div>
-        <a href="{{ url_for('user.adoptions.adopt_me', id=animal.id) }}"
+        <a href="{{ url_for('user.adoption.adopt_me', id=animal.id) }}"
            class="w-full btn {{ '' if animal.is_applied else 'btn-primary text-white' }}">
           {{ "Applied" if animal.is_applied else 'Apply' }}
         </a>

@@ -68,11 +68,9 @@ def view_request_donations(id):
         user_id=current_user.id
       )
       new_donation.insert(new_donation)
-      return redirect(url_for("user.donate.view_request_donations", id=id))
+      flash("Successfully added a donation", "success")
   
     if in_kind_form.validate_on_submit() and formid == 'in-kind':
-      print("HE>LOOOO")
-      print(in_kind_form.item_list.data)
       new_donation = DonationRequestDonation(
         item_list=in_kind_form.item_list.data,
         donation_request_id=id,
@@ -81,7 +79,7 @@ def view_request_donations(id):
         user_id=current_user.id
       )
       new_donation.insert(new_donation)
-      return redirect(url_for("user.donate.view_request_donations", id=id))
+      flash("Successfully added a donation", "success")
   
     data = AskForHelp.find_one(id)
     donations = DonationRequestDonation.find_all_by_id(id)

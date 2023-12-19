@@ -14,9 +14,9 @@
   },
   {
     'name': 'Adoptions',
-    'url': url_for('user.adoptions.adoptions'),
+    'url': url_for('user.adoption.adoptions'),
     'icon': 'fa-solid fa-hands-holding',
-    'page': 'user.adoptions'
+    'page': 'user.adoption'
   },
   {
     'name': 'Events',
@@ -29,6 +29,12 @@
     'url': url_for('user.donate.index'),
     'icon': 'fa-solid fa-hand-holding-heart',
     'page': 'user.donate'
+  },
+  {
+    'name': 'Join Organization',
+    'url': url_for('user.be_a_member'),
+    'icon': 'fa-solid fa-hand-back-fist',
+    'page': 'user.be_a_member'
   },
 ] %}
 {% set my_navigations = [

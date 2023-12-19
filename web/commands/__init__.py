@@ -8,8 +8,6 @@ from .UserSeeder import UserSeeder
 from .EventSeeder import EventSeeder
 from .utils import get_collection_photos
 
-UNSPLASH_SECRET_KEY = "WvilNcO0zzU2UTTZXG1LjSfZ9NKfd6zgYyCC5p8t_a8"
-
 def set_up_commands(app: Flask):
     @app.cli.command("reset")
     def reset_db():

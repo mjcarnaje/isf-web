@@ -1,3 +1,4 @@
+from flask import current_app
 import datetime
 
 from ..database import db
@@ -45,6 +46,7 @@ class Adoption:
 
     @classmethod
     def insert(cls, application):
+        current_app.logger.info("Adding adoption..")
         sql = """
             INSERT INTO adoption (
                 user_id,
@@ -83,6 +85,7 @@ class Adoption:
         cur = db.new_cursor(dictionary=True)
         cur.execute(sql, params)
         db.connection.commit()
+        current_app.logger.info("Done!")
         return cur.lastrowid
 
     @classmethod

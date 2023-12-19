@@ -37,3 +37,4 @@ class Config:
     ),
 
     DEFAULT_PAGE_SIZE = 12
+    IS_CELERY_AVAILABLE = False

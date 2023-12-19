@@ -24,7 +24,7 @@ class AdoptionValidation(FlaskForm):
     validators.DataRequired(),
   ])
   phone_number = StringField("Phone Number", validators=[
-      validators.Length(min=10, max=11),
+      validators.Length(min=10, max=12),
   ])  
   interview_preferred_time = SelectField("Interview Preffered Time", choices=get_select_time('8:00 AM', '9:00 PM', 30), validate_choice=False)
   reason_to_adopt = TextAreaField("Why do you want to adopt?", validators=[

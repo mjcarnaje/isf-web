@@ -25,13 +25,18 @@ CREATE TABLE IF NOT EXISTS notification_settings (
     add_donation_in_kind_web BOOLEAN DEFAULT 1,
     donation_status_update_web BOOLEAN DEFAULT 1,
     event_invited_web BOOLEAN DEFAULT 1,
+    join_org_request_web BOOLEAN DEFAULT 1,
+    confirm_join_org_request_web BOOLEAN DEFAULT 1,
+    reject_join_org_request_web BOOLEAN DEFAULT 1,
 
     adoption_request_email BOOLEAN DEFAULT 1,
     adoption_status_update_email BOOLEAN DEFAULT 1,
     add_donation_money_email BOOLEAN DEFAULT 1,
     add_donation_in_kind_email BOOLEAN DEFAULT 1,
     donation_status_update_email BOOLEAN DEFAULT 1,
-    event_invited_email BOOLEAN DEFAULT 1,
+    join_org_request_email BOOLEAN DEFAULT 1,
+    confirm_join_org_request_email BOOLEAN DEFAULT 1,
+    reject_join_org_request_email BOOLEAN DEFAULT 1,
     
     FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
 );
@@ -63,28 +68,28 @@ VALUES
 
 --;;;;--
 
-INSERT INTO user (email, username, first_name, last_name, gender, password, is_verified, contact_number)
-VALUES ('admin@isf.com', 'admin', 'Admin', 'User', 'Male', 'pbkdf2:sha256:600000$41AT9RlTuc6cKm5B$b6c91de61e1304dd5fd520c1465d097bf297441c00434ec650fed81c72013f8b', 1, '1234567890');
+CREATE TRIGGER add_notification_settings AFTER INSERT ON user
+FOR EACH ROW
+BEGIN
+    INSERT INTO notification_settings (user_id) VALUES (NEW.id);
+END
+
+--;;;;--
+
+INSERT INTO user (email, username, first_name, last_name, gender, password, is_verified, contact_number, photo_url)
+VALUES ('admin@isf.com', 'admin', 'Admin', 'User', 'Male', 'pbkdf2:sha256:600000$41AT9RlTuc6cKm5B$b6c91de61e1304dd5fd520c1465d097bf297441c00434ec650fed81c72013f8b', 1, '1234567890', 'isf/logo');
 
 --;;;;--
 
 INSERT INTO user_role (user_id, role_name) VALUES ((SELECT id FROM user WHERE email = 'admin@isf.com'), 'Admin');
 
 --;;;;--
+
 CREATE TRIGGER assign_member_role AFTER INSERT ON user
 FOR EACH ROW
 BEGIN
-    INSERT INTO user_role (user_id, role_name) VALUES (NEW.id, 'Member');
+    INSERT INTO user_role (user_id, role_name) VALUES (NEW.id, 'Non-Member');
 END;
-
---;;;;--
-
-
-CREATE TRIGGER add_notification_settings AFTER INSERT ON user
-FOR EACH ROW
-BEGIN
-    INSERT INTO notification_settings (user_id) VALUES (NEW.id);
-END
 
 --;;;;--
 
@@ -140,8 +145,36 @@ CREATE TABLE IF NOT EXISTS adoption_status_history (
     status ENUM('Pending', 'Interview', 'Approved', 'Rejected', 'Turnovered') NOT NULL,
     remarks TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (adoption_id) REFERENCES adoption(id)
 );
+
+--;;;;--
+
+
+CREATE TABLE member_application (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    status ENUM('Confirmed', 'Rejected', 'Pending') DEFAULT 'Pending',
+    join_reason TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
+);
+
+--;;;;--
+
+
+CREATE TRIGGER confirm_member_application
+AFTER UPDATE ON member_application
+FOR EACH ROW
+BEGIN
+    IF NEW.status = 'Confirmed' THEN
+        UPDATE user_role
+        SET role_name = 'Member'
+        WHERE user_id = NEW.user_id;
+    END IF;
+END;
+
 
 --;;;;--
 
@@ -245,12 +278,12 @@ CREATE TABLE IF NOT EXISTS donation_request (
 --;;;;--
 
 
-CREATE TABLE IF NOT EXISTS donation_request_update_pictures (
-    donation_request_update_id INT NOT NULL REFERENCES donation_request_update(id),
+CREATE TABLE IF NOT EXISTS donation_request_pictures (
+    donation_request_id INT NOT NULL REFERENCES donation_request(id),
     photo_url VARCHAR(256) NOT NULL, 
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (donation_request_update_id, photo_url),
-    CONSTRAINT unique_donation_request_update_photo_url UNIQUE (donation_request_update_id, photo_url) -- Add CONSTRAINT here
+    PRIMARY KEY (donation_request_id, photo_url),
+    CONSTRAINT unique_donation_request_photo_url UNIQUE (donation_request_id, photo_url)
 );
 
 --;;;;--
@@ -308,12 +341,13 @@ CREATE TABLE IF NOT EXISTS donation_request_donation_pictures (
 
 CREATE TABLE IF NOT EXISTS notification (
     id VARCHAR(32) PRIMARY KEY,
-    type ENUM('ADOPTION_REQUEST', 'ADOPTION_STATUS_UPDATE', 'ADD_DONATION_MONEY', 'ADD_DONATION_IN_KIND', 'DONATION_STATUS_UPDATE', 'EVENT_INVITED'),
+    type ENUM('ADOPTION_REQUEST', 'ADOPTION_STATUS_UPDATE', 'ADD_DONATION_MONEY', 'ADD_DONATION_IN_KIND', 'DONATION_STATUS_UPDATE', 'EVENT_INVITED', 'JOIN_ORG_REQUEST', 'CONFIRM_JOIN_ORG_REQUEST', 'REJECT_JOIN_ORG_REQUEST'),
     animal_id INT,
     event_id INT,
     adoption_id INT,
     adoption_status_history_id INT,
     donation_id INT,
+    member_application_id INT,
     user_who_fired_event_id INT NOT NULL,
     user_to_notify_id INT NOT NULL,
     is_read BOOLEAN DEFAULT false,
@@ -323,6 +357,7 @@ CREATE TABLE IF NOT EXISTS notification (
     FOREIGN KEY (adoption_status_history_id) REFERENCES adoption_status_history(id),
     FOREIGN KEY (donation_id) REFERENCES donation(id),
     FOREIGN KEY (event_id) REFERENCES event(id),
+    FOREIGN KEY (member_application_id) REFERENCES member_application(id),
     FOREIGN KEY (user_who_fired_event_id) REFERENCES user(id),
     FOREIGN KEY (user_to_notify_id) REFERENCES user(id),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,

@@ -5,7 +5,7 @@ from ...enums import NotificationType
 from ...models import Adoption, Animal, Notification
 from ...utils import admin_required, pagination
 
-adoption_bp = Blueprint("adoptions", __name__, url_prefix='/adoptions')
+adoption_bp = Blueprint("adoption", __name__, url_prefix='/adoptions')
 
 @adoption_bp.route('', methods=['GET'])
 @admin_required
@@ -29,7 +29,7 @@ def adoptions():
             offset=offset,
             page_size=Config.DEFAULT_PAGE_SIZE,
             total_count=total_count,
-            base_url="admin.adoptions.adoptions"
+            base_url="admin.adoption.adoptions"
         ),
     )
 

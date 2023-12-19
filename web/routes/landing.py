@@ -167,13 +167,14 @@ def enter_new_email():
 
 @landing_bp.route('/login', methods=['GET', 'POST'])
 @anonymous_required
-def login():
+def login():  
   form = UserLoginValidation()
   
   if form.validate_on_submit():
     user = User.find_by_username(username=form.username.data)
 
     if user and check_password_hash(user.password, form.password.data):
+      session['view_type'] = 'card'
       login_user(user, remember=True)
       
       next_page = request.args.get("next")
@@ -182,10 +183,6 @@ def login():
          return redirect(next_page)
       
       return redirect(url_for('user.index'))
-
-  if not form.is_submitted():
-    form.username.data = "member"
-    form.password.data = "member"  
      
   return render_template('user/login.html', form=form)
   

@@ -7,6 +7,7 @@ from ..enums import NotificationType
 from ..utils import format_currency, pretty_date, get_image
 from .NotificationSettings import NotificationSettings
 from uuid import uuid4
+from ..config import Config
 
 class Notification:
     def __init__(self, **kwargs):
@@ -53,6 +54,8 @@ class Notification:
         self.event_name = kwargs.get('event_name')
         self.event_cover_photo = kwargs.get('event_cover_photo')
 
+        self.member_application_id = kwargs.get('member_application_id')
+        
         self.created_at = pretty_date(kwargs.get('created_at', datetime.datetime.now()))
         self.updated_at = pretty_date(kwargs.get('updated_at', datetime.datetime.now()))
         
@@ -150,6 +153,7 @@ class Notification:
         email_notifications_ids = []
 
         for notification in notifications:
+            current_app.logger.info("Filtering notification with notification settings..")
             user_id = notification.user_to_notify_id
             notif_type = notification.type.lower()
             result = NotificationSettings.find_one(user_id=user_id)
@@ -194,6 +198,7 @@ class Notification:
         notification_email_ids = []
 
         for notification in notifications:
+            current_app.logger.info("Adding notifications..")
             id = uuid4().hex
             params = {
                 'id': id,
@@ -235,23 +240,24 @@ class Notification:
 
         db.connection.commit()
 
-        from ..utils import send_notification_email
+        if Config.IS_CELERY_AVAILABLE:
+            from ..utils import send_notification_email
 
-        for notification_id in notification_email_ids:
-            current_app.logger.info("Sending Notification Email..")
-            result = cls.find_one(notification_id=notification_id)
-            send_notification_email.delay(
-                subject=NotificationType[result.type].get_email_subject(), 
-                recipient_email=result.notified_email, 
-                title=NotificationType[result.type].get_email_title(), 
-                first_name=result.notified_first_name, 
-                message=result.message,
-                preview_image_url=get_image(result.preview_image_url),
-                sender_name=result.notifier_first_name,
-                sender_email=result.notifier_email,
-                button_text="",
-                button_link=""
-            )
+            for notification_id in notification_email_ids:
+                current_app.logger.info("Sending Notification Email..")
+                result = cls.find_one(notification_id=notification_id)
+                send_notification_email.delay(
+                    subject=NotificationType[result.type].get_email_subject(), 
+                    recipient_email=result.notified_email, 
+                    title=NotificationType[result.type].get_email_title(), 
+                    first_name=result.notified_first_name, 
+                    message=result.message,
+                    preview_image_url=get_image(result.preview_image_url),
+                    sender_name=result.notifier_first_name,
+                    sender_email=result.notifier_email,
+                    button_text="",
+                    button_link=""
+                )
         
     
     @classmethod
@@ -372,6 +378,8 @@ class Notification:
                 donation ON notification.donation_id = donation.id
             LEFT JOIN 
                 event ON notification.event_id = event.id
+            LEFT JOIN 
+                member_application ON notification.member_application_id = member_application.id
         """
 
         if where_clause:
@@ -445,8 +453,14 @@ class Notification:
                 message += "Donate updated"
             case NotificationType.EVENT_INVITED.value:
                 message += f"You have been invited to {info['event_name']}"
+            case NotificationType.JOIN_ORG_REQUEST.value:
+                message += f"{full_name} has requested to join the organization."
+            case NotificationType.CONFIRM_JOIN_ORG_REQUEST.value:
+                message += f"Your request to join the organization has been confirmed."
+            case NotificationType.REJECT_JOIN_ORG_REQUEST.value:
+                message += f"Unfortunately, your request to join the organization has been rejected."
             case _:
-                message += "Unkown message"
+                message += "You have received a notification of an unspecified type."
         
         return message
 
@@ -460,39 +474,46 @@ class Notification:
         match notification_type:
             case NotificationType.ADOPTION_REQUEST.value:
                 if is_admin:
-                    redirect_url = url_for("admin.adoptions.adoption", id=info['animal_id'])
+                    redirect_url = url_for("admin.adoption.adoption", id=info['animal_id'])
                 else:
-                    redirect_url = url_for("user.adoptions.adopt_me", id=info['animal_id'])
+                    redirect_url = url_for("user.adoption.adopt_me", id=info['animal_id'])
             case NotificationType.ADOPTION_STATUS_UPDATE.value:
                 if is_admin:
-                    redirect_url = url_for("admin.adoptions.adoption", id=info['animal_id'])
+                    redirect_url = url_for("admin.adoption.adoption", id=info['animal_id'])
                 else:
-                    redirect_url = url_for("user.adoptions.adopt_me", id=info['animal_id'])
+                    redirect_url = url_for("user.adoption.adopt_me", id=info['animal_id'])
                 
             case NotificationType.ADD_DONATION_MONEY.value:
                 if is_admin:
-                    redirect_url = url_for("admin.adoptions.adoption", id=info['donation_id'])
+                    redirect_url = url_for("admin.adoption.adoption", id=info['donation_id'])
                 else:
-                    redirect_url = url_for("user.adoptions.adopt_me", id=info['donation_id'])
+                    redirect_url = url_for("user.adoption.adopt_me", id=info['donation_id'])
             case NotificationType.ADD_DONATION_IN_KIND.value:
                 if is_admin:
-                    redirect_url = url_for("admin.adoptions.adoption", id=info['donation_id'])
+                    redirect_url = url_for("admin.adoption.adoption", id=info['donation_id'])
                 else:
-                    redirect_url = url_for("user.adoptions.adopt_me", id=info['donation_id'])
+                    redirect_url = url_for("user.adoption.adopt_me", id=info['donation_id'])
             case NotificationType.DONATION_STATUS_UPDATE.value:
                 if is_admin:
-                    redirect_url = url_for("admin.adoptions.adoption", id=info['donation_id'])
+                    redirect_url = url_for("admin.adoption.adoption", id=info['donation_id'])
                 else:
-                    redirect_url = url_for("user.adoptions.adopt_me", id=info['donation_id'])
+                    redirect_url = url_for("user.adoption.adopt_me", id=info['donation_id'])
             case NotificationType.EVENT_INVITED.value:
                 if is_admin:
                     redirect_url = url_for("admin.event.view_event", id=info['event_id'])
                 else:
                     redirect_url = url_for("user.events.view_event", id=info['event_id'])
+            case NotificationType.JOIN_ORG_REQUEST.value:
+                    if is_admin:
+                        redirect_url = url_for("admin.member_application.member_applications")
+            case NotificationType.CONFIRM_JOIN_ORG_REQUEST.value:
+                    redirect_url = url_for("user.be_a_member")
+            case NotificationType.REJECT_JOIN_ORG_REQUEST.value:
+                    redirect_url = url_for("user.be_a_member")
             case _:
                 if is_admin:
-                    redirect_url = url_for("admin.adoptions.adoption", id=info['donation_id'])
+                    redirect_url = url_for("admin.adoption.adoption", id=info['donation_id'])
                 else:
-                    redirect_url = url_for("user.adoptions.adopt_me", id=info['donation_id'])        
+                    redirect_url = url_for("user.adoption.adopt_me", id=info['donation_id'])        
         
         return redirect_url

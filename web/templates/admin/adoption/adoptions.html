@@ -1,4 +1,4 @@
-{% set active_page = "admin.adoptions" %}
+{% set active_page = "admin.adoption" %}
 {% extends "./_helpers/layout/admin_layout.html" %}
 {% from "./_helpers/macros/for_adoption_tables.html" import for_adoption_tables with context %}
 {% from "./_helpers/macros/pagination_buttons.html" import pagination_buttons with context %}
@@ -6,7 +6,7 @@
   For Adoption Animals
 {% endblock title %}
 {% block content %}
-  <div class="w-full mx-auto space-y-8">
+  <div class="flex flex-col w-full gap-8 mx-auto max-w-7xl">
     <h1 class="text-2xl font-bold">For Adoption Animals</h1>
     {{ for_adoption_tables(animals) }}
     {{ pagination_buttons() }}

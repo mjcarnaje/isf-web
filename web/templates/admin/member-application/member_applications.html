@@ -1,0 +1,148 @@
+{% set active_page = "admin.member_applications" %}
+{% extends "./_helpers/layout/admin_layout.html" %}
+{% from "./_helpers/macros/animal_cards.html" import animal_cards with context %}
+{% from "./_helpers/macros/animal_tables.html" import animal_tables with context %}
+{% from "./_helpers/macros/user_filters.html" import user_filters with context %}
+{% from "./_helpers/macros/pagination_buttons.html" import pagination_buttons with context %}
+{% from "./_helpers/macros/empty_list.html" import empty_list %}
+{% block title %}
+  Admin - Users
+{% endblock title %}
+{% block content %}
+  <div class="flex flex-col w-full gap-8 mx-auto max-w-7xl">
+    {{ user_filters() }}
+    <div class="sm:flex sm:items-center">
+      <div class="sm:flex-auto">
+        <h1 class="text-2xl font-bold leading-6 text-gray-900">Member Applications ({{ pagination['total_count'] }})</h1>
+      </div>
+    </div>
+    <div class="grid grid-cols-3 gap-8">
+      {% for user in users %}
+        <dialog id="confirm_modal{{ loop.index }}"
+                class="modal modal-bottom sm:modal-middle">
+          <div class="modal-box">
+            <h2 class="mb-4 text-2xl font-bold">Confirm Membership</h2>
+            <p class="mb-4">Are you sure you want to confirm this user's membership?</p>
+            <div class="flex justify-end">
+              <button onclick="confirm_modal{{ loop.index }}.close()"
+                      class="px-4 py-2 mr-4 font-bold text-gray-800 bg-gray-300 rounded-full hover:bg-gray-400">
+                Cancel
+              </button>
+              <button id="confirm-application"
+                      data-application-id="{{ user.id }}"
+                      data-user-id="{{ user.user_id }}"
+                      class="px-4 py-2 font-bold text-white bg-green-500 rounded-full hover:bg-green-600">
+                Confirm Membership
+              </button>
+            </div>
+          </div>
+        </dialog>
+        <dialog id="reject_modal{{ loop.index }}"
+                class="modal modal-bottom sm:modal-middle">
+          <div class="modal-box">
+            <h2 class="mb-4 text-2xl font-bold">Reject User</h2>
+            <p class="mb-4">Are you sure you want to reject this user's application?</p>
+            <div class="flex justify-end">
+              <button onclick="reject_modal{{ loop.index }}.close()"
+                      class="px-4 py-2 mr-4 font-bold text-gray-800 bg-gray-300 rounded-full hover:bg-gray-400">
+                Cancel
+              </button>
+              <button id="reject-application"
+                      data-application-id="{{ user.id }}"
+                      data-user-id="{{ user.user_id }}"
+                      class="px-4 py-2 font-bold text-white bg-red-500 rounded-full hover:bg-red-600">
+                Reject User
+              </button>
+            </div>
+          </div>
+        </dialog>
+        <dialog id="show_more_modal{{ loop.index }}"
+                class="modal modal-bottom sm:modal-middle">
+          <div class="w-full max-w-3xl modal-box">
+            <div class="space-y-8">
+              <div class="w-8/12 mx-auto border rounded-full bg-gray-50">
+                <img src="{{ get_image(user.photo_url) }}"
+                     class="object-cover w-full rounded-full aspect-square"
+                     alt="User's photo"
+                     width="auto"
+                     height="auto" />
+              </div>
+              <p class="px-4 text-justify whitespace-pre-line">{{ user.join_reason }}</p>
+              <div class="modal-action">
+                <form method="dialog">
+                  <!-- if there is a button in form, it will close the modal -->
+                  <button class="btn">Close</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </dialog>
+        <div class="flex flex-col col-span-1 gap-4 px-3 pt-8 pb-3 bg-white border shadow rounded-xl">
+          <div class="w-8/12 mx-auto border rounded-full bg-gray-50">
+            <img src="{{ get_image(user.photo_url) }}"
+                 class="object-cover w-full rounded-full aspect-square"
+                 alt="User's photo"
+                 width="auto"
+                 height="auto" />
+          </div>
+          <div class="flex flex-col items-center gap-4">
+            <div class="flex items-center gap-2">
+              <h1 class="text-xl font-bold">{{ user.first_name }} {{ user.last_name }}</h1>
+            </div>
+            <p class="px-4 text-center">
+              <span>{{ user.join_reason | truncate(100) }}</span>
+              {% if user.join_reason | length > 100 %}
+                <btn class="btn btn-xs" onclick="show_more_modal{{ loop.index }}.showModal()">See more</btn>
+              {% endif %}
+            </p>
+            {% if user.status == "Pending" %}
+              <div class="flex items-center w-full gap-2 pt-3">
+                <button type="button"
+                        onclick="confirm_modal{{ loop.index }}.showModal()"
+                        class="flex-1 text-white btn btn-success">Confirm</button>
+                <button type="button"
+                        onclick="reject_modal{{ loop.index }}.showModal()"
+                        class="flex-1 text-white btn btn-error">Reject</button>
+              </div>
+            {% else %}
+              <button class="w-full btn">{{ user.status }}</button>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    {{ empty_list(users) }}
+    {{ pagination_buttons() }}
+  </div>
+  <script>
+  const confirmApplicationButtons = document.querySelectorAll("#confirm-application");
+  confirmApplicationButtons.forEach((button) => {
+    button.addEventListener("click", function() {
+      const applicationId = this.getAttribute("data-application-id");
+      const userId = this.getAttribute("data-user-id");
+
+      fetch(`/admin/member-applications/${applicationId}/confirm?user_id=${userId}}%}`, {
+        method: "PUT",
+        headers: {
+          "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
+        }
+      }).then(() => window.location.reload())
+    })
+  })
+  
+  const rejectApplicationButtons = document.querySelectorAll("#reject-application");
+  rejectApplicationButtons.forEach((button) => {
+    button.addEventListener("click", function() {
+      const applicationId = this.getAttribute("data-application-id");
+      const userId = this.getAttribute("data-user-id");
+
+      fetch(`/admin/member-applications/${applicationId}/reject?user_id=${userId}`, {
+        method: "PUT",
+        headers: {
+          "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
+        }
+      }).then(() => window.location.reload())
+    })
+  })
+  </script>
+{% endblock content %}

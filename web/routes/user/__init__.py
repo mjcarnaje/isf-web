@@ -2,14 +2,15 @@ from flask import Blueprint, render_template, redirect, url_for, request, sessio
 from flask_login import current_user, logout_user
 from ...config import Config
 
-from ...models import Adoption, Donation, Notification, NotificationSettings, Event, User
+from ...models import Adoption, Donation, Notification, NotificationSettings, Event, User, MemberApplication
 from ...utils import user_verified_required, get_active_filter_count, pagination
 
 from .animal import user_animal_bp
 from .event import user_event_bp
 from .donation import user_donation_bp
 from .adoption import user_adoption_bp
-from ...validations import NotificationSettingsValidation, EditProfileValidation
+from ...validations import NotificationSettingsValidation, EditProfileValidation, MemberApplicationValidation
+from ...enums import NotificationType
 
 user_bp = Blueprint("user", __name__, url_prefix='/user')
 
@@ -37,13 +38,13 @@ def notifications():
    )
   return render_template('/user/notifications.html', notifications=notifications)
 
-@user_bp.route('/notifications/mark-as-read/<string:id>', methods=['PUT'])
+@user_bp.route('/notifications/mark-as-read/<id>', methods=['PUT'])
 @user_verified_required
 def mark_as_read_notification(id):
    Notification.mark_as_read(notification_id=id, user_id=current_user.id)
    return "success"
 
-@user_bp.route('/notifications/mark-as-archived/<string:id>', methods=['PUT'])
+@user_bp.route('/notifications/mark-as-archived/<id>', methods=['PUT'])
 @user_verified_required
 def mark_as_archived_notification(id):
    Notification.mark_as_archived(notification_id=id, user_id=current_user.id)
@@ -163,6 +164,28 @@ def notifications_settings():
 @user_verified_required
 def view_profile():
   return render_template('user/view_profile.html')
+
+@user_bp.route('be-a-member', methods=['GET', 'POST'])
+@user_verified_required
+def be_a_member():
+  form = MemberApplicationValidation()
+
+  if form.validate_on_submit():
+    member_application = MemberApplication(user_id=current_user.id, join_reason=form.join_reason.data)
+    member_application_id = member_application.insert(member_application)
+    print(member_application_id)
+    notification = Notification(
+      type=NotificationType.JOIN_ORG_REQUEST.value,
+      member_application_id=member_application_id,
+      user_who_fired_event_id=current_user.id,
+      user_to_notify_id=1
+    )
+    Notification.insert_multiple([notification])
+    flash("You have sumbitted your application!", "success")
+  
+  existing_application = MemberApplication.find_by_user_id(current_user.id)
+
+  return render_template('user/be_a_member.html', form=form, existing_application=existing_application)
 
 @user_bp.route("/logout")
 def logout():

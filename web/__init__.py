@@ -14,7 +14,7 @@ from .socket import socketio
 from .utils import celery_init_app, currency, get_image, pretty_date as _pretty_date, sanitize_comma_separated as _sanitize_comma_separated
 
 
-def create_app():    
+def  create_app():    
     app = Flask(__name__)
 
     app.config.from_object(Config)

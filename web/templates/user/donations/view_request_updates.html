@@ -27,7 +27,7 @@
     </div>
     <div class="flex flex-col items-center gap-4">
       {% for post in posts %}{{ donation_request_update(post) }}{% endfor %}
-      {{ event_list(posts, "No Posts Found.") }}
+      {{ empty_list(posts, "No Posts Found.") }}
     </div>
   </div>
   <script>

@@ -1,7 +1,7 @@
 {% set active_page = "admin.ask_for_help.index" %}
 {% extends "./_helpers/layout/admin_layout.html" %}
 {% from "./_helpers/macros/pagination_buttons.html" import pagination_buttons with context %}
-{% from "./_helpers/macros/donation_request_donator.html" import donation_request_donator with context %}
+{% from "./_helpers/macros/donation_request_donations.html" import donation_request_donations with context %}
 {% from "./_helpers/macros/empty_list.html" import empty_list %}
 {% block title %}
   Ask for help
@@ -24,7 +24,7 @@
       </a>
     </div>
     <div class="grid items-center grid-cols-2 gap-4">
-      {% for donation in donations %}{{ donation_request_donator(donation) }}{% endfor %}
+      {{ donation_request_donations(donations) }}
       {{ empty_list(donations, "No Donations Found.") }}
     </div>
   </div>

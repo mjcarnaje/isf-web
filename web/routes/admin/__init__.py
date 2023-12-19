@@ -15,6 +15,7 @@ from .donation import donations_bp
 from .event import event_bp
 from .ask_for_help import ask_for_help_bp
 from .user import user_bp
+from .member_application import member_application_bp
 
 admin_bp.register_blueprint(ask_for_help_bp)
 admin_bp.register_blueprint(animal_bp)
@@ -22,6 +23,7 @@ admin_bp.register_blueprint(event_bp)
 admin_bp.register_blueprint(donations_bp)
 admin_bp.register_blueprint(adoption_bp)
 admin_bp.register_blueprint(user_bp)
+admin_bp.register_blueprint(member_application_bp)
 
 @admin_bp.route('/', methods=['GET'])
 @admin_required
@@ -45,13 +47,13 @@ def notifications():
       notifications=notifications
    )
 
-@admin_bp.route('/notifications/mark-as-read/<int:id>', methods=['PUT'])
+@admin_bp.route('/notifications/mark-as-read/<id>', methods=['PUT'])
 @admin_required
 def mark_as_read_notifcation(id):
    Notification.mark_as_read(notification_id=id, user_id=current_user.id)
    return "success"
 
-@admin_bp.route('/notifications/mark-as-archived/<int:id>', methods=['PUT'])
+@admin_bp.route('/notifications/mark-as-archived/<id>', methods=['PUT'])
 @admin_required
 def mark_as_archived_notification(id):
    Notification.mark_as_archived(notification_id=id, user_id=current_user.id)
@@ -71,7 +73,9 @@ def login():
     admin = User.find_by_username(username=form.username.data)
 
     if admin and check_password_hash(admin.password, form.password.data):
+      session['view_type'] = 'card'
       login_user(admin, remember=True)
+
       
       next_page = request.args.get("next")
 
@@ -79,10 +83,6 @@ def login():
          return redirect(next_page)
       
       return redirect(url_for('landing.index'))
-
-  if not form.is_submitted():
-      form.username.data = "isf-team"
-      form.password.data = "admin"  
       
      
   return render_template('admin/login.html', form=form)

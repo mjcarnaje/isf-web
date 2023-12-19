@@ -79,6 +79,7 @@ class DonationRequestUpdate():
         sql = """
             SELECT
                 post.*,
+                post.id as id,
                 CONCAT(user.first_name, ' ', user.last_name) as user_name,
                 user.photo_url as user_photo_url,
                 GROUP_CONCAT(pictures.photo_url) AS photo_urls

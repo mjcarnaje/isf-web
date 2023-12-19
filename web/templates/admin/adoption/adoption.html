@@ -1,11 +1,11 @@
-{% set active_page = "admin.adoptions" %}
+{% set active_page = "admin.adoption" %}
 {% from './_helpers/macros/adoption_status_badge.html' import status_badge %}
 {% extends "./_helpers/layout/admin_layout.html" %}
 {% block title %}
   Animal
 {% endblock title %}
 {% block content %}
-  <div class="flex flex-col items-center justify-center w-full gap-16">
+  <div class="flex flex-col items-center justify-center w-full gap-8 mx-auto max-w-7xl">
     <div class="flex w-full gap-8 p-8 bg-white border rounded-2xl">
       <div>
         <img src="{{ get_image(animal.photo_url) }}"

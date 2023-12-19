@@ -1,4 +1,4 @@
-{% set active_page = "user.adoptions" %}
+{% set active_page = "user.adoption" %}
 {% from './_helpers/macros/custom_input.html' import render_field %}
 {% from './_helpers/macros/adoption_status_badge.html' import status_badge %}
 {% extends "./_helpers/layout/user_layout.html" %}
@@ -53,7 +53,7 @@
       {{ render_field(form.reason_to_adopt) }}
       <div class="flex justify-end gap-4">
         <button type="button" id="cancel-btn" class="hidden btn">Cancel</button>
-        <button class="text-white btn btn-primary">Apply</button>
+        <button type="submit" class="text-white btn btn-primary">Apply</button>
       </div>
     </form>
   </div>

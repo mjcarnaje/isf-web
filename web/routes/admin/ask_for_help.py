@@ -48,6 +48,7 @@ def view_request(id):
     if request.method == "POST":
         try:
             AskForHelp.set_to_fulfilled(id)
+            flash("Successfuly fulfilled the request!", "success")
             return jsonify({"status": "success", "message": "Donation request confirmed successfully!"})    
         except Exception as e:
             current_app.logger.error(e)
@@ -103,9 +104,10 @@ def add_request():
 def confirm_donation(id, donator_id):
     try:
         DonationRequestDonation.set_to_confirmed(id=donator_id)
+        flash("Donation request confirmed successfully!", "success")
         return jsonify({"status": "success", "message": "Donation request confirmed successfully!"})
     except Exception as e:
-        current_app.logger.error(e)
+        flash("Error confirming donation request. Please try again later.", "error")
         return jsonify({"status": "error", "message": "Error confirming donation request. Please try again later."})
 
 @ask_for_help_bp.route('/<id>/donations/reject/<donator_id>', methods=['POST'])
@@ -113,9 +115,10 @@ def confirm_donation(id, donator_id):
 def reject_donation(id, donator_id):
     try:
         DonationRequestDonation.set_to_rejected(id=donator_id)
+        flash("Donation request rejected successfully!")
         return jsonify({"status": "success", "message": "Donation request rejected successfully!"})
     except Exception as e:
-        current_app.logger.error(e)
+        flash("Error rejecting donation request. Please try again later.", "error")
         return jsonify({"status": "error", "message": "Error rejecting donation request. Please try again later."})
 
 

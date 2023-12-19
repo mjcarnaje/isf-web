@@ -1,0 +1,142 @@
+{% macro donation_request_donations(donations, is_user=False) %}
+  {% for donation in donations %}
+    <dialog id="confirm_modal{{ loop.index }}"
+            class="modal modal-bottom sm:modal-middle">
+      <div class="modal-box">
+        <h2 class="mb-4 text-2xl font-bold">Confirm Donation</h2>
+        <p class="mb-4">Are you sure you want to confirm this donation?</p>
+        <div class="flex justify-end">
+          <button onclick="confirm_modal{{ loop.index }}.close()"
+                  class="px-4 py-2 mr-4 font-bold text-gray-800 bg-gray-300 rounded-full hover:bg-gray-400">
+            Cancel
+          </button>
+          <button id="confirm-donation"
+                  data-id="{{ donation.id }}"
+                  data-donation-request-id="{{ donation.donation_request_id }}"
+                  class="px-4 py-2 font-bold text-white bg-green-500 rounded-full hover:bg-green-600">Confirm</button>
+        </div>
+      </div>
+    </dialog>
+    <dialog id="reject_modal{{ loop.index }}"
+            class="modal modal-bottom sm:modal-middle">
+      <div class="modal-box">
+        <h2 class="mb-4 text-2xl font-bold">Reject Donation</h2>
+        <p class="mb-4">Are you sure you want to reject this donation?</p>
+        <div class="flex justify-end">
+          <button onclick="reject_modal{{ loop.index }}.close()"
+                  class="px-4 py-2 mr-4 font-bold text-gray-800 bg-gray-300 rounded-full hover:bg-gray-400">
+            Cancel
+          </button>
+          <button id="reject-donation"
+                  data-id="{{ donation.id }}"
+                  data-donation-request-id="{{ donation.donation_request_id }}"
+                  class="px-4 py-2 font-bold text-white bg-red-500 rounded-full hover:bg-red-600">Reject</button>
+        </div>
+      </div>
+    </dialog>
+    <div class="flex flex-col w-full gap-5 p-5 border rounded-xl g-white">
+      <div class="flex items-center gap-5">
+        <img src="{{ get_image(donation.user_photo_url) }}"
+             class="w-12 h-12 rounded-full"
+             height="auto"
+             width="auto"
+             alt="donator image" />
+        <div class="flex flex-col">
+          <p class="font-semibold">{{ donation.user_name }}</p>
+          <p class="text-sm">{{ donation.created_at | pretty_date }}</p>
+        </div>
+      </div>
+      {% if donation.amount %}
+        <p class="font-medium">{{ donation.amount | format_currency }}</p>
+      {% else %}
+        <p class="font-medium">{{ donation.item_list }}</p>
+      {% endif %}
+      <div class="flex gap-2">
+        {% for picture in donation.pictures %}
+          <div>
+            <img src="{{ get_image(picture) }}"
+                 alt="donations picture"
+                 class="aspect-video object-contain border max-h-[80px]"
+                 width="auto"
+                 height="auto">
+          </div>
+        {% endfor %}
+      </div>
+      {% set is_touched = donation.is_confirmed or donation.is_rejected %}
+      {% if is_touched %}
+        {% if donation.is_confirmed %}
+          <div class="flex items-center justify-center flex-1 p-3 text-white rounded-lg bg-success">Confirmed</div>
+        {% else %}
+          <div class="flex items-center justify-center flex-1 p-3 text-white rounded-lg bg-error">Rejected</div>
+        {% endif %}
+      {% else %}
+        {% if is_user %}
+          <div class="flex items-center justify-center flex-1 p-3 text-white rounded-lg bg-info">Pending</div>
+        {% endif %}
+      {% endif %}
+      {% if not is_user and not is_touched %}
+        <div class="flex gap-3">
+          <button type="button"
+                  onclick="reject_modal{{ loop.index }}.showModal()"
+                  class="flex-1 text-white btn btn-error">Reject</button>
+          <button type="button"
+                  onclick="confirm_modal{{ loop.index }}.showModal()"
+                  class="flex-1 text-white btn btn-success">Set as confirm</button>
+        </div>
+      {% endif %}
+    </div>
+  {% endfor %}
+  <script>
+    const confirmDonationButtons = document.querySelectorAll("#confirm-donation");
+    
+    confirmDonationButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const donationId = button.getAttribute("data-id");
+          const donationRequestId = button.getAttribute("data-donation-request-id");
+
+          console.log({donationId, donationRequestId})
+          
+              fetch(`/admin/ask-for-help/${donationRequestId}/donations/confirm/${donationId}`, {  // Add comma here
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+              window.location.reload();
+            })
+            .catch(error => {
+              console.error("Error confirming donation:", error);
+              showToast("error", "Error confirming donation. Please try again later.");
+            });
+        });
+    })
+
+    const rejectDonationButtons = document.querySelectorAll("#reject-donation");
+   
+    rejectDonationButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+        const donationId = button.getAttribute("data-id");
+        const donationRequestId = button.getAttribute("data-donation-request-id");
+
+        fetch(`/admin/ask-for-help/${donationRequestId}/donations/reject/${donationId}`, {  // Add comma here
+            method: "POST",
+            headers: {
+                "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+              window.location.reload();
+        })
+        .catch(error => {
+          console.error("Error rejecting donation:", error);
+          showToast("error", "Error rejecting donation. Please try again later.");
+        });
+        });
+    })
+
+
+  </script>
+{% endmacro %}

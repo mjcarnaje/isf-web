@@ -7,29 +7,27 @@
   Edit Event
 {% endblock title %}
 {% block content %}
-  <div class="flex flex-col items-center justify-center w-full p-12">
-    <div class="w-full max-w-4xl space-y-8">
-      <div class="flex w-full">
-        <h1 class="text-3xl font-bold">Edit Event</h1>
-      </div>
-      <form class="grid w-full grid-cols-2 gap-4 px-12 py-16 border shadow rounded-3xl"
-            method="post"
-            novalidate>
-        <div class="col-span-2">
-          {{ render_photo_field(form.cover_photo_url, add_text="Add Cover Photo", remove_text="Remove Cover Photo", is_cover=true) }}
-        </div>
-        {{ form.id() }}
-        {{ form.csrf_token() }}
-        {{ render_field(form.name, container_class="col-span-2") }}
-        {{ render_field(form.start_date) }}
-        {{ render_field(form.end_date) }}
-        {{ render_field(form.location, container_class="col-span-2") }}
-        {{ render_field(form.who_can_see_it) }}
-        {{ render_field(form.who_can_join) }}
-        {{ render_field(form.description, container_class="col-span-2") }}
-        <button type="submit" class="w-full col-span-2 btn btn-md">Submit</button>
-      </form>
+  <div class="flex flex-col w-full max-w-5xl gap-8 mx-auto">
+    <div class="flex w-full">
+      <h1 class="text-3xl font-bold">Edit Event</h1>
     </div>
+    <form class="grid w-full grid-cols-2 gap-4 px-12 py-16 border shadow rounded-3xl"
+          method="post"
+          novalidate>
+      <div class="col-span-2">
+        {{ render_photo_field(form.cover_photo_url, add_text="Add Cover Photo", remove_text="Remove Cover Photo", is_cover=true) }}
+      </div>
+      {{ form.id() }}
+      {{ form.csrf_token() }}
+      {{ render_field(form.name, container_class="col-span-2") }}
+      {{ render_field(form.start_date) }}
+      {{ render_field(form.end_date) }}
+      {{ render_field(form.location, container_class="col-span-2") }}
+      {{ render_field(form.who_can_see_it) }}
+      {{ render_field(form.who_can_join) }}
+      {{ render_field(form.description, container_class="col-span-2") }}
+      <button type="submit" class="w-full col-span-2 btn btn-md">Submit</button>
+    </form>
   </div>
   <script>
     let isRendered = false;
