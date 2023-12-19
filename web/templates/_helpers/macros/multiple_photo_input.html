@@ -3,7 +3,7 @@
     <label class="label label-text">{{ field.label.text }}</label>
     <ul id="multi-pictures"
         data-id="{{ id }}"
-        class="grid w-full grid-cols-2 gap-2 p-4 bg-gray-100 border rounded-lg md:grid-cols-5 {{ 'border-red-500' if field.errors | length > 0 else '' }}">
+        class="grid w-full grid-cols-2 gap-2 p-2 bg-gray-100 border rounded-lg md:grid-cols-5 {{ 'border-red-500' if field.errors | length > 0 else '' }}">
       {% for entry in field.entries %}
         <li class="w-full h-auto max-w-full">
           {{ entry(class="hidden") }}

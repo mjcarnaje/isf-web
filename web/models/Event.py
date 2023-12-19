@@ -380,3 +380,14 @@ class Event():
 
         return cur.rowcount
     
+    @classmethod
+    def cancel(cls, event_id):
+        sql = "UPDATE event SET is_cancelled = 1 WHERE id = %s"
+        params = (event_id,)
+
+        cur = db.new_cursor()
+        cur.execute(sql, params)
+        db.connection.commit()
+
+        return cur.rowcount
+    

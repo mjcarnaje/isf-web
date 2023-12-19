@@ -4194,6 +4194,11 @@ details.collapse summary::-webkit-details-marker {
   border-color: rgb(239 68 68 / var(--tw-border-opacity));
 }
 
+.border-red-300 {
+  --tw-border-opacity: 1;
+  border-color: rgb(252 165 165 / var(--tw-border-opacity));
+}
+
 .bg-\[\#D4E2D4\] {
   --tw-bg-opacity: 1;
   background-color: rgb(212 226 212 / var(--tw-bg-opacity));
@@ -4563,6 +4568,14 @@ details.collapse summary::-webkit-details-marker {
   padding-top: 2rem;
 }
 
+.pb-2 {
+  padding-bottom: 0.5rem;
+}
+
+.pb-1 {
+  padding-bottom: 0.25rem;
+}
+
 .text-left {
   text-align: left;
 }
@@ -4769,6 +4782,10 @@ details.collapse summary::-webkit-details-marker {
 
 .underline {
   text-decoration-line: underline;
+}
+
+.line-through {
+  text-decoration-line: line-through;
 }
 
 .opacity-0 {

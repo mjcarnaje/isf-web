@@ -158,3 +158,15 @@ def delete_event(id):
     Event.delete(id)
     
     return True
+
+@event_bp.route('/<int:id>/cancel', methods=['DELETE'])
+@admin_required
+def cancel_event(id):
+    event = Event.find_by_id(id)
+
+    if not event:
+        return {"error": "Event not found"}, 404
+
+    Event.cancel(id)
+    
+    return True

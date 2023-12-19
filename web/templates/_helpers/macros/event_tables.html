@@ -24,7 +24,7 @@
             {% else %}
               {% set href = url_for('admin.event.view_event', id=event.id) %}
             {% endif %}
-            <tr class="{{ 'border-2 border-green-500' if event['status'] == 'In Progress' else 'border' }}">
+            <tr class="{% if event.status == 'In Progress' %}border-2 border-green-500{% elif event.status == 'Cancelled' %}border-2 border-red-300{% else %}border{% endif %}">
               <td class="py-5 pl-4 pr-3 text-sm whitespace-nowrap">
                 <a href="{{ href }}">
                   <img class="transition-all duration-300 border object-cover rounded-lg aspect-[800/320] w-64 bg-gray-50 hover:scale-105"
