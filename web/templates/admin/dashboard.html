@@ -5,18 +5,24 @@
 {% endblock title %}
 {% block content %}
   <div class="flex justify-center w-full">
-    <div class="w-full">
-      <div>
-        <div>Animals</div>
-        <div>{{ animal_stats.total_count }}</div>
+    <div class="grid w-full grid-cols-3 gap-8">
+      <div class="flex items-center col-span-1 gap-3 p-5 bg-white rounded-lg shadow">
+        <i class="text-3xl fa-solid fa-paw"></i>
+        <p class="text-2xl font-bold">
+          {{ animal_stats.total_count }} <span class="text-lg font-medium">animals</span>
+        </p>
       </div>
-      <div>
-        <div>Dogs</div>
-        <div>{{ animal_stats.dog_count }}</div>
+      <div class="flex items-center col-span-1 gap-3 p-5 bg-white rounded-lg shadow">
+        <i class="text-3xl fa-solid fa-dog"></i>
+        <p class="text-2xl font-bold">
+          {{ animal_stats.dog_count }} <span class="text-lg font-medium">dogs</span>
+        </p>
       </div>
-      <div>
-        <div>Cats</div>
-        <div>{{ animal_stats.cat_count }}</div>
+      <div class="flex items-center col-span-1 gap-3 p-5 bg-white rounded-lg shadow">
+        <i class="text-3xl fa-solid fa-cat"></i>
+        <p class="text-2xl font-bold">
+          {{ animal_stats.cat_count }} <span class="text-lg font-medium">cats</span>
+        </p>
       </div>
     </div>
   </div>

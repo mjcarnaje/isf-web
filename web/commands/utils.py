@@ -1,4 +1,7 @@
 
+import requests
+import time
+
 def get_collection_photos(collection_id):
     UNSPLASH_API_URL = f"https://api.unsplash.com/collections/{collection_id}/photos"
     CLIENT_ID = "o4zOf4mzUZwc0c0XYch1G1a70tvMsLenetG_0y56Q2g"

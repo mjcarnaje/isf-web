@@ -45,7 +45,7 @@
         <tbody class="bg-white divide-y divide-gray-200">
           {% for animal in animals %}
             {% if is_admin %}
-              {% set href = url_for('admin.animals.view_animal', id=animal.id) %}
+              {% set href = url_for('admin.animal.view_animal', id=animal.id) %}
             {% else %}
               {% set href = url_for('user.animals.view_animal', id=animal.id) %}
             {% endif %}
@@ -135,7 +135,7 @@
                     <ul tabindex="0"
                         class="dropdown-content z-[1] menu p-2 border bg-base-100 rounded-box shadow-sm w-32">
                       <li>
-                        <a href="{{ url_for('admin.animals.edit_animal', id=animal.id) }}">Edit</a>
+                        <a href="{{ url_for('admin.animal.edit_animal', id=animal.id) }}">Edit</a>
                       </li>
                       <li>
                         <button id="open-delete-modal" data-animal-id="{{ animal.id }}">Delete</button>
@@ -148,7 +148,7 @@
           </tbody>
         {% endfor %}
       </table>
-      {{ empty_list(aniamls, "No Animals Found.") }}
+      {{ empty_list(animals, "No Animals Found.") }}
     </div>
   </div>
   {% if is_admin %}

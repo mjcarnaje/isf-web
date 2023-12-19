@@ -8,7 +8,7 @@ from ...utils import admin_required, get_active_filter_count
 from ...validations import AddAnimalValidation, EditAnimalValidation
 from ...utils import pagination
 
-animal_bp = Blueprint("animals", __name__, url_prefix='/animals')
+animal_bp = Blueprint("animal", __name__, url_prefix='/animals')
 
 @animal_bp.route('', methods=['GET'])
 @admin_required
@@ -49,7 +49,7 @@ def animals():
             offset=offset,
             page_size=Config.DEFAULT_PAGE_SIZE,
             total_count=total_count,
-            base_url="admin.animals.animals"
+            base_url="admin.animal.animals"
         ),
     )
 
@@ -102,7 +102,7 @@ def add_animal():
     )
 
     if animal_id:
-       return redirect(url_for('admin.animals.animals'))
+       return redirect(url_for('admin.animal.animals'))
 
 
   return render_template('admin/animal/add.html', form=form)
@@ -132,7 +132,7 @@ def edit_animal(id):
 
         Animal.edit(animal)
         
-        return redirect(url_for("admin.animals.animals"))
+        return redirect(url_for("admin.animal.animals"))
     
     if not form.is_submitted():
         form.id.data = animal.id

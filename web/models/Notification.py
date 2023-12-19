@@ -486,7 +486,7 @@ class Notification:
                     redirect_url = url_for("user.adoptions.adopt_me", id=info['donation_id'])
             case NotificationType.EVENT_INVITED.value:
                 if is_admin:
-                    redirect_url = url_for("admin.events.view_event", id=info['event_id'])
+                    redirect_url = url_for("admin.event.view_event", id=info['event_id'])
                 else:
                     redirect_url = url_for("user.events.view_event", id=info['event_id'])
             case _:

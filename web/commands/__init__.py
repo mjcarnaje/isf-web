@@ -5,6 +5,7 @@ from ..database import db
 import json
 from .AnimalSeeder import AnimalSeeder
 from .UserSeeder import UserSeeder
+from .EventSeeder import EventSeeder
 from .utils import get_collection_photos
 
 UNSPLASH_SECRET_KEY = "WvilNcO0zzU2UTTZXG1LjSfZ9NKfd6zgYyCC5p8t_a8"
@@ -31,14 +32,11 @@ def set_up_commands(app: Flask):
         except Exception as e:
             app.logger.error(f"Error during database reset: {str(e)}")
 
-    @app.cli.command("seed-animals")
-    def seed_animals():
-        AnimalSeeder(db).seed()
-        
-
-    @app.cli.command("seed-users")
-    def seed_users():
+    @app.cli.command("seed")
+    def seed():
         UserSeeder(db).seed()
+        AnimalSeeder(db).seed()
+        EventSeeder(db).seed()
         
     @app.cli.command("save-animal-photos")
     def save_animal_photos():
@@ -51,3 +49,9 @@ def set_up_commands(app: Flask):
         animal_photos = get_collection_photos("eR9Yy1KH53o")
         with open('user_photos.json', 'w') as outf:
             json.dump(animal_photos, outf, indent=2)
+
+    @app.cli.command("save-event-photos")
+    def save_event_photos():
+        event_photos = get_collection_photos("9377028")
+        with open('event_photos.json', 'w') as outf:
+            json.dump(event_photos, outf, indent=2)

@@ -110,7 +110,7 @@
                     <ul tabindex="0"
                         class="dropdown-content z-[1] menu p-2 border bg-base-100 rounded-box shadow-sm w-32">
                       <li>
-                        <a href="{{ url_for('admin.animals.edit_animal', id=animal.id) }}">Edit</a>
+                        <a href="{{ url_for('admin.animal.edit_animal', id=animal.id) }}">Edit</a>
                       </li>
                       <li>
                         <button class="open-delete-modal" data-animal-id="{{ animal.id }}">Delete</button>
