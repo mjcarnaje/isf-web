@@ -46,14 +46,19 @@
                   <li>
                     <button class="font-medium"
                             id="open-delete-modal"
-                            data-event-id="{{ event.id }}">Cancel</button>
+                            data-event-id="{{ event.id }}"
+                            data-is-cancelled="{{ event.is_cancelled }}">
+                      {{ "Delete" if event.status == "Cancelled" else "Cancel" }}
+                    </button>
                   </li>
                 </ul>
               </div>
             {% endif %}
           </div>
           <div>
-            <p class="leading-5 text-gray-600 break-all wwhitespace-pre-wrap">{{ event.description }}</p>
+            <p class="leading-5 text-gray-600 break-all wwhitespace-pre-wrap {{ 'line-through text-gray-600' if event.is_cancelled }}">
+              {{ event.description }}
+            </p>
           </div>
           <div class="flex items-center gap-3">
             <div class="flex items-center justify-center w-4 h-4">

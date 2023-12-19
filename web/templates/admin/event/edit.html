@@ -21,12 +21,12 @@
         {{ form.id() }}
         {{ form.csrf_token() }}
         {{ render_field(form.name, container_class="col-span-2") }}
-        {{ render_field(form.description, container_class="col-span-2") }}
         {{ render_field(form.start_date) }}
         {{ render_field(form.end_date) }}
         {{ render_field(form.location, container_class="col-span-2") }}
         {{ render_field(form.who_can_see_it) }}
         {{ render_field(form.who_can_join) }}
+        {{ render_field(form.description, container_class="col-span-2") }}
         <button type="submit" class="w-full col-span-2 btn btn-md">Submit</button>
       </form>
     </div>

@@ -12,9 +12,10 @@
     <div class="bg-white modal-box">
       <h3 class="text-lg font-bold">Cancel or Delete Event</h3>
       <ul class="flex flex-col gap-2 pt-3 pb-1">
-        <li class="flex items-center justify-between gap-8 p-2 rounded-lg cursor-pointer hover:bg-slate-50">
+        <li id="cancel"
+            class="flex items-center justify-between gap-8 p-2 rounded-lg cursor-pointer hover:bg-slate-50">
           <div class="flex flex-col">
-            <label for="cancel" class="font-medium">Cancel Event</label>
+            <p class="font-medium">Cancel Event</p>
             <span class="text-xs text-gray-500">If you cancel youor event. You'll be able to access the event page but won't be able to edit the event.</span>
           </div>
           <input type="radio"
@@ -22,9 +23,10 @@
                  data-value="cancel"
                  class="radio" />
         </li>
-        <li class="flex items-center justify-between gap-8 p-2 rounded-lg cursor-pointer hover:bg-slate-50">
+        <li id="delete"
+            class="flex items-center justify-between gap-8 p-2 rounded-lg cursor-pointer hover:bg-slate-50">
           <div class="flex flex-col">
-            <label for="delete" class="font-medium">Delete Event</label>
+            <p class="font-medium">Delete Event</p>
             <span class="text-xs text-gray-500">If you delete your event, you won't be able to access it again. If you'll want to come back to it, you can cancel your event instead.</span>
           </div>
           <input type="radio"
@@ -37,7 +39,7 @@
         <form method="dialog">
           <button class="btn">Cancel</button>
         </form>
-        <button id="confirmButton" class="text-white btn btn-error">Confirm</button>
+        <button type="submit" id="confirmButton" class="text-white btn btn-error">Confirm</button>
       </div>
     </div>
   </dialog>
@@ -82,6 +84,17 @@
     deleteButtons.forEach((deleteButton) => {
       deleteButton.addEventListener("click", function () {
         deleteModal.showModal();
+
+        const isCancelled = this.getAttribute("data-is-cancelled");
+
+        if (isCancelled) {
+          currentSelected = "delete";
+          document.querySelector("li[id='cancel']").classList.add("hidden")
+          document.querySelector("li[id='delete']").querySelector("input[type='radio']").click()
+        } else {
+          document.querySelector("li[id='cancel']").classList.remove("hidden")
+        }
+        
         const confirmButton = document.querySelector("#confirmButton");
         confirmButton.addEventListener("click", async function () {
 
@@ -95,8 +108,6 @@
         });
       });
     });
-
-   
 
     
   </script>

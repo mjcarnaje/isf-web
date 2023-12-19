@@ -14,7 +14,6 @@
     <div class="flex flex-col gap-5">
       <h2 class="text-lg font-bold">Happening Now Events</h2>
       <div>{{ event_cards(featured_events, is_user=True) }}</div>
-      {{ empty_list(featured_events, "No Featured Events Found.") }}
       <div class="flex justify-center">
         <a href="{{ url_for('user.events.events',) }}"
            class="text-white btn-primary btn">See All Events</a>

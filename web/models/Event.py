@@ -62,6 +62,7 @@ class Event():
             WHERE
                 start_date <= NOW()
                 AND end_date >= NOW()
+                AND is_cancelled != true
             ORDER BY
                 start_date DESC
             LIMIT 3
@@ -166,7 +167,31 @@ class Event():
 
     @classmethod
     def find_by_id(cls, event_id):
-        sql = "SELECT * FROM event WHERE id = %s"
+        sql = """
+                SELECT
+                    id,
+                    name,
+                    description,
+                    cover_photo_url,
+                    start_date,
+                    end_date,
+                    location,
+                    who_can_see_it,
+                    who_can_join,
+                    is_cancelled,
+                    author_id,
+                    created_at,
+                    updated_at,
+                    CASE
+                        WHEN is_cancelled = true THEN 'Cancelled'
+                        WHEN start_date > NOW() THEN 'Scheduled'
+                        WHEN start_date <= NOW() AND end_date >= NOW() THEN 'In Progress'
+                        WHEN end_date < NOW() THEN 'Completed'
+                    END AS status
+                FROM 
+                    event
+                WHERE id = %s
+        """
         cur = db.new_cursor(dictionary=True)
         cur.execute(sql, (event_id,))
         row = cur.fetchone()

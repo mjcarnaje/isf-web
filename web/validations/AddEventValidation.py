@@ -7,10 +7,10 @@ from datetime import date
 
 class AddEventValidation(FlaskForm):
     name = StringField("Name", validators=[validators.DataRequired()])
-    description = TextAreaField("Description", validators=[
+    description = TextAreaField("Details", validators=[
         validators.DataRequired(),
         validators.Length(min=10)
-    ], render_kw={"placeholder": "Description"})
+    ], render_kw={"placeholder": "What are the details?"})
     cover_photo_url = StringField("Cover Photo", validators=[
         validators.DataRequired()
     ])
