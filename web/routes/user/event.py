@@ -46,7 +46,7 @@ def events():
 @user_verified_required
 def view_event(id):
     event = Event.find_by_id(event_id=id)
-    status = Event.check_invite_status(event_id=id, user_id=current_user.id)
+    invitation = Event.get_invitation(event_id=id, user_id=current_user.id)
 
     if request.method == "POST":
         status = request.form.get("status")
@@ -57,7 +57,7 @@ def view_event(id):
     statistics = Event.get_statistics(id)
     posts = EventPost.find_posts(event_id=id)
 
-    return render_template('/user/events/event.html', event=event, statistics=statistics, posts=posts, status=status)
+    return render_template('/user/events/event.html', event=event, statistics=statistics, posts=posts, invitation=invitation)
 
 @user_event_bp.route('/<int:id>/members', methods=['GET'])
 @user_verified_required

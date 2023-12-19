@@ -1,10 +1,10 @@
-from flask import (Blueprint, current_app, flash, redirect, render_template,
-                   request, session, url_for, jsonify)
+from flask import (Blueprint, current_app, flash, jsonify, redirect,
+                   render_template, request, session, url_for)
 from flask_login import current_user, login_required, login_user
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from ..config import Config
-from ..models import Animal, Event, User, UserRole, NotificationSettings
+from ..models import Animal, Event, NotificationSettings, User, UserRole
 from ..utils import (anonymous_required, check_verification_token,
                      generate_verification_token, get_active_filter_count,
                      send_verification_email)
@@ -196,25 +196,24 @@ def sign_up():
   form = UserSignupValidation()
   
   if form.validate_on_submit():
-    new_user = User(
-      email=form.email.data,
-      username=form.username.data,
-      first_name=form.first_name.data,
-      last_name=form.last_name.data,
-      photo_url=form.photo_url.data,
-      contact_number=form.contact_number.data,
-      password=generate_password_hash(form.password.data),
-    )
+      new_user = User(
+        email=form.email.data,
+        username=form.username.data,
+        first_name=form.first_name.data,
+        last_name=form.last_name.data,
+        photo_url=form.photo_url.data,
+        gender=form.gender.data,
+        contact_number=form.contact_number.data,
+        password=generate_password_hash(form.password.data),
+      )
 
-    user_id = User.insert(new_user)
-    UserRole.insert_user_role(user_id=user_id, role_name="Member")
-    NotificationSettings.insert_default(user_id=user_id)
-    token = generate_verification_token(user_id=user_id, email=new_user.email)
-    send_verification_email(email=new_user.email, token=token, user=new_user)
+      user_id = User.insert(new_user)
+      token = generate_verification_token(user_id=user_id, email=new_user.email)
+      send_verification_email(email=new_user.email, token=token, user=new_user)
 
-    flash('Check your email to confirm your account.', 'success')
+      flash('Check your email to confirm your account.', 'success')
 
-    return redirect(url_for('landing.login'))
+      return redirect(url_for('landing.login'))
 
   return render_template('user/sign_up.html', form=form)
 

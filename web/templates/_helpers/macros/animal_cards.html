@@ -1,3 +1,4 @@
+{% from "./_helpers/macros/empty_list.html" import empty_list %}
 {% macro animal_cards(animals, is_admin) %}
   <div class="grid w-full grid-cols-4 gap-10 mx-auto">
     {% if is_admin %}
@@ -22,19 +23,16 @@
       {% else %}
         {% set href = url_for('user.animals.view_animal', id=animal.id) %}
       {% endif %}
-      <div class="flex flex-col cursor-pointer group">
-        <a href="{{ href }}">
-          <div class="h-full overflow-hidden border aspect-square rounded-xl">
-            <img class="object-cover h-full transition-all duration-300 group-hover:scale-105"
-                 src="{{ get_image(animal.photo_url) }}"
-                 alt="Animal Photo"
-                 width="auto"
-                 height="auto" />
-          </div>
+      <div class="flex flex-col bg-white border cursor-pointer group rounded-xl">
+        <a class="inline-flex overflow-hidden aspect-square" href="{{ href }}">
+          <img class="object-cover h-full transition-all duration-300 aspect-square rounded-t-xl group-hover:scale-105"
+               src="{{ get_image(animal.photo_url) }}"
+               alt="Animal Photo"
+               width="auto"
+               height="auto" />
         </a>
         <div class="flex-1 py-2 space-y-0.5">
           <div class="flex items-center justify-between">
-            <a href="{{ href }}" class="text-lg font-bold">{{ animal.name }}</a>
             {% if is_admin %}
               <div class="dropdown">
                 <label tabindex="0">
@@ -54,21 +52,11 @@
               </div>
             {% endif %}
           </div>
-          <p class="text-sm text-gray-600">{{ animal.description | truncate(60) }}</p>
         </div>
       </div>
     {% endfor %}
   </div>
-  {% if animals | length == 0 %}
-    <div class="flex flex-col items-center justify-center gap-8 p-12 border-t">
-      <img class="w-full max-w-sm"
-           src="{{ url_for('static', filename='images/empty_list.png') }}"
-           alt="Kid hugging her dog"
-           width="auto"
-           height="auto" />
-      <h3 class="text-lg font-medium">No Animal Found.</h3>
-    </div>
-  {% endif %}
+  {{ empty_list(animals, "No Animals Found.") }}
   {% if is_admin %}
     <script>
     const deleteationModal = document.querySelector("#delete-donation-modal");

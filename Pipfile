@@ -24,6 +24,7 @@ babel = "*"
 waitress = "*"
 celery = "*"
 uuid = "*"
+faker = "*"
 
 [dev-packages]
 

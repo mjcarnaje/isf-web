@@ -6,19 +6,17 @@
 {% block content %}
   <div class="flex justify-center w-full">
     <div class="w-full">
-      <div class="w-full shadow stats stats-vertical lg:stats-horizontal">
-        <div class="stat">
-          <div class="stat-title">Animals</div>
-          <div class="stat-value text-primary-800">{{ animal_stats.total_count }}</div>
-        </div>
-        <div class="stat">
-          <div class="stat-title">Dogs</div>
-          <div class="stat-value text-primary-800">{{ animal_stats.dog_count }}</div>
-        </div>
-        <div class="stat">
-          <div class="stat-title">Cats</div>
-          <div class="stat-value text-primary-800">{{ animal_stats.cat_count }}</div>
-        </div>
+      <div>
+        <div>Animals</div>
+        <div>{{ animal_stats.total_count }}</div>
+      </div>
+      <div>
+        <div>Dogs</div>
+        <div>{{ animal_stats.dog_count }}</div>
+      </div>
+      <div>
+        <div>Cats</div>
+        <div>{{ animal_stats.cat_count }}</div>
       </div>
     </div>
   </div>

@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, render_template, request, url_for, session
+from flask import Blueprint, render_template, request, session
 
 from ...models import Donation
 from ...utils import admin_required, get_active_filter_count, pagination
@@ -49,4 +49,4 @@ def donation(id):
 @admin_required
 def set_is_confirmed(id):
     Donation.set_is_confirmed(donation_id=id)
-    return redirect(url_for('admin.donations.donations'))
+    return "success"

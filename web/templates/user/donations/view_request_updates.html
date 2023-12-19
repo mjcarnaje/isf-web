@@ -4,6 +4,7 @@
 {% from './_helpers/macros/multiple_photo_input.html' import render_multiple_photo_field with context %}
 {% from './_helpers/macros/custom_input.html' import render_field %}
 {% from './_helpers/macros/donation_request_update.html' import donation_request_update with context %}
+{% from "./_helpers/macros/empty_list.html" import empty_list %}
 {% block title %}
   Ask for help
 {% endblock title %}
@@ -26,16 +27,7 @@
     </div>
     <div class="flex flex-col items-center gap-4">
       {% for post in posts %}{{ donation_request_update(post) }}{% endfor %}
-      {% if posts | length == 0 %}
-        <div class="flex flex-col items-center justify-center gap-8 p-12">
-          <img class="w-full max-w-sm"
-               src="{{ url_for('static', filename='images/empty_list.png') }}"
-               alt="Kid hugging her dog"
-               width="auto"
-               height="auto" />
-          <h3 class="text-lg font-medium">No Posts Yet.</h3>
-        </div>
-      {% endif %}
+      {{ event_list(posts, "No Posts Found.") }}
     </div>
   </div>
   <script>

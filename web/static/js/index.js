@@ -90,3 +90,11 @@ closeButton.addEventListener("click", function () {
   var imageViewer = document.getElementById("image-viewer");
   imageViewer.style.display = "none";
 });
+
+document.querySelectorAll("button[type='submit']").forEach((button) => {
+  button.addEventListener("click", function () {
+    this.disabled = true;
+    this.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Loading';
+    this.closest("form").submit();
+  });
+});

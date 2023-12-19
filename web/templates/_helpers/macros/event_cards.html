@@ -1,3 +1,4 @@
+{% from "./_helpers/macros/empty_list.html" import empty_list %}
 {% macro event_cards(events, is_user=False) %}
   <div class="grid grid-cols-3 gap-10">
     {% for event in events %}
@@ -77,4 +78,5 @@
       </div>
     {% endfor %}
   </div>
+  {{ empty_list(events, "No Events Found.") }}
 {% endmacro %}

@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import PasswordField, StringField, validators, EmailField
+from wtforms import (EmailField, PasswordField, SelectField, StringField,
+                     validators)
 
 from ..models import User
 
@@ -20,6 +21,8 @@ class UserSignupValidation(FlaskForm):
         validators.DataRequired(),
         validators.Length(min=4, max=256)
     ])
+    gender = SelectField('Gender', choices=[
+                         ("Male", "Male"), ("Female", "Female")])   
     photo_url = StringField('Photo')
     contact_number = StringField("Contact Number", validators=[
         validators.DataRequired(),
@@ -28,8 +31,10 @@ class UserSignupValidation(FlaskForm):
     password = PasswordField('New Password', validators=[
         validators.Length(min=6, max=25),
         validators.EqualTo('confirm_password', message='Passwords must match'),
-          validators.Regexp(regex=r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,25}$',
-                          message='Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character')
+        validators.Regexp(regex=r'(?=.*[a-z])', message='Password must contain at least one lowercase letter'),
+        validators.Regexp(regex=r'(?=.*[A-Z])', message='Password must contain at least one uppercase letter'),
+        validators.Regexp(regex=r'(?=.*\d)', message='Password must contain at least one number'),
+        validators.Regexp(regex=r'(?=.*[@$!%*?&])', message='Password must contain at least one special character')
     ])
     confirm_password = PasswordField('Confirm Password', validators=[
         validators.Length(min=6, max=25),

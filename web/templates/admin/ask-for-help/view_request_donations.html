@@ -2,6 +2,7 @@
 {% extends "./_helpers/layout/admin_layout.html" %}
 {% from "./_helpers/macros/pagination_buttons.html" import pagination_buttons with context %}
 {% from "./_helpers/macros/donation_request_donator.html" import donation_request_donator with context %}
+{% from "./_helpers/macros/empty_list.html" import empty_list %}
 {% block title %}
   Ask for help
 {% endblock title %}
@@ -24,16 +25,7 @@
     </div>
     <div class="grid items-center grid-cols-2 gap-4">
       {% for donation in donations %}{{ donation_request_donator(donation) }}{% endfor %}
-      {% if donations | length == 0 %}
-        <div class="flex flex-col items-center justify-center col-span-2 gap-8 p-12">
-          <img class="w-full max-w-sm"
-               src="{{ url_for('static', filename='images/empty_list.png') }}"
-               alt="Kid hugging her dog"
-               width="auto"
-               height="auto" />
-          <h3 class="text-lg font-medium">No Donations Yet.</h3>
-        </div>
-      {% endif %}
+      {{ empty_list(donations, "No Donations Found.") }}
     </div>
   </div>
 {% endblock content %}

@@ -1,6 +1,7 @@
 {% set active_page = "user.events" %}
 {% from './_helpers/macros/event_post_card.html' import event_post_card with context %}
 {% extends "./_helpers/layout/user_layout.html" %}
+{% from "./_helpers/macros/empty_list.html" import empty_list %}
 {% block title %}
   Event
 {% endblock title %}
@@ -36,7 +37,7 @@
         </div>
       </div>
       {% if event['who_can_join'] == 'Invite Only' %}
-        {% if status %}
+        {% if invitation %}
           <div class="flex justify-between w-full p-3 bg-gray-100 rounded-lg">
             <div class="flex items-center gap-3">
               <img src="{{ get_image('', true) }}"
@@ -50,7 +51,7 @@
               </p>
             </div>
             <div class="flex items-center gap-4">
-              {% set is_cant_go = status == "Cannot Go" %}
+              {% set is_cant_go = invitation['status'] == "Cannot Go" %}
               <button id="invite-btn"
                       data-status="Going"
                       class="flex items-center w-36 gap-2 text-gray-800 bg-gray-300 {{ 'bg-green-500 text-white' if status == 'Going' else '' }} btn">
@@ -82,16 +83,7 @@
     <div class="grid grid-cols-2 gap-8">
       {% for event_post in posts %}{{ event_post_card(event_post) }}{% endfor %}
     </div>
-    {% if posts | length == 0 %}
-      <div class="flex flex-col items-center justify-center gap-8 p-12">
-        <img class="w-full max-w-sm"
-             src="{{ url_for('static', filename='images/empty_list.png') }}"
-             alt="Kid hugging her dog"
-             width="auto"
-             height="auto" />
-        <h3 class="text-lg font-medium">No Posts Yet.</h3>
-      </div>
-    {% endif %}
+    {{ empty_list(posts, "No Posts Found.") }}
   </div>
   <script>const inviteButtons = document.querySelectorAll("button[id='invite-btn']");
   inviteButtons.forEach((button) => {

@@ -10,43 +10,19 @@
     'name': 'Animals',
     'url': url_for('admin.animals.animals'),
     'icon': 'fa-solid fa-dog',
-    'page': 'admin.animals.animals' ,
-    'children': [
-      {
-        'name': 'Add Animal',
-        'url': url_for('admin.animals.add_animal'),
-        'icon': 'fa-sharp fa-solid fa-circle-plus',
-        'page': 'admin.animals.add_animal'
-      },
-    ]
+    'page': 'admin.animals.animals'
   },
   {
     'name': 'Events',
     'url': url_for('admin.event.events'),
     'icon': 'fa-solid fa-calendar',
-    'page': 'admin.event.events',
-    'children': [
-      {
-        'name': 'Add Event',
-        'url': url_for('admin.event.add_event'),
-        'icon': 'fa-sharp fa-solid fa-circle-plus',
-        'page': 'admin.event.add_event'
-      },
-    ]
+    'page': 'admin.event.events'
   },
   {
     'name': 'Ask For Help',
     'url': url_for('admin.ask_for_help.index'),
     'icon': 'fa-solid fa-handshake-angle',
-    'page': 'admin.ask_for_help.index',
-    'children': [
-      {
-        'name': 'Add Request',
-        'url': url_for('admin.ask_for_help.add_request'),
-        'icon': 'fa-sharp fa-solid fa-circle-plus',
-        'page': 'admin.ask_for_help.add_request'
-      },
-    ]
+    'page': 'admin.ask_for_help.index'
   },
 ] %}
 {% set my_navigations = [
@@ -56,6 +32,12 @@
     'icon': 'fa-solid fa-bell',
     'page': 'admin.notifications',
     'count': current_user.unread_notification_count
+  },
+  {
+    'name': 'Users',
+    'url': url_for('admin.user.users'),
+    'icon': 'fa-solid fa-user',
+    'page': 'admin.users'
   },
   {
     'name': 'Adoption Applications',
@@ -74,14 +56,18 @@
   <div class="relative flex w-full min-h-screen">
     <aside class="max-w-[288px] h-full bg-white z-20 hidden lg:block fixed left-0 top-0 p-4 w-full border-r min-h-screen">
       <div class="flex flex-col justify-between h-full gap-y-5">
-        <div class="w-full py-2">
-          <a href="{{ url_for('landing.index',) }}">
+        <div class="relative flex items-center justify-center">
+          <a href="{{ url_for('landing.index',) }}"
+             class="relative inline-flex w-full">
             <img src="{{ url_for('static', filename='svgs/logo.svg') }}"
                  alt="ISF logo"
-                 class="object-cover h-auto w-52"
+                 class="object-cover"
                  height="auto"
                  width="auto" />
           </a>
+          <div class="absolute flex items-center justify-center px-4 py-1 bg-white border rounded-lg -bottom-4 -right-2">
+            <p class="text-sm text-primary-700">Admin</p>
+          </div>
         </div>
         <ul class="flex flex-col flex-1 w-full gap-y-5">
           <ul class="flex flex-col w-full gap-2">
@@ -138,8 +124,8 @@
                     {% endif %}
                   </a>
                 </li>
-              </ul>
-            {% endfor %}
+              {% endfor %}
+            </ul>
           </ul>
         </ul>
         <a href="{{ url_for('user.logout',) }}"

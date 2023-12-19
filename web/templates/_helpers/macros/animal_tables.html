@@ -1,3 +1,4 @@
+{% from "./_helpers/macros/empty_list.html" import empty_list %}
 {% macro animal_tables(animals, is_admin) %}
   {% if is_admin %}
     <dialog id="delete-donation-modal" class="modal modal-bottom sm:modal-middle">
@@ -147,16 +148,7 @@
           </tbody>
         {% endfor %}
       </table>
-      {% if animals | length == 0 %}
-        <div class="flex flex-col items-center justify-center gap-8 p-12 border-t">
-          <img class="w-full max-w-sm"
-               src="{{ url_for('static', filename='images/empty_list.png') }}"
-               alt="Kid hugging her dog"
-               width="auto"
-               height="auto" />
-          <h3 class="text-lg font-medium">No Animal Found.</h3>
-        </div>
-      {% endif %}
+      {{ empty_list(aniamls, "No Animals Found.") }}
     </div>
   </div>
   {% if is_admin %}

@@ -5,13 +5,16 @@ CREATE TABLE IF NOT EXISTS user (
     username VARCHAR(256) NOT NULL,
     first_name VARCHAR(256) NOT NULL,
     last_name VARCHAR(256) NOT NULL,
+    gender ENUM('Male', 'Female', 'Other') NOT NULL,
     password VARCHAR(256) NOT NULL,
     photo_url VARCHAR(256),
-    is_verified BOOLEAN DEFAULT 0,
+    is_verified BOOLEAN DEFAULT 1,
     unread_notification_count INT DEFAULT 0,
     contact_number VARCHAR(12) UNIQUE NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+--;;;;--
 
 CREATE TABLE IF NOT EXISTS notification_settings (
     user_id INT PRIMARY KEY,
@@ -30,21 +33,60 @@ CREATE TABLE IF NOT EXISTS notification_settings (
     donation_status_update_email BOOLEAN DEFAULT 1,
     event_invited_email BOOLEAN DEFAULT 1,
     
-    FOREIGN KEY (user_id) REFERENCES user(id)
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
 );
+
+--;;;;--
 
 CREATE TABLE IF NOT EXISTS role (
     name ENUM('Admin', 'Member', 'Non-Member') DEFAULT 'Member' PRIMARY KEY
 );
+
+--;;;;--
 
 CREATE TABLE IF NOT EXISTS user_role (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
     role_name ENUM('Admin', 'Member', 'Non-Member'),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES user(id),
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
     FOREIGN KEY (role_name) REFERENCES role(name)
 );
+
+--;;;;--
+
+INSERT IGNORE INTO role (name) 
+VALUES 
+    ('Member'),
+    ('Non-Member'),
+    ('Admin');
+
+--;;;;--
+
+INSERT INTO user (email, username, first_name, last_name, gender, password, is_verified, contact_number)
+VALUES ('admin@isf.com', 'admin', 'Admin', 'User', 'Male', 'pbkdf2:sha256:600000$41AT9RlTuc6cKm5B$b6c91de61e1304dd5fd520c1465d097bf297441c00434ec650fed81c72013f8b', 1, '1234567890');
+
+--;;;;--
+
+INSERT INTO user_role (user_id, role_name) VALUES ((SELECT id FROM user WHERE email = 'admin@isf.com'), 'Admin');
+
+--;;;;--
+CREATE TRIGGER assign_member_role AFTER INSERT ON user
+FOR EACH ROW
+BEGIN
+    INSERT INTO user_role (user_id, role_name) VALUES (NEW.id, 'Member');
+END;
+
+--;;;;--
+
+
+CREATE TRIGGER add_notification_settings AFTER INSERT ON user
+FOR EACH ROW
+BEGIN
+    INSERT INTO notification_settings (user_id) VALUES (NEW.id);
+END
+
+--;;;;--
 
 CREATE TABLE IF NOT EXISTS animal (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -53,7 +95,7 @@ CREATE TABLE IF NOT EXISTS animal (
     estimated_birth_month VARCHAR(16) NOT NULL,
     estimated_birth_year VARCHAR(16) NOT NULL,
     photo_url VARCHAR(256) NOT NULL,
-    gender VARCHAR(10) NOT NULL,
+    gender ENUM('Male', 'Female', 'Other') NOT NULL,
     is_adopted BOOLEAN NOT NULL,
     is_dead BOOLEAN NOT NULL,
     is_dewormed BOOLEAN NOT NULL,
@@ -63,10 +105,12 @@ CREATE TABLE IF NOT EXISTS animal (
     for_adoption BOOLEAN NOT NULL,
     description TEXT,
     appearance TEXT,
-    author_id INT NOT NULL REFERENCES user(id),
+    author_id INT NOT NULL REFERENCES user(id) ON DELETE CASCADE,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+--;;;;--
 
 CREATE TABLE IF NOT EXISTS adoption (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -82,9 +126,12 @@ CREATE TABLE IF NOT EXISTS adoption (
     google_meet_url TEXT,
     phone_number VARCHAR(20),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES user(id),
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
     FOREIGN KEY (animal_id) REFERENCES animal(id) ON DELETE CASCADE
 );
+
+--;;;;--
+
 
 CREATE TABLE IF NOT EXISTS adoption_status_history (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -95,6 +142,9 @@ CREATE TABLE IF NOT EXISTS adoption_status_history (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (adoption_id) REFERENCES adoption(id)
 );
+
+--;;;;--
+
 
 CREATE TABLE IF NOT EXISTS event (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -107,17 +157,23 @@ CREATE TABLE IF NOT EXISTS event (
     who_can_see_it ENUM('Public', 'Verified User') DEFAULT 'Public',
     who_can_join ENUM('Anyone', 'Invite Only') DEFAULT 'Anyone',
     is_cancelled BOOLEAN DEFAULT false,
-    author_id INT NOT NULL REFERENCES user(id),
+    author_id INT NOT NULL REFERENCES user(id) ON DELETE CASCADE,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+--;;;;--
+
+
 CREATE TABLE IF NOT EXISTS event_volunteer (
     event_id INT NOT NULL REFERENCES event(id) ON DELETE CASCADE,
-    volunteer_id INT NOT NULL REFERENCES user(id),
+    volunteer_id INT NOT NULL REFERENCES user(id) ON DELETE CASCADE,
     status ENUM('Invited', 'Maybe', 'Going', 'Cannot Go') DEFAULT 'Invited',
     PRIMARY KEY (event_id, volunteer_id)
 );
+
+--;;;;--
+
 
 CREATE TABLE IF NOT EXISTS event_post (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -128,13 +184,18 @@ CREATE TABLE IF NOT EXISTS event_post (
     FOREIGN KEY (event_id) REFERENCES event(id)
 );
 
+--;;;;--
+
+
 CREATE TABLE IF NOT EXISTS event_post_pictures (
-    event_post_id INT NOT NULL REFERENCES event_post(id)  ON DELETE CASCADE,
+    event_post_id INT NOT NULL REFERENCES event_post(id) ON DELETE CASCADE,
     photo_url VARCHAR(256) NOT NULL, 
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (event_post_id, photo_url),
     CONSTRAINT unique_event_post_photo_url UNIQUE (event_post_id, photo_url)
 );
+
+--;;;;--
 
 
 CREATE TABLE  IF NOT EXISTS donation (
@@ -156,6 +217,9 @@ CREATE TABLE  IF NOT EXISTS donation (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+--;;;;--
+
+
 CREATE TABLE IF NOT EXISTS donation_pictures (
     donation_id INT NOT NULL REFERENCES donation(id),
     photo_url VARCHAR(256) NOT NULL, 
@@ -163,6 +227,9 @@ CREATE TABLE IF NOT EXISTS donation_pictures (
     PRIMARY KEY (donation_id, photo_url),
     CONSTRAINT unique_donation_photo_url UNIQUE (donation_id, photo_url)
 );
+
+--;;;;--
+
 
 CREATE TABLE IF NOT EXISTS donation_request (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -175,13 +242,19 @@ CREATE TABLE IF NOT EXISTS donation_request (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP  
 );
 
-CREATE TABLE IF NOT EXISTS donation_request_pictures (
-    donation_request_id INT NOT NULL REFERENCES donation_request(id),
+--;;;;--
+
+
+CREATE TABLE IF NOT EXISTS donation_request_update_pictures (
+    donation_request_update_id INT NOT NULL REFERENCES donation_request_update(id),
     photo_url VARCHAR(256) NOT NULL, 
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (donation_request_id, photo_url),
-    CONSTRAINT unique_donation_request_photo_url UNIQUE (donation_request_id, photo_url)
+    PRIMARY KEY (donation_request_update_id, photo_url),
+    CONSTRAINT unique_donation_request_update_photo_url UNIQUE (donation_request_update_id, photo_url) -- Add CONSTRAINT here
 );
+
+--;;;;--
+
 
 CREATE TABLE IF NOT EXISTS donation_request_update (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -192,6 +265,9 @@ CREATE TABLE IF NOT EXISTS donation_request_update (
     FOREIGN KEY (donation_request_id) REFERENCES donation_request(id)
 );
 
+--;;;;--
+
+
 CREATE TABLE IF NOT EXISTS donation_request_update_pictures (
     donation_request_update_id INT NOT NULL REFERENCES donation_request_update(id),
     photo_url VARCHAR(256) NOT NULL, 
@@ -199,6 +275,9 @@ CREATE TABLE IF NOT EXISTS donation_request_update_pictures (
     PRIMARY KEY (donation_request_update_id, photo_url),
     CONSTRAINT unique_donation_request_update_photo_url UNIQUE (donation_request_update_id, photo_url)
 );
+
+--;;;;--
+
 
 CREATE TABLE IF NOT EXISTS donation_request_donation (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -213,6 +292,9 @@ CREATE TABLE IF NOT EXISTS donation_request_donation (
     FOREIGN KEY (donation_request_id) REFERENCES donation_request(id)
 );
 
+--;;;;--
+
+
 CREATE TABLE IF NOT EXISTS donation_request_donation_pictures (
     donation_request_donation_id INT NOT NULL REFERENCES donation_request_donation(id),
     photo_url VARCHAR(256) NOT NULL, 
@@ -220,6 +302,9 @@ CREATE TABLE IF NOT EXISTS donation_request_donation_pictures (
     PRIMARY KEY (donation_request_donation_id, photo_url),
     CONSTRAINT unique_donation_request_donation_photo_url UNIQUE (donation_request_donation_id, photo_url)
 );
+
+--;;;;--
+
 
 CREATE TABLE IF NOT EXISTS notification (
     id VARCHAR(32) PRIMARY KEY,
@@ -243,3 +328,5 @@ CREATE TABLE IF NOT EXISTS notification (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+--;;;;--

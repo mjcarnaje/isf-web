@@ -29,7 +29,10 @@
           {{ render_field(form.first_name) }}
           {{ render_field(form.last_name) }}
         </div>
-        {{ render_field(form.contact_number) }}
+        <div class="flex items-center gap-4">
+          {{ render_field(form.gender) }}
+          {{ render_field(form.contact_number) }}
+        </div>
         <div class="flex items-center w-full gap-4">
           {{ render_field(form.password) }}
           {{ render_field(form.confirm_password) }}

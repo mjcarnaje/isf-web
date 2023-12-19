@@ -1,10 +1,11 @@
+{% from "./_helpers/macros/empty_list.html" import empty_list %}
 {% macro event_tables(events, is_user=False) %}
   <div class="flow-root">
     <div class="w-full">
       <table class="relative min-w-full divide-y divide-gray-300">
         <thead>
           <tr>
-            <th class="py-3.5 px-3 text-left text-sm font-semibold text-gray-900">Name</th>
+            <th class="py-3.5 px-3 text-left text-sm font-semibold text-gray-900">Cover Photo</th>
             <th class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Name</th>
             <th class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Location</th>
             <th class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Start Date</th>
@@ -70,16 +71,7 @@
           </tbody>
         {% endfor %}
       </table>
-      {% if events | length == 0 %}
-        <div class="flex flex-col items-center justify-center gap-8 p-12 border-t">
-          <img class="w-full max-w-sm"
-               src="{{ url_for('static', filename='images/empty_list.png') }}"
-               alt="Kid hugging her dog"
-               width="auto"
-               height="auto" />
-          <h3 class="text-lg font-medium">No Events Found.</h3>
-        </div>
-      {% endif %}
+      {{ empty_list(events, "No Events Found.") }}
     </div>
   </div>
 {% endmacro %}

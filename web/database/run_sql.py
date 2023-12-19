@@ -10,9 +10,10 @@ def run_sql(app: Flask, file_name: str):
     with open(s_path, 'r') as f:
         sql = f.read()
         with app.app_context():
-            sql = sql.split(';')
+            sql = sql.split('--;;;;--')
             sql.pop()
             cur = db.connection.cursor()
             for statement in sql:
+                print(statement)
                 cur.execute(statement)
                 db.connection.commit()

@@ -220,10 +220,10 @@ class Event():
 
     
     @staticmethod
-    def check_invite_status(event_id, user_id):
+    def get_invitation(event_id, user_id):
         sql = """
                 SELECT 
-                    * 
+                    status
                 FROM event_volunteer 
                 WHERE event_id = %(event_id)s and volunteer_id = %(user_id)s
             """
@@ -233,7 +233,7 @@ class Event():
             'user_id': user_id
         })
         row = cur.fetchone()
-        return row['status']
+        return row
 
     @staticmethod
     def update_status(event_id, user_id, status):
