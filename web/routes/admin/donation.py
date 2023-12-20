@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, session
+from flask import Blueprint, render_template, request, session, jsonify
 
 from ...models import Donation
 from ...utils import admin_required, get_active_filter_count, pagination
@@ -45,8 +45,14 @@ def donation(id):
     return render_template()
 
 
-@donations_bp.route('/confirm/<int:id>', methods=['POST'])
+@donations_bp.route('/confirm/<int:id>', methods=['PUT'])
 @admin_required
-def set_is_confirmed(id):
-    Donation.set_is_confirmed(donation_id=id)
-    return "success"
+def set_to_confirmed(id):
+    Donation.set_to_confirmed(id)
+    return jsonify({ "success": True })
+
+@donations_bp.route('/reject/<int:id>', methods=['PUT'])
+@admin_required
+def set_to_rejected(id):
+    Donation.set_to_rejected(id)
+    return jsonify({ "success": True })

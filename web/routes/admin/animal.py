@@ -135,22 +135,22 @@ def edit_animal(id):
         return redirect(url_for("admin.animal.animals"))
     
     if not form.is_submitted():
-        form.id.data = animal.id
-        form.name.data = animal.name
-        form.type.data = animal.type
-        form.photo_url.data = animal.photo_url
-        form.estimated_birth_month.data = animal.estimated_birth_month
-        form.estimated_birth_year.data = animal.estimated_birth_year
-        form.gender.data = animal.gender
-        form.description.data = animal.description
-        form.appearance.data = animal.appearance
-        form.is_adopted.data = animal.is_adopted == 1
-        form.is_dead.data = animal.is_dead == 1
-        form.is_dewormed.data = animal.is_dewormed == 1
-        form.is_neutered.data = animal.is_neutered == 1
-        form.in_shelter.data = animal.in_shelter == 1
-        form.is_rescued.data = animal.is_rescued == 1
-        form.for_adoption.data = animal.for_adoption == 1
+        form.id.data = animal['id']
+        form.name.data = animal['name']
+        form.type.data = animal['type']
+        form.photo_url.data = animal['photo_url']
+        form.estimated_birth_month.data = animal['estimated_birth_month']
+        form.estimated_birth_year.data = animal['estimated_birth_year']
+        form.gender.data = animal['gender']
+        form.description.data = animal['description']
+        form.appearance.data = animal['appearance']
+        form.is_adopted.data = animal['is_adopted'] == 1
+        form.is_dead.data = animal['is_dead'] == 1
+        form.is_dewormed.data = animal['is_dewormed'] == 1
+        form.is_neutered.data = animal['is_neutered'] == 1
+        form.in_shelter.data = animal['in_shelter'] == 1
+        form.is_rescued.data = animal['is_rescued'] == 1
+        form.for_adoption.data = animal['for_adoption'] == 1
             
     return render_template('admin/animal/edit.html', form=form)
 

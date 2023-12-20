@@ -485,12 +485,12 @@ class Notification:
                 
             case NotificationType.ADD_DONATION_MONEY.value:
                 if is_admin:
-                    redirect_url = url_for("admin.adoption.adoption", id=info['donation_id'])
+                    redirect_url = url_for("admin.donations.donations", id=info['donation_id'])
                 else:
                     redirect_url = url_for("user.adoption.adopt_me", id=info['donation_id'])
             case NotificationType.ADD_DONATION_IN_KIND.value:
                 if is_admin:
-                    redirect_url = url_for("admin.adoption.adoption", id=info['donation_id'])
+                    redirect_url = url_for("admin.donations.donations", id=info['donation_id'])
                 else:
                     redirect_url = url_for("user.adoption.adopt_me", id=info['donation_id'])
             case NotificationType.DONATION_STATUS_UPDATE.value:

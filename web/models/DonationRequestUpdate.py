@@ -1,7 +1,7 @@
 from flask import current_app
 from ..database import db
 
-class DonationRequestUpdate():
+class DonationRequestUpdate:
     def __init__(
         self,
         user_id=None,
@@ -108,5 +108,7 @@ class DonationRequestUpdate():
             row['pictures'] = photo_urls
             del row['photo_urls']
             updates.append(cls(**row))
+
+        print(len(updates))
 
         return updates

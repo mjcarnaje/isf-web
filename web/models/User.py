@@ -115,7 +115,11 @@ class User(UserMixin):
         sql = """
             SELECT 
                 user.id,
-                user.photo_url
+                user.photo_url,
+                CONCAT(user.first_name, ' ', user.last_name) as user_name,
+                user.gender as gender,
+                user.email as email,
+                user.is_verified as is_verified
             FROM user
             LEFT JOIN
                 user_role ON user.id = user_role.user_id
@@ -124,8 +128,10 @@ class User(UserMixin):
         """
         cur = db.new_cursor(dictionary=True)
         cur.execute(sql)
-        members = cur.fetchall()
-        return members
+        data = cur.fetchall()
+        
+        return data
+
 
     @staticmethod
     def find_verified_users():

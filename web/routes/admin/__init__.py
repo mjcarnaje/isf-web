@@ -2,7 +2,7 @@ from flask import Blueprint, redirect, render_template, request, url_for, sessio
 from flask_login import current_user, login_user, logout_user
 from werkzeug.security import check_password_hash
 
-from ...models import Animal, Notification, User
+from ...models import Animal, Notification, User, Adoption
 from ...utils import admin_required, get_active_filter_count, pagination
 from ...validations import AdminLoginValidation
 from ...config import Config
@@ -29,7 +29,12 @@ admin_bp.register_blueprint(member_application_bp)
 @admin_required
 def index(): 
    animal_stats = Animal.get_stats()
-   return render_template('/admin/dashboard.html', animal_stats=animal_stats)
+   members = User.find_members()
+   adoption_query = Adoption.get_for_adoptions(
+        page_number=1, 
+        page_size=5
+    )
+   return render_template('/admin/dashboard.html', adoptions=adoption_query.get("data"), members=members[:5], animal_stats=animal_stats)
 
 @admin_bp.route('/notifications', methods=['GET'])
 @admin_required

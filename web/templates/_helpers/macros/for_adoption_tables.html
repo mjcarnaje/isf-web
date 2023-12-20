@@ -1,14 +1,16 @@
 {% from "./_helpers/macros/empty_list.html" import empty_list %}
-{% macro for_adoption_tables(adoptions) %}
+{% macro for_adoption_tables(adoptions, is_dashboard=False) %}
   <div class="flow-root">
     <div class="w-full">
       <table class="min-w-full divide-y divide-gray-300">
         <thead>
-          <tr>
+          <tr class="border">
             <th scope="col"
                 class="px-3 py-3.5 text-sm font-semibold text-left text-gray-900">Name</th>
-            <th scope="col"
-                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Description</th>
+            {% if not is_dashboard %}
+              <th scope="col"
+                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Description</th>
+            {% endif %}
             <th scope="col"
                 class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Status</th>
             <th scope="col"
@@ -18,12 +20,12 @@
         <tbody class="bg-white divide-y divide-gray-200">
           {% for adoption in adoptions %}
             {% set href = url_for('admin.adoption.adoption', id=adoption.id) %}
-            <tr class="transition-all duration-200 hover:cursor-pointer hover:bg-slate-50">
+            <tr class="transition-all duration-200 border hover:cursor-pointer hover:bg-slate-50">
               <td class="py-5 pl-4 pr-3 text-sm whitespace-nowrap">
                 <div class="flex items-center">
                   <a href="{{ href }}">
-                    <div class="flex-shrink-0 h-11 w-11">
-                      <img class="border rounded-full h-11 w-11"
+                    <div class="flex-shrink-0 h-14 w-14">
+                      <img class="border rounded-full h-14 w-14"
                            src="{{ get_image(adoption.photo_url) }}"
                            alt=""
                            height="auto"
@@ -37,15 +39,15 @@
                   </div>
                 </div>
               </td>
-              <td class="px-3 py-5 text-sm text-left text-gray-500">{{ adoption.description | truncate(80) }}</td>
+              {% if not is_dashboard %}
+                <td class="px-3 py-5 text-sm text-left text-gray-500">{{ adoption.description | truncate(80) }}</td>
+              {% endif %}
               <td class="px-3 py-5 text-sm text-right text-gray-500 whitespace-nowrap">
-                <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-700 rounded-md bg-gray-50 ring-1 ring-inset ring-gray-600/20">
-                  {% if adoption.is_adopted %}
-                    Adopted
-                  {% else %}
-                    Not Adopted
-                  {% endif %}
-                </span>
+                {% if adoption.is_adopted %}
+                  <div class="flex-1 text-white btn-xs btn btn-success">Adopted</div>
+                {% else %}
+                  <div class="flex-1 text-white btn-xs btn btn-warning">Not Adopted</div>
+                {% endif %}
               </td>
               <td class="px-3 py-5 text-right text-md">
                 <span class="inline-flex items-center justify-center px-3 py-1 font-medium text-white rounded-lg bg-info">

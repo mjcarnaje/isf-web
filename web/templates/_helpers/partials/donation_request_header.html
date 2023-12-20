@@ -13,33 +13,66 @@
       </div>
     </div>
   </dialog>
-  <div class="flex gap-8 p-3 bg-white shadow">
-    <div class="overflow-hidden rounded-3xl aspect-square bg-slate-100 w-72">
+  <div class="relative flex items-center w-full gap-8 px-10 py-12 mx-auto bg-white border shadow-md rounded-3xl">
+    <div class="w-64 h-64 p-1 border-4 rounded-full border-primary-500">
       <img src="{{ get_image(data.animal_photo_url) }}"
-           alt="Animal Photo"
+           class="object-cover w-full h-full rounded-full"
+           height="auto"
            width="auto"
-           height="auto" />
+           alt="Image Background">
     </div>
-    <div class="flex flex-col gap-4">
-      <h1 class="text-3xl font-bold">{{ data.animal_name }}</h1>
-      <p class="text-gray-700">{{ data.description }}</p>
+    <div class="flex flex-col w-full max-w-2xl gap-8">
+      <div class="flex items-center gap-3">
+        <h1 class="text-4xl font-bold">{{ data.animal_name }}</h1>
+      </div>
+      <p class="w-full text-md">{{ data.animal_description }}</p>
+      <div class="grid w-full grid-cols-2">
+        <div class="flex items-center gap-3 p-3">
+          <div class="grid w-6 h-6 {{ 'bg-green-500' if data.animal_is_dewormed else 'bg-gray-500' }} rounded-full place-items-center ">
+            <i class="text-lg text-white fa-solid fa-check"></i>
+          </div>
+          <p class="font-bold to-gray-800">Dewormed</p>
+        </div>
+        <div class="flex items-center gap-3 p-3">
+          <div class="grid w-6 h-6 {{ 'bg-green-500' if data.animal_is_neutered else 'bg-gray-500' }} rounded-full place-items-center ">
+            <i class="text-lg text-white fa-solid fa-check"></i>
+          </div>
+          <p class="font-bold to-gray-800">Neutered</p>
+        </div>
+        <div class="flex items-center gap-3 p-3">
+          <div class="grid w-6 h-6 {{ 'bg-green-500' if data.animal_in_shelter else 'bg-gray-500' }} rounded-full place-items-center ">
+            <i class="text-lg text-white fa-solid fa-check"></i>
+          </div>
+          <p class="font-bold to-gray-800">Shelter</p>
+        </div>
+        <div class="flex items-center gap-3 p-3">
+          <div class="grid w-6 h-6 {{ 'bg-green-500' if data.animal_is_rescued else 'bg-gray-500' }} rounded-full place-items-center ">
+            <i class="text-lg text-white fa-solid fa-check"></i>
+          </div>
+          <p class="font-bold to-gray-800">Rescued</p>
+        </div>
+        <div class="flex items-center gap-3 p-3">
+          <div class="grid w-6 h-6 {{ 'bg-green-500' if data.animal_is_adopted else 'bg-gray-500' }} rounded-full place-items-center ">
+            <i class="text-lg text-white fa-solid fa-check"></i>
+          </div>
+          <p class="font-bold to-gray-800">Adopted</p>
+        </div>
+      </div>
       <div class="flex items-center gap-4">
-        <span class="text-sm">Amount needed:</span>
+        <span class="text-sm font-medium">Amount needed:</span>
         <p class="text-xl font-bold">{{ data.amount | format_currency }}</p>
       </div>
       <div class="flex items-center gap-4">
-        <span class="text-sm">Wishlist:</span>
+        <span class="text-sm font-medium">Wishlist:</span>
         <p class="text-xl font-bold">{{ data.item_list | sanitize_comma_separated }}</p>
       </div>
       <div class="flex items-center gap-4">
         {% if data.is_fulfilled %}
-          <span class="inline-block px-2 py-1 text-sm font-semibold text-white bg-green-500 rounded-full">Fulfilled</span>
+          <span class="px-3 py-1 text-sm font-semibold text-white rounded-full bg-success">Fulfilled</span>
         {% else %}
-          <span class="inline-block px-2 py-1 text-sm font-semibold text-gray-900 bg-yellow-500 rounded-full">On Going</span>
+          <span class="px-3 py-1 text-sm font-semibold text-white rounded-full bg-warning">On Going</span>
         {% endif %}
-        {% if current_user.id == data.user_id %}
-          <button id="confirm-button" class="btn btn-xs">Set as Fulfilled</button>
-        {% endif %}
+        {% if current_user.id == 1 %}<button id="confirm-button" class="btn btn-xs">Set as Fulfilled</button>{% endif %}
       </div>
     </div>
   </div>

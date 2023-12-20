@@ -140,12 +140,18 @@ def notifications_settings():
   if form.validate_on_submit():
     NotificationSettings.update_notification_settings(
       user_id=current_user.id, 
+      
       adoption_status_update_web=form.adoption_status_update_web.data,
       donation_status_update_web=form.donation_status_update_web.data,
       event_invited_web=form.event_invited_web.data,
+      confirm_join_org_request_web=form.confirm_join_org_request_web.data,
+      reject_join_org_request_web=form.reject_join_org_request_web.data,
+
       adoption_status_update_email=form.adoption_status_update_email.data,
       donation_status_update_email=form.donation_status_update_email.data,
-      event_invited_email=form.event_invited_email.data
+      event_invited_email=form.event_invited_email.data,
+      confirm_join_org_request_email=form.confirm_join_org_request_email.data,
+      reject_join_org_request_email=form.reject_join_org_request_email.data
     )
     flash("Notification settings saved.", "success")
 
@@ -154,10 +160,14 @@ def notifications_settings():
   form.adoption_status_update_web.data = notification_settings['adoption_status_update_web'] == 1
   form.donation_status_update_web.data = notification_settings['donation_status_update_web'] == 1
   form.event_invited_web.data = notification_settings['event_invited_web'] == 1
+  form.confirm_join_org_request_web.data = notification_settings['confirm_join_org_request_web'] == 1
+  form.reject_join_org_request_web.data = notification_settings['reject_join_org_request_web'] == 1
 
   form.adoption_status_update_email.data = notification_settings['adoption_status_update_email'] == 1
   form.donation_status_update_email.data = notification_settings['donation_status_update_email'] == 1
   form.event_invited_email.data = notification_settings['event_invited_email'] == 1
+  form.confirm_join_org_request_email.data = notification_settings['confirm_join_org_request_email'] == 1
+  form.reject_join_org_request_email.data = notification_settings['reject_join_org_request_email'] == 1
   
   return render_template('user/settings/notifications.html', form=form)
 

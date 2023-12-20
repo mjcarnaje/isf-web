@@ -1,7 +1,7 @@
 from flask import (Blueprint, render_template, request, session, flash)
 
 from ...config import Config
-from ...models import User
+from ...models import User, Adoption
 from ...utils import admin_required, get_active_filter_count
 from ...utils import pagination
 
@@ -47,7 +47,8 @@ def users():
 @admin_required
 def view_user(id):
   user = User.find_by_id(id)
-  return render_template('/admin/user/user.html', user=user)  
+  adoptions = Adoption.get_user_adoptions(id)
+  return render_template('/admin/user/user.html', user=user, adoptions=adoptions)  
 
 
 @user_bp.route("/<int:id>/delete", methods=['DELETE'])

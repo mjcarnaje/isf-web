@@ -25,6 +25,7 @@ def  create_app():
     set_up_commands(app)
     CSRFProtect(app)
 
+    app.config.from_prefixed_env()
     celery_init_app(app)
 
     cloudinary.config(

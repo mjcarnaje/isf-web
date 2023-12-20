@@ -40,9 +40,7 @@
       <div class="flex justify-end w-full">
         <button id="add-post-button"  class="text-white btn btn-primary">Add Update Post</button>
       </div>
-      {% for post in posts %}
-        {% for post in posts %}{{ donation_request_update(post) }}{% endfor %}
-      {% endfor %}
+      {% for post in posts %}{{ donation_request_update(post) }}{% endfor %}
       {{ empty_list(posts, "No Posts Found.") }}
     </div>
   </div>

@@ -25,7 +25,7 @@
     </div>
     <div class="grid items-center grid-cols-2 gap-4">
       {{ donation_request_donations(donations) }}
-      {{ empty_list(donations, "No Donations Found.") }}
+      {{ empty_list(donations, "No Donations Found.", class="col-span-2") }}
     </div>
   </div>
 {% endblock content %}

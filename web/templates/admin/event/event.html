@@ -62,7 +62,7 @@
       <div class="flex justify-end">
         <button onclick="addPostModal.showModal()" class="text-white btn btn-primary">Add Post</button>
       </div>
-      <div class="grid grid-cols-2 gap-8">
+      <div class="grid grid-cols-1 gap-8">
         {% for event_post in posts %}{{ event_post_card(event_post) }}{% endfor %}
       </div>
       {{ empty_list(posts, "No Posts Found.") }}

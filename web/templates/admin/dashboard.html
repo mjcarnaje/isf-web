@@ -1,28 +1,110 @@
 {% set active_page = "admin.index" %}
 {% extends "./_helpers/layout/admin_layout.html" %}
+{% from "./_helpers/macros/for_adoption_tables.html" import for_adoption_tables with context %}
 {% block title %}
   Admin
 {% endblock title %}
 {% block content %}
-  <div class="flex flex-col w-full gap-8 mx-auto max-w-7xl">
+  <div class="flex flex-col w-full gap-12 mx-auto max-w-7xl">
     <div class="grid w-full grid-cols-3 gap-8">
-      <div class="flex items-center col-span-1 gap-3 px-5 py-8 bg-white rounded-lg shadow">
+      <a href="{{ url_for('admin.animal.animals',) }}"
+         class="flex items-center col-span-1 gap-3 px-5 py-8 transition-all duration-300 bg-white rounded-lg shadow hover:bg-gray-50 hover:shadow-md">
         <i class="text-3xl fa-solid fa-paw"></i>
         <p class="text-2xl font-bold">
           {{ animal_stats.total_count }} <span class="text-lg font-medium">animals</span>
         </p>
-      </div>
-      <div class="flex items-center col-span-1 gap-3 px-5 py-8 bg-white rounded-lg shadow">
+      </a>
+      <a href="{{ url_for('admin.animal.animals', type='Dog',) }}"
+         class="flex items-center col-span-1 gap-3 px-5 py-8 transition-all duration-300 bg-white rounded-lg shadow hover:bg-gray-50 hover:shadow-md">
         <i class="text-3xl fa-solid fa-dog"></i>
         <p class="text-2xl font-bold">
           {{ animal_stats.dog_count }} <span class="text-lg font-medium">dogs</span>
         </p>
-      </div>
-      <div class="flex items-center col-span-1 gap-3 px-5 py-8 bg-white rounded-lg shadow">
+      </a>
+      <a href="{{ url_for('admin.animal.animals', type='Cat',) }}"
+         class="flex items-center col-span-1 gap-3 px-5 py-8 transition-all duration-300 bg-white rounded-lg shadow hover:bg-gray-50 hover:shadow-md">
         <i class="text-3xl fa-solid fa-cat"></i>
         <p class="text-2xl font-bold">
           {{ animal_stats.cat_count }} <span class="text-lg font-medium">cats</span>
         </p>
+      </a>
+    </div>
+    <div class="grid grid-cols-12 gap-8">
+      <div class="col-span-8">
+        <div class="space-y-5">
+          <h1 class="font-semibold">For Adoptions</h1>
+          <div class="space-y-4">
+            {% for adoption in adoptions %}
+              <div class="grid grid-cols-10 gap-4 px-4 py-2 bg-white border shadow rounded-xl">
+                <div class="flex col-span-5 gap-4">
+                  <a href="{{ url_for('admin.adoption.adoption', id=adoption.id) }}">
+                    <div class="w-20 h-20 aspect-square">
+                      <img src="{{ get_image(adoption.photo_url) }}"
+                           class="object-cover w-full rounded-full aspect-square"
+                           alt="User's photo"
+                           width="auto"
+                           height="auto" />
+                    </div>
+                  </a>
+                  <div class="flex items-center gap-2">
+                    <div class="flex flex-col">
+                      <h1 class="font-semibold">{{ adoption.name }}</h1>
+                      <p>{{ adoption.description | truncate(30) }}</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-center col-span-3 gap-2">
+                  {% if adoption.is_adopted %}
+                    <div class="flex items-center justify-center w-4 h-4 gap-2 bg-green-500 rounded-full">
+                      <i class="text-xs text-white fa-solid fa-check"></i>
+                    </div>
+                    <span class="text-sm font-thin">Adopted</span>
+                  {% else %}
+                    <div class="flex items-center justify-center w-4 h-4 gap-2 bg-gray-500 rounded-full">
+                      <i class="text-xs text-white fa-solid fa-check"></i>
+                    </div>
+                    <span class="text-sm font-thin">Not Adopted</span>
+                  {% endif %}
+                </div>
+                <div class="flex items-center col-span-1 gap-2">
+                  <p class="text-xl font-semibold leading-4">{{ adoption.application_count }}</p>
+                  <span class="text-sm font-thin">Applicants</span>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      <div class="col-span-4">
+        <div class="space-y-5">
+          <h1 class="font-semibold">Latest Members</h1>
+          <div class="space-y-4">
+            {% for user in members %}
+              <div class="flex items-center col-span-1 gap-4 p-2 bg-white border shadow rounded-xl">
+                <a href="{{ url_for('admin.user.view_user', id=user.id) }}">
+                  <div class="w-20 h-20 aspect-square">
+                    <img src="{{ get_image(user.photo_url) }}"
+                         class="object-cover w-full rounded-full aspect-square"
+                         alt="User's photo"
+                         width="auto"
+                         height="auto" />
+                  </div>
+                </a>
+                <div class="flex flex-col items-start gap-2">
+                  <div class="flex items-center gap-2">
+                    <h1 class="font-semibold">{{ user.user_name }}</h1>
+                    {% if user.is_verified %}
+                      <div class="flex items-center justify-center w-4 h-4 bg-green-500 rounded-full">
+                        <i class="text-xs text-white fa-solid fa-check"></i>
+                      </div>
+                    {% endif %}
+                  </div>
+                  <p>{{ user.email }}</p>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
       </div>
     </div>
   </div>

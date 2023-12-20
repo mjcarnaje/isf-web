@@ -30,6 +30,42 @@
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
           {% for donation in donations %}
+            <dialog id="confirm_modal{{ loop.index }}"
+                    class="modal modal-bottom sm:modal-middle">
+              <div class="modal-box">
+                <h2 class="mb-4 text-2xl font-bold">Confirm Donation</h2>
+                <p class="mb-4">Are you sure you want to confirm this donation?</p>
+                <div class="flex justify-end">
+                  <button onclick="confirm_modal{{ loop.index }}.close()"
+                          class="px-4 py-2 mr-4 font-bold text-gray-800 bg-gray-300 rounded-full hover:bg-gray-400">
+                    Cancel
+                  </button>
+                  <button id="confirm-donation"
+                          data-id="{{ donation.id }}"
+                          class="px-4 py-2 font-bold text-white bg-green-500 rounded-full hover:bg-green-600">
+                    Confirm
+                  </button>
+                </div>
+              </div>
+            </dialog>
+            <dialog id="reject_modal{{ loop.index }}"
+                    class="modal modal-bottom sm:modal-middle">
+              <div class="modal-box">
+                <h2 class="mb-4 text-2xl font-bold">Reject Donation</h2>
+                <p class="mb-4">Are you sure you want to reject this donation?</p>
+                <div class="flex justify-end">
+                  <button onclick="reject_modal{{ loop.index }}.close()"
+                          class="px-4 py-2 mr-4 font-bold text-gray-800 bg-gray-300 rounded-full hover:bg-gray-400">
+                    Cancel
+                  </button>
+                  <button id="reject-donation"
+                          data-id="{{ donation.id }}"
+                          class="px-4 py-2 font-bold text-white bg-red-500 rounded-full hover:bg-red-600">
+                    Reject
+                  </button>
+                </div>
+              </div>
+            </dialog>
             <tr>
               <td class="px-3 py-5 text-sm text-gray-800 whitespace-nowrap">
                 <div class="flex items-center gap-2">
@@ -53,11 +89,15 @@
                   {{ donation.item_list }}
                 {% endif %}
               </td>
-              <td class="px-3 py-5 text-sm text-left text-gray-800 whitespace-nowrap">
-                {% if donation.is_confirmed %}
-                  Confirmed
+              <td class="px-3 py-5 text-sm text-left whitespace-nowrap">
+                {% if donation.is_confirmed or donation.is_rejected %}
+                  {% if donation.is_confirmed %}
+                    <div class="flex-1 text-white btn-xs btn btn-success">Confirmed</div>
+                  {% else %}
+                    <div class="flex-1 text-white btn-xs btn btn-error">Rejected</div>
+                  {% endif %}
                 {% else %}
-                  Not Confirm
+                  <div class="flex-1 text-white btn-xs btn btn-warning">Pending</div>
                 {% endif %}
               </td>
               <td class="px-3 py-5 text-sm text-left text-gray-800 whitespace-nowrap">
@@ -71,24 +111,13 @@
                 </div>
               </td>
               <td class="px-3 py-5 text-sm text-right text-gray-600 whitespace-nowrap">
-                <div class="dropdown dropdown-end">
-                  <label tabindex="0">
-                    <div class="flex items-center justify-center w-6 h-6 rounded-full cursor-pointer hover:bg-gray-300 aspect-square">
-                      <i class="fa-solid fa-ellipsis"></i>
-                    </div>
-                  </label>
-                  <ul tabindex="0"
-                      class="dropdown-content z-[1] menu p-2 border bg-base-100 rounded-box">
-                    {% if not donation.is_confirmed %}
-                      <li>
-                        <button id="open-confirm-modal" data-donation-id="{{ donation.id }}">Confirm</button>
-                      </li>
-                    {% else %}
-                      <li>
-                        <p>Nothing in here.</p>
-                      </li>
-                    {% endif %}
-                  </ul>
+                <div class="flex gap-3">
+                  <button type="button"
+                          onclick="reject_modal{{ loop.index }}.showModal()"
+                          class="flex-1 text-white btn-xs btn btn-error">Reject</button>
+                  <button type="button"
+                          onclick="confirm_modal{{ loop.index }}.showModal()"
+                          class="flex-1 text-white btn-xs btn btn-success">Confirm</button>
                 </div>
               </td>
             </tr>
@@ -99,29 +128,56 @@
     </div>
   </div>
   <script>
-  const confirmationModal = document.querySelector("#confirm-donation-modal");
-  const deleteButtons = document.querySelectorAll("#open-confirm-modal");
-  const cancelConfirmationModalButton = document.querySelector("#cancel-confirm-donation");
-  const confirmConfirmationModalButton = document.querySelector("#confirm-donation");
-
-  deleteButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const donationId = button.getAttribute("data-donation-id");
-      confirmationModal.showModal();
-      cancelConfirmationModalButton.addEventListener("click", () => {
-        confirmationModal.close();
-      })
-      confirmConfirmationModalButton.addEventListener("click", () => {
-        fetch(`/admin/donations/confirm/${donationId}`, {
-          method: "POST", 
-          headers: {
-              "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
-          }
-        })
-        window.location.reload();
-      })
+    const confirmDonationButtons = document.querySelectorAll("#confirm-donation");
+    
+    confirmDonationButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const donationId = button.getAttribute("data-id");
+          
+          fetch(`/admin/donations/confirm/${donationId}`, {
+                method: "PUT",
+                headers: {
+                    "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload();
+                }
+            })
+            .catch(error => {
+              console.error("Error confirming donation:", error);
+              showToast("error", "Error confirming donation. Please try again later.");
+            });
+        });
     })
-  })
-  
+
+    const rejectDonationButtons = document.querySelectorAll("#reject-donation");
+   
+    rejectDonationButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+        const donationId = button.getAttribute("data-id");
+
+          fetch(`/admin/donations/reject/${donationId}`, {
+            method: "PUT",
+            headers: {
+                "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.reload();
+            }
+        })
+        .catch(error => {
+          console.error("Error rejecting donation:", error);
+          showToast("error", "Error rejecting donation. Please try again later.");
+        });
+        });
+    })
+
+
   </script>
 {% endmacro %}

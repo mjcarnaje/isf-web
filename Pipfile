@@ -22,9 +22,9 @@ flask-mail = "*"
 flask-socketio = "*"
 babel = "*"
 waitress = "*"
-celery = "*"
 uuid = "*"
 faker = "*"
+celery = "*"
 
 [dev-packages]
 

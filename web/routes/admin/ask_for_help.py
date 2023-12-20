@@ -60,7 +60,8 @@ def view_request(id):
 def view_request_updates(id):
     form = AddDonationRequestUpdateValidation()
 
-    if form.validate_on_submit():
+    if request.method == "POST" and form.validate_on_submit():
+        print("HELLO GUYS!!!")
         new_update = DonationRequestUpdate(
             donation_request_id=id,
             pictures=form.pictures.data,
@@ -68,7 +69,7 @@ def view_request_updates(id):
             user_id=current_user.id
         )
         new_update.insert(new_update)
-        return redirect(url_for('admin.ask_for_help.view_request_updates', id=id))
+        flash("Successfully added a post!", "success")
     
     data = AskForHelp.find_one(id)
     posts = DonationRequestUpdate.find_all_by_id(id)
@@ -93,7 +94,14 @@ def add_request():
             item_list=form.item_list.data,
             pictures=form.pictures.data,
         )
-        new_donation_request.insert(new_donation_request)
+        donation_request_id = new_donation_request.insert(new_donation_request)
+        new_update = DonationRequestUpdate(
+            donation_request_id=donation_request_id,
+            pictures=form.pictures.data,
+            update_text=form.description.data,
+            user_id=current_user.id
+        )
+        new_update.insert(new_update)
         return redirect(url_for('admin.ask_for_help.index'))
     
     return render_template('admin/ask-for-help/add_request.html', form=form)

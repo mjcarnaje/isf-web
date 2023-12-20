@@ -45,8 +45,13 @@ class AskForHelp():
                 *,
                 donation_request.id as id,
                 donation_request.description as description,
-                animal.id AS animal_id,
                 animal.name AS animal_name,
+                animal.description AS animal_description,
+                animal.is_dewormed AS animal_is_dewormed,
+                animal.is_neutered AS animal_is_neutered,
+                animal.in_shelter AS animal_in_shelter,
+                animal.is_rescued AS animal_is_rescued,
+                animal.is_adopted AS animal_is_adopted,
                 animal.photo_url as animal_photo_url
             FROM donation_request
             LEFT JOIN
@@ -89,6 +94,12 @@ class AskForHelp():
                 animal.id AS animal_id,
                 donation_request.description as description,
                 animal.name AS animal_name,
+                animal.description AS animal_description,
+                animal.is_dewormed AS animal_is_dewormed,
+                animal.is_neutered AS animal_is_neutered,
+                animal.in_shelter AS animal_in_shelter,
+                animal.is_rescued AS animal_is_rescued,
+                animal.is_adopted AS animal_is_adopted,
                 animal.photo_url as animal_photo_url
             FROM donation_request
             LEFT JOIN

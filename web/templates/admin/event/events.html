@@ -85,7 +85,7 @@
       deleteButton.addEventListener("click", function () {
         deleteModal.showModal();
 
-        const isCancelled = this.getAttribute("data-is-cancelled");
+        const isCancelled = this.getAttribute("data-is-cancelled") == "1"
 
         if (isCancelled) {
           currentSelected = "delete";

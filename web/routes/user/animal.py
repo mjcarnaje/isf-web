@@ -2,7 +2,7 @@ from flask import (Blueprint, render_template, request, session)
 
 from ...config import Config
 from ...models import Animal
-from ...utils import get_active_filter_count, user_verified_required
+from ...utils import get_active_filter_count, user_verified_required, pagination
 
 user_animal_bp = Blueprint("animals", __name__, url_prefix='/animals')
 
@@ -32,20 +32,22 @@ def animals():
     )
 
     animals = animals_query.get("data")
-    has_previous_page = animals_query.get("has_previous_page")
-    has_next_page = animals_query.get("has_next_page")
     total_count = animals_query.get("total_count")
+    offset = animals_query.get("offset")
 
     return render_template('user/animals/animals.html', 
-                            animals=animals,
-                            page_number=page,
-                            has_previous_page=has_previous_page,
-                            has_next_page=has_next_page,
-                            total_count=total_count,
-                            filters=filters,
-                            active_filters=get_active_filter_count(filters),
-                            view_type=view_type
-                            )
+        animals=animals,
+        filters=filters,
+        active_filters=get_active_filter_count(filters),
+        view_type=view_type,
+        pagination = pagination(
+            page_number=page,
+            offset=offset,
+            page_size=Config.DEFAULT_PAGE_SIZE,
+            total_count=total_count,
+            base_url="user.animals.animals"
+        ),
+    )
 
 @user_animal_bp.route('/<int:id>', methods=['GET'])
 @user_verified_required

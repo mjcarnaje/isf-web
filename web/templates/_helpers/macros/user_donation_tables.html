@@ -40,11 +40,15 @@
                   {{ donation.item_list }}
                 {% endif %}
               </td>
-              <td class="px-3 py-5 text-sm text-left text-gray-800 whitespace-nowrap">
-                {% if donation.is_confirmed %}
-                  Confirmed
+              <td class="px-3 py-5 text-sm text-left whitespace-nowrap">
+                {% if donation.is_confirmed or donation.is_rejected %}
+                  {% if donation.is_confirmed %}
+                    <div class="flex-1 text-white btn-xs btn btn-success">Confirmed</div>
+                  {% else %}
+                    <div class="flex-1 text-white btn-xs btn btn-error">Rejected</div>
+                  {% endif %}
                 {% else %}
-                  Not Confirm
+                  <div class="flex-1 text-white btn-xs btn btn-warning">Pending</div>
                 {% endif %}
               </td>
               <td class="px-3 py-5 text-sm text-left text-gray-800 whitespace-nowrap">
