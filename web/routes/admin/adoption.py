@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, render_template, request
+from flask import Blueprint, jsonify, render_template, request, flash
 
 from ...config import Config
 from ...enums import NotificationType
@@ -65,6 +65,8 @@ def set_interview(animal_id):
         user_to_notify_id=user_id
     )
     Notification.insert_multiple([notification])
+    flash("Successuly set to Interview!", "success")
+
 
     return jsonify({ 'is_success': True })
 
@@ -92,6 +94,8 @@ def set_rejected(animal_id):
     )    
 
     Notification.insert_multiple([notification])
+    flash("Successuly Rejected!", "success")
+
 
     return jsonify({ 'is_success': True })
 
@@ -119,6 +123,7 @@ def set_approved(animal_id):
     )
 
     Notification.insert_multiple([notification])
+    flash("Successuly Approved!", "success")
 
 
     return jsonify({ 'is_success': True })
@@ -145,7 +150,8 @@ def set_turnovered(animal_id):
         adoption_status_history_id=adoption_status_history_id,
         user_who_fired_event_id=1,
         user_to_notify_id=user_id
-    )    
+    )
+    flash("Successuly Turnovered!", "success")
     
     Notification.insert_multiple([notification])
 

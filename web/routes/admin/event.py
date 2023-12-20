@@ -126,8 +126,13 @@ def add_event():
         )
         event_id = Event.insert(new_event)
 
-        if form.who_can_join.data == WhoCanJoinEvent.INVITE_ONLY.value:
-            members = User.find_members()
+        if form.who_can_join.data == WhoCanJoinEvent.MEMBER_ONLY.value or form.who_can_join.data == WhoCanJoinEvent.VERIFIED_USERS.value:
+            members = []
+            if form.who_can_join.data == WhoCanJoinEvent.MEMBER_ONLY.value:
+                members = User.find_members()
+            else:
+                members = User.find_verified_users()
+                
             Event.invite_users(event_id=event_id, user_ids=[user['id'] for user in members])
 
             invite_notifications = []

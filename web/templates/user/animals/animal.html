@@ -59,5 +59,22 @@
         </div>
       </div>
     </div>
+    {% if animal.is_adopted %}
+      <div class="relative flex items-center max-w-5xl gap-8 px-10 py-8 mx-auto mt-8 bg-white border shadow-md rounded-3xl">
+        <div class="w-24 h-24 p-1 border-2 rounded-full border-primary-500">
+          <img src="{{ get_image(animal.adopter_photo_url if animal.adopter_photo_url else '') }}"
+               class="object-cover w-full h-full rounded-full"
+               height="auto"
+               width="auto"
+               alt="Image Background">
+        </div>
+        <div class="flex flex-col gap-1">
+          <h1 class="text-lg font-bold">
+            {{ animal.adopter_first_name if animal.adopter_first_name else "Unknown" }} {{ animal.adopter_last_name if animal.adopter_last_name else "" }} (Adopter)
+          </h1>
+          <h1 class="font-medium">{{ animal.adopter_email if animal.adopter_email else "" }}</h1>
+        </div>
+      </div>
+    {% endif %}
   </div>
 {% endblock content %}

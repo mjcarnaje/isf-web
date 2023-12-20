@@ -1,6 +1,6 @@
 {% from "./_helpers/macros/empty_list.html" import empty_list %}
 {% macro animal_cards_adoption(animals) %}
-  <div class="grid w-full grid-cols-4 gap-5 mx-auto">
+  <div class="grid w-full grid-cols-4 gap-8 mx-auto">
     {% for animal in animals %}
       {% set href = url_for('user.animals.view_animal', id=animal.id) %}
       <div class="flex flex-col gap-y-4">
@@ -13,34 +13,31 @@
                  height="auto" />
           </div>
         </a>
-        <div class="flex flex-wrap gap-2">
-          <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-700 rounded-md bg-gray-50 ring-1 ring-inset ring-gray-600/20">
-            {% if animal.is_dewormed %}
-              Dewormed
-            {% else %}
-              Not Dewormed
-            {% endif %}
+        <h1 class="text-lg font-bold">{{ animal.name }}</h1>
+        <div class="grid grid-cols-2 gap-2">
+          <span class="inline-flex items-center gap-2 p-2 text-xs font-medium text-gray-700 rounded-md bg-gray-50">
+            <div class="grid w-4 h-4 {{ 'bg-green-500' if animal.is_dewormed else 'bg-gray-500' }} rounded-full place-items-center ">
+              <i class="text-sm text-white fa-solid fa-check"></i>
+            </div>
+            Dewormed
           </span>
-          <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-700 rounded-md bg-gray-50 ring-1 ring-inset ring-gray-600/20">
-            {% if animal.is_neutered %}
-              Neutered
-            {% else %}
-              Not Neutered
-            {% endif %}
+          <span class="inline-flex items-center gap-2 p-2 text-xs font-medium text-gray-700 rounded-md bg-gray-50">
+            <div class="grid w-4 h-4 {{ 'bg-green-500' if animal.is_neutered else 'bg-gray-500' }} rounded-full place-items-center ">
+              <i class="text-sm text-white fa-solid fa-check"></i>
+            </div>
+            Neutered
           </span>
-          <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-700 rounded-md bg-gray-50 ring-1 ring-inset ring-gray-600/20">
-            {% if animal.in_shelter %}
-              In Shelter
-            {% else %}
-              Not In Shelter
-            {% endif %}
+          <span class="inline-flex items-center gap-2 p-2 text-xs font-medium text-gray-700 rounded-md bg-gray-50">
+            <div class="grid w-4 h-4 {{ 'bg-green-500' if animal.is_shelter else 'bg-gray-500' }} rounded-full place-items-center ">
+              <i class="text-sm text-white fa-solid fa-check"></i>
+            </div>
+            In Shelter
           </span>
-          <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-700 rounded-md bg-gray-50 ring-1 ring-inset ring-gray-600/20">
-            {% if animal.is_rescued %}
-              Rescued
-            {% else %}
-              Not Rescued
-            {% endif %}
+          <span class="inline-flex items-center gap-2 p-2 text-xs font-medium text-gray-700 rounded-md bg-gray-50">
+            <div class="grid w-4 h-4 {{ 'bg-green-500' if animal.is_rescued else 'bg-gray-500' }} rounded-full place-items-center ">
+              <i class="text-sm text-white fa-solid fa-check"></i>
+            </div>
+            Rescued
           </span>
         </div>
         <a href="{{ url_for('user.adoption.adopt_me', id=animal.id) }}"

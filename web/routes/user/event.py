@@ -1,7 +1,7 @@
 from flask import (Blueprint, render_template, request, session)
 from flask_login import current_user
 from ...utils import user_verified_required, get_active_filter_count, pagination
-from ...models import Event, EventPost
+from ...models import Event, EventPost, UserRole
 from ...config import Config
 
 user_event_bp = Blueprint("events", __name__, url_prefix='/events')

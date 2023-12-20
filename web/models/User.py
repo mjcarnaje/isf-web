@@ -57,8 +57,8 @@ class User(UserMixin):
                 where_clauses.append(f"{key} = %s")
                 filter_params.append(value)
 
-        where_clauses.append("username != %s")
-        filter_params.append("admin")
+        where_clauses.append("user.id != %s")
+        filter_params.append("1")
         
         where_clause = " AND ".join(where_clauses) if where_clauses else ""
 
@@ -83,6 +83,8 @@ class User(UserMixin):
             SELECT
                 COUNT(*) as total_count
             FROM user
+            LEFT JOIN 
+                user_role ON user.id = user_role.user_id
         """
 
         if where_clause:
@@ -112,12 +114,29 @@ class User(UserMixin):
     def find_members():
         sql = """
             SELECT 
-                user.id
+                user.id,
+                user.photo_url
             FROM user
             LEFT JOIN
                 user_role ON user.id = user_role.user_id
             WHERE 
                 user_role.role_name = 'Member'
+        """
+        cur = db.new_cursor(dictionary=True)
+        cur.execute(sql)
+        members = cur.fetchall()
+        return members
+
+    @staticmethod
+    def find_verified_users():
+        sql = """
+            SELECT 
+                user.id,
+                user.photo_url,
+                is_verified
+            FROM user
+            WHERE
+                is_verified = 1
         """
         cur = db.new_cursor(dictionary=True)
         cur.execute(sql)

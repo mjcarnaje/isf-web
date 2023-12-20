@@ -54,7 +54,7 @@ class UserSeeder:
             )
         )
 
-    def seed(self, num_users=50):
+    def seed(self, num_users):
         sql_statements = []
 
         for index in range(num_users):

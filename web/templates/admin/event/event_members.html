@@ -8,6 +8,15 @@
   {% include "./_helpers/partials/event_cover.html" %}
   <div class="w-full max-w-5xl mx-auto mt-12">
     <div class="flex flex-col gap-8">
+      {% if event.status == "Cancelled" %}
+        <div class="flex items-center gap-4 p-4 bg-red-100 rounded-lg">
+          <i class="text-2xl text-red-500 fa-solid fa-warning"></i>
+          <div>
+            <h1 class="text-lg font-semibold text-gray-800">This event was canceled</h1>
+            <p class="text-gray-600">You cannot share this event, but you can still post.</p>
+          </div>
+        </div>
+      {% endif %}
       <div class="flex flex-col w-full gap-4 p-8 border shadow rounded-3xl">
         <div class="flex items-center justify-around gap-4 divide-x-2">
           <div class="flex flex-col items-center justify-center w-full gap-1 p-2">

@@ -1,13 +1,13 @@
-from flask import (Blueprint, current_app, flash, jsonify, redirect,
-                   render_template, request, session, url_for)
+from flask import (Blueprint, current_app, flash, redirect, render_template,
+                   request, session, url_for)
 from flask_login import current_user, login_required, login_user
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from ..config import Config
-from ..models import Animal, Event, NotificationSettings, User, UserRole
+from ..models import Animal, Event, User
 from ..utils import (anonymous_required, check_verification_token,
                      generate_verification_token, get_active_filter_count,
-                     send_verification_email)
+                     send_verification_email, pagination)
 from ..validations import (NewEmailValidation, UserLoginValidation,
                            UserSignupValidation)
 
@@ -30,20 +30,36 @@ def about_us():
 @anonymous_required
 def adopt():
   page = request.args.get('page', 1, type=int)
+  view_type = session.get('view_type')
+
+  filters = {
+    'query': request.args.get('query', '', type=str),
+    'for_adoption': True, 
+  }
+  
   animals_query = Animal.find_all(
               page_number=page, 
               page_size=Config.DEFAULT_PAGE_SIZE,
-              filters={
-                'for_adoption': True
-              }
+              filters=filters
             )
   
   animals = animals_query.get("data")
-  has_previous_page = animals_query.get("has_previous_page")
-  has_next_page = animals_query.get("has_next_page")
   total_count = animals_query.get("total_count")
+  offset = animals_query.get("offset")
   
-  return render_template('/landing/adopt/adopts.html',  animals=animals, page_number=page, has_previous_page=has_previous_page, has_next_page=has_next_page, total_count=total_count)
+  return render_template('/landing/adopt/adopts.html',
+      animals=animals, 
+      filters=filters,
+      active_filters=get_active_filter_count(filters),
+      view_type=view_type,
+      pagination = pagination(
+        page_number=page,
+        offset=offset,
+        page_size=Config.DEFAULT_PAGE_SIZE,
+        total_count=total_count,
+        base_url="landing.animals"
+      )
+  )
 
 @landing_bp.route('/recues', methods=['GET'])
 @anonymous_required
@@ -72,20 +88,22 @@ def animals():
             )
   
   animals = animals_query.get("data")
-  has_previous_page = animals_query.get("has_previous_page")
-  has_next_page = animals_query.get("has_next_page")
   total_count = animals_query.get("total_count")
+  offset = animals_query.get("offset")
   
   return render_template('/landing/rescue/rescues.html', 
-                          animals=animals, 
-                          page_number=page, 
-                          has_previous_page=has_previous_page, 
-                          has_next_page=has_next_page, 
-                          total_count=total_count,
-                          filters=filters,
-                          active_filters=get_active_filter_count(filters),
-                          view_type=view_type
-                          )
+            animals=animals, 
+            filters=filters,
+            active_filters=get_active_filter_count(filters),
+            view_type=view_type,
+            pagination = pagination(
+              page_number=page,
+              offset=offset,
+              page_size=Config.DEFAULT_PAGE_SIZE,
+              total_count=total_count,
+              base_url="landing.animals"
+            )
+          )
 
 @landing_bp.route('/<int:id>', methods=['GET'])
 @anonymous_required
@@ -101,7 +119,9 @@ def donate():
 @landing_bp.route('/events', methods=['GET'])
 @anonymous_required
 def events():
-  events = Event.find_all(page_number=1, page_size=12, filters={})
+  events = Event.find_all(page_number=1, page_size=12, filters={
+     'who_can_see_it': 'Public'
+  })
   return render_template('/landing/event/events.html', events=events.get('data'))
 
 @landing_bp.route('/events/<int:id>', methods=['GET'])
@@ -113,7 +133,8 @@ def view_event(id):
 @landing_bp.route('/volunteers', methods=['GET'])
 @anonymous_required
 def volunteers():
-  return render_template('/landing/volunteer/volunteer.html')
+  members = User.find_members()
+  return render_template('/landing/volunteer/volunteer.html', members=members)
 
 @landing_bp.route('/verify-account', methods=['GET', 'POST'])
 @login_required

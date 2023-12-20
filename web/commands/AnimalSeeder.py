@@ -56,7 +56,7 @@ class AnimalSeeder:
             )
         )
 
-    def seed(self, num_animals=1000):
+    def seed(self, num_animals):
         sql_statements = []
 
         for index in range(num_animals):

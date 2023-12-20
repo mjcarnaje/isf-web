@@ -8,4 +8,5 @@ class EventStatus(Enum):
 
 class WhoCanJoinEvent(Enum):
   ANYONE = 'Anyone'
-  INVITE_ONLY = 'Invite Only'
+  VERIFIED_USERS = 'Verified Users'
+  MEMBER_ONLY = 'Member-Only'

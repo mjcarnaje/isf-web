@@ -1,7 +1,8 @@
 {% set active_page = "rescue" %}
+{% extends "./_helpers/layout/main_layout.html" %}
 {% from "./_helpers/macros/animal_cards.html" import animal_cards with context %}
 {% from "./_helpers/macros/animal_tables.html" import animal_tables with context %}
-{% extends "./_helpers/layout/main_layout.html" %}
+{% from "./_helpers/macros/pagination_buttons.html" import pagination_buttons with context %}
 {% from "./_helpers/macros/animal_filters.html" import animal_filters with context %}
 {% block title %}
   Rescues
@@ -18,7 +19,7 @@
       {{ animal_filters(true) }}
       <div class="sm:flex sm:items-center">
         <div class="sm:flex-auto">
-          <h1 class="text-2xl font-bold leading-6 text-gray-900">Animals ({{ total_count }})</h1>
+          <h1 class="text-2xl font-bold leading-6 text-gray-900">Animals ({{ pagination.total_count }})</h1>
         </div>
         {% include "./_helpers/partials/view_form.html" %}
       </div>
@@ -27,15 +28,7 @@
       {% else %}
         {{ animal_tables(animals, false) }}
       {% endif %}
-      <div class="flex justify-center">
-        <div class="join">
-          <a href="{{ url_for('landing.animals', page=page_number - 1) }}"
-             class="join-item btn {{ 'btn-disabled' if not has_previous_page }}">«</a>
-          <p class="join-item btn">Page {{ page_number }}</p>
-          <a href="{{ url_for('landing.animals', page=page_number + 1) }}"
-             class="join-item btn {{ 'btn-disabled' if not has_next_page }}">»</a>
-        </div>
-      </div>
+      {{ pagination_buttons() }}
     </div>
   </div>
 {% endblock content %}

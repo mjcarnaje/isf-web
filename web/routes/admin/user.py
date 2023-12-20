@@ -15,7 +15,8 @@ def users():
 
     filters = {
         'query': request.args.get('query', '', type=str),
-        'gender': request.args.get('gender', '')
+        'gender': request.args.get('gender', ''),
+        'role_name': request.args.get('role', '')
     }
 
     users_query = User.find_all(

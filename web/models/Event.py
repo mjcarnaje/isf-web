@@ -34,6 +34,44 @@ class Event():
         self.created_at = created_at
         self.updated_at = updated_at
 
+    def get_latest_event():
+        sql = """
+            SELECT
+                id,
+                name,
+                description,
+                cover_photo_url,
+                start_date,
+                end_date,
+                location,
+                who_can_see_it,
+                who_can_join,
+                is_cancelled,
+                author_id,
+                created_at,
+                updated_at,
+                CASE
+                    WHEN is_cancelled = true THEN 'Cancelled'
+                    WHEN start_date > NOW() THEN 'Scheduled'
+                    WHEN start_date <= NOW() AND end_date >= NOW() THEN 'In Progress'
+                    WHEN end_date < NOW() THEN 'Completed'
+                END AS status
+            FROM 
+                event
+            WHERE 
+                is_cancelled != 1
+            ORDER BY
+                start_date DESC
+            LIMIT 1
+        """
+
+        cur = db.new_cursor(dictionary=True)
+        cur.execute(sql)
+        latest_event_data = cur.fetchone()
+
+        return latest_event_data
+
+
     @staticmethod
     def get_featured():
         sql = """

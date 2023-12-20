@@ -5,6 +5,7 @@ from ..database import db
 import json
 from .AnimalSeeder import AnimalSeeder
 from .UserSeeder import UserSeeder
+from .UserRoleSeeder import UserRoleSeeder
 from .EventSeeder import EventSeeder
 from .utils import get_collection_photos
 
@@ -32,9 +33,10 @@ def set_up_commands(app: Flask):
 
     @app.cli.command("seed")
     def seed():
-        UserSeeder(db).seed()
-        AnimalSeeder(db).seed()
-        EventSeeder(db).seed()
+        UserSeeder(db).seed(100)
+        UserRoleSeeder(db).seed(50)
+        AnimalSeeder(db).seed(10000)
+        EventSeeder(db).seed(500)
         
     @app.cli.command("save-animal-photos")
     def save_animal_photos():

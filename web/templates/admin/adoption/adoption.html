@@ -6,17 +6,51 @@
 {% endblock title %}
 {% block content %}
   <div class="flex flex-col items-center justify-center w-full gap-8 mx-auto max-w-7xl">
-    <div class="flex w-full gap-8 p-8 bg-white border rounded-2xl">
-      <div>
+    <div class="relative flex items-center w-full gap-8 px-10 py-12 mx-auto bg-white border shadow-md rounded-3xl">
+      <div class="w-64 h-64 p-1 border-4 rounded-full border-primary-500">
         <img src="{{ get_image(animal.photo_url) }}"
-             class="w-48 border rounded-2xl aspect-square"
-             alt="Animal's photo"
+             class="object-cover w-full h-full rounded-full"
+             height="auto"
              width="auto"
-             height="auto" />
+             alt="Image Background">
       </div>
-      <div class="flex flex-col space-y-1">
-        <h2 class="text-xl font-bold text-gray-900">{{ animal.name }}</h2>
-        <p class="text-gray-800">{{ animal.description }}</p>
+      <div class="flex flex-col w-full max-w-2xl gap-8">
+        <div class="flex items-center gap-3">
+          <h1 class="text-4xl font-bold">{{ animal.name }}</h1>
+        </div>
+        <p class="w-full text-md">{{ animal.description }}</p>
+        <div class="grid w-full grid-cols-2">
+          <div class="flex items-center gap-3 p-3">
+            <div class="grid w-6 h-6 {{ 'bg-green-500' if animal.is_dewormed else 'bg-gray-500' }} rounded-full place-items-center ">
+              <i class="text-lg text-white fa-solid fa-check"></i>
+            </div>
+            <p class="font-bold to-gray-800">Dewormed</p>
+          </div>
+          <div class="flex items-center gap-3 p-3">
+            <div class="grid w-6 h-6 {{ 'bg-green-500' if animal.is_neutered else 'bg-gray-500' }} rounded-full place-items-center ">
+              <i class="text-lg text-white fa-solid fa-check"></i>
+            </div>
+            <p class="font-bold to-gray-800">Neutered</p>
+          </div>
+          <div class="flex items-center gap-3 p-3">
+            <div class="grid w-6 h-6 {{ 'bg-green-500' if animal.is_shelter else 'bg-gray-500' }} rounded-full place-items-center ">
+              <i class="text-lg text-white fa-solid fa-check"></i>
+            </div>
+            <p class="font-bold to-gray-800">Shelter</p>
+          </div>
+          <div class="flex items-center gap-3 p-3">
+            <div class="grid w-6 h-6 {{ 'bg-green-500' if animal.is_rescued else 'bg-gray-500' }} rounded-full place-items-center ">
+              <i class="text-lg text-white fa-solid fa-check"></i>
+            </div>
+            <p class="font-bold to-gray-800">Rescued</p>
+          </div>
+          <div class="flex items-center gap-3 p-3">
+            <div class="grid w-6 h-6 {{ 'bg-green-500' if animal.is_adopted else 'bg-gray-500' }} rounded-full place-items-center ">
+              <i class="text-lg text-white fa-solid fa-check"></i>
+            </div>
+            <p class="font-bold to-gray-800">Adopted</p>
+          </div>
+        </div>
       </div>
     </div>
     <div class="w-full">
@@ -72,8 +106,8 @@
                   </label>
                   <ul tabindex="0"
                       class="dropdown-content shadow-md z-[1] menu p-2 border bg-base-100 rounded-box w-56">
-                    {% if application.current_status != "Rejected" or application.current_status == "Rejected" %}
-                      {% if application.current_status != "Interview" and application.current_status != "Approved" %}
+                    {% if application.current_status != "Turnovered" %}
+                      {% if application.current_status == "Pending" %}
                         <li>
                           <button id="interview_button"
                                   data-id="{{ application.id }}"
@@ -130,7 +164,7 @@
               <label for="remarks" class="text-sm text-gray-500 label label-text">Remarks (Optional)</label>
               <input class="w-full input input-bordered" type="text" name="remarks" />
             </div>
-            <button type="submit" class="w-full text-white btn btn-primary">Submit</button>
+            <button class="w-full text-white btn btn-primary">Submit</button>
           </form>
         </div>
         <form method="dialog" class="modal-backdrop">
@@ -166,7 +200,7 @@
               <label for="remarks" class="text-sm text-gray-500 label label-text">Remarks (Optional)</label>
               <input class="w-full input input-bordered" type="text" name="remarks" />
             </div>
-            <button type="submit" class="w-full text-white btn btn-primary">Submit</button>
+            <button class="w-full text-white btn btn-primary">Submit</button>
           </form>
         </div>
         <form method="dialog" class="modal-backdrop">
@@ -182,7 +216,7 @@
               <label for="remarks" class="text-sm text-gray-500 label label-text">Remarks (Optional)</label>
               <input class="w-full input input-bordered" type="text" name="remarks" />
             </div>
-            <button type="submit" class="w-full text-white btn btn-primary">Submit</button>
+            <button class="w-full text-white btn btn-primary">Submit</button>
           </form>
         </div>
         <form method="dialog" class="modal-backdrop">

@@ -43,7 +43,7 @@ class EventSeeder:
                 self.fake.date_time_between(start_date='-5y', end_date='now').strftime('%Y-%m-%d %H:%M:%S'),  # 3
                 self.fake.date_time_between(start_date='-5y', end_date='now').strftime('%Y-%m-%d %H:%M:%S'),  # 4
                 self.fake.city(),
-                self.fake.random_element(elements=('Public', 'Verified User')),  # 5
+                self.fake.random_element(elements=('Public', 'Verified Users', 'Member-Only')),  # 5
                 random.choice([0, 0, 0, 1]),  # 6
                 1,  # 7
                 self.fake.date_time_between(start_date='-5y', end_date='now').strftime('%Y-%m-%d %H:%M:%S'),  # 8
@@ -51,7 +51,7 @@ class EventSeeder:
         )
 
 
-    def seed(self, num_users=50):
+    def seed(self, num_users):
         sql_statements = []
 
         for index in range(num_users):

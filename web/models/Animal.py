@@ -45,13 +45,33 @@ class Animal():
 
     @classmethod
     def find_by_id(cls, user_id: int):
-        sql = "SELECT * FROM animal WHERE id = %s"
+        sql = """
+            SELECT 
+                animal.*,
+                animal.id AS id,
+                user.id AS adopter_user_id,
+                user.email AS adopter_email,
+                user.username AS adopter_username,
+                user.first_name AS adopter_first_name,
+                user.last_name AS adopter_last_name,
+                user.gender AS adopter_gender,
+                user.photo_url AS adopter_photo_url,
+                user.is_verified AS adopter_is_verified,
+                user.unread_notification_count AS adopter_unread_notification_count,
+                user.contact_number AS adopter_contact_number
+            FROM 
+                animal
+            LEFT JOIN
+                adoption ON animal.id = adoption.animal_id
+            LEFT JOIN
+                user ON adoption.user_id = user.id
+            WHERE 
+                animal.id = %s;
+        """
         cur = db.new_cursor(dictionary=True)
         cur.execute(sql, (user_id,))
         row = cur.fetchone()
-        if not row:
-            return None
-        return cls(**row)
+        return row
 
     @staticmethod
     def insert(

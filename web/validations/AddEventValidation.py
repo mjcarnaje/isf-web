@@ -25,10 +25,14 @@ class AddEventValidation(FlaskForm):
     ])
     who_can_see_it = SelectField('Who can see it?', choices=[
                          ("Public", "Public"), 
-                         ("Verified User", "Verified User"),
+                         ("Verified Users", "Verified Users"),
+                         ("Members", "Members"),
                          ], validators=[validators.DataRequired()])
     
-    who_can_join = SelectField('Who can join?', choices=[("Anyone", "Anyone"), ("Invite Only", "Invite Only (Invite All Volunteers)")], validators=[validators.DataRequired()])
+    who_can_join = SelectField('Who can join?', choices=[
+                        ("Anyone", "Anyone"),
+                        ("Verified Users", "Verified Users"),
+                        ("Member-Only", "Member-Only")], validators=[validators.DataRequired()])
 
     pictures = FieldList(StringField(), label="Photos")    
     

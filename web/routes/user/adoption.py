@@ -48,18 +48,18 @@ def adoptions():
         ),
     )
 
-@user_adoption_bp.route('/adoptions/<int:id>', methods=['GET', 'POST'])
+@user_adoption_bp.route('/<int:id>', methods=['GET', 'POST'])
 @user_verified_required
 def adopt_me(id):
   animal = Animal.find_by_id(id)
-  active_application = Adoption.find_by_user_animal(user_id=current_user.id, animal_id=animal.id)
+  active_application = Adoption.find_by_user_animal(user_id=current_user.id, animal_id=animal['id'])
 
   form = AdoptionValidation()
 
   if form.validate_on_submit():
     application = Adoption(
       user_id=current_user.id,
-      animal_id=animal.id, 
+      animal_id=animal['id'], 
       reason_to_adopt=form.reason_to_adopt.data, 
       interview_preference=form.interview_preference.data, 
       interview_preferred_date=form.interview_preferred_date.data, 
@@ -72,12 +72,13 @@ def adopt_me(id):
       application_id =  application.insert(application)
       notification = Notification(
         type=NotificationType.ADOPTION_REQUEST.value,
-        animal_id=animal.id,
+        animal_id=animal['id'], 
         adoption_id=application_id,
         user_who_fired_event_id=current_user.id,
         user_to_notify_id=1
       )
       Notification.insert_multiple([notification])
+      flash("Successfuly Apply for Adoption", "success")
 
     return redirect(url_for('user.applications'))
     

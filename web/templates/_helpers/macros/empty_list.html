@@ -1,6 +1,6 @@
-{% macro empty_list(list, desc = "No Found.") %}
+{% macro empty_list(list, desc = "No Found.", class="") %}
   {% if list | length == 0 %}
-    <div class="flex flex-col items-center justify-center gap-8 py-16">
+    <div class="flex flex-col items-center justify-center gap-8 py-16 {{ class }}">
       <img class="w-full max-w-sm"
            src="{{ url_for('static', filename='images/empty_list.png') }}"
            alt="Kid hugging her dog"
