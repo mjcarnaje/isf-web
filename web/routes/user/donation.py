@@ -19,19 +19,19 @@ def index():
       'query': request.args.get('query', '', type=str),
   }
 
-  donation_requests_query = AskForHelp.find_all(
+  animal_helps_query = AskForHelp.find_all(
       page_number=page,
       page_size=Config.DEFAULT_PAGE_SIZE,
       filters=filters
   )
 
-  donation_requests = donation_requests_query.get("data")
-  total_count = donation_requests_query.get("total_count")
-  offset = donation_requests_query.get("offset")
+  animal_helps = animal_helps_query.get("data")
+  total_count = animal_helps_query.get("total_count")
+  offset = animal_helps_query.get("offset")
   
   return render_template('/user/donations/donate.html',
     filters=filters,
-    donation_requests=donation_requests,
+    animal_helps=animal_helps,
     active_filters=get_active_filter_count(filters),
     view_type=view_type,
     pagination = pagination(
@@ -45,16 +45,16 @@ def index():
 
 @user_donation_bp.route('/<int:id>', methods=['GET', 'POST'])
 def view_request(id):
-    return redirect(url_for('user.donate.view_request_updates', id=id))
+    return redirect(url_for('user.donate.animal_help_posts', id=id))
   
 @user_donation_bp.route('/<int:id>/updates', methods=['GET', 'POST'])
-def view_request_updates(id):
+def animal_help_posts(id):
     data = AskForHelp.find_one(id)
     posts = DonationRequestUpdate.find_all_by_id(id)
-    return render_template('user/donations/view_request_updates.html', data=data, posts=posts)
+    return render_template('user/donations/animal_help_posts.html', data=data, posts=posts)
 
 @user_donation_bp.route('/<int:id>/donations', methods=['GET', 'POST'])
-def view_request_donations(id):
+def animal_help_donations(id):
     formid = request.args.get('formid')
     money_form = AddDonationRequestDonationMoneyValidation()
     in_kind_form = AddDonationRequestDonationInKindValidation()
@@ -83,7 +83,7 @@ def view_request_donations(id):
   
     data = AskForHelp.find_one(id)
     donations = DonationRequestDonation.find_all_by_id(id)
-    return render_template('user/donations/view_request_donations.html', money_form=money_form, in_kind_form=in_kind_form, data=data, donations=donations)
+    return render_template('user/donations/animal_help_donations.html', money_form=money_form, in_kind_form=in_kind_form, data=data, donations=donations)
 
 
 @user_donation_bp.route('/money', methods=['GET', 'POST'])

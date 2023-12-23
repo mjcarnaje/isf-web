@@ -20,7 +20,7 @@
               id="add-multi-photo"
               data-id="{{ id }}"
               class="flex flex-col items-center justify-center w-full gap-2 bg-white border border-dashed rounded-lg cursor-pointer aspect-square hover:shadow-sm">
-        <i class="text-3xl fa-solid fa-image"></i>
+        <i id="image-icon" class="text-xl fa-solid fa-image"></i>
         <p class="text-xs">Add photo</p>
       </button>
     </ul>
@@ -40,8 +40,16 @@
       const addPhoto = document.querySelector("button[id='add-multi-photo'][data-id='{{ id }}']");
       const uploadPhotoInput = document.querySelector("input[name='multi_upload'][data-id='{{ id }}']");
       const csrfToken = document.querySelector("meta[name=csrf_token]").content;
+      const imageIcon = document.querySelector("#image-icon")
+
 
       uploadPhotoInput.addEventListener("change", async () => {
+        imageIcon.classList.toggle("fa-image");
+        imageIcon.classList.toggle("fa-spinner");
+        imageIcon.classList.toggle("fa-spin");
+        document.querySelector("#image-icon + p").textContent = "Uploading..";
+        const ul = document.querySelector("ul[id='multi-pictures'][data-id='{{ id }}']");
+        
         const file = uploadPhotoInput.files[0];
 
         if (file) {
@@ -57,7 +65,6 @@
           const data = await response.json();
 
           if (data?.is_success) {
-            const ul = document.querySelector("ul[id='multi-pictures'][data-id='{{ id }}']");
 
             // Create a new li element with the new image
             const newLi = document.createElement("li");
@@ -77,6 +84,10 @@
             newLi.appendChild(newInput);
             newLi.appendChild(newImage);
             ul.insertBefore(newLi, ul.lastElementChild)
+            imageIcon.classList.toggle("fa-image")
+            imageIcon.classList.toggle("fa-spinner")
+            imageIcon.classList.toggle("fa-spin")
+            document.querySelector(".text-3xl.fa-solid + p").textContent = "Add photo"
           } else {
             showToast('error', data.error)
           }

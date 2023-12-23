@@ -1,13 +1,13 @@
-{% macro donation_request_card(data, is_user=False) %}
-  <div class="col-span-1 overflow-hidden bg-white rounded-lg shadow">
-    {% if is_user %}
-      {% set href = url_for('user.donate.view_request', id=data.id) %}
-    {% else %}
-      {% set href = url_for('admin.ask_for_help.view_request', id=data.id) %}
-    {% endif %}
+{% macro animal_help_card(data, is_user=False) %}
+  {% if is_user %}
+    {% set href = url_for('user.donate.view_request', id=data.id) %}
+  {% else %}
+    {% set href = url_for('admin.ask_for_help.view_request', id=data.id) %}
+  {% endif %}
+  <div class="col-span-1 overflow-hidden bg-white shadow-md rounded-xl">
     <a href="{{ href }}">
       <img src="{{ get_image(data.thumbnail_url) }}"
-           class="object-contain w-full border aspect-video"
+           class="object-contain w-full border bg-gray-50 aspect-video"
            alt="Thumbnail"
            height="auto"
            width="auto" />

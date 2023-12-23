@@ -36,7 +36,9 @@ class DonationRequestDonation:
         try:
             sql = """
                 UPDATE donation_request_donation
-                SET is_confirmed = 1
+                SET 
+                    is_confirmed = 1,
+                    is_rejected = 0
                 WHERE id = %s
             """
             cur = db.new_cursor()
@@ -52,7 +54,9 @@ class DonationRequestDonation:
         try:
             sql = """
                 UPDATE donation_request_donation
-                SET is_rejected = 1
+                SET 
+                    is_rejected = 1,
+                    is_confirmed = 0
                 WHERE id = %s
             """
             cur = db.new_cursor()

@@ -1,5 +1,73 @@
-{% macro donation_request_donations(donations, is_user=False) %}
+{% macro animal_help_donations(donations, is_user=False) %}
   {% for donation in donations %}
+    {% set is_touched = donation.is_confirmed or donation.is_rejected %}
+    <div class="flex flex-col w-full gap-5 p-5 bg-white border shadow-md rounded-xl">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-5">
+          <img src="{{ get_image(donation.user_photo_url) }}"
+               class="w-12 h-12 rounded-full"
+               height="auto"
+               width="auto"
+               alt="donator image" />
+          <div class="flex flex-col">
+            <p class="font-semibold">{{ donation.user_name }}</p>
+            <p class="text-sm">{{ donation.created_at | pretty_date }}</p>
+          </div>
+        </div>
+        <div>
+          {% if not is_user %}
+            <div class="drop-down" data-dropdown>
+              <button data-dropdown-button
+                      class="flex items-center justify-center w-10 h-10 transition-all duration-200 border rounded-full opacity-50 hover:shadow drop-down-button">
+                <i class="text-lg pointer-events-none fa-solid fa-ellipsis"></i>
+              </button>
+              <ul data-dropdown-content tabindex="0" class="drop-down-content">
+                <li role="button"
+                    tabindex="0"
+                    onclick="reject_modal{{ loop.index }}.showModal()"
+                    class="flex items-center gap-3 p-2 rounded-sm hover:bg-slate-100">
+                  <i class="fa-solid fa-xmark"></i>
+                  <span class="text-sm pointer-events-none">Reject</span>
+                </li>
+                <li role="button"
+                    tabindex="0"
+                    onclick="confirm_modal{{ loop.index }}.showModal()"
+                    class="flex items-center gap-3 p-2 rounded-sm hover:bg-slate-100">
+                  <i class="fa-solid fa-check"></i>
+                  <span class="text-sm pointer-events-none">Confirm</span>
+                </li>
+              </ul>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+      {% if donation.amount %}
+        <p class="font-medium">{{ donation.amount | format_currency }}</p>
+      {% else %}
+        <p class="font-medium">{{ donation.item_list }}</p>
+      {% endif %}
+      <div class="flex gap-2" data-image-group='true'>
+        {% for picture in donation.pictures %}
+          <img src="{{ get_image(picture) }}"
+               alt="donations picture"
+               class="object-cover overflow-hidden transition-all border rounded-lg shadow-sm cursor-pointer hover:scale-105 max-h-36"
+               width="auto"
+               height="auto"
+               data-can-view='true'>
+        {% endfor %}
+      </div>
+      {% if is_touched %}
+        {% if donation.is_confirmed %}
+          <div class="flex items-center justify-center flex-1 p-3 text-white rounded-lg bg-success">Confirmed</div>
+        {% else %}
+          <div class="flex items-center justify-center flex-1 p-3 text-white rounded-lg bg-error">Rejected</div>
+        {% endif %}
+      {% else %}
+        {% if is_user %}
+          <div class="flex items-center justify-center flex-1 p-3 text-white rounded-lg bg-info">Pending</div>
+        {% endif %}
+      {% endif %}
+    </div>
     <dialog id="confirm_modal{{ loop.index }}"
             class="modal modal-bottom sm:modal-middle">
       <div class="modal-box">
@@ -34,57 +102,6 @@
         </div>
       </div>
     </dialog>
-    <div class="flex flex-col w-full gap-5 p-5 border rounded-xl g-white">
-      <div class="flex items-center gap-5">
-        <img src="{{ get_image(donation.user_photo_url) }}"
-             class="w-12 h-12 rounded-full"
-             height="auto"
-             width="auto"
-             alt="donator image" />
-        <div class="flex flex-col">
-          <p class="font-semibold">{{ donation.user_name }}</p>
-          <p class="text-sm">{{ donation.created_at | pretty_date }}</p>
-        </div>
-      </div>
-      {% if donation.amount %}
-        <p class="font-medium">{{ donation.amount | format_currency }}</p>
-      {% else %}
-        <p class="font-medium">{{ donation.item_list }}</p>
-      {% endif %}
-      <div class="flex gap-2">
-        {% for picture in donation.pictures %}
-          <div>
-            <img src="{{ get_image(picture) }}"
-                 alt="donations picture"
-                 class="aspect-video object-contain border max-h-[80px]"
-                 width="auto"
-                 height="auto">
-          </div>
-        {% endfor %}
-      </div>
-      {% set is_touched = donation.is_confirmed or donation.is_rejected %}
-      {% if is_touched %}
-        {% if donation.is_confirmed %}
-          <div class="flex items-center justify-center flex-1 p-3 text-white rounded-lg bg-success">Confirmed</div>
-        {% else %}
-          <div class="flex items-center justify-center flex-1 p-3 text-white rounded-lg bg-error">Rejected</div>
-        {% endif %}
-      {% else %}
-        {% if is_user %}
-          <div class="flex items-center justify-center flex-1 p-3 text-white rounded-lg bg-info">Pending</div>
-        {% endif %}
-      {% endif %}
-      {% if not is_user and not is_touched %}
-        <div class="flex gap-3">
-          <button type="button"
-                  onclick="reject_modal{{ loop.index }}.showModal()"
-                  class="flex-1 text-white btn btn-error">Reject</button>
-          <button type="button"
-                  onclick="confirm_modal{{ loop.index }}.showModal()"
-                  class="flex-1 text-white btn btn-success">Set as confirm</button>
-        </div>
-      {% endif %}
-    </div>
   {% endfor %}
   <script>
     const confirmDonationButtons = document.querySelectorAll("#confirm-donation");

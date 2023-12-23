@@ -1,7 +1,7 @@
 {% set active_page = "admin.ask_for_help.index" %}
 {% extends "./_helpers/layout/admin_layout.html" %}
 {% from "./_helpers/macros/pagination_buttons.html" import pagination_buttons with context %}
-{% from "./_helpers/macros/donation_request_card.html" import donation_request_card with context %}
+{% from "./_helpers/macros/ask_for_help/animal_help_card.html" import animal_help_card with context %}
 {% from "./_helpers/macros/empty_list.html" import empty_list %}
 {% block title %}
   Ask for help
@@ -9,9 +9,9 @@
 {% block content %}
   <div class="flex flex-col w-full gap-8 mx-auto max-w-7xl">
     <div class="flex items-center justify-end">
-      <a href="{{ url_for('admin.ask_for_help.add_request',) }}"
+      <a href="{{ url_for('admin.ask_for_help.add_help',) }}"
          class="text-white btn btn-primary">
-        <i class="fa-solid fa-circle-plus"></i>        Ask For Help
+        <i class="fa-solid fa-circle-plus"></i>Ask For Help
       </a>
     </div>
     <div class="sm:flex sm:items-center">
@@ -22,14 +22,14 @@
     </div>
     {% if view_type == "card" %}
       <div class="grid grid-cols-3 gap-8 pb-12">
-        {% for donation_request in donation_requests %}{{ donation_request_card(donation_request) }}{% endfor %}
+        {% for donation_request in animal_helps %}{{ animal_help_card(donation_request) }}{% endfor %}
       </div>
     {% else %}
       <div class="grid grid-cols-3 gap-8 pb-12">
-        {% for donation_request in donation_requests %}{{ donation_request_card(donation_request) }}{% endfor %}
+        {% for donation_request in animal_helps %}{{ animal_help_card(donation_request) }}{% endfor %}
       </div>
     {% endif %}
-    {{ empty_list(donation_requests, "No Donation Request Found.") }}
+    {{ empty_list(animal_helps, "No Donation Request Found.") }}
     {{ pagination_buttons() }}
   </div>
 {% endblock content %}

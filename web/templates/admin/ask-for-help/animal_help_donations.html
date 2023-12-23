@@ -1,0 +1,14 @@
+{% set active_page = "admin.ask_for_help.donations" %}
+{% extends "./_helpers/layout/ask_for_help_layout.html" %}
+{% from "./_helpers/macros/pagination_buttons.html" import pagination_buttons with context %}
+{% from "./_helpers/macros/ask_for_help/animal_help_donations.html" import animal_help_donations with context %}
+{% from "./_helpers/macros/empty_list.html" import empty_list %}
+{% block title %}
+  Ask for help
+{% endblock title %}
+{% block inner_content %}
+  <div class="grid items-center grid-cols-2 gap-4">
+    {{ animal_help_donations(donations) }}
+    {{ empty_list(donations, "No Donations Found.", class="col-span-2") }}
+  </div>
+{% endblock inner_content %}

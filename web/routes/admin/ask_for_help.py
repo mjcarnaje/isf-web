@@ -19,19 +19,19 @@ def index():
         'query': request.args.get('query', '', type=str),
     }
 
-    donation_requests_query = AskForHelp.find_all(
+    animal_helps_query = AskForHelp.find_all(
         page_number=page,
         page_size=Config.DEFAULT_PAGE_SIZE,
         filters=filters
     )
 
-    donation_requests = donation_requests_query.get("data")
-    total_count = donation_requests_query.get("total_count")
-    offset = donation_requests_query.get("offset")
+    animal_helps = animal_helps_query.get("data")
+    total_count = animal_helps_query.get("total_count")
+    offset = animal_helps_query.get("offset")
 
-    return render_template('admin/ask-for-help/donation_requests.html', 
+    return render_template('admin/ask-for-help/animal_helps.html', 
         filters=filters,
-        donation_requests=donation_requests,
+        animal_helps=animal_helps,
         active_filters=get_active_filter_count(filters),
         view_type=view_type,
         pagination = pagination(
@@ -54,14 +54,13 @@ def view_request(id):
             current_app.logger.error(e)
             return jsonify({"status": "error", "message": "Error confirming donation request. Please try again later."})
     
-    return redirect(url_for('admin.ask_for_help.view_request_updates', id=id))
+    return redirect(url_for('admin.ask_for_help.animal_help_posts', id=id))
     
 @ask_for_help_bp.route('/<int:id>/updates', methods=['GET', 'POST'])
-def view_request_updates(id):
+def animal_help_posts(id):
     form = AddDonationRequestUpdateValidation()
 
     if request.method == "POST" and form.validate_on_submit():
-        print("HELLO GUYS!!!")
         new_update = DonationRequestUpdate(
             donation_request_id=id,
             pictures=form.pictures.data,
@@ -73,17 +72,32 @@ def view_request_updates(id):
     
     data = AskForHelp.find_one(id)
     posts = DonationRequestUpdate.find_all_by_id(id)
-    return render_template('admin/ask-for-help/view_request_updates.html', data=data, posts=posts, form=form)
+    return render_template('admin/ask-for-help/animal_help_posts.html', 
+        id=id, 
+        data=data, 
+        posts=posts, 
+        form=form
+    )
+
+@ask_for_help_bp.route('/<int:id>/updates/<int:post_id>', methods=['DELETE'])
+def animal_help_post(id, post_id):
+    if request.method == "DELETE":
+        DonationRequestUpdate.delete(post_id=post_id)
+        flash("Post deleted!", "success")
+        return jsonify({
+            'is_success': True
+        })
+        
 
 @ask_for_help_bp.route('/<int:id>/donations', methods=['GET', 'POST'])
-def view_request_donations(id):
+def animal_help_donations(id):
     data = AskForHelp.find_one(id)
     donations = DonationRequestDonation.find_all_by_id(id)
-    return render_template('admin/ask-for-help/view_request_donations.html', data=data, donations=donations)
+    return render_template('admin/ask-for-help/animal_help_donations.html', data=data, donations=donations)
 
 @ask_for_help_bp.route('/add', methods=['GET', 'POST'])
 @admin_required
-def add_request():
+def add_help():
     form = AddDonationRequestValidation()
     
     if form.validate_on_submit():
@@ -104,7 +118,7 @@ def add_request():
         new_update.insert(new_update)
         return redirect(url_for('admin.ask_for_help.index'))
     
-    return render_template('admin/ask-for-help/add_request.html', form=form)
+    return render_template('admin/ask-for-help/add_help.html', form=form)
 
 
 @ask_for_help_bp.route('/<id>/donations/confirm/<donator_id>', methods=['POST'])
@@ -123,7 +137,7 @@ def confirm_donation(id, donator_id):
 def reject_donation(id, donator_id):
     try:
         DonationRequestDonation.set_to_rejected(id=donator_id)
-        flash("Donation request rejected successfully!")
+        flash("Donation request rejected successfully!", "success")
         return jsonify({"status": "success", "message": "Donation request rejected successfully!"})
     except Exception as e:
         flash("Error rejecting donation request. Please try again later.", "error")

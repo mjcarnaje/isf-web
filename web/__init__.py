@@ -1,6 +1,7 @@
+import os
 import cloudinary
 from cloudinary.uploader import upload as cloudinary_upload
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 from oauthlib.oauth2 import WebApplicationClient
@@ -11,7 +12,7 @@ from .database import db
 from .mail import mail
 from .models import User
 from .socket import socketio
-from .utils import celery_init_app, currency, get_image, pretty_date as _pretty_date, sanitize_comma_separated as _sanitize_comma_separated
+from .utils import celery_init_app, currency, get_image, pretty_date as _pretty_date, sanitize_comma_separated as _sanitize_comma_separated, starts_with
 
 
 def  create_app():    
@@ -48,6 +49,7 @@ def  create_app():
     def utility_processor():
         return dict(
             get_image=get_image,
+            starts_with=starts_with
         )
     
     @app.template_filter('format_currency')
@@ -61,6 +63,13 @@ def  create_app():
     @app.template_filter('sanitize_comma_separated')
     def sanitize_comma_separated(string):
         return _sanitize_comma_separated(string)
+    
+
+    @app.route('/favicon.ico')
+    def favicon():
+        return send_from_directory(os.path.join(app.root_path, 'static'),
+                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
     
     @app.route('/upload/cloudinary', methods=['POST'])
     def upload_to_cloudinary():

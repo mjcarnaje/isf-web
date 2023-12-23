@@ -74,6 +74,20 @@ class DonationRequestUpdate:
 
         return update_id
     
+    @staticmethod
+    def delete(post_id):
+        sql = """
+            DELETE 
+                FROM donation_request_update
+            WHERE
+                id = %(post_id)s
+        """
+        cur = db.new_cursor(dictionary=True)
+        cur.execute(sql, { 'post_id': post_id })
+        db.connection.commit()
+        
+
+    
     @classmethod
     def find_all_by_id(cls, donation_request_id):
         sql = """

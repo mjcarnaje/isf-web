@@ -22,27 +22,43 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
           rel="stylesheet">
-    <link rel="shortcut icon"
-          href="{{ url_for('static', filename='favicon.ico') }}">
     <script src="https://kit.fontawesome.com/2bb85d79b4.js"
             crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
             integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
             crossorigin="anonymous"></script>
   </head>
-  <body>
+  <body class="relative">
     {% block body %}
     {% endblock body %}
     {% include "./_helpers/partials/toast.html" %}
-    <div id="image-viewer">
-      <span class="close">
-        <i class="fa-solid fa-xmark"></i>
-      </span>
-      <img class="modal-content"
-           id="full-image"
-           height="auto"
-           width="auto"
-           alt="image preview">
+    <div id="image-viewer"
+         class="fixed inset-0 z-50 flex-col items-center justify-center hidden min-h-screen gap-8 bg-black bg-opacity-50">
+      <div class="flex items-center justify-between w-full max-w-6xl">
+        <button type="button"
+                data-type="close"
+                class="absolute flex items-center justify-center w-12 h-12 transition-all bg-black bg-opacity-50 rounded-full cursor-pointer aspect-square hover:bg-opacity-60 top-5 right-5">
+          <i class="text-xl text-white fa-solid fa-close"></i>
+        </button>
+        <button type="button"
+                data-type="left"
+                class="flex items-center justify-center w-12 h-12 transition-all bg-black bg-opacity-50 rounded-full cursor-pointer aspect-square hover:bg-opacity-60">
+          <i class="text-lg text-white fa-solid fa-chevron-left"></i>
+        </button>
+        <div class="max-h-[calc(90vh-100px)] items-center flex justify-center h-full">
+          <img id="image-preview"
+               height="auto"
+               width="auto"
+               class="object-contain h-full rounded-lg"
+               alt="image preview">
+        </div>
+        <button type="button"
+                data-type="right"
+                class="flex items-center justify-center w-12 h-12 transition-all bg-black bg-opacity-50 rounded-full cursor-pointer aspect-square hover:bg-opacity-60">
+          <i class="text-lg text-white fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
+      <div id="small-images" class="flex items-center gap-2 max-h-20"></div>
     </div>
   </body>
 </html>

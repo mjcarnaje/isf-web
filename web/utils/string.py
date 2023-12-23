@@ -16,3 +16,17 @@ def sanitize_comma_separated(input_string):
     sanitized_values = [value.strip() for value in values]
     joined_string = ', '.join(str(value) for value in sanitized_values)
     return joined_string
+
+
+def starts_with(input_string, prefix):
+    """
+    Check if the input string starts with the specified prefix.
+
+    Parameters:
+    - input_string (str): The input string to check.
+    - prefix (str): The prefix to check for at the beginning of the input string.
+
+    Returns:
+    - bool: True if the input string starts with the prefix, False otherwise.
+    """
+    return input_string.startswith(prefix)

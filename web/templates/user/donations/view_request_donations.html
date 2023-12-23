@@ -3,7 +3,7 @@
 {% from './_helpers/macros/custom_input.html' import render_field %}
 {% from './_helpers/macros/multiple_photo_input.html' import render_multiple_photo_field with context %}
 {% from "./_helpers/macros/empty_list.html" import empty_list %}
-{% from "./_helpers/macros/donation_request_donations.html" import donation_request_donations with context %}
+{% from "./_helpers/macros/ask_for_help/ask_for_help/animal_help_donations.html" import animal_help_donations with context %}
 {% block title %}
   Ask for help
 {% endblock title %}
@@ -11,7 +11,7 @@
   <dialog id="add-money-modal" class="modal modal-bottom sm:modal-middle">
     <div class="modal-box">
       <h2 class="mb-4 text-2xl font-bold">Add Money Donation</h2>
-      <form action="{{ url_for('user.donate.view_request_donations',id=data.id, formid='money') }}"
+      <form action="{{ url_for('user.donate.animal_help_donations',id=data.id, formid='money') }}"
             id="add-money"
             class="grid w-full grid-cols-1 gap-4"
             method="post"
@@ -26,7 +26,7 @@
   <dialog id="add-in-kind-modal" class="modal modal-bottom sm:modal-middle">
     <div class="modal-box">
       <h2 class="mb-4 text-2xl font-bold">Add In-Kind Donation</h2>
-      <form action="{{ url_for('user.donate.view_request_donations',id=data.id, formid='in-kind') }}"
+      <form action="{{ url_for('user.donate.animal_help_donations',id=data.id, formid='in-kind') }}"
             id="add-in-kind"
             class="grid w-full grid-cols-1 gap-4"
             method="post"
@@ -39,16 +39,16 @@
     </div>
   </dialog>
   <div class="flex flex-col gap-12">
-    {% include "./_helpers/partials/donation_request_header.html" %}
+    {% include "./_helpers/partials/animal_help_header.html" %}
     <div class="flex items-center gap-8 p-3 bg-white shadow">
       <a class="w-full"
-         href="{{ url_for('user.donate.view_request_updates', id=data.id) }}">
+         href="{{ url_for('user.donate.animal_help_posts', id=data.id) }}">
         <div class="flex items-center justify-center flex-1 p-3 border rounded-lg">
           <h1 class="font-bold">Updates</h1>
         </div>
       </a>
       <a class="w-full"
-         href="{{ url_for('user.donate.view_request_donations', id=data.id) }}">
+         href="{{ url_for('user.donate.animal_help_donations', id=data.id) }}">
         <div class="flex items-center justify-center flex-1 p-3 border rounded-lg border-primary-100 bg-opacity-5 bg-primary-100">
           <h1 class="font-bold text-primary-500">Donations</h1>
         </div>
@@ -61,7 +61,7 @@
           <button id="add-in-kind-button"  class="text-white btn-sm btn btn-primary">Add In-Kind Donation</button>
         </div>
       {% endif %}
-      {{ donation_request_donations(donations, true) }}
+      {{ animal_help_donations(donations, true) }}
     </div>
     {{ empty_list(donations, "No Donations Found.") }}
   </div>

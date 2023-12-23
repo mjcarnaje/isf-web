@@ -72,23 +72,107 @@ socket.on("notification", () => {
   showToast("success", "new notification", 15000);
 });
 
-// Equivalent JavaScript for $(".images img").click(...)
-var images = document.querySelectorAll("img[data-can-view='true']");
-images.forEach(function (image) {
+const images = document.querySelectorAll("img[data-can-view='true']");
+const imageViewer = document.getElementById("image-viewer");
+
+images.forEach(function (image, index) {
+  function setActiveImage(src) {
+    const fullImage = document.getElementById("image-preview");
+    fullImage.setAttribute("src", src);
+  }
+
+  function showPreview() {
+    imageViewer.classList.remove("hidden");
+    imageViewer.classList.add("flex");
+    imageViewer
+      .querySelector("button[data-type='close']")
+      .addEventListener("click", () => hidePreview());
+  }
+
+  function hidePreview() {
+    imageViewer.classList.add("hidden");
+    imageViewer.classList.remove("flex");
+  }
+
   image.addEventListener("click", function () {
-    var fullImage = document.getElementById("full-image");
-    fullImage.setAttribute("src", this.getAttribute("src"));
+    showPreview();
+    setActiveImage(this.getAttribute("src"));
 
-    var imageViewer = document.getElementById("image-viewer");
-    imageViewer.style.display = "block";
+    const smallImages = document.querySelector("#small-images");
+    let currentIndex = 0;
+
+    const imageFamily = this.closest("div[data-image-group='true']").children;
+
+    smallImages.innerHTML = "";
+
+    function navigate(direction) {
+      currentIndex =
+        (currentIndex + direction + imageFamily.length) % imageFamily.length;
+
+      setActiveImage(imageFamily[currentIndex].getAttribute("src"));
+      Array.from(smallImages.children).forEach((smallImage, index) => {
+        smallImage.setAttribute("data-active", currentIndex == index);
+      });
+    }
+
+    function onClickSmallImage(currentIndex) {
+      setActiveImage(imageFamily[currentIndex].getAttribute("src"));
+      Array.from(smallImages.children).forEach((smallImage, index) => {
+        smallImage.setAttribute("data-active", currentIndex == index);
+      });
+    }
+
+    Array.from(imageFamily).forEach((img, i) => {
+      const smallImage = document.createElement("img");
+      smallImage.classList.add(
+        ...[
+          "object-cover",
+          "w-20",
+          "h-20",
+          "rounded-lg",
+          "aspect-square",
+          "cursor-pointer",
+        ]
+      );
+
+      const isActive = img.getAttribute("src") === this.getAttribute("src");
+
+      if (isActive) {
+        currentIndex = i;
+      }
+
+      smallImage.setAttribute("id", "small-image");
+      smallImage.setAttribute("src", img.getAttribute("src"));
+      smallImage.setAttribute("data-index", i);
+      smallImage.setAttribute("data-active", isActive);
+      smallImage.addEventListener("click", () => {
+        currentIndex = i;
+        onClickSmallImage(i);
+      });
+      smallImages.append(smallImage);
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") {
+        hidePreview();
+      }
+
+      if (e.key === "ArrowLeft") {
+        navigate(-1);
+      }
+      if (e.key === "ArrowRight") {
+        navigate(1);
+      }
+    });
+
+    imageViewer
+      .querySelector("button[data-type='left']")
+      .addEventListener("click", () => navigate(-1));
+
+    imageViewer
+      .querySelector("button[data-type='right']")
+      .addEventListener("click", () => navigate(1));
   });
-});
-
-// Equivalent JavaScript for $("#image-viewer .close").click(...)
-var closeButton = document.querySelector("#image-viewer .close");
-closeButton.addEventListener("click", function () {
-  var imageViewer = document.getElementById("image-viewer");
-  imageViewer.style.display = "none";
 });
 
 document.querySelectorAll("button[type='submit']").forEach((button) => {
@@ -98,3 +182,9 @@ document.querySelectorAll("button[type='submit']").forEach((button) => {
     this.closest("form").submit();
   });
 });
+
+function getCSRFHeader() {
+  return {
+    "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
+  };
+}

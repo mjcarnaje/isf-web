@@ -1,5 +1,5 @@
 {% macro pagination_buttons() %}
-  <div class="flex items-center justify-between py-3 bg-white border-t border-gray-200">
+  <div class="flex items-center justify-between py-3 border-t border-gray-200">
     <div class="flex justify-between flex-1 sm:hidden">
       <a href="#"
          class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">Previous</a>
@@ -19,7 +19,7 @@
         </p>
       </div>
       <div>
-        <nav class="inline-flex -space-x-px rounded-md shadow-sm isolate"
+        <nav class="inline-flex -space-x-px bg-white rounded-md shadow-sm isolate"
              aria-label="Pagination">
           <a href="{{ pagination['prev_url'] }}"
              class="relative inline-flex items-center px-2 py-2 text-gray-400 disabled rounded-l-md ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 {{ 'pointer-events-none cursor-not-allowed opacity-50' if pagination['prev_url'] == '' else '' }}">
