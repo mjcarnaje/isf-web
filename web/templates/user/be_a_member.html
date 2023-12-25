@@ -6,9 +6,9 @@
 {% endblock title %}
 {% block content %}
   <div class="flex flex-col items-center justify-center w-full">
-    <div class="w-full max-w-4xl space-y-8 overflow-hidden rounded-2xl">
+    <div class="w-full max-w-3xl space-y-8 rounded-3xl">
       <div class="flex items-center justify-center">
-        <div class="self-center w-9/12 aspect-video">
+        <div class="self-center w-11/12 shadow-md rounded-3xl aspect-video">
           <img src="{{ url_for('static', filename='/images/join_us.jpg') }}"
                class="object-cover rounded-lg"
                width="auto"
@@ -19,22 +19,27 @@
       <div class="flex justify-center w-full py-5">
         <h1 class="text-4xl font-extrabold">Be Part of ISF!</h1>
       </div>
-      {% if not existing_application %}
-        <form class="grid w-full grid-cols-2 gap-4 px-12 py-12 border shadow rounded-3xl"
+      {% if 'Member' in current_user.roles %}
+        <div class="flex items-center justify-center gap-2 p-8 bg-gradient-to-r from-[#21A17C] to-[#EAB15C] rounded-3xl">
+          <h1 class="text-2xl font-semibold text-white">Congratulations!</h1>
+          <p class="text-lg text-white">You are now a valued member of this organization.</p>
+        </div>
+      {% endif %}
+      {% if existing_application.status == 'Rejected' or not existing_application and not 'Member' in current_user.roles %}
+        <form class="grid w-full grid-cols-2 gap-4 px-12 py-12 bg-white border shadow-md rounded-3xl"
               method="post"
               novalidate>
           {{ form.csrf_token() }}
           {{ render_field(form.join_reason, container_class="col-span-2") }}
           <button type="submit" class="w-full col-span-2 btn btn-md">Submit</button>
         </form>
-      {% else %}
-        <div class="flex items-center justify-center p-8 bg-white border rounded-lg shadow-md">
+      {% endif %}
+      {% if existing_application.status in ['Rejected', 'Pending'] %}
+        <div class="flex items-center justify-center p-8 bg-white border shadow-md rounded-3xl">
           <h1 class="text-xl font-medium">
             Your application is currently
             <span class="font-bold">
-              {% if existing_application.status == 'Confirmed' %}
-                <span class="text-green-500">{{ existing_application.status }}</span>
-              {% elif existing_application.status == 'Rejected' %}
+              {% if existing_application.status == 'Rejected' %}
                 <span class="text-red-500">{{ existing_application.status }}</span>
               {% elif existing_application.status == 'Pending' %}
                 <span class="text-yellow-500">{{ existing_application.status }}</span>

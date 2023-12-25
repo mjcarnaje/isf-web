@@ -4,7 +4,7 @@ from flask_login import current_user, login_required, login_user
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from ..config import Config
-from ..models import Animal, Event, User
+from ..models import Animal, Event, User, EventPost
 from ..utils import (anonymous_required, check_verification_token,
                      generate_verification_token, get_active_filter_count,
                      send_verification_email, pagination)
@@ -122,13 +122,16 @@ def events():
   events = Event.find_all(page_number=1, page_size=12, filters={
      'who_can_see_it': 'Public'
   })
+
   return render_template('/landing/event/events.html', events=events.get('data'))
 
 @landing_bp.route('/events/<int:id>', methods=['GET'])
 @anonymous_required
 def view_event(id):
   event = Event.find_by_id(event_id=id)
-  return render_template('/landing/event/event.html', event=event)
+  statistics = Event.get_statistics(id)
+  posts = EventPost.find_posts(event_id=id)
+  return render_template('/landing/event/event.html', event=event, posts=posts, statistics=statistics)
 
 @landing_bp.route('/volunteers', methods=['GET'])
 @anonymous_required

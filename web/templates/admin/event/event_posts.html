@@ -1,0 +1,29 @@
+{% set active_page = "admin.event.events" %}
+{% from './_helpers/macros/custom_input.html' import render_field %}
+{% from './_helpers/macros/multiple_photo_input.html' import render_multiple_photo_field with context %}
+{% from './_helpers/macros/event/event_post_cards.html' import event_post_cards with context %}
+{% from "./_helpers/macros/empty_list.html" import empty_list %}
+{% extends "./_helpers/layout/event/admin_event_layout.html" %}
+{% block title %}
+  Event
+{% endblock title %}
+{% block inner_content %}
+  <dialog id="addPostModal" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box">
+      <h2 class="mb-4 text-2xl font-bold">Add Post</h2>
+      <form class="grid w-full grid-cols-1 gap-4" method="post" novalidate>
+        {{ form.csrf_token() }}
+        {{ render_field(form.post_text) }}
+        {{ render_multiple_photo_field(form.pictures, 'Pictures') }}
+        <button type="submit" class="w-full btn btn-md">Submit</button>
+      </form>
+    </div>
+  </dialog>
+  <div class="space-y-8">
+    <div class="flex justify-end">
+      <button onclick="addPostModal.showModal()" class="text-white btn btn-primary">Add Post</button>
+    </div>
+    {{ event_post_cards(posts) }}
+    {{ empty_list(posts, "No Posts Found.") }}
+  </div>
+{% endblock inner_content %}

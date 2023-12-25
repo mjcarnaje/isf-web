@@ -42,9 +42,10 @@
              placeholder="Search by name"
              value="{{ filters.query }}"
              name="query" />
-      <button id="search-btn" type="submit" class="btn">Search</button>
+      <button id="search-btn" type="submit" class="bg-white btn">Search</button>
     </form>
-    <button class="relative text-gray-700 btn" onclick="filters.showModal()">
+    <button class="relative text-gray-700 bg-white btn"
+            onclick="filters.showModal()">
       {% if active_filters == 0 %}
         <i class="fa-solid fa-filter"></i>
       {% else %}

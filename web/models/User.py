@@ -102,12 +102,23 @@ class User(UserMixin):
     
     @classmethod
     def find_by_id(cls, user_id: int):
-        sql = "SELECT * FROM user WHERE id = %s"
+        sql = """
+            SELECT 
+                user.*,
+                GROUP_CONCAT(user_role.role_name) as roles
+            FROM user 
+            LEFT JOIN
+                user_role ON user_role.user_id = user.id
+            WHERE user.id = %s
+            GROUP BY
+                user_role.user_id
+        """
         cur = db.new_cursor(dictionary=True)
         cur.execute(sql, (user_id,))
         row = cur.fetchone()
-        if not row:
-            return None
+
+        row['roles'] = row['roles'].split(',') if row['roles'] else []
+
         return cls(**row)    
     
     @staticmethod

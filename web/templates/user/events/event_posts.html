@@ -1,0 +1,13 @@
+{% set active_page = "user.events" %}
+{% from './_helpers/macros/event/event_post_cards.html' import event_post_cards with context %}
+{% extends "./_helpers/layout/event/user_event_layout.html" %}
+{% from "./_helpers/macros/empty_list.html" import empty_list %}
+{% block title %}
+  Event
+{% endblock title %}
+{% block inner_content %}
+  <div class="space-y-8">
+    {{ event_post_cards(posts) }}
+    {{ empty_list(posts, "No Posts Found.") }}
+  </div>
+{% endblock inner_content %}

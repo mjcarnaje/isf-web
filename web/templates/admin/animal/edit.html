@@ -11,7 +11,7 @@
       <div class="flex w-full">
         <h1 class="text-3xl font-bold">Edit Animal</h1>
       </div>
-      <form class="grid w-full grid-cols-2 gap-4 px-12 py-16 border shadow rounded-3xl"
+      <form class="grid w-full grid-cols-2 gap-4 px-12 py-16 bg-white border shadow-md rounded-3xl"
             method="post"
             novalidate>
         <div class="col-span-2">
@@ -30,8 +30,6 @@
         {{ render_field(form.is_neutered) }}
         {{ render_field(form.is_rescued) }}
         {{ render_field(form.is_dead) }}
-        {{ render_field(form.for_adoption) }}
-        {{ render_field(form.is_adopted) }}
         {{ render_field(form.in_shelter) }}
         <button type="submit" class="w-full col-span-2 btn btn-md">Submit</button>
       </form>

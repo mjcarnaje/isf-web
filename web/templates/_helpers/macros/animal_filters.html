@@ -75,7 +75,7 @@
                      type="checkbox"
                      {% if filters.is_adopted is true %}checked='checked'{% endif %}
                      class="checkbox" />
-              <span class="label-text">Adoption</span>
+              <span class="label-text">Adopted</span>
             </label>
           </div>
         </div>
@@ -94,10 +94,11 @@
              placeholder="Search by name"
              value="{{ filters.query }}"
              name="query" />
-      <button id="search-btn" type="submit" class="btn">Search</button>
+      <button id="search-btn" type="submit" class="bg-white btn">Search</button>
     </form>
     {% if show_filter %}
-      <button class="relative text-gray-700 btn" onclick="filters.showModal()">
+      <button class="relative text-gray-700 bg-white btn"
+              onclick="filters.showModal()">
         {% if active_filters == 0 %}
           <i class="fa-solid fa-filter"></i>
         {% else %}

@@ -27,34 +27,40 @@
         <p class="w-full text-center text-md">{{ animal.description }}</p>
         <div class="grid w-full grid-cols-2">
           <div class="flex items-center gap-3 p-3">
-            <div class="grid w-6 h-6 {{ 'bg-green-500' if animal.is_dewormed else 'bg-gray-500' }} rounded-full place-items-center ">
-              <i class="text-lg text-white fa-solid fa-check"></i>
+            <div class="grid w-8 h-8 {{ 'bg-green-500' if animal.is_dewormed else 'bg-gray-500' }} rounded-full place-items-center ">
+              <i class="text-lg text-white fa-solid fa-shield"></i>
             </div>
-            <p class="font-bold to-gray-800">Dewormed</p>
+            <p class="font-bold text-gray-800">Dewormed</p>
           </div>
           <div class="flex items-center gap-3 p-3">
-            <div class="grid w-6 h-6 {{ 'bg-green-500' if animal.is_neutered else 'bg-gray-500' }} rounded-full place-items-center ">
-              <i class="text-lg text-white fa-solid fa-check"></i>
+            <div class="grid w-8 h-8 {{ 'bg-blue-500' if animal.is_neutered else 'bg-gray-500' }} rounded-full place-items-center ">
+              <i class="text-lg text-white fa-solid fa-cut"></i>
             </div>
-            <p class="font-bold to-gray-800">Neutered</p>
+            <p class="font-bold text-gray-800">Neutered</p>
           </div>
           <div class="flex items-center gap-3 p-3">
-            <div class="grid w-6 h-6 {{ 'bg-green-500' if animal.in_shelter else 'bg-gray-500' }} rounded-full place-items-center ">
-              <i class="text-lg text-white fa-solid fa-check"></i>
+            <div class="grid w-8 h-8 {{ 'bg-purple-500' if animal.in_shelter else 'bg-gray-500' }} rounded-full place-items-center ">
+              <i class="text-lg text-white fa-solid fa-home"></i>
             </div>
-            <p class="font-bold to-gray-800">Shelter</p>
+            <p class="font-bold text-gray-800">Shelter</p>
           </div>
           <div class="flex items-center gap-3 p-3">
-            <div class="grid w-6 h-6 {{ 'bg-green-500' if animal.is_rescued else 'bg-gray-500' }} rounded-full place-items-center ">
-              <i class="text-lg text-white fa-solid fa-check"></i>
+            <div class="grid w-8 h-8 {{ 'bg-yellow-500' if animal.is_rescued else 'bg-gray-500' }} rounded-full place-items-center ">
+              <i class="text-lg text-white fa-solid fa-life-ring"></i>
             </div>
-            <p class="font-bold to-gray-800">Rescued</p>
+            <p class="font-bold text-gray-800">Rescued</p>
           </div>
           <div class="flex items-center gap-3 p-3">
-            <div class="grid w-6 h-6 {{ 'bg-green-500' if animal.is_adopted else 'bg-gray-500' }} rounded-full place-items-center ">
-              <i class="text-lg text-white fa-solid fa-check"></i>
+            <div class="grid w-8 h-8 {{ 'bg-red-500' if animal.is_adopted else 'bg-gray-500' }} rounded-full place-items-center ">
+              <i class="text-lg text-white fa-solid fa-heart"></i>
             </div>
-            <p class="font-bold to-gray-800">Adopted</p>
+            <p class="font-bold text-gray-800">Adopted</p>
+          </div>
+          <div class="flex items-center gap-3 p-3">
+            <div class="grid w-8 h-8 {{ 'bg-primary-500' if animal.for_adoption else 'bg-gray-500' }} rounded-full place-items-center ">
+              <i class="text-lg text-white fa-solid fa-paw"></i>
+            </div>
+            <p class="font-bold text-gray-800">For Adoption</p>
           </div>
         </div>
       </div>
@@ -62,7 +68,7 @@
     {% if animal.is_adopted %}
       <div class="relative flex items-center max-w-5xl gap-8 px-10 py-8 mx-auto mt-8 bg-white border shadow-md rounded-3xl">
         <div class="w-24 h-24 p-1 border-2 rounded-full border-primary-500">
-          <img src="{{ get_image(animal.adopter_photo_url if animal.adopter_photo_url else '') }}"
+          <img src="{{ get_image(adopter.photo_url if adopter.photo_url else '') }}"
                class="object-cover w-full h-full rounded-full"
                height="auto"
                width="auto"
@@ -70,9 +76,9 @@
         </div>
         <div class="flex flex-col gap-1">
           <h1 class="text-lg font-bold">
-            {{ animal.adopter_first_name if animal.adopter_first_name else "Unknown" }} {{ animal.adopter_last_name if animal.adopter_last_name else "" }} (Adopter)
+            {{ adopter.first_name if adopter.first_name else "Unknown" }} {{ adopter.last_name if adopter.last_name else "" }} (Adopter)
           </h1>
-          <h1 class="font-medium">{{ animal.adopter_email if animal.adopter_email else "" }}</h1>
+          <h1 class="font-medium">{{ adopter.email if adopter.email else "" }}</h1>
         </div>
       </div>
     {% endif %}

@@ -60,15 +60,17 @@ class AnimalSeeder:
         sql_statements = []
 
         for index in range(num_animals):
+            is_adopted = random.choice([0, 1])
+
             animal_data = (
                 random.choice(['Dog', 'Cat']),
+                is_adopted,
                 random.choice([0, 1]),
                 random.choice([0, 1]),
                 random.choice([0, 1]),
                 random.choice([0, 1]),
                 random.choice([0, 1]),
-                random.choice([0, 1]),
-                random.choice([0, 1]),
+                0 if is_adopted else random.choice([0, 1]),
             )
             sql_values = self.generate_fake_sql_values(*animal_data)
             sql_statements.append(sql_values)

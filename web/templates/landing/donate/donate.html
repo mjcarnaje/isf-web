@@ -40,8 +40,8 @@
     <div class="max-w-5xl mx-auto divider"></div>
     <div class="flex flex-col items-center justify-center gap-12 py-12">
       <h1 class="text-3xl font-bold text-gray-800">Contribute and receive acknowledgment</h1>
-      <div class="flex flex-col items-center justify-center w-full max-w-3xl py-16 border shadow gap-y-12 rounded-2xl">
-        <h1 class="text-3xl font-bold uppercase">Types of Donation</h1>
+      <div class="flex flex-col items-center justify-center p-16 border shadow-md gap-y-12 rounded-3xl">
+        <h1 class="text-4xl font-bold text-gray-900">Types of Donation</h1>
         <div class="flex gap-x-4">
           <a href="{{ url_for('user.donate.donate_money',) }}"
              class="gap-3 text-white btn btn-primary btn-wide rounded-xl btn-lg">
@@ -49,9 +49,9 @@
           Money</a>
           <a href="{{ url_for('user.donate.donate_in_kind',) }}"
              class="gap-3 text-white btn btn-primary btn-wide rounded-xl btn-lg">
-            <i class="fa-solid fa-hand-holding-heart"></i>In-Kind Donation</a>
+            <i class="fa-solid fa-hand-holding-heart"></i>In-Kind</a>
         </div>
-        <p class="py-2 text-xl font-bold text-primary-800">Your donation means the world to our stray animals</p>
+        <p class="text-lg font-light text-gray-800">Your donation means the world to our stray animals</p>
       </div>
     </div>
   </div>

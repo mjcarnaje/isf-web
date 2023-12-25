@@ -1,43 +1,73 @@
 {% from "./_helpers/macros/empty_list.html" import empty_list %}
 {% macro animal_tables(animals, is_admin) %}
   {% if is_admin %}
-    <dialog id="delete-donation-modal" class="modal modal-bottom sm:modal-middle">
+    <dialog id="delete-animal-modal" class="modal modal-bottom sm:modal-middle">
       <div class="modal-box">
         <h2 class="mb-4 text-2xl font-bold">Confirm Deletion</h2>
         <p class="mb-4">Are you sure you want to delete this animal?</p>
         <div class="flex justify-end">
-          <button id="cancel-delete-donation"
+          <button id="delete-animal-cancel"
                   class="px-4 py-2 mr-4 font-bold text-gray-800 bg-gray-300 rounded-full hover:bg-gray-400">
             Cancel
           </button>
-          <button id="delete-donation"
+          <button id="delete-animal-confirm"
+                  class="px-4 py-2 font-bold text-white bg-red-500 rounded-full hover:bg-red-600">Confirm</button>
+        </div>
+      </div>
+    </dialog>
+    <dialog id="set-adoption-true-modal"
+            class="modal modal-bottom sm:modal-middle">
+      <div class="modal-box">
+        <h2 class="mb-4 text-2xl font-bold">Confirm Adoption Status</h2>
+        <p class="mb-4">Are you sure you want to set this animal for adoption?</p>
+        <div class="flex justify-end">
+          <button id="set-adoption-true-cancel"
+                  class="px-4 py-2 mr-4 font-bold text-gray-800 bg-gray-300 rounded-full hover:bg-gray-400">
+            Cancel
+          </button>
+          <button id="set-adoption-true-confirm"
+                  class="px-4 py-2 font-bold text-white bg-green-500 rounded-full hover:bg-green-600">Confirm</button>
+        </div>
+      </div>
+    </dialog>
+    <dialog id="set-adoption-false-modal"
+            class="modal modal-bottom sm:modal-middle">
+      <div class="modal-box">
+        <h2 class="mb-4 text-2xl font-bold">Confirm Adoption Status</h2>
+        <p class="mb-4">Are you sure you want to set this animal as not for adoption?</p>
+        <div class="flex justify-end">
+          <button id="set-adoption-false-cancel"
+                  class="px-4 py-2 mr-4 font-bold text-gray-800 bg-gray-300 rounded-full hover:bg-gray-400">
+            Cancel
+          </button>
+          <button id="set-adoption-false-confirm"
                   class="px-4 py-2 font-bold text-white bg-red-500 rounded-full hover:bg-red-600">Confirm</button>
         </div>
       </div>
     </dialog>
   {% endif %}
-  <div class="flow-root">
+  <div class="overflow-hidden bg-white rounded-lg shadow-md ">
     <div class="w-full">
       <table class="min-w-full divide-y divide-gray-300">
         <thead>
           <tr>
             <th scope="col"
-                class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Name</th>
+                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Name</th>
             <th scope="col"
-                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Type</th>
+                class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">In Shelter</th>
+            <th scope="col"
+                class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">For Adoption</th>
+            <th scope="col"
+                class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Rescued</th>
             <th scope="col"
                 class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Adopted</th>
-            <th scope="col"
-                class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Deceased</th>
             <th scope="col"
                 class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Dewormed</th>
             <th scope="col"
                 class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Neutered</th>
             <th scope="col"
-                class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">In Shelter</th>
-            <th scope="col"
-                class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Rescued</th>
-            <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-0">
+                class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Deceased</th>
+            <th scope="col" class="relative py-3.5 px-3">
               <span class="sr-only">Edit</span>
             </th>
           </tr>
@@ -50,7 +80,7 @@
               {% set href = url_for('user.animals.view_animal', id=animal.id) %}
             {% endif %}
             <tr>
-              <td class="py-5 pl-4 pr-3 text-sm whitespace-nowrap sm:pl-0">
+              <td class="px-3 py-5 text-sm whitespace-nowrap">
                 <div class="flex items-center">
                   <a href="{{ href }}">
                     <div class="flex-shrink-0 h-11 w-11">
@@ -69,77 +99,91 @@
                   </div>
                 </div>
               </td>
-              <td class="px-3 py-5 text-sm text-gray-500 whitespace-nowrap">{{ animal.type }}</td>
-              <td class="px-3 py-5 text-sm text-right text-gray-500 whitespace-nowrap">
-                <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-700 rounded-md bg-gray-50 ring-1 ring-inset ring-gray-600/20">
-                  {% if animal.is_adopted %}
-                    Adopted
-                  {% else %}
-                    Not Adopted
-                  {% endif %}
+              <td class="px-3 py-5">
+                <span class="inline-flex items-center gap-2 text-sm font-thin text-gray-700">
+                  <div class="grid w-5 h-5 aspect-square {{ 'bg-purple-500' if animal.in_shelter else 'bg-gray-500' }} rounded-full place-items-center ">
+                    <i class="text-xs text-white fa-solid fa-home"></i>
+                  </div>
+                  In Shelter
                 </span>
               </td>
-              <td class="px-3 py-5 text-sm text-right text-gray-500 whitespace-nowrap">
-                <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-700 rounded-md bg-gray-50 ring-1 ring-inset ring-gray-600/20">
-                  {% if animal.is_dead %}
-                    Deceased
-                  {% else %}
-                    Alive
-                  {% endif %}
+              <td class="px-3 py-5">
+                <span class="inline-flex items-center gap-2 text-sm font-thin text-gray-700">
+                  <div class="grid w-5 h-5 aspect-square {{ 'bg-primary-500' if animal.for_adoption else 'bg-gray-500' }} rounded-full place-items-center ">
+                    <i class="text-xs text-white fa-solid fa-paw"></i>
+                  </div>
+                  For Adoption
                 </span>
               </td>
-              <td class="px-3 py-5 text-sm text-right text-gray-500 whitespace-nowrap">
-                <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-700 rounded-md bg-gray-50 ring-1 ring-inset ring-gray-600/20">
-                  {% if animal.is_dewormed %}
-                    Dewormed
-                  {% else %}
-                    Not Dewormed
-                  {% endif %}
+              <td class="px-3 py-5">
+                <span class="inline-flex items-center gap-2 text-sm font-thin text-gray-700">
+                  <div class="grid w-5 h-5 aspect-square {{ 'bg-yellow-500' if animal.is_rescued else 'bg-gray-500' }} rounded-full place-items-center ">
+                    <i class="text-xs text-white fa-solid fa-life-ring"></i>
+                  </div>
+                  Rescued
                 </span>
               </td>
-              <td class="px-3 py-5 text-sm text-right text-gray-500 whitespace-nowrap">
-                <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-700 rounded-md bg-gray-50 ring-1 ring-inset ring-gray-600/20">
-                  {% if animal.is_neutered %}
-                    Neutered
-                  {% else %}
-                    Not Neutered
-                  {% endif %}
+              <td class="px-3 py-5">
+                <span class="inline-flex items-center gap-2 text-sm font-thin text-gray-700">
+                  <div class="grid w-5 h-5 aspect-square {{ 'bg-red-500' if animal.is_adopted else 'bg-gray-500' }} rounded-full place-items-center ">
+                    <i class="text-xs text-white fa-solid fa-heart"></i>
+                  </div>
+                  Adopted
                 </span>
               </td>
-              <td class="px-3 py-5 text-sm text-right text-gray-500 whitespace-nowrap">
-                <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-700 rounded-md bg-gray-50 ring-1 ring-inset ring-gray-600/20">
-                  {% if animal.in_shelter %}
-                    In Shelter
-                  {% else %}
-                    Not In Shelter
-                  {% endif %}
+              <td class="px-3 py-5">
+                <span class="inline-flex items-center gap-2 text-sm font-thin text-gray-700">
+                  <div class="grid w-5 h-5 aspect-square {{ 'bg-green-500' if animal.is_dewormed else 'bg-gray-500' }} rounded-full place-items-center ">
+                    <i class="text-xs text-white fa-solid fa-shield"></i>
+                  </div>
+                  Dewormed
                 </span>
               </td>
-              <td class="px-3 py-5 text-sm text-right text-gray-500 whitespace-nowrap">
-                <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-700 rounded-md bg-gray-50 ring-1 ring-inset ring-gray-600/20">
-                  {% if animal.is_rescued %}
-                    Rescued
-                  {% else %}
-                    Not Rescued
-                  {% endif %}
+              <td class="px-3 py-5">
+                <span class="inline-flex items-center gap-2 text-sm font-thin text-gray-700">
+                  <div class="grid w-5 h-5 aspect-square {{ 'bg-blue-500' if animal.is_neutured else 'bg-gray-500' }} rounded-full place-items-center ">
+                    <i class="text-xs text-white fa-solid fa-cut"></i>
+                  </div>
+                  Neutered
                 </span>
               </td>
-              <td class="relative py-5 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-0">
+              <td class="px-3 py-5">
+                <span class="inline-flex items-center gap-2 text-sm font-thin text-gray-700">
+                  <div class="grid w-5 h-5 aspect-square {{ 'bg-gray-900' if animal.is_dead else 'bg-gray-500' }} rounded-full place-items-center ">
+                    <i class="text-xs text-white fa-solid fa-skull"></i>
+                  </div>
+                  Deceased
+                </span>
+              </td>
+              <td class="relative px-3 py-5 text-sm font-medium text-right whitespace-nowrap">
                 {% if is_admin %}
-                  <div class="dropdown dropdown-end">
-                    <label tabindex="0">
-                      <div class="flex items-center justify-center w-6 h-6 rounded-full cursor-pointer hover:bg-gray-300 aspect-square">
-                        <i class="fa-solid fa-ellipsis"></i>
-                      </div>
-                    </label>
-                    <ul tabindex="0"
-                        class="dropdown-content z-[1] menu p-2 border bg-base-100 rounded-box shadow-sm w-32">
-                      <li>
-                        <a href="{{ url_for('admin.animal.edit_animal', id=animal.id) }}">Edit</a>
-                      </li>
-                      <li>
-                        <button id="open-delete-modal" data-animal-id="{{ animal.id }}">Delete</button>
-                      </li>
+                  <div class="drop-down" data-dropdown>
+                    <button data-dropdown-button
+                            class="flex items-center justify-center w-10 h-10 transition-all duration-200 border rounded-full hover:shadow drop-down-button">
+                      <i class="text-lg pointer-events-none fa-solid fa-ellipsis"></i>
+                    </button>
+                    <ul data-dropdown-content tabindex="0" class="drop-down-content">
+                      <li role="link"
+                          data-href="{{ url_for('admin.animal.edit_animal', id=animal.id) }}"
+                          tabindex="0">Edit</li>
+                      <li role="button"
+                          tabindex="0"
+                          id="delete-animal-button"
+                          data-animal-id="{{ animal.id }}">Delete</li>
+                      {% if not animal.is_adopted %}
+                        {% if animal.for_adoption == 1 %}
+                          <li role="button"
+                              tabindex="0"
+                              id="set-adoption-false-button"
+                              data-animal-id="{{ animal.id }}">Not Available for Adoption</li>
+                        {% endif %}
+                        {% if animal.for_adoption != 1 %}
+                          <li role="button"
+                              tabindex="0"
+                              id="set-adoption-true-button"
+                              data-animal-id="{{ animal.id }}">Available for Adoption</li>
+                        {% endif %}
+                      {% endif %}
                     </ul>
                   </div>
                 {% endif %}
@@ -153,19 +197,19 @@
   </div>
   {% if is_admin %}
     <script>
-    const deleteationModal = document.querySelector("#delete-donation-modal");
-  const deleteButtons = document.querySelectorAll("#open-delete-modal");
-  const cancelDeletionModalButton = document.querySelector("#cancel-delete-donation");
-  const deleteDeletionModalButton = document.querySelector("#delete-donation");
+    const deleteAnimalModal = document.querySelector("#delete-animal-modal");
+  const deleteAnimalButton = document.querySelectorAll("#delete-animal-button");
+  const deleteAnimalCancel = document.querySelector("#delete-animal-cancel");
+  const deleteAnimalConfirm = document.querySelector("#delete-animal-confirm");
 
-  deleteButtons.forEach((button) => {
+  deleteAnimalButton.forEach((button) => {
     button.addEventListener("click", () => {
       const animalId = button.getAttribute("data-animal-id");
-      deleteationModal.showModal();
-      cancelDeletionModalButton.addEventListener("click", () => {
-        deleteationModal.close();
+      deleteAnimalModal.showModal();
+      deleteAnimalCancel.addEventListener("click", () => {
+        deleteAnimalModal.close();
       })
-      deleteDeletionModalButton.addEventListener("click", () => {
+      deleteAnimalConfirm.addEventListener("click", () => {
         fetch(`/admin/animals/${animalId}/delete`, {
           method: "DELETE", 
           headers: {
@@ -177,6 +221,58 @@
       })
     })
   })
+
+const setAdoptionTrueModal = document.querySelector("#set-adoption-true-modal");
+const setAdoptionTrueButtons = document.querySelectorAll("#set-adoption-true-button");
+const setAdoptionTrueCancel = document.querySelector("#set-adoption-true-cancel");
+const setAdoptionTrueConfirm = document.querySelector("#set-adoption-true-confirm");
+
+setAdoptionTrueButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const animalId = button.getAttribute("data-animal-id");
+    setAdoptionTrueModal.showModal();
+    setAdoptionTrueCancel.addEventListener("click", () => {
+      setAdoptionTrueModal.close();
+    })
+    setAdoptionTrueConfirm.addEventListener("click", () => {
+      fetch(`/admin/animals/${animalId}/toggle-adoption-status`, {
+        method: "PUT",
+        headers: {
+          "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
+        }
+      }).then(() => {
+        window.location.reload()
+      })
+    })
+  })
+})
+
+const setAdoptionFalseModal = document.querySelector("#set-adoption-false-modal");
+const setAdoptionFalseButtons = document.querySelectorAll("#set-adoption-false-button");
+const setAdoptionFalseCancel = document.querySelector("#set-adoption-false-cancel");
+const setAdoptionFalseConfirm = document.querySelector("#set-adoption-false-confirm");
+
+setAdoptionFalseButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const animalId = button.getAttribute("data-animal-id");
+    setAdoptionFalseModal.showModal();
+    setAdoptionFalseCancel.addEventListener("click", () => {
+      setAdoptionFalseModal.close();
+    })
+    setAdoptionFalseConfirm.addEventListener("click", () => {
+      fetch(`/admin/animals/${animalId}/toggle-adoption-status`, {
+        method: "PUT",
+        headers: {
+          "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
+        }
+      }).then(() => {
+        window.location.reload()
+      })
+    })
+  })
+})
+
+
     </script>
   {% endif %}
 {% endmacro %}

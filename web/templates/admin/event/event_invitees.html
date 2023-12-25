@@ -1,0 +1,39 @@
+{% set active_page = "user.events" %}
+{% extends "./_helpers/layout/event/admin_event_layout.html" %}
+{% from "./_helpers/macros/empty_list.html" import empty_list %}
+{% block title %}
+  Event
+{% endblock title %}
+{% block inner_content %}
+  <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+    <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+      <div class="overflow-hidden bg-white shadow-md sm:rounded-lg">
+        <table class="min-w-full divide-y divide-gray-300 table-auto">
+          <thead class="bg-white border-b">
+            <tr>
+              <th scope="col"
+                  class="py-3.5 pl-4 pr-3 text-left font-semibold text-gray-900 sm:pl-6">Name</th>
+              <th scope="col" class="px-3 py-3.5 text-left font-semibold text-gray-900">Status</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            {% for volunteer in volunteers %}
+              <tr>
+                <td class="flex items-center gap-3 py-4 pl-4 pr-3 font-medium text-gray-900 whitespace-nowrap sm:pl-6">
+                  <img class="object-cover w-10 h-10 rounded-full"
+                       src="{{ get_image(volunteer.photo_url) }}"
+                       alt="Volunteer's Image"
+                       height="auto"
+                       width="auto" />
+                  {{ volunteer.name }}
+                </td>
+                <td class="px-3 py-4 text-gray-500 whitespace-nowrap">{{ volunteer.status }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {{ empty_list(volunteers, "No Volunteers Found.") }}
+      </div>
+    </div>
+  </div>
+{% endblock inner_content %}

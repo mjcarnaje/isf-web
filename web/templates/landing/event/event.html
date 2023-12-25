@@ -1,31 +1,51 @@
-{% set active_page = "admin.event.events" %}
+{% set active_page = "event" %}
 {% extends "./_helpers/layout/main_layout.html" %}
+{% from './_helpers/macros/event/event_post_cards.html' import event_post_cards with context %}
+{% from "./_helpers/macros/empty_list.html" import empty_list %}
 {% block title %}
   Event
 {% endblock title %}
 {% block content %}
-  <div class="flex justify-center min-h-screen py-12">
-    <div class="flex flex-col w-full max-w-3xl space-y-6">
-      <img src="{{ get_image(event.cover_photo_url) }}" class="object-contain" />
-      <h1>{{ event.name }}</h1>
-      <p class="w-8/12">{{ event.description }}</p>
-      <div class="flex items-center gap-1">
-        <p class="text-primary-800">{{ event.start_date.strftime("%b %d, %Y") }}</p>
-        <p>-</p>
-        <p class="text-primary-800">{{ event.end_date.strftime("%b %d, %Y") }}</p>
-        <p class="text-primary-800">{{ event.location }}</p>
+  <div class="pt-12 pb-24">
+    <div class="w-full aspect-[800/320] max-w-5xl mx-auto relative">
+      <img src="{{ get_image(event.cover_photo_url) }}"
+           alt="Event Cover Photo"
+           class="object-cover w-full  border rounded-xl aspect-[800/320]"
+           height="auto"
+           width="auto">
+      <div class="absolute z-10 flex flex-col overflow-hidden bg-white shadow-lg w-36 h-36 left-8 -bottom-8 rounded-3xl">
+        <div class="flex items-center justify-center h-10 bg-red-500">
+          <h1 class="text-white">{{ event.start_date.strftime("%B") }}</h1>
+        </div>
+        <div class="flex items-center justify-center flex-1 w-full">
+          <h1 class="text-5xl font-bold">{{ event.start_date.strftime("%d") }}</h1>
+        </div>
       </div>
-      <ul class="grid w-full grid-cols-2 gap-2 p-4 bg-gray-100 border rounded-lg md:grid-cols-5">
-        {% for picture in event.pictures %}
-          <li class="w-full h-auto max-w-full">
-            <img src="{{ get_image(picture) }}"
-                 class="object-cover w-full h-auto border cursor-pointer hover:shadow-sm rounded-xl bg-gray-50"
-                 alt=""
-                 height="auto"
-                 width="auto" />
-          </li>
-        {% endfor %}
-      </ul>
+    </div>
+    <div class="w-full max-w-5xl mx-auto mt-12">
+      <div class="flex flex-col gap-8 pt-4">
+        <h1 class="text-3xl font-bold text-gray-800">{{ event.name }}</h1>
+        <p class="text-lg text-gray-600 ">{{ event.description }}</p>
+        <div class="flex flex-col w-full gap-4 p-8 bg-white border shadow-md rounded-3xl">
+          <div class="flex items-center justify-around gap-8 divide-x-2">
+            <div class="flex flex-col items-center justify-center w-full gap-1 p-5">
+              <h1 class="text-2xl font-bold">{{ statistics.going_count or "-" }}</h1>
+              <h2>Going</h2>
+            </div>
+            <div class="flex flex-col items-center justify-center w-full gap-1 p-5">
+              <h1 class="text-2xl font-bold">{{ statistics.maybe_count or "-" }}</h1>
+              <h2>Maybe</h2>
+            </div>
+            <div class="flex flex-col items-center justify-center w-full gap-1 p-5">
+              <h1 class="text-2xl font-bold">{{ statistics.cant_go_count or "-" }}</h1>
+              <h2>Can't Go</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      {{ event_post_cards(posts) }}
+      {{ empty_list(posts, "No Posts Found.") }}
     </div>
   </div>
 {% endblock content %}

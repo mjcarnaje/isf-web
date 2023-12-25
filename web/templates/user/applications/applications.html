@@ -1,0 +1,79 @@
+{% set active_page = "user.applications.applications" %}
+{% extends "./_helpers/layout/user_layout.html" %}
+{% from './_helpers/macros/adoption_status_badge.html' import status_badge %}
+{% block title %}
+  Donations
+{% endblock title %}
+{% block content %}
+  <div class="flex flex-col gap-8 mx-auto max-w-7xl">
+    <h1 class="text-3xl font-bold">Applications</h1>
+    <div class="grid w-full grid-cols-4 gap-8 mx-auto">
+      {% for application in applications %}
+        {% set href = url_for('user.application.view_application', id=application.id) %}
+        <div class="flex flex-col justify-between p-4 bg-white shadow-md gap-y-3 rounded-xl">
+          <a href="{{ href }}">
+            <div class="h-full overflow-hidden border bg-gray-50 aspect-square rounded-xl">
+              <img class="object-cover h-full transition-all duration-300 group-hover:scale-105"
+                   src="{{ get_image(application.animal_photo_url) }}"
+                   alt="Animal Photo"
+                   width="auto"
+                   height="auto" />
+            </div>
+          </a>
+          <div class="flex flex-col flex-1 gap-2">
+            <h1 class="text-lg font-bold">{{ application.animal_name }}</h1>
+            <div class="flex items-center gap-2">
+              {% if application.interview_preference == "Zoom" %}
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     xmlns:xlink="http://www.w3.org/1999/xlink"
+                     id="Art"
+                     viewBox="0 0 100 100"
+                     class="w-5 h-5">
+                  <defs><style>.cls-1{fill:url(#linear-gradient);}.cls-2{fill:#fff;}</style><linearGradient id="linear-gradient" x1="23.66604" y1="95.61176" x2="76.33396" y2="4.38824" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#0845bf" /><stop offset=".6" stop-color="#0b5cff" /><stop offset="1" stop-color="#4f90ee" /></linearGradient></defs>
+                  <g id="icon_ZM_container">
+                  <path id="container" class="cls-1" d="m100,50c0,5.34685-.42982,10.58971-1.25089,15.7018-2.71817,16.92367-16.12379,30.3292-33.04747,33.0473-5.11224.82107-10.35514,1.2509-15.70164,1.2509s-10.5894-.42982-15.70164-1.2509c-16.92368-2.7181-30.3293-16.12363-33.04747-33.0473C.42982,60.58971,0,55.34685,0,50s.42982-10.58971,1.25089-15.7018C3.96907,17.37453,17.37469,3.969,34.29836,1.2509,39.4106.42982,44.6535,0,50,0s10.5894.42982,15.70164,1.2509c16.92368,2.7181,30.3293,16.12363,33.04747,33.0473.82107,5.11209,1.25089,10.35496,1.25089,15.7018Z" />
+                  <path id="logo_ZM_wordmark" class="cls-2" d="m29.86217,57.65696h-12.40324c-.87023,0-1.64774-.51954-1.98075-1.32352s-.15056-1.72117.4648-2.33642l8.59125-8.59121h-6.15751c-1.69153,0-3.06279-1.37125-3.06279-3.06279h11.4385c.87016,0,1.64763.51939,1.98068,1.32337.33309.80398.15075,1.72102-.46454,2.33657l-8.59128,8.59121h7.1221c1.69153,0,3.06279,1.37125,3.06279,3.06279Zm54.8239-9.57121c0-3.29324-2.67923-5.97244-5.97244-5.97244-1.76155,0-3.34693.76704-4.44104,1.98416-1.09411-1.21711-2.67949-1.98416-4.44104-1.98416-3.29321,0-5.97244,2.67919-5.97244,5.97244v9.57121c1.69153,0,3.06279-1.37126,3.06279-3.06278v-6.50843c0-1.60437,1.30527-2.90965,2.90965-2.90965s2.90965,1.30527,2.90965,2.90965v6.50843c0,1.69153,1.37126,3.06278,3.06279,3.06278v-9.57121c0-1.60437,1.30527-2.90965,2.90965-2.90965s2.90965,1.30527,2.90965,2.90965v6.50843c0,1.69153,1.37126,3.06278,3.06278,3.06278v-9.57121Zm-22.35835,1.91424c0,4.3557-3.53098,7.88668-7.88668,7.88668s-7.88668-3.53098-7.88668-7.88668,3.53099-7.88668,7.88668-7.88668,7.88668,3.53098,7.88668,7.88668Zm-3.06279,0c0-2.66416-2.15973-4.82389-4.82389-4.82389s-4.82389,2.15973-4.82389,4.82389,2.15973,4.82389,4.82389,4.82389,4.82389-2.15973,4.82389-4.82389Zm-13.93568,0c0,4.3557-3.53098,7.88668-7.88668,7.88668s-7.88668-3.53098-7.88668-7.88668,3.53099-7.88668,7.88668-7.88668,7.88668,3.53098,7.88668,7.88668Zm-3.06279,0c0-2.66416-2.15973-4.82389-4.82389-4.82389s-4.82389,2.15973-4.82389,4.82389,2.15973,4.82389,4.82389,4.82389,4.82389-2.15973,4.82389-4.82389Z" />
+                  </g>
+                </svg>
+              {% endif %}
+              {% if application.interview_preference == "Google Meet" %}
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     fill="none"
+                     width="800"
+                     height="800"
+                     viewBox="-13.1265 -18 113.763 108"
+                     class="w-5 h-5">
+                  <path fill="#00832d" d="M49.5 36l8.53 9.75 11.47 7.33 2-17.02-2-16.64-11.69 6.44z" />
+                  <path fill="#0066da" d="M0 51.5V66c0 3.315 2.685 6 6 6h14.5l3-10.96-3-9.54-9.95-3z" />
+                  <path fill="#e94235" d="M20.5 0L0 20.5l10.55 3 9.95-3 2.95-9.41z" />
+                  <path fill="#2684fc" d="M20.5 20.5H0v31h20.5z" />
+                  <path fill="#00ac47" d="M82.6 8.68L69.5 19.42v33.66l13.16 10.79c1.97 1.54 4.85.135 4.85-2.37V11c0-2.535-2.945-3.925-4.91-2.32zM49.5 36v15.5h-29V72h43c3.315 0 6-2.685 6-6V53.08z" />
+                  <path fill="#ffba00" d="M63.5 0h-43v20.5h29V36l20-16.57V6c0-3.315-2.685-6-6-6z" />
+                </svg>
+              {% endif %}
+              {% if application.interview_preference == "Phone" %}
+                <div class="flex items-center justify-center w-5 h-5">
+                  <i class="text-gray-600 fa-solid fa-phone"></i>
+                </div>
+              {% endif %}
+              <p class="font-medium text-gray-800">{{ application.interview_preference }}</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="flex items-center justify-center w-5 h-5">
+                <i class="text-gray-600 fa-solid fa-calendar"></i>
+              </div>
+              <p class="font-medium text-gray-800">{{ application.interview_preferred_date.strftime("%b %d, %Y") }}</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="flex items-center justify-center w-5 h-5">
+                <i class="text-gray-600 fa-solid fa-clock"></i>
+              </div>
+              <p class="font-medium text-gray-800">{{ application.interview_preferred_time }}</p>
+            </div>
+          </div>
+          <button class="text-sm text-right text-gray-500">{{ status_badge(application.current_status) }}</button>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock content %}

@@ -1,21 +1,25 @@
 {% from "./_helpers/macros/empty_list.html" import empty_list %}
-{% macro event_cards(events, is_user=False) %}
-  <div class="grid grid-cols-3 gap-8">
+{% macro event_tables(events) %}
+  <div class="grid grid-cols-1 gap-8">
     {% for event in events %}
-      {% if is_user %}
+      {% set is_admin = "Admin" in current_user['roles'] %}
+      {% if is_admin %}
+        {% set event_href = url_for('admin.event.view_event', id=event.id) %}
+      {% elif current_user.is_athenticated %}
         {% set event_href = url_for('user.events.view_event', id=event.id) %}
       {% else %}
-        {% set event_href = url_for('admin.event.view_event', id=event.id) %}
+        {% set event_href = url_for('landing.view_event', id=event.id) %}
       {% endif %}
-      <div class="flex flex-col grid-cols-1 gap-4 p-2 bg-white border rounded-lg shadow-sm">
-        <a href="{{ event_href }}" class="w-full overflow-hidden rounded-lg">
-          <img class="object-cover w-full transition-all duration-300 border {{ 'border-4 border-green-500' if event['status'] == 'In Progress' else '' }} rounded-lg aspect-[800/320] bg-gray-50 hover:scale-105"
+      <div class="flex grid-cols-1 gap-4 p-4 bg-white border shadow-md rounded-xl">
+        <a href="{{ event_href }}"
+           class="w-full max-w-[300px] overflow-hidden rounded-lg">
+          <img class="object-cover w-full transition-all duration-300 border {{ 'border-4 border-green-500' if event['status'] == 'In Progress' else '' }} rounded-lg aspect-video bg-gray-50 hover:scale-105"
                src="{{ get_image(event.cover_photo_url) }}"
                alt="Cover Photo"
                width="auto"
                height="auto" />
         </a>
-        <div class="flex flex-col w-full px-2 pb-2 gap-y-2">
+        <div class="flex flex-col w-full gap-3">
           <div class="flex items-center justify-between gap-2">
             <div class="relative flex items-center w-full gap-4">
               <a href="{{ event_href }}"
@@ -30,7 +34,7 @@
                 </div>
               {% endif %}
             </div>
-            {% if not is_user %}
+            {% if is_admin %}
               <div class="dropdown">
                 <label tabindex="0">
                   <div class="flex items-center justify-center w-10 h-10 rounded-full cursor-pointer hover:bg-gray-200 aspect-square">
@@ -55,38 +59,38 @@
               </div>
             {% endif %}
           </div>
-          <div>
-            <p class="leading-5 text-gray-600 break-all wwhitespace-pre-wrap {{ 'line-through text-gray-600' if event.is_cancelled }}">
-              {{ event.description }}
-            </p>
+          <div class="w-full max-w-lg">
+            <p class="leading-5 text-gray-600 {{ 'line-through text-gray-600' if event.is_cancelled }}">{{ event.description }}</p>
           </div>
-          <div class="flex items-center gap-3">
-            <div class="flex items-center justify-center w-4 h-4">
-              <i class="text-gray-500 fa-solid fa-location-dot"></i>
-            </div>
-            <span class="font-medium">{{ event.location }}</span>
-          </div>
-          <div class="flex items-center gap-3">
-            <div class="flex items-center justify-center w-4 h-4">
-              <i class="text-gray-500 fa-solid fa-calendar"></i>
-            </div>
-            <span class="font-medium">{{ event.start_date.strftime("%b %d, %Y") }} - {{ event.end_date.strftime("%b %d, %Y") }}</span>
-          </div>
-          {% if not is_user %}
+          <div class="flex flex-wrap gap-8">
             <div class="flex items-center gap-3">
-              {% if event.who_can_see_it == "Verified User" %}
-                <div class="flex items-center justify-center w-4 h-4">
-                  <i class="text-gray-500 fa-solid fa-circle-check"></i>
-                </div>
-                <span class="font-medium">{{ event.who_can_see_it }}</span>
-              {% else %}
-                <div class="flex items-center justify-center w-4 h-4">
-                  <i class="text-gray-500 fa-solid fa-users"></i>
-                </div>
-                <span class="font-medium">{{ event.who_can_see_it }}</span>
-              {% endif %}
+              <div class="flex items-center justify-center w-4 h-4">
+                <i class="text-gray-500 fa-solid fa-location-dot"></i>
+              </div>
+              <span class="font-medium">{{ event.location }}</span>
             </div>
-          {% endif %}
+            <div class="flex items-center gap-3">
+              <div class="flex items-center justify-center w-4 h-4">
+                <i class="text-gray-500 fa-solid fa-calendar"></i>
+              </div>
+              <span class="font-medium">{{ event.start_date.strftime("%b %d, %Y") }} - {{ event.end_date.strftime("%b %d, %Y") }}</span>
+            </div>
+            {% if not is_user %}
+              <div class="flex items-center gap-3">
+                {% if event.who_can_see_it == "Verified User" %}
+                  <div class="flex items-center justify-center w-4 h-4">
+                    <i class="text-gray-500 fa-solid fa-circle-check"></i>
+                  </div>
+                  <span class="font-medium">{{ event.who_can_see_it }}</span>
+                {% else %}
+                  <div class="flex items-center justify-center w-4 h-4">
+                    <i class="text-gray-500 fa-solid fa-users"></i>
+                  </div>
+                  <span class="font-medium">{{ event.who_can_see_it }}</span>
+                {% endif %}
+              </div>
+            {% endif %}
+          </div>
         </div>
       </div>
     {% endfor %}

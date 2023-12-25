@@ -9,6 +9,7 @@ from .animal import user_animal_bp
 from .event import user_event_bp
 from .donation import user_donation_bp
 from .adoption import user_adoption_bp
+from .application import user_application_bp
 from ...validations import NotificationSettingsValidation, EditProfileValidation, MemberApplicationValidation
 from ...enums import NotificationType
 
@@ -91,12 +92,6 @@ def donations():
         base_url="user.donations"
     ),
   )
-
-@user_bp.route('/applications', methods=['GET', 'POST'])
-@user_verified_required
-def applications():
-  applications = Adoption.get_user_applications(current_user.id)
-  return render_template('user/applications.html', applications=applications)
 
 @user_bp.route('/settings', methods=['GET', 'POST'])
 @user_verified_required
@@ -208,3 +203,4 @@ user_bp.register_blueprint(user_animal_bp)
 user_bp.register_blueprint(user_event_bp)
 user_bp.register_blueprint(user_donation_bp)
 user_bp.register_blueprint(user_adoption_bp)
+user_bp.register_blueprint(user_application_bp)

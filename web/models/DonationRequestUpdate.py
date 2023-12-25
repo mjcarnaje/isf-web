@@ -123,6 +123,4 @@ class DonationRequestUpdate:
             del row['photo_urls']
             updates.append(cls(**row))
 
-        print(len(updates))
-
         return updates

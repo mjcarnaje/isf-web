@@ -49,9 +49,9 @@
     </div>
     <div class="w-full max-w-5xl py-16 mx-auto space-y-8">
       {{ animal_filters(false) }}
-      <div class="grid w-full grid-cols-3 gap-8 mx-auto">
+      <div class="grid w-full grid-cols-4 gap-8 mx-auto">
         {% for animal in animals %}
-          <div class="flex flex-col bg-white border cursor-pointer group rounded-xl hover:shadow-sm">
+          <div class="flex flex-col col-span-1 bg-white shadow-md cursor-pointer group rounded-xl">
             <a href="{{ url_for('user.adoption.adopt_me', id=animal.id) }}">
               <div class="h-full overflow-hidden border-b aspect-square rounded-t-xl">
                 <img class="object-cover h-full transition-all duration-300 group-hover:scale-105"
@@ -61,15 +61,17 @@
                      height="auto" />
               </div>
             </a>
-            <div class="flex-1 py-2 px-3 space-y-0.5">
-              <div class="flex items-center justify-between">
-                <a href="{{ url_for('user.adoption.adopt_me', id=animal.id) }}"
-                   class="text-xl font-bold text-primary-800">{{ animal.name }}</a>
-              </div>
-              <p class="text-gray-600">{{ animal.description | truncate(60) }}</p>
+            <div class="flex-1 p-4">
+              <p class="font-bold text-gray-800">{{ animal.name }}</p>
               <div class="pt-2">
                 <a href="{{ url_for('user.adoption.adopt_me', id=animal.id) }}"
-                   class="w-full text-white btn btn-primary {{ 'btn-disabled' if animal.is_adopted }}">Adopt me!</a>
+                   class="w-full text-white btn btn-primary {{ 'btn-disabled' if animal.is_adopted }}">
+                  {% if animal.is_adopted %}
+                    Adopted
+                  {% else %}
+                    Adopt me!
+                  {% endif %}
+                </a>
               </div>
             </div>
           </div>

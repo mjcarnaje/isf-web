@@ -1,11 +1,11 @@
 {% set active_page = "user.events" %}
 {% extends "./_helpers/layout/user_layout.html" %}
-{% from "./_helpers/macros/event_cards.html" import event_cards with context %}
-{% from "./_helpers/macros/event_tables.html" import event_tables with context %}
-{% from "./_helpers/macros/event_filters.html" import event_filters with context %}
+{% from "./_helpers/macros/event/event_cards.html" import event_cards with context %}
+{% from "./_helpers/macros/event/event_tables.html" import event_tables with context %}
+{% from "./_helpers/macros/event/event_filters.html" import event_filters with context %}
 {% from "./_helpers/macros/pagination_buttons.html" import pagination_buttons with context %}
 {% block title %}
-  Admin - Events
+  Events
 {% endblock title %}
 {% block content %}
   <div class="flex flex-col gap-12 mx-auto max-w-7xl">
@@ -19,7 +19,7 @@
     {% if view_type == "card" %}
       {{ event_cards(events, is_user=True) }}
     {% else %}
-      {{ event_tables(events, is_user=True) }}
+      {{ event_tables(events) }}
     {% endif %}
     {{ pagination_buttons() }}
   </div>

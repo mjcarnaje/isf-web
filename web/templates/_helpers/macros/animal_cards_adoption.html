@@ -3,9 +3,9 @@
   <div class="grid w-full grid-cols-4 gap-8 mx-auto">
     {% for animal in animals %}
       {% set href = url_for('user.animals.view_animal', id=animal.id) %}
-      <div class="flex flex-col gap-y-4">
+      <div class="flex flex-col p-4 bg-white shadow-md gap-y-4 rounded-xl">
         <a href="{{ href }}">
-          <div class="h-full overflow-hidden border aspect-square rounded-xl">
+          <div class="h-full overflow-hidden border bg-gray-50 aspect-square rounded-xl">
             <img class="object-cover h-full transition-all duration-300 group-hover:scale-105"
                  src="{{ get_image(animal.photo_url) }}"
                  alt="Animal Photo"
@@ -15,27 +15,27 @@
         </a>
         <h1 class="text-lg font-bold">{{ animal.name }}</h1>
         <div class="grid grid-cols-2 gap-2">
-          <span class="inline-flex items-center gap-2 p-2 text-xs font-medium text-gray-700 rounded-md bg-gray-50">
-            <div class="grid w-4 h-4 {{ 'bg-green-500' if animal.is_dewormed else 'bg-gray-500' }} rounded-full place-items-center ">
-              <i class="text-sm text-white fa-solid fa-check"></i>
+          <span class="inline-flex items-center gap-1 p-2 text-xs font-medium text-gray-700 rounded-md bg-gray-50">
+            <div class="grid w-5 aspect-square h-5 {{ 'bg-green-500' if animal.is_dewormed else 'bg-gray-500' }} rounded-lg place-items-center ">
+              <i class="text-xs text-white fa-solid fa-shield"></i>
             </div>
             Dewormed
           </span>
           <span class="inline-flex items-center gap-2 p-2 text-xs font-medium text-gray-700 rounded-md bg-gray-50">
-            <div class="grid w-4 h-4 {{ 'bg-green-500' if animal.is_neutered else 'bg-gray-500' }} rounded-full place-items-center ">
-              <i class="text-sm text-white fa-solid fa-check"></i>
+            <div class="grid w-5 h-5 aspect-square {{ 'bg-blue-500' if animal.is_neutered else 'bg-gray-500' }} rounded-full place-items-center ">
+              <i class="text-xs text-white fa-solid fa-cut"></i>
             </div>
             Neutered
           </span>
           <span class="inline-flex items-center gap-2 p-2 text-xs font-medium text-gray-700 rounded-md bg-gray-50">
-            <div class="grid w-4 h-4 {{ 'bg-green-500' if animal.in_shelter else 'bg-gray-500' }} rounded-full place-items-center ">
-              <i class="text-sm text-white fa-solid fa-check"></i>
+            <div class="grid w-5 h-5 aspect-square {{ 'bg-purple-500' if animal.in_shelter else 'bg-gray-500' }} rounded-full place-items-center ">
+              <i class="text-xs text-white fa-solid fa-home"></i>
             </div>
             In Shelter
           </span>
           <span class="inline-flex items-center gap-2 p-2 text-xs font-medium text-gray-700 rounded-md bg-gray-50">
-            <div class="grid w-4 h-4 {{ 'bg-green-500' if animal.is_rescued else 'bg-gray-500' }} rounded-full place-items-center ">
-              <i class="text-sm text-white fa-solid fa-check"></i>
+            <div class="grid w-5 h-5 aspect-square {{ 'bg-yellow-500' if animal.is_rescued else 'bg-gray-500' }} rounded-full place-items-center ">
+              <i class="text-xs text-white fa-solid fa-life-ring"></i>
             </div>
             Rescued
           </span>

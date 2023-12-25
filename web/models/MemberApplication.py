@@ -96,13 +96,26 @@ class MemberApplication():
 
     @classmethod
     def find_by_user_id(cls, user_id: int):
-        sql = "SELECT * FROM member_application WHERE user_id = %s"
+        sql = """
+            SELECT 
+                * 
+            FROM 
+                member_application 
+            WHERE 
+                user_id = %s
+            ORDER BY 
+                created_at DESC
+        """
         cur = db.new_cursor(dictionary=True)
         cur.execute(sql, (user_id,))
-        row = cur.fetchone()
-        if not row:
-            return None
-        return cls(**row)    
+        rows = cur.fetchall()
+        
+        results = []
+
+        for row in rows:
+            results.append(cls(**row))
+        
+        return results[0] if len(results) > 0 else None
     
     @classmethod
     def insert(cls, member_application):

@@ -143,6 +143,17 @@ def reject_donation(id, donator_id):
         flash("Error rejecting donation request. Please try again later.", "error")
         return jsonify({"status": "error", "message": "Error rejecting donation request. Please try again later."})
 
+@ask_for_help_bp.route('/<id>/donations/pending/<donator_id>', methods=['POST'])
+@admin_required
+def pending_donation(id, donator_id):
+    try:
+        DonationRequestDonation.set_to_pending(id=donator_id)
+        flash("Donation request set to pending successfully!", "success")
+        return jsonify({"status": "success", "message": "Donation request set to  pending successfully!"})
+    except Exception as e:
+        flash("Error rejecting donation request. Please try again later.", "error")
+        return jsonify({"status": "error", "message": "Error rejecting donation request. Please try again later."})
+
 
 @ask_for_help_bp.route('/animals-options', methods=['GET'])
 @admin_required

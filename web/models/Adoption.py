@@ -353,14 +353,27 @@ class Adoption:
     
 
     @staticmethod
-    def get_user_applications(user_id):
+    def get_applications(user_id):
         sql = """
                 SELECT 
-                    adoption.*,
-                    animal.id as animal_id,
+                    adoption.id as id,
+                    adoption.user_id,
+                    adoption.animal_id,
+                    adoption.current_status,
+                    adoption.interview_preference,
+                    adoption.interview_preferred_date,
+                    adoption.interview_preferred_time,
+                    adoption.reason_to_adopt,
+                    adoption.is_active,
+                    adoption.zoom_url,
+                    adoption.google_meet_url,
+                    adoption.phone_number,                   
                     animal.name as animal_name,
                     animal.photo_url as animal_photo_url,
-                    animal.type as animal_type 
+                    animal.is_dewormed as animal_is_dewormed,
+                    animal.is_neutered as animal_is_neutered,
+                    animal.in_shelter as animal_in_shelter,
+                    animal.is_rescued as animal_is_rescued
                 FROM 
                     adoption
                 LEFT JOIN 
@@ -372,6 +385,66 @@ class Adoption:
         cur.execute(sql, (user_id,))
         rows = cur.fetchall()
         return rows
+
+    @staticmethod
+    def get_application(application_id):
+        sql = """
+                SELECT 
+                    adoption.id as id,
+                    adoption.user_id,
+                    adoption.animal_id,
+                    adoption.current_status,
+                    adoption.interview_preference,
+                    adoption.interview_preferred_date,
+                    adoption.interview_preferred_time,
+                    adoption.reason_to_adopt,
+                    adoption.is_active,
+                    adoption.zoom_url,
+                    adoption.google_meet_url,
+                    adoption.phone_number,
+                    animal.id as animal_id,
+                    animal.name as animal_name,
+                    animal.photo_url as animal_photo_url,
+                    animal.is_dewormed as animal_is_dewormed,
+                    animal.is_neutered as animal_is_neutered,
+                    animal.in_shelter as animal_in_shelter,
+                    animal.is_rescued as animal_is_rescued
+                FROM 
+                    adoption
+                LEFT JOIN 
+                    animal ON adoption.animal_id = animal.id
+                WHERE 
+                    adoption.id = %s
+                    
+            """        
+        cur = db.new_cursor(dictionary=True)
+        cur.execute(sql, (application_id,))
+        rows = cur.fetchone()
+        return rows
+    
+    @staticmethod
+    def get_application_history(application_id):
+        sql = """
+                SELECT 
+                    id,
+                    adoption_id,
+                    previous_status,
+                    status,
+                    remarks,
+                    created_at
+                FROM 
+                    adoption_status_history
+                WHERE 
+                    adoption_id = %s
+                ORDER BY
+                    created_at DESC
+                    
+            """        
+        cur = db.new_cursor(dictionary=True)
+        cur.execute(sql, (application_id,))
+        rows = cur.fetchall()
+        return rows
+
 
     @staticmethod
     def get_for_adoptions(page_number: int, page_size: int):
@@ -423,12 +496,23 @@ class Adoption:
     def get_animal_applications(animal_id):
         sql = """
                 SELECT 
-                    adoption.*,
-                    first_name,
-                    last_name,
-                    email,
-                    contact_number,
-                    user.id as user_id
+                    adoption.id as id,
+                    adoption.user_id,
+                    adoption.animal_id,
+                    adoption.current_status,
+                    adoption.interview_preference,
+                    adoption.interview_preferred_date,
+                    adoption.interview_preferred_time,
+                    adoption.reason_to_adopt,
+                    adoption.is_active,
+                    adoption.zoom_url,
+                    adoption.google_meet_url,
+                    adoption.phone_number,
+                    user.first_name,
+                    user.last_name,
+                    user.email,
+                    user.contact_number,
+                    user.photo_url
                 FROM adoption 
                 LEFT JOIN 
                     user ON adoption.user_id = user.id
@@ -439,14 +523,6 @@ class Adoption:
         cur.execute(sql, (animal_id,))
         rows = cur.fetchall()
         return rows
-
-    @staticmethod
-    def get_applications():
-        sql = "SELECT * FROM adoption"
-        cur = db.new_cursor(dictionary=True)
-        cur.execute(sql)
-        rows = cur.fetchall()
-        return [Adoption(**row) for row in rows]
     
     @classmethod
     def find_by_user_animal(cls, user_id, animal_id):

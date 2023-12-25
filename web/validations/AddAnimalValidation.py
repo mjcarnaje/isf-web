@@ -37,13 +37,11 @@ class AddAnimalValidation(FlaskForm):
     photo_url = StringField("Photo", validators=[validators.DataRequired()])
     gender = SelectField('Gender', choices=[
                          ("Male", "Male"), ("Female", "Female")])   
-    is_adopted = BooleanField("Adopted")
     is_dead = BooleanField("Deceased")
     is_dewormed = BooleanField("Dewormed")
     is_neutered = BooleanField("Neutered")
     in_shelter = BooleanField("In Shelter")
     is_rescued = BooleanField("Rescued")
-    for_adoption = BooleanField("Available for Adoption")
     description = TextAreaField("Description", validators=[validators.DataRequired()], render_kw={"placeholder": "Description"})
     appearance = TextAreaField("Appearance", validators=[validators.DataRequired()])
 

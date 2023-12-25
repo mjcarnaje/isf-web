@@ -1,4 +1,4 @@
-{% set active_page = "user.donate" %}
+{% set active_page = "user.ask_for_help" %}
 {% extends "./_helpers/layout/user_layout.html" %}
 {% from "./_helpers/macros/pagination_buttons.html" import pagination_buttons with context %}
 {% from "./_helpers/macros/ask_for_help/animal_help_card.html" import animal_help_card with context %}
@@ -19,7 +19,7 @@
           </a>
           <a href="{{ url_for('user.donate.donate_in_kind',) }}"
              class="flex-1 text-white btn btn-primary">
-            <i class="fa-solid fa-hand-holding-heart"></i> In-Kind Donation
+            <i class="fa-solid fa-hand-holding-heart"></i> In-Kind
           </a>
         </div>
       </div>

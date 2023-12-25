@@ -67,6 +67,24 @@ class DonationRequestDonation:
         except Exception as err:
             current_app.logger.error(err)
 
+    @staticmethod
+    def set_to_pending(id):
+        try:
+            sql = """
+                UPDATE donation_request_donation
+                SET 
+                    is_rejected = 0,
+                    is_confirmed = 0
+                WHERE id = %s
+            """
+            cur = db.new_cursor()
+            cur.execute(sql, (id,))
+            db.connection.commit()
+
+            current_app.logger.info(f"Donation with id {id} pending successfully!")
+        except Exception as err:
+            current_app.logger.error(err)
+
     @classmethod
     def find_all_by_id(cls, donation_request_id: int):
             sql = """

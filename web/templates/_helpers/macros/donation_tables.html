@@ -15,117 +15,125 @@
       </div>
     </div>
   </dialog>
-  <div class="flow-root">
-    <div class="w-full">
-      <table class="relative min-w-full divide-y divide-gray-300">
-        <thead>
+  <div class="w-full bg-white rounded-lg shadow-md ">
+    <table class="relative w-full divide-y divide-gray-300">
+      <thead>
+        <tr>
+          <th class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Type</th>
+          <th class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Remarks</th>
+          <th class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Amount / In-Kind</th>
+          <th class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status</th>
+          <th class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Donated by</th>
+          <th class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        {% for donation in donations %}
+          <dialog id="confirm_modal{{ loop.index }}"
+                  class="modal modal-bottom sm:modal-middle">
+            <div class="modal-box">
+              <h2 class="mb-4 text-2xl font-bold">Confirm Donation</h2>
+              <p class="mb-4">Are you sure you want to confirm this donation?</p>
+              <div class="flex justify-end">
+                <button onclick="confirm_modal{{ loop.index }}.close()"
+                        class="px-4 py-2 mr-4 font-bold text-gray-800 bg-gray-300 rounded-full hover:bg-gray-400">
+                  Cancel
+                </button>
+                <button id="confirm-donation"
+                        data-id="{{ donation.id }}"
+                        class="px-4 py-2 font-bold text-white bg-green-500 rounded-full hover:bg-green-600">
+                  Confirm
+                </button>
+              </div>
+            </div>
+          </dialog>
+          <dialog id="reject_modal{{ loop.index }}"
+                  class="modal modal-bottom sm:modal-middle">
+            <div class="modal-box">
+              <h2 class="mb-4 text-2xl font-bold">Reject Donation</h2>
+              <p class="mb-4">Are you sure you want to reject this donation?</p>
+              <div class="flex justify-end">
+                <button onclick="reject_modal{{ loop.index }}.close()"
+                        class="px-4 py-2 mr-4 font-bold text-gray-800 bg-gray-300 rounded-full hover:bg-gray-400">
+                  Cancel
+                </button>
+                <button id="reject-donation"
+                        data-id="{{ donation.id }}"
+                        class="px-4 py-2 font-bold text-white bg-red-500 rounded-full hover:bg-red-600">Reject</button>
+              </div>
+            </div>
+          </dialog>
           <tr>
-            <th class="py-3.5 px-3 text-left text-sm font-semibold text-gray-900">Type</th>
-            <th class="py-3.5 px-3 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">Remarks</th>
-            <th class="py-3.5 px-3 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">Amount / Item List</th>
-            <th class="py-3.5 px-3 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">Status</th>
-            <th class="py-3.5 px-3 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">Donated by</th>
-            <th class="py-3.5 px-3 text-right text-sm font-semibold text-gray-900 whitespace-nowrap">Action</th>
+            <td class="px-3 py-5 text-sm text-gray-800">
+              <div class="flex items-center gap-2">
+                {% if donation.donation_type == 'Money' %}
+                  <div class="flex items-center justify-center w-10 h-10 bg-green-100 rounded-full">
+                    <i class="text-green-600 fa-solid fa-money-bill"></i>
+                  </div>
+                {% else %}
+                  <div class="flex items-center justify-center w-10 h-10 bg-yellow-100 rounded-full">
+                    <i class="text-yellow-600 fa-solid fa-hand-holding-heart"></i>
+                  </div>
+                {% endif %}
+                {{ donation.donation_type }}
+              </div>
+            </td>
+            <td class="px-3 py-5 text-sm text-left text-gray-800">{{ donation.remarks or "No remarks" }}</td>
+            <td class="px-3 py-5 text-sm text-left text-gray-800">
+              {% if donation.amount %}
+                {{ donation.amount | format_currency }}
+              {% else %}
+                {{ donation.item_list }}
+              {% endif %}
+            </td>
+            <td class="px-3 py-5 text-sm text-left">
+              {% if donation.is_confirmed or donation.is_rejected %}
+                {% if donation.is_confirmed %}
+                  <div class="flex-1 text-white btn-xs btn btn-success">Confirmed</div>
+                {% else %}
+                  <div class="flex-1 text-white btn-xs btn btn-error">Rejected</div>
+                {% endif %}
+              {% else %}
+                <div class="flex-1 text-white btn-xs btn btn-warning">Pending</div>
+              {% endif %}
+            </td>
+            <td class="px-3 py-5 text-sm text-left text-gray-800">
+              <div class="flex items-center gap-3">
+                <img src="{{ get_image(donation.user_photo_url) }}"
+                     class="object-cover w-8 h-8 rounded-full"
+                     alt="Donated by avatar"
+                     height="auto"
+                     width="auto" />
+                {{ donation.user_first_name }} {{ donation.user_last_name }}
+              </div>
+            </td>
+            <td class="flex justify-end px-3 py-5 text-right">
+              <div class="drop-down" data-dropdown>
+                <button data-dropdown-button
+                        class="flex items-center justify-center w-10 h-10 transition-all duration-200 border rounded-full hover:shadow drop-down-button">
+                  <i class="text-lg pointer-events-none fa-solid fa-ellipsis"></i>
+                </button>
+                <ul data-dropdown-content tabindex="0" class="drop-down-content">
+                  <li role="button"
+                      tabindex="0"
+                      onclick="reject_modal{{ loop.index }}.showModal()">
+                    <i class="fa-solid fa-xmark"></i>
+                    <span class="text-sm pointer-events-none">Reject</span>
+                  </li>
+                  <li role="button"
+                      tabindex="0"
+                      onclick="confirm_modal{{ loop.index }}.showModal()">
+                    <i class="fa-solid fa-check"></i>
+                    <span class="text-sm pointer-events-none">Confirm</span>
+                  </li>
+                </ul>
+              </div>
+            </td>
           </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-          {% for donation in donations %}
-            <dialog id="confirm_modal{{ loop.index }}"
-                    class="modal modal-bottom sm:modal-middle">
-              <div class="modal-box">
-                <h2 class="mb-4 text-2xl font-bold">Confirm Donation</h2>
-                <p class="mb-4">Are you sure you want to confirm this donation?</p>
-                <div class="flex justify-end">
-                  <button onclick="confirm_modal{{ loop.index }}.close()"
-                          class="px-4 py-2 mr-4 font-bold text-gray-800 bg-gray-300 rounded-full hover:bg-gray-400">
-                    Cancel
-                  </button>
-                  <button id="confirm-donation"
-                          data-id="{{ donation.id }}"
-                          class="px-4 py-2 font-bold text-white bg-green-500 rounded-full hover:bg-green-600">
-                    Confirm
-                  </button>
-                </div>
-              </div>
-            </dialog>
-            <dialog id="reject_modal{{ loop.index }}"
-                    class="modal modal-bottom sm:modal-middle">
-              <div class="modal-box">
-                <h2 class="mb-4 text-2xl font-bold">Reject Donation</h2>
-                <p class="mb-4">Are you sure you want to reject this donation?</p>
-                <div class="flex justify-end">
-                  <button onclick="reject_modal{{ loop.index }}.close()"
-                          class="px-4 py-2 mr-4 font-bold text-gray-800 bg-gray-300 rounded-full hover:bg-gray-400">
-                    Cancel
-                  </button>
-                  <button id="reject-donation"
-                          data-id="{{ donation.id }}"
-                          class="px-4 py-2 font-bold text-white bg-red-500 rounded-full hover:bg-red-600">
-                    Reject
-                  </button>
-                </div>
-              </div>
-            </dialog>
-            <tr>
-              <td class="px-3 py-5 text-sm text-gray-800 whitespace-nowrap">
-                <div class="flex items-center gap-2">
-                  {% if donation.donation_type == 'Money' %}
-                    <div class="flex items-center justify-center w-10 h-10 bg-green-100 rounded-full">
-                      <i class="text-green-600 fa-solid fa-money-bill"></i>
-                    </div>
-                  {% else %}
-                    <div class="flex items-center justify-center w-10 h-10 bg-yellow-100 rounded-full">
-                      <i class="text-yellow-600 fa-solid fa-hand-holding-heart"></i>
-                    </div>
-                  {% endif %}
-                  {{ donation.donation_type }}
-                </div>
-              </td>
-              <td class="px-3 py-5 text-sm text-left text-gray-800 whitespace-nowrap">{{ donation.remarks or "No remarks" }}</td>
-              <td class="px-3 py-5 text-sm text-left text-gray-800 whitespace-nowrap">
-                {% if donation.amount %}
-                  {{ donation.amount | format_currency }}
-                {% else %}
-                  {{ donation.item_list }}
-                {% endif %}
-              </td>
-              <td class="px-3 py-5 text-sm text-left whitespace-nowrap">
-                {% if donation.is_confirmed or donation.is_rejected %}
-                  {% if donation.is_confirmed %}
-                    <div class="flex-1 text-white btn-xs btn btn-success">Confirmed</div>
-                  {% else %}
-                    <div class="flex-1 text-white btn-xs btn btn-error">Rejected</div>
-                  {% endif %}
-                {% else %}
-                  <div class="flex-1 text-white btn-xs btn btn-warning">Pending</div>
-                {% endif %}
-              </td>
-              <td class="px-3 py-5 text-sm text-left text-gray-800 whitespace-nowrap">
-                <div class="flex items-center gap-3">
-                  <img src="{{ get_image(donation.user_photo_url) }}"
-                       class="object-cover w-8 h-8 rounded-full"
-                       alt="Donated by avatar"
-                       height="auto"
-                       width="auto" />
-                  {{ donation.user_first_name }} {{ donation.user_last_name }}
-                </div>
-              </td>
-              <td class="px-3 py-5 text-sm text-right text-gray-600 whitespace-nowrap">
-                <div class="flex gap-3">
-                  <button type="button"
-                          onclick="reject_modal{{ loop.index }}.showModal()"
-                          class="flex-1 text-white btn-xs btn btn-error">Reject</button>
-                  <button type="button"
-                          onclick="confirm_modal{{ loop.index }}.showModal()"
-                          class="flex-1 text-white btn-xs btn btn-success">Confirm</button>
-                </div>
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-      {{ empty_list(donations, "No Donations Found.") }}
-    </div>
+        {% endfor %}
+      </tbody>
+    </table>
+    {{ empty_list(donations, "No Donations Found.") }}
   </div>
   <script>
     const confirmDonationButtons = document.querySelectorAll("#confirm-donation");

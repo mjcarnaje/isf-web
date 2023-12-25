@@ -70,13 +70,19 @@
 }
 
 .drop-down-content {
-  @apply absolute pointer-events-none opacity-0 border bg-white shadow-md p-2 rounded-md top-[calc(100%+4px)] right-0 z-50 min-w-[180px]
+  @apply absolute pointer-events-none opacity-0 border bg-white shadow-md p-2 rounded-xl top-[calc(100%+4px)] right-0 z-50 min-w-[160px];
 }
+
+.drop-down-content>li {
+  @apply flex items-center w-full gap-3 p-2 text-sm font-medium rounded-sm cursor-pointer whitespace-nowrap hover:bg-slate-100;
+}
+
 
 .drop-down.active>.drop-down-content,
 .drop-down.active>.drop-down-button {
   @apply opacity-100 pointer-events-auto;
 }
+
 
 img[data-can-view='true'] {
   border-radius: 5px;

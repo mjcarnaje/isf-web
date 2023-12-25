@@ -41,6 +41,23 @@ function showToast(category, message, duration = 3000) {
   }, duration);
 }
 
+const fakeLinks = document.querySelectorAll('[role="link"]');
+
+for (let i = 0; i < fakeLinks.length; i++) {
+  fakeLinks[i].addEventListener("click", navigateLink);
+  fakeLinks[i].addEventListener("keydown", navigateLink);
+}
+
+//handles clicks and keydowns on the link
+function navigateLink(e) {
+  if (e.type === "click" || e.key === "Enter") {
+    const ref = e.target ?? e.srcElement;
+    if (ref) {
+      window.location.href = ref.getAttribute("data-href");
+    }
+  }
+}
+
 function setSelectedValue(selectElement, value) {
   for (var i = 0; i < selectElement.options.length; i++) {
     if (selectElement.options[i].value == value) {

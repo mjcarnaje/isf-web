@@ -57,7 +57,8 @@ def animals():
 @admin_required
 def view_animal(id):
   animal = Animal.find_by_id(id)
-  return render_template('/admin/animal/animal.html', animal=animal)  
+  adopter = Animal.get_adopter(id)
+  return render_template('/admin/animal/animal.html', animal=animal, adopter=adopter)  
   
 @animal_bp.route('/add-animal', methods=['GET', 'POST'])
 @admin_required
@@ -71,13 +72,11 @@ def add_animal():
     estimated_birth_year = form.estimated_birth_year.data
     photo_url = form.photo_url.data
     gender = form.gender.data
-    is_adopted = form.is_adopted.data
     is_dead = form.is_dead.data
     is_dewormed = form.is_dewormed.data
     is_neutered = form.is_neutered.data
     in_shelter = form.in_shelter.data
     is_rescued = form.is_rescued.data
-    for_adoption = form.for_adoption.data
     description = form.description.data
     appearance = form.appearance.data
     author_id = current_user.id
@@ -89,13 +88,11 @@ def add_animal():
       estimated_birth_year=estimated_birth_year,
       photo_url=photo_url,
       gender=gender,
-      is_adopted=is_adopted,
       is_dead=is_dead,
       is_dewormed=is_dewormed,
       is_neutered=is_neutered,
       in_shelter=in_shelter,
       is_rescued=is_rescued,
-      for_adoption=for_adoption,
       description=description,
       appearance=appearance,
       author_id=author_id
@@ -120,13 +117,11 @@ def edit_animal(id):
         animal.estimated_birth_year = form.estimated_birth_year.data
         animal.photo_url = form.photo_url.data
         animal.gender = form.gender.data
-        animal.is_adopted = form.is_adopted.data
         animal.is_dead = form.is_dead.data
         animal.is_dewormed = form.is_dewormed.data
         animal.is_neutered = form.is_neutered.data
         animal.in_shelter = form.in_shelter.data
         animal.is_rescued = form.is_rescued.data
-        animal.for_adoption = form.for_adoption.data
         animal.description = form.description.data
         animal.appearance = form.appearance.data
 
@@ -135,22 +130,20 @@ def edit_animal(id):
         return redirect(url_for("admin.animal.animals"))
     
     if not form.is_submitted():
-        form.id.data = animal['id']
-        form.name.data = animal['name']
-        form.type.data = animal['type']
-        form.photo_url.data = animal['photo_url']
-        form.estimated_birth_month.data = animal['estimated_birth_month']
-        form.estimated_birth_year.data = animal['estimated_birth_year']
-        form.gender.data = animal['gender']
-        form.description.data = animal['description']
-        form.appearance.data = animal['appearance']
-        form.is_adopted.data = animal['is_adopted'] == 1
-        form.is_dead.data = animal['is_dead'] == 1
-        form.is_dewormed.data = animal['is_dewormed'] == 1
-        form.is_neutered.data = animal['is_neutered'] == 1
-        form.in_shelter.data = animal['in_shelter'] == 1
-        form.is_rescued.data = animal['is_rescued'] == 1
-        form.for_adoption.data = animal['for_adoption'] == 1
+        form.id.data = animal.id
+        form.name.data = animal.name
+        form.type.data = animal.type
+        form.photo_url.data = animal.photo_url
+        form.estimated_birth_month.data = animal.estimated_birth_month
+        form.estimated_birth_year.data = animal.estimated_birth_year
+        form.gender.data = animal.gender
+        form.description.data = animal.description
+        form.appearance.data = animal.appearance
+        form.is_dead.data = animal.is_dead == 1
+        form.is_dewormed.data = animal.is_dewormed == 1
+        form.is_neutered.data = animal.is_neutered == 1
+        form.in_shelter.data = animal.in_shelter == 1
+        form.is_rescued.data = animal.is_rescued == 1
             
     return render_template('admin/animal/edit.html', form=form)
 
@@ -163,5 +156,17 @@ def delete_animal(id):
         return {"error": "Animal not found"}, 404
 
     Animal.delete(id)
+    
+    return "success"
+    
+@animal_bp.route('/<id>/toggle-adoption-status', methods=['PUT'])
+@admin_required
+def toggle_adoption_status(id):
+    animal = Animal.find_by_id(id)
+
+    if not animal:
+        return {"error": "Animal not found"}, 404
+
+    Animal.toggle_adoption_status(id)
     
     return "success"

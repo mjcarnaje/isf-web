@@ -29,21 +29,22 @@
           </div>
         </div>
         <div>
-          <div class="drop-down" data-dropdown>
-            <button data-dropdown-button
-                    class="flex items-center justify-center w-10 h-10 transition-all duration-200 border rounded-full opacity-50 hover:shadow drop-down-button">
-              <i class="text-lg pointer-events-none fa-solid fa-ellipsis"></i>
-            </button>
-            <ul data-dropdown-content tabindex="0" class="drop-down-content">
-              <li role="button"
-                  tabindex="0"
-                  onclick="delete_modal{{ loop.index }}.showModal()"
-                  class="flex items-center gap-3 p-2 rounded-sm hover:bg-slate-100">
-                <i class="fa-solid fa-trash"></i>
-                <span class="text-sm pointer-events-none">Delete</span>
-              </li>
-            </ul>
-          </div>
+          {% if "Admin" in current_user['roles'] %}
+            <div class="drop-down" data-dropdown>
+              <button data-dropdown-button
+                      class="flex items-center justify-center w-10 h-10 transition-all duration-200 border rounded-full opacity-50 hover:shadow drop-down-button">
+                <i class="text-lg pointer-events-none fa-solid fa-ellipsis"></i>
+              </button>
+              <ul data-dropdown-content tabindex="0" class="drop-down-content">
+                <li role="button"
+                    tabindex="0"
+                    onclick="delete_modal{{ loop.index }}.showModal()">
+                  <i class="fa-solid fa-trash"></i>
+                  <span class="text-sm pointer-events-none">Delete</span>
+                </li>
+              </ul>
+            </div>
+          {% endif %}
         </div>
       </div>
       <p class="font-medium">{{ post.update_text }}</p>

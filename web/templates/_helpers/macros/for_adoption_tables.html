@@ -1,64 +1,42 @@
 {% from "./_helpers/macros/empty_list.html" import empty_list %}
 {% macro for_adoption_tables(adoptions, is_dashboard=False) %}
-  <div class="flow-root">
-    <div class="w-full">
-      <table class="min-w-full divide-y divide-gray-300">
-        <thead>
-          <tr class="border">
-            <th scope="col"
-                class="px-3 py-3.5 text-sm font-semibold text-left text-gray-900">Name</th>
-            {% if not is_dashboard %}
-              <th scope="col"
-                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Description</th>
-            {% endif %}
-            <th scope="col"
-                class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Status</th>
-            <th scope="col"
-                class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Active Applications</th>
-          </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-          {% for adoption in adoptions %}
-            {% set href = url_for('admin.adoption.adoption', id=adoption.id) %}
-            <tr class="transition-all duration-200 border hover:cursor-pointer hover:bg-slate-50">
-              <td class="py-5 pl-4 pr-3 text-sm whitespace-nowrap">
-                <div class="flex items-center">
-                  <a href="{{ href }}">
-                    <div class="flex-shrink-0 h-14 w-14">
-                      <img class="border rounded-full h-14 w-14"
-                           src="{{ get_image(adoption.photo_url) }}"
-                           alt=""
-                           height="auto"
-                           width="auto">
-                    </div>
-                  </a>
-                  <div class="ml-4">
-                    <a href="{{ href }}">
-                      <div class="font-medium text-gray-900">{{ adoption.name }}</div>
-                    </a>
-                  </div>
-                </div>
-              </td>
-              {% if not is_dashboard %}
-                <td class="px-3 py-5 text-sm text-left text-gray-500">{{ adoption.description | truncate(80) }}</td>
-              {% endif %}
-              <td class="px-3 py-5 text-sm text-right text-gray-500 whitespace-nowrap">
-                {% if adoption.is_adopted %}
-                  <div class="flex-1 text-white btn-xs btn btn-success">Adopted</div>
-                {% else %}
-                  <div class="flex-1 text-white btn-xs btn btn-warning">Not Adopted</div>
-                {% endif %}
-              </td>
-              <td class="px-3 py-5 text-right text-md">
-                <span class="inline-flex items-center justify-center px-3 py-1 font-medium text-white rounded-lg bg-info">
-                  {{ adoption.application_count }}
-                </span>
-              </td>
-            </tr>
-          </tbody>
-        {% endfor %}
-      </table>
-      {{ empty_list(adoptions, "No Adoptions Found.") }}
-    </div>
+  <div class="flex flex-col gap-2">
+    {% for adoption in adoptions %}
+      <div class="grid grid-cols-10 gap-4 p-4 bg-white shadow-md rounded-xl">
+        <div class="flex col-span-5 gap-4">
+          <a href="{{ url_for('admin.adoption.adoption', id=adoption.id) }}">
+            <div class="w-16 h-16 rounded-full ring-2 ring-primary-500 ring-offset-2 aspect-square">
+              <img src="{{ get_image(adoption.photo_url) }}"
+                   class="object-cover w-full rounded-full aspect-square"
+                   alt="User's photo"
+                   width="auto"
+                   height="auto" />
+            </div>
+          </a>
+          <div class="flex items-center gap-2">
+            <div class="flex flex-col">
+              <h1 class="font-semibold">{{ adoption.name }}</h1>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center col-span-3 gap-2">
+          {% if adoption.is_adopted %}
+            <div class="flex items-center justify-center w-4 h-4 gap-2 bg-green-500 rounded-full">
+              <i class="text-xs text-white fa-solid fa-check"></i>
+            </div>
+            <span class="text-sm font-thin">Adopted</span>
+          {% else %}
+            <div class="flex items-center justify-center w-4 h-4 gap-2 bg-gray-500 rounded-full">
+              <i class="text-xs text-white fa-solid fa-check"></i>
+            </div>
+            <span class="text-sm font-thin">Adopted</span>
+          {% endif %}
+        </div>
+        <div class="flex items-center col-span-1 gap-2">
+          <p class="text-xl font-semibold leading-4">{{ adoption.application_count }}</p>
+          <span class="text-sm font-thin">Applicants</span>
+        </div>
+      </div>
+    {% endfor %}
   </div>
 {% endmacro %}

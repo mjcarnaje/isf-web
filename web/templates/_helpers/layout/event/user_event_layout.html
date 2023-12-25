@@ -1,0 +1,80 @@
+{% extends "./_helpers/layout/user_layout.html" %}
+{% block title %}
+  Event
+{% endblock title %}
+{% block content %}
+  <div class="w-full aspect-[800/320] max-w-7xl mx-auto relative">
+    <img src="{{ get_image(event.cover_photo_url) }}"
+         alt="Event Cover Photo"
+         class="object-cover w-full  border rounded-xl aspect-[800/320]"
+         height="auto"
+         width="auto">
+    <div class="absolute z-10 flex flex-col overflow-hidden bg-white shadow-lg w-36 h-36 left-8 -bottom-8 rounded-3xl">
+      <div class="flex items-center justify-center h-10 bg-red-500">
+        <h1 class="text-white">{{ event.start_date.strftime("%B") }}</h1>
+      </div>
+      <div class="flex items-center justify-center flex-1 w-full">
+        <h1 class="text-5xl font-bold">{{ event.start_date.strftime("%d") }}</h1>
+      </div>
+    </div>
+  </div>
+  <div class="w-full max-w-5xl mx-auto mt-12">
+    <div class="flex flex-col gap-8 pt-4">
+      {% if event.status == "Cancelled" %}
+        <div class="flex items-center gap-4 p-4 bg-red-100 rounded-lg">
+          <i class="text-2xl text-red-500 fa-solid fa-warning"></i>
+          <div>
+            <h1 class="text-lg font-semibold text-gray-800">This event was canceled</h1>
+          </div>
+        </div>
+      {% endif %}
+      <h1 class="text-3xl font-bold text-gray-800">{{ event.name }}</h1>
+      <p class="text-lg text-gray-600 ">{{ event.description }}</p>
+      <div class="flex flex-col w-full gap-4 p-8 bg-white border shadow-md rounded-3xl">
+        <div class="flex items-center justify-between">
+          <h1 class="text-2xl font-bold">Invitees List</h1>
+          <a href="{{ url_for('user.events.event_invitees', id=event.id) }}"
+             class="btn text-primary-500 btn-ghost">See List</a>
+        </div>
+        <div class="flex items-center justify-around gap-8 divide-x-2">
+          <div class="flex flex-col items-center justify-center w-full gap-1 p-5">
+            <h1 class="text-2xl font-bold">{{ statistics.invited_count or "-" }}</h1>
+            <h2>Invited</h2>
+          </div>
+          <div class="flex flex-col items-center justify-center w-full gap-1 p-5">
+            <h1 class="text-2xl font-bold">{{ statistics.going_count or "-" }}</h1>
+            <h2>Going</h2>
+          </div>
+          <div class="flex flex-col items-center justify-center w-full gap-1 p-5">
+            <h1 class="text-2xl font-bold">{{ statistics.maybe_count or "-" }}</h1>
+            <h2>Maybe</h2>
+          </div>
+          <div class="flex flex-col items-center justify-center w-full gap-1 p-5">
+            <h1 class="text-2xl font-bold">{{ statistics.cant_go_count or "-" }}</h1>
+            <h2>Can't Go</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    {% block inner_content %}
+    {% endblock inner_content %}
+  </div>
+  <script>const inviteButtons = document.querySelectorAll("button[id='invite-btn']");
+  inviteButtons.forEach((button) => {
+    button.addEventListener('click', async () => {
+      const status = button.getAttribute('data-status');
+      const formData = new FormData()
+      formData.append('status', status)
+      fetch("{{ url_for('user.events.view_event', id=event.id) }}", {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
+        },
+        body: formData
+      })
+      .then(() => window.location.reload())
+    })
+  })
+  </script>
+{% endblock content %}

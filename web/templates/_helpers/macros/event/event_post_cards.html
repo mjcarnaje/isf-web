@@ -1,0 +1,80 @@
+{% macro event_post_cards(posts) %}
+  {% for post in posts %}
+    <dialog id="delete_modal{{ loop.index }}"
+            class="modal modal-bottom sm:modal-middle">
+      <div class="modal-box">
+        <h2 class="mb-4 text-2xl font-bold">Delete Post</h2>
+        <p class="mb-4">Are you sure you want to delete this post?</p>
+        <div class="flex justify-end">
+          <button onclick="delete_modal{{ loop.index }}.close()"
+                  class="px-4 py-2 mr-4 font-bold text-gray-800 bg-gray-300 rounded-full hover:bg-gray-400">
+            Cancel
+          </button>
+          <button onclick="confirmDelete({{ post.event_id }}, {{ post.id[0] }})"
+                  class="px-4 py-2 font-bold text-white bg-red-500 rounded-full hover:bg-red-600">Delete</button>
+        </div>
+      </div>
+    </dialog>
+    <div class="flex flex-col w-full gap-5 p-5 bg-white border shadow-md rounded-xl g-white">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-5">
+          <img src="{{ get_image(post.user_photo_url) }}"
+               class="w-12 h-12 rounded-full"
+               height="auto"
+               width="auto"
+               alt="donator image" />
+          <div class="flex flex-col">
+            <p class="font-semibold">{{ post.user_name }}</p>
+            <p class="text-sm">{{ post.created_at | pretty_date }}</p>
+          </div>
+        </div>
+        <div>
+          {% if "Admin" in current_user['roles'] %}
+            <div class="drop-down" data-dropdown>
+              <button data-dropdown-button
+                      class="flex items-center justify-center w-10 h-10 transition-all duration-200 border rounded-full opacity-50 hover:shadow drop-down-button">
+                <i class="text-lg pointer-events-none fa-solid fa-ellipsis"></i>
+              </button>
+              <ul data-dropdown-content tabindex="0" class="drop-down-content">
+                <li role="button"
+                    tabindex="0"
+                    onclick="delete_modal{{ loop.index }}.showModal()">
+                  <i class="fa-solid fa-trash"></i>
+                  <span class="text-sm pointer-events-none">Delete</span>
+                </li>
+              </ul>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+      <p class="font-medium">{{ post.post_text }}</p>
+      <div class="flex gap-2" data-image-group='true'>
+        {% for picture in post.pictures %}
+          <img src="{{ get_image(picture) }}"
+               alt="donations picture"
+               class="object-cover overflow-hidden transition-all border rounded-lg shadow-sm cursor-pointer hover:scale-105 max-h-36"
+               width="auto"
+               height="auto"
+               data-can-view='true'>
+        {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
+  <script>
+  function confirmDelete(id, postId) {
+    fetch(`/admin/event/${id}/posts/${postId}`, {
+      method: "DELETE",
+      headers: {
+        ...getCSRFHeader()
+      }
+    })
+    .then(response => response.json())
+    .then((data) => {
+      if (data.is_success) {
+        window.location.reload();
+      }
+    })
+  }
+    
+  </script>
+{% endmacro %}

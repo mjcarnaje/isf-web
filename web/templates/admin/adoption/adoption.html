@@ -54,8 +54,8 @@
         </div>
       </div>
     </div>
-    <div class="w-full">
-      <table class="table">
+    <div class="w-full bg-white rounded-lg shadow-md ">
+      <table class="relative w-full divide-y divide-gray-300">
         <thead>
           <tr>
             <th class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Full Name</th>
@@ -74,11 +74,13 @@
                   <div class="avatar">
                     <div class="w-12 h-12 mask mask-squircle">
                       {% if application.photo_url %}
-                        <img src="{{ get_image(application.photo_url) }}"
-                             alt="User profile picture"
-                             class="w-full h-full"
-                             height="auto"
-                             width="auto" />
+                        <a href="{{ url_for('admin.user.view_user', id=application.user_id) }}">
+                          <img src="{{ get_image(application.photo_url) }}"
+                               alt="User profile picture"
+                               class="w-full h-full"
+                               height="auto"
+                               width="auto" />
+                        </a>
                       {% else %}
                         <div class="flex items-center justify-center w-full h-full bg-slate-200 text-slate-500">
                           <span class="text-2xl">{{ application.first_name[0] }}</span>
@@ -87,8 +89,12 @@
                     </div>
                   </div>
                   <div>
-                    <div class="font-bold">{{ application.first_name }} {{ application.last_name }}</div>
-                    <div class="text-sm opacity-50">{{ application.email }}</div>
+                    <a href="{{ url_for('admin.user.view_user', id=application.user_id) }}">
+                      <div class="font-bold">{{ application.first_name }} {{ application.last_name }}</div>
+                    </a>
+                    <a href="{{ url_for('admin.user.view_user', id=application.user_id) }}">
+                      <div class="text-sm opacity-50">{{ application.email }}</div>
+                    </a>
                   </div>
                 </div>
               </td>
@@ -99,52 +105,50 @@
               </td>
               <td class="px-3 py-5 text-sm text-left text-gray-600">{{ status_badge(application.current_status) }}</td>
               <td class="px-3 py-5 text-sm text-right text-gray-600">
-                <div class="dropdown dropdown-bottom dropdown-end">
-                  <label tabindex="0">
-                    <div class="flex items-center justify-center w-6 h-6 rounded-full cursor-pointer hover:bg-gray-300 aspect-square">
-                      <i class="fa-solid fa-ellipsis"></i>
-                    </div>
-                  </label>
-                  <ul tabindex="0"
-                      class="dropdown-content shadow-md z-[1] menu p-2 border bg-base-100 rounded-box w-56">
-                    {% if application.current_status != "Turnovered" %}
-                      {% if application.current_status == "Pending" %}
-                        <li>
-                          <button id="interview_button"
-                                  data-id="{{ application.id }}"
-                                  data-interview-preference="{{ application.interview_preference }}"
-                                  data-user-id="{{ application.user_id }}"
-                                  data-animal-id="{{ application.animal_id }}">Confirm</button>
-                        </li>
-                      {% endif %}
-                      {% if application.current_status == "Pending" or application.current_status != "Turnovered" %}
-                        <li>
-                          <button id="reject_button"
-                                  data-id="{{ application.id }}"
-                                  data-user-id="{{ application.user_id }}"
-                                  data-previous-status="{{ application.current_status }}"
-                                  data-animal-id="{{ application.animal_id }}">Reject</button>
-                        </li>
-                      {% endif %}
-                      {% if application.current_status == "Interview" %}
-                        <li>
-                          <button id="approve_button"
-                                  data-id="{{ application.id }}"
-                                  data-user-id="{{ application.user_id }}"
-                                  data-previous-status="{{ application.current_status }}"
-                                  data-animal-id="{{ application.animal_id }}">Approve</button>
-                        </li>
-                      {% endif %}
-                      {% if application.current_status == "Approved" %}
-                        <li>
-                          <button id="turnover_button"
-                                  data-id="{{ application.id }}"
-                                  data-user-id="{{ application.user_id }}"
-                                  data-previous-status="{{ application.current_status }}"
-                                  data-animal-id="{{ application.animal_id }}">Turnovered</button>
-                        </li>
-                      {% endif %}
-                    {% else %}
+                <div class="drop-down" data-dropdown>
+                  <button data-dropdown-button
+                          class="flex items-center justify-center w-10 h-10 transition-all duration-200 border rounded-full hover:shadow drop-down-button">
+                    <i class="text-lg pointer-events-none fa-solid fa-ellipsis"></i>
+                  </button>
+                  <ul data-dropdown-content tabindex="0" class="drop-down-content">
+                    {% if application.current_status in ['Pending'] %}
+                      <li role="button"
+                          tabindex="0"
+                          id="interview_button"
+                          data-id="{{ application.id }}"
+                          data-interview-preference="{{ application.interview_preference }}"
+                          data-user-id="{{ application.user_id }}"
+                          data-animal-id="{{ application.animal_id }}"
+                          hidden="{{ application.current_status in ['Rejected'] }}">Confirm</li>
+                    {% endif %}
+                    {% if application.current_status in ['Pending', 'Interview'] %}
+                      <li role="button"
+                          tabindex="0"
+                          id="reject_button"
+                          data-id="{{ application.id }}"
+                          data-user-id="{{ application.user_id }}"
+                          data-previous-status="{{ application.current_status }}"
+                          data-animal-id="{{ application.animal_id }}">Reject</li>
+                    {% endif %}
+                    {% if application.current_status in ['Interview'] %}
+                      <li role="button"
+                          tabindex="0"
+                          id="approve_button"
+                          data-id="{{ application.id }}"
+                          data-user-id="{{ application.user_id }}"
+                          data-previous-status="{{ application.current_status }}"
+                          data-animal-id="{{ application.animal_id }}">Approve</li>
+                    {% endif %}
+                    {% if application.current_status in ['Approved'] %}
+                      <li role="button"
+                          tabindex="0"
+                          id="turnover_button"
+                          data-id="{{ application.id }}"
+                          data-user-id="{{ application.user_id }}"
+                          data-previous-status="{{ application.current_status }}"
+                          data-animal-id="{{ application.animal_id }}">Turnovered</li>
+                    {% endif %}
+                    {% if application.current_status in ['Turnovered', 'Rejected'] %}
                       <li>
                         <p>Nothing in here.</p>
                       </li>

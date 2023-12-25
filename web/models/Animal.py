@@ -43,22 +43,19 @@ class Animal():
         self.created_at = created_at
         self.updated_at = updated_at
 
-    @classmethod
-    def find_by_id(cls, user_id: int):
+    @staticmethod
+    def get_adopter(user_id: int):
         sql = """
             SELECT 
-                animal.*,
-                animal.id AS id,
-                user.id AS adopter_user_id,
-                user.email AS adopter_email,
-                user.username AS adopter_username,
-                user.first_name AS adopter_first_name,
-                user.last_name AS adopter_last_name,
-                user.gender AS adopter_gender,
-                user.photo_url AS adopter_photo_url,
-                user.is_verified AS adopter_is_verified,
-                user.unread_notification_count AS adopter_unread_notification_count,
-                user.contact_number AS adopter_contact_number
+                user.id,
+                user.email,
+                user.username,
+                user.first_name,
+                user.last_name,
+                user.gender,
+                user.photo_url,
+                user.is_verified,
+                user.contact_number
             FROM 
                 animal
             LEFT JOIN
@@ -73,6 +70,22 @@ class Animal():
         row = cur.fetchone()
         return row
 
+    @classmethod
+    def find_by_id(cls, user_id: int):
+        sql = """
+            SELECT 
+                *
+            FROM 
+                animal
+            WHERE 
+                animal.id = %s;
+        """
+        cur = db.new_cursor(dictionary=True)
+        cur.execute(sql, (user_id,))
+        row = cur.fetchone()
+        cur.close()
+        return cls(**row)
+
     @staticmethod
     def insert(
         name: str, 
@@ -85,17 +98,15 @@ class Animal():
         is_dead: bool,
         is_dewormed: bool,
         is_neutered: bool,
-        in_shelter: bool,
         is_rescued: bool,
-        for_adoption: bool,
         description: str,
         appearance: str,
         author_id: int
         ) -> int:
         sql = """
             INSERT INTO animal(
-                name, type, estimated_birth_month, estimated_birth_year, photo_url, gender, is_adopted, is_dead, is_dewormed, is_neutered, in_shelter, is_rescued, for_adoption, description, appearance, author_id
-            ) VALUES(%(name)s, %(type)s, %(estimated_birth_month)s, %(estimated_birth_year)s, %(photo_url)s, %(gender)s, %(is_adopted)s, %(is_dead)s, %(is_dewormed)s, %(is_neutered)s, %(in_shelter)s, %(is_rescued)s, %(for_adoption)s, %(description)s, %(appearance)s, %(author_id)s)"""
+                name, type, estimated_birth_month, estimated_birth_year, photo_url, gender, is_adopted, is_dead, is_dewormed, is_neutered, is_rescued, description, appearance, author_id
+            ) VALUES(%(name)s, %(type)s, %(estimated_birth_month)s, %(estimated_birth_year)s, %(photo_url)s, %(gender)s, %(is_adopted)s, %(is_dead)s, %(is_dewormed)s, %(is_neutered)s, %(is_rescued)s, %(description)s, %(appearance)s, %(author_id)s)"""
         params = {
             'name': name,
             'type': type,
@@ -107,9 +118,7 @@ class Animal():
             'is_dead': is_dead,
             'is_dewormed': is_dewormed,
             'is_neutered': is_neutered,
-            'in_shelter': in_shelter,
             'is_rescued': is_rescued,
-            'for_adoption': for_adoption,
             'description': description,
             'appearance': appearance,
             'author_id': author_id
@@ -252,13 +261,11 @@ class Animal():
                 estimated_birth_year = %(estimated_birth_year)s,
                 photo_url = %(photo_url)s,
                 gender = %(gender)s,
-                is_adopted = %(is_adopted)s,
                 is_dead = %(is_dead)s,
                 is_dewormed = %(is_dewormed)s,
                 is_neutered = %(is_neutered)s,
                 in_shelter = %(in_shelter)s,
                 is_rescued = %(is_rescued)s,
-                for_adoption = %(for_adoption)s,
                 description = %(description)s,
                 appearance = %(appearance)s,
                 author_id = %(author_id)s,
@@ -273,13 +280,11 @@ class Animal():
             'estimated_birth_year': animal.estimated_birth_year,
             'photo_url': animal.photo_url,
             'gender': animal.gender,
-            'is_adopted': animal.is_adopted,
             'is_dead': animal.is_dead,
             'is_dewormed': animal.is_dewormed,
             'is_neutered': animal.is_neutered,
             'in_shelter': animal.in_shelter,
             'is_rescued': animal.is_rescued,
-            'for_adoption': animal.for_adoption,
             'description': animal.description,
             'appearance': animal.appearance,
             'author_id': animal.author_id,
@@ -301,6 +306,36 @@ class Animal():
         db.connection.commit()
 
         return cur.rowcount
+
+    @classmethod
+    def get_adoption_status(cls, animal_id):
+        sql = "SELECT for_adoption FROM animal WHERE id = %s"
+        params = (animal_id,)
+
+        cur = db.new_cursor()
+        cur.execute(sql, params)
+        
+        result = cur.fetchone()
+        if result:
+            return result[0]
+        else:
+            return None
+
+
+    @classmethod
+    def toggle_adoption_status(cls, animal_id):
+        current_status = cls.get_adoption_status(animal_id)
+
+        new_status = 1 if current_status == 0 else 0
+
+        sql = "UPDATE animal SET for_adoption = %s WHERE id = %s"
+        params = (new_status, animal_id)
+
+        cur = db.new_cursor()
+        cur.execute(sql, params)
+        db.connection.commit()
+
+        return new_status
 
     @staticmethod
     def check_if_animal_exists(event_name, id=None):

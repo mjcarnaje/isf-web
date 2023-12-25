@@ -53,4 +53,5 @@ def animals():
 @user_verified_required
 def view_animal(id):
   animal = Animal.find_by_id(id)
-  return render_template('/user/animals/animal.html', animal=animal) 
+  adopter = Animal.get_adopter(id)
+  return render_template('/user/animals/animal.html', animal=animal, adopter=adopter) 

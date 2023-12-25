@@ -1,0 +1,13 @@
+{% set active_page = "user.ask_for_help.posts" %}
+{% extends "./_helpers/layout/ask_for_help/user_ask_for_help_layout.html" %}
+{% from './_helpers/macros/ask_for_help/animal_help_posts.html' import animal_help_posts with context %}
+{% from "./_helpers/macros/empty_list.html" import empty_list %}
+{% block title %}
+  Ask for help
+{% endblock title %}
+{% block inner_content %}
+  <div class="flex flex-col items-center gap-4">
+    {{ animal_help_posts(posts) }}
+    {{ empty_list(posts, "No Posts Found.") }}
+  </div>
+{% endblock inner_content %}

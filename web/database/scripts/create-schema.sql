@@ -82,7 +82,10 @@ VALUES ('admin@isf.com', 'admin', 'Admin', 'User', 'Male', 'pbkdf2:sha256:600000
 
 --;;;;--
 
-INSERT INTO user_role (user_id, role_name) VALUES ((SELECT id FROM user WHERE email = 'admin@isf.com'), 'Admin');
+INSERT INTO user_role (user_id, role_name) 
+VALUES 
+    ((SELECT id FROM user WHERE email = 'admin@isf.com'), 'Admin'),
+    ((SELECT id FROM user WHERE email = 'admin@isf.com'), 'Member');
 
 --;;;;--
 
@@ -108,7 +111,7 @@ CREATE TABLE IF NOT EXISTS animal (
     is_neutered BOOLEAN NOT NULL,
     in_shelter BOOLEAN NOT NULL,
     is_rescued BOOLEAN NOT NULL,
-    for_adoption BOOLEAN NOT NULL,
+    for_adoption BOOLEAN DEFAULT 0,
     description TEXT,
     appearance TEXT,
     author_id INT NOT NULL REFERENCES user(id) ON DELETE CASCADE,
@@ -142,13 +145,21 @@ CREATE TABLE IF NOT EXISTS adoption (
 CREATE TABLE IF NOT EXISTS adoption_status_history (
     id INT AUTO_INCREMENT PRIMARY KEY,
     adoption_id INT NOT NULL,
-    previous_status ENUM('Pending', 'Interview', 'Approved', 'Rejected', 'Turnovered') NOT NULL,
+    previous_status ENUM('None', 'Pending', 'Interview', 'Approved', 'Rejected', 'Turnovered') NOT NULL,
     status ENUM('Pending', 'Interview', 'Approved', 'Rejected', 'Turnovered') NOT NULL,
     remarks TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (adoption_id) REFERENCES adoption(id)
 );
+
+--;;;;--
+
+CREATE TRIGGER add_pending_adoption_history AFTER INSERT ON adoption
+FOR EACH ROW
+BEGIN
+    INSERT INTO adoption_status_history (adoption_id, previous_status, status, remarks) VALUES (NEW.id, 'None', 'Pending', 'This is auto generated.');
+END;
+
 
 --;;;;--
 

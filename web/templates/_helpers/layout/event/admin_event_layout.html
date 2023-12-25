@@ -1,42 +1,39 @@
-{% set active_page = "admin.event.events" %}
-{% from './_helpers/macros/custom_input.html' import render_field %}
-{% from './_helpers/macros/multiple_photo_input.html' import render_multiple_photo_field with context %}
-{% from './_helpers/macros/event_post_card.html' import event_post_card with context %}
-{% from "./_helpers/macros/empty_list.html" import empty_list %}
 {% extends "./_helpers/layout/admin_layout.html" %}
 {% block title %}
   Event
 {% endblock title %}
 {% block content %}
-  {% include "./_helpers/partials/event_cover.html" %}
-  <dialog id="addPostModal" class="modal modal-bottom sm:modal-middle">
-    <div class="modal-box">
-      <h2 class="mb-4 text-2xl font-bold">Add Post</h2>
-      <form class="grid w-full grid-cols-1 gap-4" method="post" novalidate>
-        {{ form.csrf_token() }}
-        {{ render_field(form.post_text) }}
-        {{ render_multiple_photo_field(form.pictures, 'Pictures') }}
-        <button type="submit" class="w-full btn btn-md">Submit</button>
-      </form>
+  <div class="w-full aspect-[800/320] max-w-7xl mx-auto relative">
+    <img src="{{ get_image(event.cover_photo_url) }}"
+         alt="Event Cover Photo"
+         class="object-cover w-full  border rounded-xl aspect-[800/320]"
+         height="auto"
+         width="auto">
+    <div class="absolute z-10 flex flex-col overflow-hidden bg-white shadow-lg w-36 h-36 left-8 -bottom-8 rounded-3xl">
+      <div class="flex items-center justify-center h-10 bg-red-500">
+        <h1 class="text-white">{{ event.start_date.strftime("%B") }}</h1>
+      </div>
+      <div class="flex items-center justify-center flex-1 w-full">
+        <h1 class="text-5xl font-bold">{{ event.start_date.strftime("%d") }}</h1>
+      </div>
     </div>
-  </dialog>
+  </div>
   <div class="w-full max-w-5xl mx-auto mt-12">
-    <div class="flex flex-col gap-8">
+    <div class="flex flex-col gap-8 pt-4">
       {% if event.status == "Cancelled" %}
         <div class="flex items-center gap-4 p-4 bg-red-100 rounded-lg">
           <i class="text-2xl text-red-500 fa-solid fa-warning"></i>
           <div>
             <h1 class="text-lg font-semibold text-gray-800">This event was canceled</h1>
-            <p class="text-gray-600">You cannot share this event, but you can still post.</p>
           </div>
         </div>
       {% endif %}
       <h1 class="text-3xl font-bold text-gray-800">{{ event.name }}</h1>
       <p class="text-lg text-gray-600 ">{{ event.description }}</p>
-      <div class="flex flex-col w-full gap-4 p-8 border shadow rounded-3xl">
+      <div class="flex flex-col w-full gap-4 p-8 bg-white border shadow-md rounded-3xl">
         <div class="flex items-center justify-between">
-          <h1 class="text-2xl font-bold">Guest List</h1>
-          <a href="{{ url_for('admin.event.event_members', id=event.id) }}"
+          <h1 class="text-2xl font-bold">Invitees List</h1>
+          <a href="{{ url_for('admin.event.event_invitees', id=event.id) }}"
              class="btn text-primary-500 btn-ghost">See List</a>
         </div>
         <div class="flex items-center justify-around gap-8 divide-x-2">
@@ -58,14 +55,9 @@
           </div>
         </div>
       </div>
-      <div class="divider"></div>
-      <div class="flex justify-end">
-        <button onclick="addPostModal.showModal()" class="text-white btn btn-primary">Add Post</button>
-      </div>
-      <div class="grid grid-cols-1 gap-8">
-        {% for event_post in posts %}{{ event_post_card(event_post) }}{% endfor %}
-      </div>
-      {{ empty_list(posts, "No Posts Found.") }}
     </div>
+    <div class="divider"></div>
+    {% block inner_content %}
+    {% endblock inner_content %}
   </div>
 {% endblock content %}

@@ -95,3 +95,16 @@ class EventPost:
 
         return updates
 
+    @staticmethod
+    def delete(post_id):
+        sql = """
+            DELETE
+                FROM event_post
+            WHERE
+                id = %(post_id)s
+        """
+        cur = db.new_cursor(dictionary=True)
+        cur.execute(sql, { 'post_id': post_id })
+        db.connection.commit()
+        
+

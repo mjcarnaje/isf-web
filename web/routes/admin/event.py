@@ -1,5 +1,5 @@
 from flask import (Blueprint, redirect, render_template, request, session, flash,
-                   url_for)
+                   url_for, jsonify)
 from flask_login import current_user
 
 from ...config import Config
@@ -65,16 +65,31 @@ def view_event(id):
     statistics = Event.get_statistics(id)
     posts = EventPost.find_posts(event_id=id)
 
-    return render_template('/admin/event/event.html', form=form, event=event, statistics=statistics, posts=posts)
+    return render_template('/admin/event/event_posts.html',
+        form=form, 
+        event=event, 
+        statistics=statistics, 
+        posts=posts
+    )
+
+@event_bp.route('/<int:id>/posts/<int:post_id>', methods=['DELETE'])
+def animal_help_post(id, post_id):
+    if request.method == "DELETE":
+        EventPost.delete(post_id=post_id)
+        flash("Post deleted!", "success")
+        return jsonify({
+            'is_success': True
+        })
+        
 
 @event_bp.route('/<int:id>/members', methods=['GET'])
 @admin_required
-def event_members(id):
+def event_invitees(id):
     event = Event.find_by_id(id)
     statistics = Event.get_statistics(id)
     volunteers = Event.get_volunteers(id)
 
-    return render_template('/admin/event/event_members.html', event=event, statistics=statistics, volunteers=volunteers)
+    return render_template('/admin/event/event_invitees.html', event=event, statistics=statistics, volunteers=volunteers)
 
 @event_bp.route('/<int:id>/edit', methods=['GET', 'POST'])
 @admin_required

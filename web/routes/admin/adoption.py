@@ -37,8 +37,8 @@ def adoptions():
 @adoption_bp.route('/<int:id>', methods=['GET'])
 @admin_required
 def adoption(id):
-    animal = Animal.find_by_id(id)
     applications = Adoption.get_animal_applications(id)
+    animal = Animal.find_by_id(id)
     return render_template('admin/adoption/adoption.html', animal=animal, applications=applications)
 
 @adoption_bp.route('/<string:animal_id>/interview', methods=['POST'])

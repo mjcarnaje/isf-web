@@ -57,13 +57,13 @@ def view_event(id):
     statistics = Event.get_statistics(id)
     posts = EventPost.find_posts(event_id=id)
 
-    return render_template('/user/events/event.html', event=event, statistics=statistics, posts=posts, invitation=invitation)
+    return render_template('/user/events/event_posts.html', event=event, statistics=statistics, posts=posts, invitation=invitation)
 
 @user_event_bp.route('/<int:id>/members', methods=['GET'])
 @user_verified_required
-def event_members(id):
+def event_invitees(id):
     event = Event.find_by_id(id)
     statistics = Event.get_statistics(id)
     volunteers = Event.get_volunteers(id)
 
-    return render_template('/user/events/event_members.html', event=event, statistics=statistics, volunteers=volunteers)
+    return render_template('/user/events/event_invitees.html', event=event, statistics=statistics, volunteers=volunteers)

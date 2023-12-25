@@ -7,7 +7,7 @@
 {% endblock title %}
 {% block content %}
   <div class="flex flex-col items-center justify-center w-full gap-8 mx-auto max-w-7xl">
-    <div class="relative flex items-center w-full gap-8 px-10 py-12 mx-auto bg-white border shadow-md rounded-3xl">
+    <div class="relative flex items-start w-full gap-8 px-10 py-12 mx-auto bg-white border shadow-md rounded-3xl">
       <div class="w-64 h-64 p-1 border-4 rounded-full border-primary-500">
         <img src="{{ get_image(animal.photo_url) }}"
              class="object-cover w-full h-full rounded-full"
@@ -22,41 +22,47 @@
         <p class="w-full text-md">{{ animal.description }}</p>
         <div class="grid w-full grid-cols-2">
           <div class="flex items-center gap-3 p-3">
-            <div class="grid w-6 h-6 {{ 'bg-green-500' if animal.is_dewormed else 'bg-gray-500' }} rounded-full place-items-center ">
-              <i class="text-lg text-white fa-solid fa-check"></i>
+            <div class="grid w-8 h-8 {{ 'bg-green-500' if animal.is_dewormed else 'bg-gray-500' }} rounded-full place-items-center ">
+              <i class="text-lg text-white fa-solid fa-shield"></i>
             </div>
-            <p class="font-bold to-gray-800">Dewormed</p>
+            <p class="font-bold text-gray-800">Dewormed</p>
           </div>
           <div class="flex items-center gap-3 p-3">
-            <div class="grid w-6 h-6 {{ 'bg-green-500' if animal.is_neutered else 'bg-gray-500' }} rounded-full place-items-center ">
-              <i class="text-lg text-white fa-solid fa-check"></i>
+            <div class="grid w-8 h-8 {{ 'bg-blue-500' if animal.is_neutered else 'bg-gray-500' }} rounded-full place-items-center ">
+              <i class="text-lg text-white fa-solid fa-cut"></i>
             </div>
-            <p class="font-bold to-gray-800">Neutered</p>
+            <p class="font-bold text-gray-800">Neutered</p>
           </div>
           <div class="flex items-center gap-3 p-3">
-            <div class="grid w-6 h-6 {{ 'bg-green-500' if animal.in_shelter else 'bg-gray-500' }} rounded-full place-items-center ">
-              <i class="text-lg text-white fa-solid fa-check"></i>
+            <div class="grid w-8 h-8 {{ 'bg-purple-500' if animal.in_shelter else 'bg-gray-500' }} rounded-full place-items-center ">
+              <i class="text-lg text-white fa-solid fa-home"></i>
             </div>
-            <p class="font-bold to-gray-800">Shelter</p>
+            <p class="font-bold text-gray-800">Shelter</p>
           </div>
           <div class="flex items-center gap-3 p-3">
-            <div class="grid w-6 h-6 {{ 'bg-green-500' if animal.is_rescued else 'bg-gray-500' }} rounded-full place-items-center ">
-              <i class="text-lg text-white fa-solid fa-check"></i>
+            <div class="grid w-8 h-8 {{ 'bg-yellow-500' if animal.is_rescued else 'bg-gray-500' }} rounded-full place-items-center ">
+              <i class="text-lg text-white fa-solid fa-life-ring"></i>
             </div>
-            <p class="font-bold to-gray-800">Rescued</p>
+            <p class="font-bold text-gray-800">Rescued</p>
           </div>
           <div class="flex items-center gap-3 p-3">
-            <div class="grid w-6 h-6 {{ 'bg-green-500' if animal.is_adopted else 'bg-gray-500' }} rounded-full place-items-center ">
-              <i class="text-lg text-white fa-solid fa-check"></i>
+            <div class="grid w-8 h-8 {{ 'bg-red-500' if animal.is_adopted else 'bg-gray-500' }} rounded-full place-items-center ">
+              <i class="text-lg text-white fa-solid fa-heart"></i>
             </div>
-            <p class="font-bold to-gray-800">Adopted</p>
+            <p class="font-bold text-gray-800">Adopted</p>
+          </div>
+          <div class="flex items-center gap-3 p-3">
+            <div class="grid w-8 h-8 {{ 'bg-primary-500' if animal.for_adoption else 'bg-gray-500' }} rounded-full place-items-center ">
+              <i class="text-lg text-white fa-solid fa-paw"></i>
+            </div>
+            <p class="font-bold text-gray-800">For Adoption</p>
           </div>
         </div>
       </div>
     </div>
     {% if active_application %}
       <div id="application-view"
-           class="w-full p-8 space-y-4 bg-white border rounded-2xl {{ 'hidden' if not active_application }}">
+           class="w-full p-8 space-y-4 bg-white border shadow-md rounded-2xl">
         <div class="flex items-center justify-between">
           <h3 class="italic">
             You have already applied. Reference Number <span>#{{ active_application.id }}</span>
@@ -65,12 +71,8 @@
             <button id="edit-btn" class="text-white btn btn-primary btn-sm">Edit</button>
           {% endif %}
         </div>
-        <div class="flex items-center gap-2">
-          <div class="badge badge-lg badge-ghost">{{ active_application.interview_preference }}</div>
-          <div class="badge badge-lg badge-ghost">{{ active_application.interview_preferred_date.strftime("%b %d, %Y") }}</div>
-          <div class="badge badge-lg badge-ghost">{{ active_application.interview_preferred_time }}</div>
-          {{ status_badge(active_application.current_status, size="lg") }}
-        </div>
+        <a href="{{ url_for('user.application.view_application', id=active_application.id) }}"
+           class="text-white btn btn-primary">View Application</a>
       </div>
     {% endif %}
     <form id="application-form"
