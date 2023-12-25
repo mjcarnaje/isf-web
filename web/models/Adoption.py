@@ -408,7 +408,9 @@ class Adoption:
                     animal.is_dewormed as animal_is_dewormed,
                     animal.is_neutered as animal_is_neutered,
                     animal.in_shelter as animal_in_shelter,
-                    animal.is_rescued as animal_is_rescued
+                    animal.is_rescued as animal_is_rescued,
+                    animal.is_adopted as animal_is_adopted,
+                    animal.for_adoption as animal_for_adoption
                 FROM 
                     adoption
                 LEFT JOIN 
@@ -512,10 +514,13 @@ class Adoption:
                     user.last_name,
                     user.email,
                     user.contact_number,
-                    user.photo_url
+                    user.photo_url,
+                    animal.name as animal_name
                 FROM adoption 
                 LEFT JOIN 
                     user ON adoption.user_id = user.id
+                LEFT JOIN
+                    animal ON adoption.animal_id = animal.id
                 WHERE 
                     adoption.animal_id = %s
         """

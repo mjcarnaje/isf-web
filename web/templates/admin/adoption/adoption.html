@@ -22,34 +22,40 @@
         <p class="w-full text-md">{{ animal.description }}</p>
         <div class="grid w-full grid-cols-2">
           <div class="flex items-center gap-3 p-3">
-            <div class="grid w-6 h-6 {{ 'bg-green-500' if animal.is_dewormed else 'bg-gray-500' }} rounded-full place-items-center ">
-              <i class="text-lg text-white fa-solid fa-check"></i>
+            <div class="grid w-8 h-8 {{ 'bg-green-500' if animal.is_dewormed else 'bg-gray-500' }} rounded-full place-items-center ">
+              <i class="text-lg text-white fa-solid fa-shield"></i>
             </div>
-            <p class="font-bold to-gray-800">Dewormed</p>
+            <p class="font-bold text-gray-800">Dewormed</p>
           </div>
           <div class="flex items-center gap-3 p-3">
-            <div class="grid w-6 h-6 {{ 'bg-green-500' if animal.is_neutered else 'bg-gray-500' }} rounded-full place-items-center ">
-              <i class="text-lg text-white fa-solid fa-check"></i>
+            <div class="grid w-8 h-8 {{ 'bg-blue-500' if animal.is_neutered else 'bg-gray-500' }} rounded-full place-items-center ">
+              <i class="text-lg text-white fa-solid fa-cut"></i>
             </div>
-            <p class="font-bold to-gray-800">Neutered</p>
+            <p class="font-bold text-gray-800">Neutered</p>
           </div>
           <div class="flex items-center gap-3 p-3">
-            <div class="grid w-6 h-6 {{ 'bg-green-500' if animal.in_shelter else 'bg-gray-500' }} rounded-full place-items-center ">
-              <i class="text-lg text-white fa-solid fa-check"></i>
+            <div class="grid w-8 h-8 {{ 'bg-purple-500' if animal.in_shelter else 'bg-gray-500' }} rounded-full place-items-center ">
+              <i class="text-lg text-white fa-solid fa-home"></i>
             </div>
-            <p class="font-bold to-gray-800">Shelter</p>
+            <p class="font-bold text-gray-800">Shelter</p>
           </div>
           <div class="flex items-center gap-3 p-3">
-            <div class="grid w-6 h-6 {{ 'bg-green-500' if animal.is_rescued else 'bg-gray-500' }} rounded-full place-items-center ">
-              <i class="text-lg text-white fa-solid fa-check"></i>
+            <div class="grid w-8 h-8 {{ 'bg-yellow-500' if animal.is_rescued else 'bg-gray-500' }} rounded-full place-items-center ">
+              <i class="text-lg text-white fa-solid fa-life-ring"></i>
             </div>
-            <p class="font-bold to-gray-800">Rescued</p>
+            <p class="font-bold text-gray-800">Rescued</p>
           </div>
           <div class="flex items-center gap-3 p-3">
-            <div class="grid w-6 h-6 {{ 'bg-green-500' if animal.is_adopted else 'bg-gray-500' }} rounded-full place-items-center ">
-              <i class="text-lg text-white fa-solid fa-check"></i>
+            <div class="grid w-8 h-8 {{ 'bg-red-500' if animal.is_adopted else 'bg-gray-500' }} rounded-full place-items-center ">
+              <i class="text-lg text-white fa-solid fa-heart"></i>
             </div>
-            <p class="font-bold to-gray-800">Adopted</p>
+            <p class="font-bold text-gray-800">Adopted</p>
+          </div>
+          <div class="flex items-center gap-3 p-3">
+            <div class="grid w-8 h-8 {{ 'bg-primary-500' if animal.for_adoption else 'bg-gray-500' }} rounded-full place-items-center ">
+              <i class="text-lg text-white fa-solid fa-paw"></i>
+            </div>
+            <p class="font-bold text-gray-800">For Adoption</p>
           </div>
         </div>
       </div>

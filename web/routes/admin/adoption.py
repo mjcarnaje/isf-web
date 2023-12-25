@@ -78,7 +78,7 @@ def set_rejected(animal_id):
     adoption_id = request.form.get('adoption_id')
     previous_status = request.form.get('previous_status')
     remarks = request.form.get('remarks')
-    
+  
     adoption_status_history_id = Adoption.set_rejected(
         adoption_id=adoption_id,
         previous_status=previous_status,
@@ -104,25 +104,48 @@ def set_rejected(animal_id):
 @admin_required
 def set_approved(animal_id):
     user_id = request.form.get('user_id')
-    adoption_id = request.form.get('adoption_id')
     previous_status = request.form.get('previous_status')
     remarks = request.form.get('remarks')
-    
-    adoption_status_history_id = Adoption.set_approved(
-        adoption_id=adoption_id,
-        previous_status=previous_status,
-        remarks=remarks
-    )
-    notification = Notification(
-        type=NotificationType.ADOPTION_STATUS_UPDATE.value,
-        animal_id=animal_id,
-        adoption_id=adoption_id,
-        adoption_status_history_id=adoption_status_history_id,
-        user_who_fired_event_id=1,
-        user_to_notify_id=user_id
-    )
 
-    Notification.insert_multiple([notification])
+    applications = Adoption.get_animal_applications(animal_id=animal_id)
+    notifications = []
+
+    for application in applications:
+        approved_user = int(application['user_id']) == int(user_id)
+        
+        if approved_user:
+            adoption_status_history_id = Adoption.set_approved(
+                adoption_id=application['id'],
+                previous_status=previous_status,
+                remarks=remarks
+            )
+            notification = Notification(
+                type=NotificationType.ADOPTION_STATUS_UPDATE.value,
+                animal_id=animal_id,
+                adoption_id=application['id'],
+                adoption_status_history_id=adoption_status_history_id,
+                user_who_fired_event_id=1,
+                user_to_notify_id=application['user_id']
+            )
+            notifications.append(notification)
+        else:
+            adoption_status_history_id = Adoption.set_rejected(
+                adoption_id=application['id'],
+                previous_status=application['current_status'],
+                remarks=f"Application rejected: Another applicant has been approved for the {application['animal_name']}."
+            )
+            notification = Notification(
+                type=NotificationType.ADOPTION_STATUS_UPDATE.value,
+                animal_id=animal_id,
+                adoption_id=application['id'],
+                adoption_status_history_id=adoption_status_history_id,
+                user_who_fired_event_id=1,
+                user_to_notify_id=application['user_id']
+            )
+            notifications.append(notification)
+
+
+    Notification.insert_multiple(notifications)
     flash("Successuly Approved!", "success")
 
 
