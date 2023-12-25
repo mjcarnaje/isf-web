@@ -97,3 +97,7 @@ img[data-can-view='true']:hover {
 img[id='small-image'][data-active='true'] {
   @apply border-4 border-primary-500
 }
+
+.animal-option[data-selected='true'] {
+  @apply border-2 bg-opacity-5 border-primary-500 bg-primary-100 hover:bg-primary-100 hover:bg-opacity-10;
+}

@@ -12,7 +12,7 @@ from .database import db
 from .mail import mail
 from .models import User
 from .socket import socketio
-from .utils import celery_init_app, currency, get_image, pretty_date as _pretty_date, sanitize_comma_separated as _sanitize_comma_separated, starts_with
+from .utils import celery_init_app, currency, get_image as _get_image, pretty_date as _pretty_date, sanitize_comma_separated as _sanitize_comma_separated, starts_with
 
 
 def  create_app():    
@@ -48,7 +48,7 @@ def  create_app():
     @app.context_processor
     def utility_processor():
         return dict(
-            get_image=get_image,
+            get_image=_get_image,
             starts_with=starts_with
         )
     
@@ -63,6 +63,10 @@ def  create_app():
     @app.template_filter('sanitize_comma_separated')
     def sanitize_comma_separated(string):
         return _sanitize_comma_separated(string)
+
+    @app.template_filter('get_image')
+    def get_image(string):
+        return _get_image(string)
     
 
     @app.route('/favicon.ico')

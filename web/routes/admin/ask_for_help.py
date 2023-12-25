@@ -1,9 +1,9 @@
 from flask import (Blueprint, render_template, request, session, jsonify, redirect, url_for, flash, current_app)
 
 from ...config import Config
-from ...models import AskForHelp, DonationRequestUpdate, DonationRequestDonation
+from ...models import AskForHelp, DonationRequestUpdate, DonationRequestDonation, Animal
 from ...utils import admin_required, get_active_filter_count
-from ...utils import pagination, get_image
+from ...utils import pagination
 from ...validations import AddDonationRequestValidation, AddDonationRequestUpdateValidation
 from flask_login import current_user
 
@@ -118,7 +118,13 @@ def add_help():
         new_update.insert(new_update)
         return redirect(url_for('admin.ask_for_help.index'))
     
-    return render_template('admin/ask-for-help/add_help.html', form=form)
+    animal = None
+    
+    if request.args.get("animal_id"):
+        form.animal_id.data = request.args.get("animal_id")
+        animal = Animal.find_by_id(user_id=request.args.get("animal_id"))
+
+    return render_template('admin/ask-for-help/add_help.html', form=form, animal=animal)
 
 
 @ask_for_help_bp.route('/<id>/donations/confirm/<donator_id>', methods=['POST'])
@@ -158,11 +164,25 @@ def pending_donation(id, donator_id):
 @ask_for_help_bp.route('/animals-options', methods=['GET'])
 @admin_required
 def get_animal_options():
-    animals = AskForHelp.find_animals_options()
+    page = request.args.get('page', 1, type=int)
+    query = request.args.get('query', '', type=str)
 
-    for animal in animals:
-        animal['photo_url'] = get_image(animal['photo_url'])
+    animals = Animal.find_all(page_number=page, page_size=Config.DEFAULT_PAGE_SIZE, filters={
+        'query': query,
+        'is_adopted': 0
+    })
+
+    animals_data = animals.get("data")
+    total_count = animals.get("total_count")
+    offset = animals.get("offset")
 
     return jsonify({
-        'data': animals
+        'data': animals_data,
+        'pagination': pagination(
+            page_number=page,
+            offset=offset,
+            page_size=Config.DEFAULT_PAGE_SIZE,
+            total_count=total_count,
+            base_url="admin.ask_for_help.get_animal_options"
+        ),
     })

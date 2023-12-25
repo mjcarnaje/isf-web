@@ -8,26 +8,102 @@
 {% endblock title %}
 {% block content %}
   <dialog id="selectAnimal" class="modal modal-bottom sm:modal-middle">
-    <div id="select-animal" class="modal-box">
-      <h2 class="mb-4 text-2xl font-bold">Animal Options</h2>
-      <div id="animalOptionList" class="flex flex-col gap-2">
+    <div id="select-animal"
+         class="relative flex flex-col gap-4 overflow-hidden modal-box">
+      <h2 class="text-2xl font-bold">Animal Options</h2>
+      <form method="dialog"
+            id="searchForm"
+            class="flex items-center w-full gap-4">
+        <input type="search"
+               name="query"
+               class="flex-1 input input-bordered"
+               placeholder="Search animal" />
+        <button class="text-white btn btn-primary">Search</button>
+      </form>
+      <div id="animal-list" class="flex flex-col gap-2 mb-20 overflow-y-scroll">
         <!-- Generated animal options will be appended here -->
+      </div>
+      <div class="fixed bottom-0 left-0 right-0 flex justify-end w-full h-20 gap-4 px-6 py-4 bg-white border-t shadow-lg">
+        <button id="select-animal-cancel" class="btn">Cancel</button>
+        <button id="select-animal-confirm"
+                class="text-white btn-disabled btn btn-primary">Submit</button>
       </div>
     </div>
   </dialog>
   <div class="flex flex-col items-center justify-center w-full">
     <div class="w-full max-w-4xl space-y-8">
       <div class="flex w-full">
-        <h1 class="text-3xl font-bold">Add Donation Request</h1>
+        <h1 class="text-3xl font-bold">Ask For Help</h1>
       </div>
-      <form class="grid w-full grid-cols-1 gap-4 px-12 py-16 border shadow rounded-3xl"
+      <form class="grid w-full grid-cols-1 gap-4 px-12 py-16 bg-white border shadow-md rounded-3xl"
             method="post"
             novalidate>
         {{ form.csrf_token() }}
         <div class="flex flex-col gap-2">
           <p class="text-sm text-gray-500 label label-text">Select Animal</p>
           <div id="selected-animal">
-            <p class="text-sm">No Animal Selected.</p>
+            {% if animal %}
+              <div data-animal-id="{{ animal.id }}"
+                   data-selected="true"
+                   class="flex items-center gap-4 p-4 transition-all bg-white border cursor-pointer animal-option rounded-xl hover:bg-gray-50">
+                <img src="{{ animal.photo_url }}"
+                     class="object-cover w-12 h-12 mr-2 rounded-full"
+                     alt="{{ animal.name }}"
+                     height="auto"
+                     width="auto">
+                <div class="flex flex-col gap-2">
+                  <h3 class="font-medium text-gray-900">{{ animal.name }}</h3>
+                  <div class="flex items-center gap-3">
+                    {% if animal.for_adoption %}
+                      <div class="tooltip" data-tip="For Adoption">
+                        <div class="flex items-center justify-center h-8 rounded-lg {{ 'bg-primary-500' if animal.for_adoption else 'bg-gray-500' }} bg-opacity-20 aspect-square">
+                          <i class="text-primary-500 fa-solid fa-paw"></i>
+                        </div>
+                      </div>
+                    {% endif %}
+                    {% if animal.is_adopted %}
+                      <div class="tooltip" data-tip="Adopted">
+                        <div class="flex items-center justify-center h-8 {{ 'bg-red-500' if animal.is_adopted else 'bg-gray-500' }} rounded-lg bg-opacity-20 aspect-square">
+                          <i class="text-red-500 fa-solid fa-heart"></i>
+                        </div>
+                      </div>
+                    {% endif %}
+                    {% if animal.is_dewormed %}
+                      <div class="tooltip" data-tip="Dewormed">
+                        <div class="flex items-center justify-center h-8 {{ 'bg-green-500' if animal.is_dewormed else 'bg-gray-500' }} rounded-lg bg-opacity-20 aspect-square">
+                          <i class="text-green-500 fa-solid fa-shield"></i>
+                        </div>
+                      </div>
+                    {% endif %}
+                    {% if animal.is_neutered %}
+                      <div class="tooltip" data-tip="Neutered">
+                        <div class="flex items-center justify-center h-8 {{ 'bg-blue-500' if animal.is_neutered else 'bg-gray-500' }} rounded-lg bg-opacity-20 aspect-square">
+                          <i class="text-blue-500 fa-solid fa-cut"></i>
+                        </div>
+                      </div>
+                    {% endif %}
+                    {% if animal.in_shelter %}
+                      <div class="tooltip" data-tip="In Shelter">
+                        <div class="flex items-center justify-center h-8 {{ 'bg-purple-500' if animal.in_shelter else 'bg-gray-500' }} rounded-lg bg-opacity-20 aspect-square">
+                          <i class="text-purple-500 fa-solid fa-home"></i>
+                        </div>
+                      </div>
+                    {% endif %}
+                    {% if animal.is_rescued %}
+                      <div class="tooltip" data-tip="Rescued">
+                        <div class="flex items-center justify-center h-8 {{ 'bg-yellow-500' if animal.is_rescued else 'bg-gray-500' }} rounded-lg bg-opacity-20 aspect-square">
+                          <i class="text-yellow-500 fa-solid fa-life-ring"></i>
+                        </div>
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            {% else %}
+              <div class="flex items-center gap-4 p-4 transition-all duration-300 bg-white border cursor-pointer rounded-xl hover:bg-gray-50">
+                <h1>No Animal Selected Yet.</h1>
+              </div>
+            {% endif %}
           </div>
           <div>
             <button id="toggle-select-animal"
@@ -45,62 +121,183 @@
     </div>
   </div>
   <script>
-    const animalOptionList = document.querySelector("#animalOptionList");
+    const animalList = document.querySelector("#animal-list");
     const toggleSelectAnimalButton = document.querySelector("#toggle-select-animal");
     const animalIDField = document.querySelector("input[name='animal_id']");
-    const selectedAnimal = document.querySelector("#selected-animal")
+
+    const selectAnimalCancel = document.querySelector("#select-animal-cancel");
+    const selectAnimalConfirm = document.querySelector("#select-animal-confirm");
+    const selectedAnimal = document.querySelector("#selected-animal");
+    
+    selectAnimalCancel.addEventListener("click", () => {
+      selectAnimal.close();
+    })
+
+    selectAnimalConfirm.addEventListener("click", () => {
+      const selectedAnimalDOM = document.querySelector(".animal-option[data-selected='true']");
+      selectedAnimal.innerHTML = selectedAnimalDOM.outerHTML;
+      selectAnimal.close();
+    });
+
+    const searchForm = document.querySelector("form[id='searchForm']")
+
+    searchForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const query = searchForm.querySelector("input[name='query']").value;
+      const searchUrl = `{{ url_for('admin.ask_for_help.get_animal_options') }}?query=${encodeURIComponent(query)}`;
+
+      animalList.innerHTML = "";
+
+      fetchData(searchUrl)
+        .then(updateDOM)
+        .catch((error) => {
+          console.error("Error searching for animals:", error);
+          animalList.innerHTML = `<div class="flex items-center gap-4 p-4 transition-all duration-300 bg-white border cursor-pointer rounded-xl hover:bg-gray-50">
+            <h1> Error searching for animals. </h1>
+          </div>`;
+        });
+    });
+
 
     toggleSelectAnimalButton.addEventListener("click", ()=> {
       selectAnimal.showModal();
-      getAnimalOptions();
+      animalList.innerHTML = "";
+      getOptions();
     })
 
-function getAnimalOptions() {
-  animalOptionList.innerHTML = `<div>
-    <h1> Loading.. </h1>
-  </div>`;
+    function fetchData(nextUrl = "") {
+      const baseUrl = "{{ url_for('admin.ask_for_help.get_animal_options') }}";
 
-  fetch("{{ url_for('admin.ask_for_help.get_animal_options') }}", {
-    method: "GET"
-  })
-    .then((response) => response.json())
-    .then((json) => {
-      const data = json.data;
-      if (Array.isArray(data) && data.length > 0) {
-        animalOptionList.innerHTML = "";
+      return fetch(nextUrl || baseUrl, {
+        method: "GET"
+      })
+      .then((response) => response.json());
+    }
 
-        data.forEach((animal) => {
-          const animalOption = document.createElement('div');
-          animalOption.innerHTML = `
-          <div class="flex items-center gap-4 p-2 transition-all duration-300 bg-white border rounded-md cursor-pointer hover:bg-gray-50">
-            <img src="${animal.photo_url}" class="object-cover w-10 h-10 mr-2 rounded-full" alt="${animal.name}">
-            <span class="font-bold">${animal.name}</span>
-          </div>
-          `;
-          animalOption.addEventListener("click", () => {
-            animalIDField.value = animal.id;
-            selectAnimal.close();
-            selectedAnimal.innerHTML = `
-          <div class="flex items-center gap-4 p-2 transition-all duration-300 bg-white border rounded-md cursor-pointer hover:bg-gray-50">
-            <img src="${animal.photo_url}" class="object-cover w-10 h-10 mr-2 rounded-full" alt="${animal.name}">
-            <span class="font-bold">${animal.name}</span>
-          </div>
-          `
-          })
-          animalOptionList.appendChild(animalOption);
+    function updateDOM(data) {
+      if (Array.isArray(data.data) && data.data.length > 0) {
+        data.data.forEach((animal) => {
+          const animalOption = renderAnimalOption(animal);
+          animalList.appendChild(animalOption);
         });
       } else {
-        animalOptionList.innerHTML = `<div>
+        animalList.innerHTML = `<div class="flex items-center gap-4 p-4 transition-all duration-300 bg-white border cursor-pointer rounded-xl hover:bg-gray-50">
           <h1> No animal options available. </h1>
         </div>`;
       }
-    })
-    .catch((error) => {
-      console.error("Error fetching animal options:", error);
-      animalOptionList.innerHTML = `<div>
-        <h1> Error loading animal options. </h1>
-      </div>`;
-    });
-}
+
+      if (data.pagination.next_url) {
+        const showMoreButton = document.createElement("button");
+        showMoreButton.classList.add("btn", "max-w-[180px]", "w-full", "mx-auto", "btn-primary", "text-white");
+        showMoreButton.innerText = "Show more";
+        showMoreButton.addEventListener("click", () => {
+          showMoreButton.innerText = "Loading..";
+          fetchData(data.pagination.next_url)
+            .then(updateDOM)
+            .then(() => showMoreButton.remove());
+        });
+        animalList.appendChild(showMoreButton);
+      }
+    }
+
+    function getOptions() {
+      fetchData()
+        .then(updateDOM)
+        .catch((error) => {
+          console.error("Error fetching animal options:", error);
+          animalList.innerHTML = `<div class="flex items-center gap-4 p-4 transition-all duration-300 bg-white border cursor-pointer rounded-xl hover:bg-gray-50">
+            <h1> Error loading animal options. </h1>
+          </div>`;
+        });
+
+    }
+
+
+    function renderAnimalOption(animal) {
+      const animalOption = document.createElement('div');
+      animalOption.setAttribute("data-animal-id", animal.id);
+
+      if (animalIDField.value == animal.id) {
+        animalOption.setAttribute("data-selected", "true");
+      }
+
+      animalOption.className = "animal-option flex items-center gap-4 p-4 transition-all bg-white border cursor-pointer rounded-xl hover:bg-gray-50";
+
+      const animal_photo_url = `{{ animal.photo_url | get_image }}`;
+      
+      animalOption.innerHTML = `
+        <img src="${animal.photo_url}" class="object-cover w-12 h-12 mr-2 rounded-full" alt="${animal.name}">
+        <div class="flex flex-col gap-2">
+          <h3 class="font-medium text-gray-900">${animal.name}</h3>
+          <div class="flex items-center gap-3">
+            ${animal.for_adoption ? `
+              <div class="tooltip" data-tip="For Adoption">
+                <div class="flex items-center justify-center h-8 rounded-lg ${animal.for_adoption ? 'bg-primary-500' : 'bg-gray-500'} bg-opacity-20 aspect-square">
+                  <i class="text-primary-500 fa-solid fa-paw"></i>
+                </div>
+              </div>` : ''}
+
+            ${animal.is_adopted ? `
+              <div class="tooltip" data-tip="Adopted">
+                <div class="flex items-center justify-center h-8 ${animal.is_adopted ? 'bg-red-500' : 'bg-gray-500'} rounded-lg bg-opacity-20 aspect-square">
+                  <i class="text-red-500 fa-solid fa-heart"></i>
+                </div>
+              </div>` : ''}
+
+            ${animal.is_dewormed ? `
+              <div class="tooltip" data-tip="Dewormed">
+                <div class="flex items-center justify-center h-8 ${animal.is_dewormed ? 'bg-green-500' : 'bg-gray-500'} rounded-lg bg-opacity-20 aspect-square">
+                  <i class="text-green-500 fa-solid fa-shield"></i>
+                </div>
+              </div>` : ''}
+
+            ${animal.is_neutered ? `
+              <div class="tooltip" data-tip="Neutered">
+                <div class="flex items-center justify-center h-8 ${animal.is_neutered ? 'bg-blue-500' : 'bg-gray-500'} rounded-lg bg-opacity-20 aspect-square">
+                  <i class="text-blue-500 fa-solid fa-cut"></i>
+                </div>
+              </div>` : ''}
+
+            ${animal.in_shelter ? `
+              <div class="tooltip" data-tip="In Shelter">
+                <div class="flex items-center justify-center h-8 ${animal.in_shelter ? 'bg-purple-500' : 'bg-gray-500'} rounded-lg bg-opacity-20 aspect-square">
+                  <i class="text-purple-500 fa-solid fa-home"></i>
+                </div>
+              </div>` : ''}
+
+            ${animal.is_rescued ? `
+              <div class="tooltip" data-tip="Rescued">
+                <div class="flex items-center justify-center h-8 ${animal.is_rescued ? 'bg-yellow-500' : 'bg-gray-500'} rounded-lg bg-opacity-20 aspect-square">
+                  <i class="text-yellow-500 fa-solid fa-life-ring"></i>
+                </div>
+              </div>` : ''}
+          </div>
+        </div>
+      `;
+
+      animalOption.addEventListener("click", function () {
+        Array.from(animalList.children).forEach((item) => {
+          if (item.getAttribute('data-animal-id') == animalOption.getAttribute('data-animal-id')) {
+            return;
+          }
+          if (item.hasAttribute('data-selected')) {
+            item.removeAttribute("data-selected");
+          }
+        });
+
+        if (this.getAttribute("data-selected")) {
+          this.removeAttribute("data-selected");
+          animalIDField.value = "";
+          selectAnimalConfirm.classList.add("btn-disabled")
+        } else {
+          this.setAttribute("data-selected", "true");
+          animalIDField.value = this.getAttribute("data-animal-id");
+          selectAnimalConfirm.classList.remove("btn-disabled")
+        }
+      });
+
+      return animalOption;
+    }
   </script>
 {% endblock content %}

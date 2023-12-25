@@ -145,7 +145,7 @@ def edit_animal(id):
         form.in_shelter.data = animal.in_shelter == 1
         form.is_rescued.data = animal.is_rescued == 1
             
-    return render_template('admin/animal/edit.html', form=form)
+    return render_template('admin/animal/edit.html', form=form, animal=animal)
 
 @animal_bp.route('/<id>/delete', methods=['DELETE'])
 @admin_required

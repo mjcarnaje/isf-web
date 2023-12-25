@@ -30,7 +30,7 @@
         {{ render_field(form.is_neutered) }}
         {{ render_field(form.is_rescued) }}
         {{ render_field(form.is_dead) }}
-        {{ render_field(form.in_shelter) }}
+        {% if not animal.is_adopted %}{{ render_field(form.in_shelter) }}{% endif %}
         <button type="submit" class="w-full col-span-2 btn btn-md">Submit</button>
       </form>
     </div>

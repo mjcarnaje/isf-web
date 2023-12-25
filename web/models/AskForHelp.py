@@ -185,12 +185,3 @@ class AskForHelp():
     @classmethod
     def delete(cls, animal_id):
         pass
-
-    @staticmethod
-    def find_animals_options():
-        filters = {
-            'is_adopted': False,
-            'is_dead': False
-        }
-        results = Animal.find_all(page_number=1, page_size=12, filters=filters)
-        return results['data']

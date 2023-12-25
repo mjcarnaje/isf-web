@@ -138,7 +138,7 @@ class Animal():
 
         if filters: 
             for key, value in filters.items():
-                if not value:
+                if type(value) != int and not value:
                     continue
 
                 if key == "query":

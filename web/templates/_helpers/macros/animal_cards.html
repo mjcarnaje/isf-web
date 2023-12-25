@@ -81,25 +81,26 @@
                         tabindex="0"
                         id="delete-animal-button"
                         data-animal-id="{{ animal.id }}">Delete</li>
-                    {% if not animal.is_adopted %}
-                      {% if animal.for_adoption == 1 %}
-                        <li role="button"
-                            tabindex="0"
-                            id="set-adoption-false-button"
-                            data-animal-id="{{ animal.id }}">Not Available for Adoption</li>
-                      {% endif %}
-                      {% if animal.for_adoption != 1 %}
-                        <li role="button"
-                            tabindex="0"
-                            id="set-adoption-true-button"
-                            data-animal-id="{{ animal.id }}">Available for Adoption</li>
-                      {% endif %}
-                    {% endif %}
+                    <li role="button"
+                        tabindex="0"
+                        id="{{ 'set-adoption-true-button' if not animal.for_adoption else 'set-adoption-false-button' }}"
+                        data-animal-id="{{ animal.id }}"
+                        class="{{ 'opacity-50 pointer-events-none' if animal.is_adopted or animal.is_dead }}">
+                      {{ 'Available for Adoption' if not animal.for_adoption else 'Not for Adoption' }}
+                    </li>
+                    <li role="link"
+                        data-href="{{ url_for('admin.ask_for_help.add_help', animal_id=animal.id) }}"
+                        tabindex="0"
+                        id="set-adoption-true-button"
+                        data-animal-id="{{ animal.id }}"
+                        class="{{ 'opacity-50 pointer-events-none' if animal.is_adopted or animal.is_dead }}">
+                      Ask for help
+                    </li>
                   </ul>
                 </div>
               {% endif %}
             </div>
-            <div class="flex items-center gap-3">
+            <div class="flex flex-wrap items-center gap-3">
               {% if animal.for_adoption %}
                 <div class="tooltip" data-tip="For Adoption">
                   <div class="flex items-center justify-center h-8 rounded-lg {{ 'bg-primary-500' if animal.for_adoption else 'bg-gray-500' }} bg-opacity-20 aspect-square">
@@ -139,6 +140,13 @@
                 <div class="tooltip" data-tip="Rescued">
                   <div class="flex items-center justify-center h-8 {{ 'bg-yellow-500' if animal.is_rescued else 'bg-gray-500' }} rounded-lg bg-opacity-20 aspect-square">
                     <i class="text-yellow-500 fa-solid fa-life-ring"></i>
+                  </div>
+                </div>
+              {% endif %}
+              {% if animal.is_dead %}
+                <div class="tooltip" data-tip="Dead">
+                  <div class="flex items-center justify-center h-8 {{ 'bg-gray-800' if animal.is_dead else 'bg-gray-500' }} rounded-lg bg-opacity-20 aspect-square">
+                    <i class="text-gray-800 fa-solid fa-skull"></i>
                   </div>
                 </div>
               {% endif %}
