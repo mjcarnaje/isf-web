@@ -198,5 +198,12 @@ class AnimalHelp():
         return cur.rowcount
 
     @classmethod
-    def delete(cls, animal_id):
-        pass
+    def delete(cls, animal_help_id):
+        sql = "DELETE FROM animal_help WHERE id = %s"
+        params = (animal_help_id,)
+
+        cur = db.new_cursor()
+        cur.execute(sql, params)
+        db.connection.commit()
+
+        return cur.rowcount

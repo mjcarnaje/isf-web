@@ -267,7 +267,7 @@ CREATE TABLE  IF NOT EXISTS donation (
 
 
 CREATE TABLE IF NOT EXISTS donation_pictures (
-    donation_id INT NOT NULL REFERENCES donation(id),
+    donation_id INT NOT NULL REFERENCES donation(id) ON DELETE CASCADE,
     photo_url VARCHAR(256) NOT NULL, 
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (donation_id, photo_url),
@@ -299,7 +299,7 @@ CREATE TABLE IF NOT EXISTS animal_help_post (
     animal_help_id INT NOT NULL REFERENCES animal_help(id),
     post_text TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (animal_help_id) REFERENCES animal_help(id)
+    FOREIGN KEY (animal_help_id) REFERENCES animal_help(id) ON DELETE CASCADE
 );
 
 
@@ -307,7 +307,7 @@ CREATE TABLE IF NOT EXISTS animal_help_post (
 
 
 CREATE TABLE IF NOT EXISTS animal_help_post_pictures (
-    animal_help_post_id INT NOT NULL REFERENCES animal_help_post(id),
+    animal_help_post_id INT NOT NULL REFERENCES animal_help_post(id) ON DELETE CASCADE,
     photo_url VARCHAR(256) NOT NULL, 
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (animal_help_post_id, photo_url),
@@ -320,15 +320,15 @@ CREATE TABLE IF NOT EXISTS animal_help_post_pictures (
 
 CREATE TABLE IF NOT EXISTS animal_help_donation (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL REFERENCES user(id),
-    animal_help_id INT NOT NULL REFERENCES animal_help(id),
+    user_id INT NOT NULL REFERENCES user(id) ON DELETE CASCADE,
+    animal_help_id INT NOT NULL REFERENCES animal_help(id) ON DELETE CASCADE,
     donation_type ENUM('Money', 'In-Kind') NOT NULL, -- 'money' or 'in_kind'
     amount INT, -- (if money)
     item_list TEXT, -- (if in-kind) [comma-separated]
     is_confirmed BOOLEAN DEFAULT false,
     is_rejected BOOLEAN DEFAULT false,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (animal_help_id) REFERENCES animal_help(id)
+    FOREIGN KEY (animal_help_id) REFERENCES animal_help(id) ON DELETE CASCADE
 );
 
 
@@ -336,7 +336,7 @@ CREATE TABLE IF NOT EXISTS animal_help_donation (
 
 
 CREATE TABLE IF NOT EXISTS animal_help_donation_pictures (
-    animal_help_donation_id INT NOT NULL REFERENCES animal_help_donation(id),
+    animal_help_donation_id INT NOT NULL REFERENCES animal_help_donation(id) ON DELETE CASCADE,
     photo_url VARCHAR(256) NOT NULL, 
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (animal_help_donation_id, photo_url),

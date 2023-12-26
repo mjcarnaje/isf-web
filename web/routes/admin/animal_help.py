@@ -115,7 +115,7 @@ def add_animal_help():
     
     if request.args.get("animal_id"):
         form.animal_id.data = request.args.get("animal_id")
-        animal = Animal.find_one(user_id=request.args.get("animal_id"))
+        animal = Animal.find_one(request.args.get("animal_id"))
 
     return render_template('admin/animal-help/add_animal_help.html', form=form, animal=animal)
 
@@ -123,7 +123,7 @@ def add_animal_help():
 @admin_required
 def edit_animal_help(id):
     animal_help = AnimalHelp.find_one(id)
-    animal = Animal.find_one(animal_help['id'])
+    animal = Animal.find_one(animal_help['animal_id'])
     
     form = EditAnimalHelpValidation()
     
@@ -145,6 +145,18 @@ def edit_animal_help(id):
         form.thumbnail_url.data  = animal_help['thumbnail_url']
     
     return render_template('admin/animal-help/edit_animal_help.html', form=form, animal=animal)
+
+@animal_help_bp.route('/<id>/delete', methods=['DELETE'])
+@admin_required
+def delete_animal_help(id):
+    animal_help = AnimalHelp.find_one(id)
+
+    if not animal_help:
+        return {"error": "Animal Help not found"}, 404
+
+    AnimalHelp.delete(id)
+    
+    return {"success": "Successfuly deleted!"}
 
 
 @animal_help_bp.route('/<id>/donations/confirm/<donator_id>', methods=['POST'])
