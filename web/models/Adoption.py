@@ -35,7 +35,7 @@ class Adoption:
         self.created_at = created_at or datetime.datetime.now()
 
     @classmethod
-    def find_by_id(cls, adoption_id):
+    def find_one(cls, adoption_id):
         sql = "SELECT * FROM adoption WHERE id = %s"
         cur = db.new_cursor(dictionary=True)
         cur.execute(sql, (adoption_id,))

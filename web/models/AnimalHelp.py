@@ -1,17 +1,16 @@
 from flask import current_app
 from ..database import db
-from .Animal import Animal
 
-class AskForHelp():
+class AnimalHelp():
     def __init__(self, 
         id=None,
         animal_id=None,
         description=None,
         amount=None,
         item_list=None,
-        pictures= None,
         is_fulfilled=None,
-        created_at=None,
+        thumbnail_url=None,
+        created_at=None
         ):
         self.id = id
         self.animal_id = animal_id
@@ -19,14 +18,14 @@ class AskForHelp():
         self.amount = amount
         self.item_list = item_list
         self.is_fulfilled = is_fulfilled
+        self.thumbnail_url = thumbnail_url
         self.created_at = created_at
-        self.pictures = pictures
     
     @staticmethod
     def set_to_fulfilled(id):
         try:
             sql = """
-                UPDATE donation_request
+                UPDATE animal_help
                 SET is_fulfilled = 1
                 WHERE id = %s
             """
@@ -39,12 +38,17 @@ class AskForHelp():
             current_app.logger.error(err)
 
     @staticmethod
-    def find_one(request_id):
+    def find_one(animal_help_id):
         sql = """
             SELECT 
-                *,
-                donation_request.id as id,
-                donation_request.description as description,
+                animal_help.id,
+                animal_help.animal_id,
+                animal_help.description,
+                animal_help.amount,
+                animal_help.item_list,
+                animal_help.is_fulfilled,
+                animal_help.thumbnail_url,
+                animal_help.created_at,
                 animal.name AS animal_name,
                 animal.description AS animal_description,
                 animal.is_dewormed AS animal_is_dewormed,
@@ -53,16 +57,14 @@ class AskForHelp():
                 animal.is_rescued AS animal_is_rescued,
                 animal.is_adopted AS animal_is_adopted,
                 animal.photo_url as animal_photo_url
-            FROM donation_request
+            FROM animal_help
             LEFT JOIN
-                animal ON animal.id = donation_request.animal_id
+                animal ON animal.id = animal_help.animal_id
             WHERE 
-                donation_request.id = %(request_id)s
+                animal_help.id = %(animal_help_id)s
             """
         cur = db.new_cursor(dictionary=True)
-        cur.execute(sql, {
-            'request_id': request_id,
-        })
+        cur.execute(sql, {'animal_help_id': animal_help_id})
         data = cur.fetchone()
         return data 
 
@@ -89,10 +91,15 @@ class AskForHelp():
 
         sql = f"""
             SELECT 
-                *,
-                donation_request.id as id,
+                animal_help.id,
+                animal_help.animal_id,
+                animal_help.description,
+                animal_help.amount,
+                animal_help.item_list,
+                animal_help.is_fulfilled,
+                animal_help.thumbnail_url,
+                animal_help.created_at,
                 animal.id AS animal_id,
-                donation_request.description as description,
                 animal.name AS animal_name,
                 animal.description AS animal_description,
                 animal.is_dewormed AS animal_is_dewormed,
@@ -101,9 +108,9 @@ class AskForHelp():
                 animal.is_rescued AS animal_is_rescued,
                 animal.is_adopted AS animal_is_adopted,
                 animal.photo_url as animal_photo_url
-            FROM donation_request
+            FROM animal_help
             LEFT JOIN
-                animal ON animal.id = donation_request.animal_id
+                animal ON animal.id = animal_help.animal_id
             """
 
         if where_clause:
@@ -118,7 +125,7 @@ class AskForHelp():
         count_sql = """
             SELECT 
                 COUNT(*) as total_count
-            FROM donation_request
+            FROM animal_help
         """
 
         if where_clause:
@@ -135,9 +142,9 @@ class AskForHelp():
 
 
     @classmethod
-    def insert(cls, donation_request):
+    def insert(cls, animal_help):
         sql = """
-            INSERT INTO donation_request (
+            INSERT INTO animal_help (
                 animal_id,
                 description,
                 amount,
@@ -152,35 +159,43 @@ class AskForHelp():
             )
         """
         params = {
-            'animal_id': donation_request.animal_id,
-            'description': donation_request.description,
-            'amount': donation_request.amount,
-            'item_list': donation_request.item_list,
-            'thumbnail_url': donation_request.pictures[0],
+            'animal_id': animal_help.animal_id,
+            'description': animal_help.description,
+            'amount': animal_help.amount,
+            'item_list': animal_help.item_list,
+            'thumbnail_url': animal_help.thumbnail_url,
         }
 
         cur = db.new_cursor()
         cur.execute(sql, params)
         db.connection.commit()
 
-        donation_request_id = cur.lastrowid
-
-        pictures_sql = """
-            INSERT INTO donation_request_pictures (
-                donation_request_id, photo_url
-            ) VALUES(%s, %s)
-        """
-
-        if donation_request.pictures:
-            pictures_params = [(donation_request_id, photo_url) for photo_url in donation_request.pictures]
-            cur.executemany(pictures_sql, pictures_params)
-            db.connection.commit()
-
-        return donation_request_id
+        return cur.lastrowid
     
     @classmethod
-    def edit(cls, animal):
-        pass
+    def edit(cls, animal_help):
+        sql = """
+            UPDATE animal_help
+            SET
+                description = %(description)s,
+                amount = %(amount)s,
+                item_list = %(item_list)s,
+                thumbnail_url = %(thumbnail_url)s
+            WHERE
+                id = %(animal_help_id)s
+        """
+        params = {
+            'description': animal_help.description,
+            'amount': animal_help.amount,
+            'item_list': animal_help.item_list,
+            'thumbnail_url': animal_help.thumbnail_url,
+            'animal_help_id': animal_help.id
+        }
+        cur = db.new_cursor()
+        cur.execute(sql, params)
+        db.connection.commit()
+
+        return cur.rowcount
 
     @classmethod
     def delete(cls, animal_id):

@@ -100,7 +100,7 @@ def animals():
 @landing_bp.route('/<int:id>', methods=['GET'])
 @anonymous_required
 def view_animal(id):
-  animal = Animal.find_by_id(id)
+  animal = Animal.find_one(id)
   return render_template('/landing/rescue/rescue.html', animal=animal)
 
 @landing_bp.route('/donate', methods=['GET'])
@@ -120,7 +120,7 @@ def events():
 @landing_bp.route('/events/<int:id>', methods=['GET'])
 @anonymous_required
 def view_event(id):
-  event = Event.find_by_id(event_id=id)
+  event = Event.find_one(event_id=id)
   statistics = Event.get_statistics(id)
   posts = EventPost.find_posts(event_id=id)
   return render_template('/landing/event/event.html', event=event, posts=posts, statistics=statistics)

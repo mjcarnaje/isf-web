@@ -51,7 +51,7 @@ def adoptions():
 @user_adoption_bp.route('/<int:id>', methods=['GET', 'POST'])
 @user_verified_required
 def adopt_me(id):
-  animal = Animal.find_by_id(id)
+  animal = Animal.find_one(id)
   active_application = Adoption.find_by_user_animal(user_id=current_user.id, animal_id=animal.id)
 
   form = AdoptionValidation()

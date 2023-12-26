@@ -56,7 +56,7 @@ def animals():
 @animal_bp.route('/<int:id>', methods=['GET'])
 @admin_required
 def view_animal(id):
-  animal = Animal.find_by_id(id)
+  animal = Animal.find_one(id)
   adopter = Animal.get_adopter(id)
   return render_template('/admin/animal/animal.html', animal=animal, adopter=adopter)  
   
@@ -107,7 +107,7 @@ def add_animal():
 @animal_bp.route('/<int:id>/edit', methods=['GET', 'POST'])
 @admin_required
 def edit_animal(id):
-    animal = Animal.find_by_id(id)
+    animal = Animal.find_one(id)
     form = EditAnimalValidation()
 
     if form.validate_on_submit():
@@ -150,7 +150,7 @@ def edit_animal(id):
 @animal_bp.route('/<id>/delete', methods=['DELETE'])
 @admin_required
 def delete_animal(id):
-    animal = Animal.find_by_id(id)
+    animal = Animal.find_one(id)
 
     if not animal:
         return {"error": "Animal not found"}, 404
@@ -162,7 +162,7 @@ def delete_animal(id):
 @animal_bp.route('/<id>/toggle-adoption-status', methods=['PUT'])
 @admin_required
 def toggle_adoption_status(id):
-    animal = Animal.find_by_id(id)
+    animal = Animal.find_one(id)
 
     if not animal:
         return {"error": "Animal not found"}, 404

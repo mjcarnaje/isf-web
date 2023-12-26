@@ -2,9 +2,9 @@ from flask import Blueprint, flash, redirect, render_template, url_for, request,
 from flask_login import current_user
 
 from ...enums import DonationFor, DonationType, NotificationType
-from ...models import Donation, Notification, AskForHelp, DonationRequestUpdate, DonationRequestDonation
+from ...models import Donation, Notification, AnimalHelp, AnimalHelpPost, AnimalHelpDonation
 from ...utils import user_verified_required, get_active_filter_count, pagination
-from ...validations import AddDonation_In_Kind, AddDonationMoney, AddDonationRequestDonationInKindValidation, AddDonationRequestDonationMoneyValidation
+from ...validations import AddDonation_In_Kind, AddDonationMoney, AddAnimalHelpDonationInKindValidation, AddAnimalHelpDonationMoneyValidation
 from ...config import Config
 
 user_donation_bp = Blueprint("donate", __name__, url_prefix="/donate")
@@ -19,7 +19,7 @@ def index():
       'query': request.args.get('query', '', type=str),
   }
 
-  animal_helps_query = AskForHelp.find_all(
+  animal_helps_query = AnimalHelp.find_all(
       page_number=page,
       page_size=Config.DEFAULT_PAGE_SIZE,
       filters=filters
@@ -49,20 +49,20 @@ def view_request(id):
   
 @user_donation_bp.route('/<int:id>/updates', methods=['GET', 'POST'])
 def animal_help_posts(id):
-    data = AskForHelp.find_one(id)
-    posts = DonationRequestUpdate.find_all_by_id(id)
+    data = AnimalHelp.find_one(id)
+    posts = AnimalHelpPost.find_all_by_id(id)
     return render_template('user/donations/animal_help_posts.html', data=data, posts=posts)
 
 @user_donation_bp.route('/<int:id>/donations', methods=['GET', 'POST'])
 def animal_help_donations(id):
     formid = request.args.get('formid')
-    money_form = AddDonationRequestDonationMoneyValidation()
-    in_kind_form = AddDonationRequestDonationInKindValidation()
+    money_form = AddAnimalHelpDonationMoneyValidation()
+    in_kind_form = AddAnimalHelpDonationInKindValidation()
 
     if money_form.validate_on_submit() and formid == 'money':
-      new_donation = DonationRequestDonation(
+      new_donation = AnimalHelpDonation(
         amount=money_form.amount.data,
-        donation_request_id=id,
+        animal_help_id=id,
         donation_type="Money",
         pictures=money_form.pictures.data,
         user_id=current_user.id
@@ -71,9 +71,9 @@ def animal_help_donations(id):
       flash("Successfully added a donation", "success")
   
     if in_kind_form.validate_on_submit() and formid == 'in-kind':
-      new_donation = DonationRequestDonation(
+      new_donation = AnimalHelpDonation(
         item_list=in_kind_form.item_list.data,
-        donation_request_id=id,
+        animal_help_id=id,
         donation_type="In-Kind",
         pictures=in_kind_form.pictures.data,
         user_id=current_user.id
@@ -81,8 +81,8 @@ def animal_help_donations(id):
       new_donation.insert(new_donation)
       flash("Successfully added a donation", "success")
   
-    data = AskForHelp.find_one(id)
-    donations = DonationRequestDonation.find_all_by_id(id)
+    data = AnimalHelp.find_one(id)
+    donations = AnimalHelpDonation.find_all_by_id(id)
     return render_template('user/donations/animal_help_donations.html', money_form=money_form, in_kind_form=in_kind_form, data=data, donations=donations)
 
 

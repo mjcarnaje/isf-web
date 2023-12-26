@@ -13,11 +13,11 @@ from .adoption import adoption_bp
 from .animal import animal_bp
 from .donation import donations_bp
 from .event import event_bp
-from .ask_for_help import ask_for_help_bp
+from .animal_help import animal_help_bp
 from .user import user_bp
 from .member_application import member_application_bp
 
-admin_bp.register_blueprint(ask_for_help_bp)
+admin_bp.register_blueprint(animal_help_bp)
 admin_bp.register_blueprint(animal_bp)
 admin_bp.register_blueprint(event_bp)
 admin_bp.register_blueprint(donations_bp)

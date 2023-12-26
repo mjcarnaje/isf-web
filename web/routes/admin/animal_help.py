@@ -1,15 +1,15 @@
 from flask import (Blueprint, render_template, request, session, jsonify, redirect, url_for, flash, current_app)
 
 from ...config import Config
-from ...models import AskForHelp, DonationRequestUpdate, DonationRequestDonation, Animal
+from ...models import AnimalHelp, AnimalHelpPost, AnimalHelpDonation, Animal
 from ...utils import admin_required, get_active_filter_count
 from ...utils import pagination
-from ...validations import AddDonationRequestValidation, AddDonationRequestUpdateValidation
+from ...validations import AddAnimalHelpValidation, AddAnimalHelpPostValidation, EditAnimalHelpValidation
 from flask_login import current_user
 
-ask_for_help_bp = Blueprint("ask_for_help", __name__, url_prefix='/ask-for-help')
+animal_help_bp = Blueprint("animal_help", __name__, url_prefix='/animal-help')
 
-@ask_for_help_bp.route('', methods=['GET'])
+@animal_help_bp.route('', methods=['GET'])
 @admin_required
 def index():
     page = request.args.get('page', 1, type=int)
@@ -19,7 +19,7 @@ def index():
         'query': request.args.get('query', '', type=str),
     }
 
-    animal_helps_query = AskForHelp.find_all(
+    animal_helps_query = AnimalHelp.find_all(
         page_number=page,
         page_size=Config.DEFAULT_PAGE_SIZE,
         filters=filters
@@ -29,7 +29,7 @@ def index():
     total_count = animal_helps_query.get("total_count")
     offset = animal_helps_query.get("offset")
 
-    return render_template('admin/ask-for-help/animal_helps.html', 
+    return render_template('admin/animal-help/animal_helps.html', 
         filters=filters,
         animal_helps=animal_helps,
         active_filters=get_active_filter_count(filters),
@@ -39,121 +39,141 @@ def index():
             offset=offset,
             page_size=Config.DEFAULT_PAGE_SIZE,
             total_count=total_count,
-            base_url="admin.ask_for_help.index"
+            base_url="admin.animal_help.index"
         ),
     )
 
-@ask_for_help_bp.route('/<int:id>', methods=['GET', 'POST'])
+@animal_help_bp.route('/<int:id>', methods=['GET', 'POST'])
 def view_request(id):
     if request.method == "POST":
         try:
-            AskForHelp.set_to_fulfilled(id)
+            AnimalHelp.set_to_fulfilled(id)
             flash("Successfuly fulfilled the request!", "success")
             return jsonify({"status": "success", "message": "Donation request confirmed successfully!"})    
         except Exception as e:
             current_app.logger.error(e)
             return jsonify({"status": "error", "message": "Error confirming donation request. Please try again later."})
     
-    return redirect(url_for('admin.ask_for_help.animal_help_posts', id=id))
+    return redirect(url_for('admin.animal_help.animal_help_posts', id=id))
     
-@ask_for_help_bp.route('/<int:id>/updates', methods=['GET', 'POST'])
+@animal_help_bp.route('/<int:id>/posts', methods=['GET', 'POST'])
 def animal_help_posts(id):
-    form = AddDonationRequestUpdateValidation()
+    form = AddAnimalHelpPostValidation()
 
     if request.method == "POST" and form.validate_on_submit():
-        new_update = DonationRequestUpdate(
-            donation_request_id=id,
+        new_update = AnimalHelpPost(
+            animal_help_id=id,
             pictures=form.pictures.data,
-            update_text=form.update_text.data,
+            post_text=form.post_text.data,
             user_id=current_user.id
         )
         new_update.insert(new_update)
         flash("Successfully added a post!", "success")
     
-    data = AskForHelp.find_one(id)
-    posts = DonationRequestUpdate.find_all_by_id(id)
-    return render_template('admin/ask-for-help/animal_help_posts.html', 
+    data = AnimalHelp.find_one(id)
+    posts = AnimalHelpPost.find_all_by_id(id)
+    return render_template('admin/animal-help/animal_help_posts.html', 
         id=id, 
         data=data, 
         posts=posts, 
         form=form
     )
 
-@ask_for_help_bp.route('/<int:id>/updates/<int:post_id>', methods=['DELETE'])
+@animal_help_bp.route('/<int:id>/posts/<int:post_id>', methods=['DELETE'])
 def animal_help_post(id, post_id):
     if request.method == "DELETE":
-        DonationRequestUpdate.delete(post_id=post_id)
+        AnimalHelpPost.delete(post_id=post_id)
         flash("Post deleted!", "success")
         return jsonify({
             'is_success': True
         })
         
 
-@ask_for_help_bp.route('/<int:id>/donations', methods=['GET', 'POST'])
+@animal_help_bp.route('/<int:id>/donations', methods=['GET', 'POST'])
 def animal_help_donations(id):
-    data = AskForHelp.find_one(id)
-    donations = DonationRequestDonation.find_all_by_id(id)
-    return render_template('admin/ask-for-help/animal_help_donations.html', data=data, donations=donations)
+    data = AnimalHelp.find_one(id)
+    donations = AnimalHelpDonation.find_all_by_id(id)
+    return render_template('admin/animal-help/animal_help_donations.html', data=data, donations=donations)
 
-@ask_for_help_bp.route('/add', methods=['GET', 'POST'])
+@animal_help_bp.route('/add', methods=['GET', 'POST'])
 @admin_required
-def add_help():
-    form = AddDonationRequestValidation()
+def add_animal_help():
+    form = AddAnimalHelpValidation()
     
     if form.validate_on_submit():
-        new_donation_request = AskForHelp(
+        new_animal_help = AnimalHelp(
             amount=form.amount.data,
             animal_id=form.animal_id.data,
             description=form.description.data,
             item_list=form.item_list.data,
-            pictures=form.pictures.data,
+            thumbnail_url=form.thumbnail_url.data
         )
-        donation_request_id = new_donation_request.insert(new_donation_request)
-        new_update = DonationRequestUpdate(
-            donation_request_id=donation_request_id,
-            pictures=form.pictures.data,
-            update_text=form.description.data,
-            user_id=current_user.id
-        )
-        new_update.insert(new_update)
-        return redirect(url_for('admin.ask_for_help.index'))
+        new_id = new_animal_help.insert(new_animal_help)
+        return redirect(url_for('admin.animal_help.animal_help_posts', id=new_id))
     
     animal = None
     
     if request.args.get("animal_id"):
         form.animal_id.data = request.args.get("animal_id")
-        animal = Animal.find_by_id(user_id=request.args.get("animal_id"))
+        animal = Animal.find_one(user_id=request.args.get("animal_id"))
 
-    return render_template('admin/ask-for-help/add_help.html', form=form, animal=animal)
+    return render_template('admin/animal-help/add_animal_help.html', form=form, animal=animal)
+
+@animal_help_bp.route('/<int:id>/edit', methods=['GET', 'POST'])
+@admin_required
+def edit_animal_help(id):
+    animal_help = AnimalHelp.find_one(id)
+    animal = Animal.find_one(animal_help['id'])
+    
+    form = EditAnimalHelpValidation()
+    
+    if form.validate_on_submit():
+        animal_help = AnimalHelp(
+            id=id,
+            description=form.description.data,
+            amount=form.amount.data,
+            item_list=form.item_list.data,
+            thumbnail_url=form.thumbnail_url.data
+        )
+        animal_help.edit(animal_help)
+        return redirect(url_for('admin.animal_help.index'))
+    
+    if not form.is_submitted():
+        form.description.data = animal_help['description']
+        form.amount.data = animal_help['amount']
+        form.item_list.data = animal_help['item_list']
+        form.thumbnail_url.data  = animal_help['thumbnail_url']
+    
+    return render_template('admin/animal-help/edit_animal_help.html', form=form, animal=animal)
 
 
-@ask_for_help_bp.route('/<id>/donations/confirm/<donator_id>', methods=['POST'])
+@animal_help_bp.route('/<id>/donations/confirm/<donator_id>', methods=['POST'])
 @admin_required
 def confirm_donation(id, donator_id):
     try:
-        DonationRequestDonation.set_to_confirmed(id=donator_id)
+        AnimalHelpDonation.set_to_confirmed(id=donator_id)
         flash("Donation request confirmed successfully!", "success")
         return jsonify({"status": "success", "message": "Donation request confirmed successfully!"})
     except Exception as e:
         flash("Error confirming donation request. Please try again later.", "error")
         return jsonify({"status": "error", "message": "Error confirming donation request. Please try again later."})
 
-@ask_for_help_bp.route('/<id>/donations/reject/<donator_id>', methods=['POST'])
+@animal_help_bp.route('/<id>/donations/reject/<donator_id>', methods=['POST'])
 @admin_required
 def reject_donation(id, donator_id):
     try:
-        DonationRequestDonation.set_to_rejected(id=donator_id)
+        AnimalHelpDonation.set_to_rejected(id=donator_id)
         flash("Donation request rejected successfully!", "success")
         return jsonify({"status": "success", "message": "Donation request rejected successfully!"})
     except Exception as e:
         flash("Error rejecting donation request. Please try again later.", "error")
         return jsonify({"status": "error", "message": "Error rejecting donation request. Please try again later."})
 
-@ask_for_help_bp.route('/<id>/donations/pending/<donator_id>', methods=['POST'])
+@animal_help_bp.route('/<id>/donations/pending/<donator_id>', methods=['POST'])
 @admin_required
 def pending_donation(id, donator_id):
     try:
-        DonationRequestDonation.set_to_pending(id=donator_id)
+        AnimalHelpDonation.set_to_pending(id=donator_id)
         flash("Donation request set to pending successfully!", "success")
         return jsonify({"status": "success", "message": "Donation request set to  pending successfully!"})
     except Exception as e:
@@ -161,7 +181,7 @@ def pending_donation(id, donator_id):
         return jsonify({"status": "error", "message": "Error rejecting donation request. Please try again later."})
 
 
-@ask_for_help_bp.route('/animals-options', methods=['GET'])
+@animal_help_bp.route('/animals-options', methods=['GET'])
 @admin_required
 def get_animal_options():
     page = request.args.get('page', 1, type=int)
@@ -184,6 +204,6 @@ def get_animal_options():
             offset=offset,
             page_size=Config.DEFAULT_PAGE_SIZE,
             total_count=total_count,
-            base_url="admin.ask_for_help.get_animal_options"
+            base_url="admin.animal_help.get_animal_options"
         ),
     })

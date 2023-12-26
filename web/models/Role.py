@@ -11,7 +11,7 @@ class Role(UserMixin):
         self.name = name
 
     @classmethod
-    def find_by_id(cls, role_name: int):
+    def find_one(cls, role_name: int):
         sql = "SELECT * FROM role WHERE id  = %s"
         cur = db.new_cursor(dictionary=True)
         cur.execute(sql, (role_name,))

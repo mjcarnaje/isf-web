@@ -101,7 +101,7 @@ class User(UserMixin):
         
     
     @classmethod
-    def find_by_id(cls, user_id: int):
+    def find_one(cls, user_id: int):
         sql = """
             SELECT 
                 user.*,

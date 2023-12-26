@@ -74,7 +74,7 @@ class Animal():
         return row
 
     @classmethod
-    def find_by_id(cls, user_id: int):
+    def find_one(cls, animal_id: int):
         sql = """
             SELECT 
                 id,
@@ -102,7 +102,7 @@ class Animal():
                 animal.id = %s;
         """
         cur = db.new_cursor(dictionary=True)
-        cur.execute(sql, (user_id,))
+        cur.execute(sql, (animal_id,))
         row = cur.fetchone()
         cur.close()
         return cls(**row)
@@ -173,7 +173,7 @@ class Animal():
         where_clause = " AND ".join(where_clauses) if where_clauses else ""
 
         sql = f"""
-                SELECT 
+                SELECT DISTINCT
                     id,
                     name,
                     type,
@@ -215,9 +215,9 @@ class Animal():
                         animal.author_id,
                         animal.created_at,
                         animal.updated_at,
-                        (CASE WHEN donation_request.animal_id IS NOT NULL AND donation_request.is_fulfilled = FALSE THEN TRUE ELSE FALSE END) AS help_requested
+                        (CASE WHEN animal_help.animal_id IS NOT NULL AND animal_help.is_fulfilled = FALSE THEN TRUE ELSE FALSE END) AS help_requested
                     FROM animal
-                    LEFT JOIN donation_request ON donation_request.animal_id = animal.id
+                    LEFT JOIN animal_help ON animal_help.animal_id = animal.id
                 ) AS subquery
                 """
 

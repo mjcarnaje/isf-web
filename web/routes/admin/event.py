@@ -61,7 +61,7 @@ def view_event(id):
         )
         new_event.insert(new_event)
     
-    event = Event.find_by_id(id)
+    event = Event.find_one(id)
     statistics = Event.get_statistics(id)
     posts = EventPost.find_posts(event_id=id)
 
@@ -85,7 +85,7 @@ def animal_help_post(id, post_id):
 @event_bp.route('/<int:id>/members', methods=['GET'])
 @admin_required
 def event_invitees(id):
-    event = Event.find_by_id(id)
+    event = Event.find_one(id)
     statistics = Event.get_statistics(id)
     volunteers = Event.get_volunteers(id)
 
@@ -94,7 +94,7 @@ def event_invitees(id):
 @event_bp.route('/<int:id>/edit', methods=['GET', 'POST'])
 @admin_required
 def edit_event(id):
-    event = Event.find_by_id(id)
+    event = Event.find_one(id)
     form = EditEventValidation()
 
     if form.validate_on_submit():
@@ -170,7 +170,7 @@ def add_event():
 @event_bp.route('/<int:id>/delete', methods=['DELETE'])
 @admin_required
 def delete_event(id):
-    event = Event.find_by_id(id)
+    event = Event.find_one(id)
 
     if not event:
         return {"error": "Event not found"}, 404
@@ -182,7 +182,7 @@ def delete_event(id):
 @event_bp.route('/<int:id>/cancel', methods=['DELETE'])
 @admin_required
 def cancel_event(id):
-    event = Event.find_by_id(id)
+    event = Event.find_one(id)
 
     if not event:
         return {"error": "Event not found"}, 404

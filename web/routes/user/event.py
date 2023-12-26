@@ -45,7 +45,7 @@ def events():
 @user_event_bp.route('/<int:id>', methods=['GET', 'POST'])
 @user_verified_required
 def view_event(id):
-    event = Event.find_by_id(event_id=id)
+    event = Event.find_one(event_id=id)
     invitation = Event.get_invitation(event_id=id, user_id=current_user.id)
 
     if request.method == "POST":
@@ -62,7 +62,7 @@ def view_event(id):
 @user_event_bp.route('/<int:id>/members', methods=['GET'])
 @user_verified_required
 def event_invitees(id):
-    event = Event.find_by_id(id)
+    event = Event.find_one(id)
     statistics = Event.get_statistics(id)
     volunteers = Event.get_volunteers(id)
 

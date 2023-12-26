@@ -85,7 +85,7 @@ class MemberApplication():
         
     
     @classmethod
-    def find_by_id(cls, id: int):
+    def find_one(cls, id: int):
         sql = "SELECT * FROM member_application WHERE id = %s"
         cur = db.new_cursor(dictionary=True)
         cur.execute(sql, (id,))

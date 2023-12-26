@@ -83,11 +83,11 @@
     <div class="flex items-center gap-4 p-3 bg-white shadow-md rounded-2xl">
       <a class="px-4 py-2 bg-white border rounded-full hover:bg-gray-50"
          href="{{ url_for('user.donate.animal_help_posts', id=data.id) }}">
-        <h1 class="font-bold {{ 'text-primary-500' if active_page == 'user.ask_for_help.posts' }}">Updates</h1>
+        <h1 class="font-bold {{ 'text-primary-500' if active_page == 'user.animal_help.posts' }}">Updates</h1>
       </a>
       <a class="px-4 py-2 bg-white border rounded-full hover:bg-gray-50"
          href="{{ url_for('user.donate.animal_help_donations', id=data.id) }}">
-        <h1 class="font-bold {{ 'text-primary-500' if active_page == 'user.ask_for_help.donations' }}">Donations</h1>
+        <h1 class="font-bold {{ 'text-primary-500' if active_page == 'user.animal_help.donations' }}">Donations</h1>
       </a>
     </div>
     {% block inner_content %}
@@ -105,7 +105,7 @@
     const cancelConfirmButton = document.querySelector("#cancel-confirm");
 
     confirmDialogButton.addEventListener("click", () => {
-      fetch("{{ url_for('admin.ask_for_help.view_request', id=data.id) }}", {
+      fetch("{{ url_for('admin.animal_help.view_request', id=data.id) }}", {
         method: "POST",
         headers: {
           "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,

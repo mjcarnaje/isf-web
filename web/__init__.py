@@ -43,7 +43,7 @@ def  create_app():
 
     @login_manager.user_loader
     def load_user(user_id):
-        return User.find_by_id(user_id=user_id)
+        return User.find_one(user_id=user_id)
 
     @app.context_processor
     def utility_processor():

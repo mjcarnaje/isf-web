@@ -52,6 +52,6 @@ def animals():
 @user_animal_bp.route('/<int:id>', methods=['GET'])
 @user_verified_required
 def view_animal(id):
-  animal = Animal.find_by_id(id)
+  animal = Animal.find_one(id)
   adopter = Animal.get_adopter(id)
   return render_template('/user/animals/animal.html', animal=animal, adopter=adopter) 

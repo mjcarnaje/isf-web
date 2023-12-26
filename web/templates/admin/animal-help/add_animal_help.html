@@ -1,7 +1,8 @@
-{% set active_page = "admin.ask_for_help.add_help" %}
+{% set active_page = "admin.animal_help.add_animal_help" %}
 {% extends "./_helpers/layout/admin_layout.html" %}
 {% from "./_helpers/macros/custom_input.html" import render_field %}
 {% from "./_helpers/macros/multiple_photo_input.html" import render_multiple_photo_field with context %}
+{% from './_helpers/macros/photo_input.html' import render_photo_field with context %}
 {% from "./_helpers/macros/pagination_buttons.html" import pagination_buttons with context %}
 {% block title %}
   Ask for help
@@ -38,6 +39,7 @@
       <form class="grid w-full grid-cols-1 gap-4 px-12 py-16 bg-white border shadow-md rounded-3xl"
             method="post"
             novalidate>
+        {{ render_photo_field(form.thumbnail_url, add_text="Add Thumbail", remove_text="Remove Thumbail", is_cover=True) }}
         {{ form.csrf_token() }}
         <div class="flex flex-col gap-2">
           <p class="text-sm text-gray-500 label label-text">Select Animal</p>
@@ -115,7 +117,6 @@
         {{ render_field(form.description) }}
         {{ render_field(form.amount) }}
         {{ render_field(form.item_list) }}
-        {{ render_multiple_photo_field(form.pictures) }}
         <button type="submit" class="w-full btn btn-md">Submit</button>
       </form>
     </div>
@@ -145,7 +146,7 @@
       event.preventDefault();
 
       const query = searchForm.querySelector("input[name='query']").value;
-      const searchUrl = `{{ url_for('admin.ask_for_help.get_animal_options') }}?query=${encodeURIComponent(query)}`;
+      const searchUrl = `{{ url_for('admin.animal_help.get_animal_options') }}?query=${encodeURIComponent(query)}`;
 
       animalList.innerHTML = "";
 
@@ -167,7 +168,7 @@
     })
 
     function fetchData(nextUrl = "") {
-      const baseUrl = "{{ url_for('admin.ask_for_help.get_animal_options') }}";
+      const baseUrl = "{{ url_for('admin.animal_help.get_animal_options') }}";
 
       return fetch(nextUrl || baseUrl, {
         method: "GET"

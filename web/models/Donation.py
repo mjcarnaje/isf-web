@@ -41,7 +41,7 @@ class Donation():
         
         
     @classmethod
-    def find_by_id(cls, donation_id: int):
+    def find_one(cls, donation_id: int):
         sql = "SELECT * FROM donation WHERE id = %s"
         cur = db.new_cursor(dictionary=True)
         cur.execute(sql, (donation_id,))

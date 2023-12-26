@@ -47,22 +47,24 @@
           {% endif %}
         </div>
       </div>
-      <p class="font-medium">{{ post.update_text }}</p>
-      <div class="flex gap-2" data-image-group='true'>
-        {% for picture in post.pictures %}
-          <img src="{{ get_image(picture) }}"
-               alt="donations picture"
-               class="object-cover overflow-hidden transition-all border rounded-lg shadow-sm cursor-pointer hover:scale-105 max-h-36"
-               width="auto"
-               height="auto"
-               data-can-view='true'>
-        {% endfor %}
-      </div>
+      <p class="font-medium">{{ post.post_text }}</p>
+      {% if post.pictures | length > 0 %}
+        <div class="flex gap-2" data-image-group='true'>
+          {% for picture in post.pictures %}
+            <img src="{{ get_image(picture) }}"
+                 alt="donations picture"
+                 class="object-cover overflow-hidden transition-all border rounded-lg shadow-sm cursor-pointer hover:scale-105 max-h-36"
+                 width="auto"
+                 height="auto"
+                 data-can-view='true'>
+          {% endfor %}
+        </div>
+      {% endif %}
     </div>
   {% endfor %}
   <script>
 function confirmDelete(id, postId) {
-  fetch(`/admin/ask-for-help/${id}/updates/${postId}`, {
+  fetch(`/admin/animal-help/${id}/posts/${postId}`, {
     method: "DELETE",
     headers: {
       ...getCSRFHeader()

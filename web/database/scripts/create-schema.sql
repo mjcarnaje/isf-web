@@ -274,10 +274,11 @@ CREATE TABLE IF NOT EXISTS donation_pictures (
     CONSTRAINT unique_donation_photo_url UNIQUE (donation_id, photo_url)
 );
 
+
 --;;;;--
 
 
-CREATE TABLE IF NOT EXISTS donation_request (
+CREATE TABLE IF NOT EXISTS animal_help (
     id INT AUTO_INCREMENT PRIMARY KEY,
     animal_id INT NOT NULL REFERENCES animal(id) ON DELETE CASCADE,
     description TEXT NOT NULL,
@@ -288,66 +289,60 @@ CREATE TABLE IF NOT EXISTS donation_request (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP  
 );
 
---;;;;--
-
-
-CREATE TABLE IF NOT EXISTS donation_request_pictures (
-    donation_request_id INT NOT NULL REFERENCES donation_request(id),
-    photo_url VARCHAR(256) NOT NULL, 
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (donation_request_id, photo_url),
-    CONSTRAINT unique_donation_request_photo_url UNIQUE (donation_request_id, photo_url)
-);
 
 --;;;;--
 
 
-CREATE TABLE IF NOT EXISTS donation_request_update (
+CREATE TABLE IF NOT EXISTS animal_help_post (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL REFERENCES user(id),
-    donation_request_id INT NOT NULL REFERENCES donation_request(id),
-    update_text TEXT,
+    animal_help_id INT NOT NULL REFERENCES animal_help(id),
+    post_text TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (donation_request_id) REFERENCES donation_request(id)
+    FOREIGN KEY (animal_help_id) REFERENCES animal_help(id)
 );
+
 
 --;;;;--
 
 
-CREATE TABLE IF NOT EXISTS donation_request_update_pictures (
-    donation_request_update_id INT NOT NULL REFERENCES donation_request_update(id),
+CREATE TABLE IF NOT EXISTS animal_help_post_pictures (
+    animal_help_post_id INT NOT NULL REFERENCES animal_help_post(id),
     photo_url VARCHAR(256) NOT NULL, 
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (donation_request_update_id, photo_url),
-    CONSTRAINT unique_donation_request_update_photo_url UNIQUE (donation_request_update_id, photo_url)
+    PRIMARY KEY (animal_help_post_id, photo_url),
+    CONSTRAINT unique_animal_help_post_photo_url UNIQUE (animal_help_post_id, photo_url)
 );
+
 
 --;;;;--
 
 
-CREATE TABLE IF NOT EXISTS donation_request_donation (
+CREATE TABLE IF NOT EXISTS animal_help_donation (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL REFERENCES user(id),
-    donation_request_id INT NOT NULL REFERENCES donation_request(id),
+    animal_help_id INT NOT NULL REFERENCES animal_help(id),
     donation_type ENUM('Money', 'In-Kind') NOT NULL, -- 'money' or 'in_kind'
     amount INT, -- (if money)
     item_list TEXT, -- (if in-kind) [comma-separated]
     is_confirmed BOOLEAN DEFAULT false,
     is_rejected BOOLEAN DEFAULT false,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (donation_request_id) REFERENCES donation_request(id)
+    FOREIGN KEY (animal_help_id) REFERENCES animal_help(id)
 );
+
 
 --;;;;--
 
 
-CREATE TABLE IF NOT EXISTS donation_request_donation_pictures (
-    donation_request_donation_id INT NOT NULL REFERENCES donation_request_donation(id),
+CREATE TABLE IF NOT EXISTS animal_help_donation_pictures (
+    animal_help_donation_id INT NOT NULL REFERENCES animal_help_donation(id),
     photo_url VARCHAR(256) NOT NULL, 
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (donation_request_donation_id, photo_url),
-    CONSTRAINT unique_donation_request_donation_photo_url UNIQUE (donation_request_donation_id, photo_url)
+    PRIMARY KEY (animal_help_donation_id, photo_url),
+    CONSTRAINT unique_animal_help_donation_photo_url UNIQUE (animal_help_donation_id, photo_url)
 );
+
 
 --;;;;--
 

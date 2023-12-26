@@ -1,8 +1,10 @@
 from flask_wtf import FlaskForm
-from wtforms import HiddenField, TextAreaField, validators, IntegerField, widgets, FieldList, StringField
+from wtforms import TextAreaField, validators, IntegerField, widgets, StringField
 
-class AddDonationRequestValidation(FlaskForm):
-    animal_id = HiddenField("Animal Id")
+class EditAnimalHelpValidation(FlaskForm):
+    thumbnail_url = StringField("Thumbnail", validators=[
+        validators.DataRequired()
+    ])
     description = TextAreaField("Description", validators=[
         validators.DataRequired(),
         validators.Length(min=10)
@@ -13,4 +15,3 @@ class AddDonationRequestValidation(FlaskForm):
     item_list = TextAreaField("Wish list (Optional)", render_kw={
         'placeholder': "Wish list (separate by comma ,)",
     })
-    pictures = FieldList(StringField(), label="Current Status", validators=[validators.DataRequired()])

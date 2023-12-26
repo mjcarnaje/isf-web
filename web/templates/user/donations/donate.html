@@ -1,7 +1,7 @@
-{% set active_page = "user.ask_for_help" %}
+{% set active_page = "user.animal_help" %}
 {% extends "./_helpers/layout/user_layout.html" %}
 {% from "./_helpers/macros/pagination_buttons.html" import pagination_buttons with context %}
-{% from "./_helpers/macros/ask_for_help/animal_help_card.html" import animal_help_card with context %}
+{% from "./_helpers/macros/animal_help/animal_help_cards.html" import animal_help_cards with context %}
 {% from "./_helpers/macros/empty_list.html" import empty_list %}
 {% block title %}
   Donate
@@ -36,13 +36,9 @@
       {% include "./_helpers/partials/view_form.html" %}
     </div>
     {% if view_type == "card" %}
-      <div class="grid grid-cols-3 gap-8 pb-12">
-        {% for donation_request in animal_helps %}{{ animal_help_card(donation_request, True) }}{% endfor %}
-      </div>
+      {{ animal_help_cards(animal_helps) }}
     {% else %}
-      <div class="grid grid-cols-3 gap-8 pb-12">
-        {% for donation_request in animal_helps %}{{ animal_help_card(donation_request, True) }}{% endfor %}
-      </div>
+      {{ animal_help_cards(animal_helps) }}
     {% endif %}
     {{ empty_list(animal_helps, "No Donation Requests Found.") }}
   </div>

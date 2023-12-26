@@ -1,12 +1,12 @@
 from flask import current_app
 from ..database import db
 
-class DonationRequestUpdate:
+class AnimalHelpPost:
     def __init__(
         self,
         user_id=None,
-        donation_request_id=None,
-        update_text=None,
+        animal_help_id=None,
+        post_text=None,
         created_at=None,
         pictures=None,
         id=None,
@@ -15,8 +15,8 @@ class DonationRequestUpdate:
     ):
         self.id = id
         self.user_id = user_id
-        self.donation_request_id = donation_request_id
-        self.update_text = update_text
+        self.animal_help_id = animal_help_id
+        self.post_text = post_text
         self.pictures = pictures
         self.created_at = created_at
 
@@ -24,8 +24,8 @@ class DonationRequestUpdate:
         self.user_photo_url = user_photo_url
 
     @classmethod
-    def find_by_id(cls, update_id: int):
-        sql = "SELECT * FROM donation_request_update WHERE id = %s"
+    def find_one(cls, update_id: int):
+        sql = "SELECT * FROM animal_help_post WHERE id = %s"
         cur = db.new_cursor(dictionary=True)
         cur.execute(sql, (update_id,))
         row = cur.fetchone()
@@ -36,19 +36,19 @@ class DonationRequestUpdate:
     @classmethod
     def insert(cls, update):
         sql = """
-            INSERT INTO donation_request_update (
-                donation_request_id,
-                update_text,
+            INSERT INTO animal_help_post (
+                animal_help_id,
+                post_text,
                 user_id
             ) VALUES (
-                %(donation_request_id)s,
-                %(update_text)s,
+                %(animal_help_id)s,
+                %(post_text)s,
                 %(user_id)s
             )
         """
         params = {
-            'donation_request_id': update.donation_request_id,
-            'update_text': update.update_text,
+            'animal_help_id': update.animal_help_id,
+            'post_text': update.post_text,
             'user_id': update.user_id,
         }
 
@@ -59,8 +59,8 @@ class DonationRequestUpdate:
         update_id = cur.lastrowid
 
         pictures_sql = """
-            INSERT INTO donation_request_update_pictures (
-                donation_request_update_id,
+            INSERT INTO animal_help_post_pictures (
+                animal_help_post_id,
                 photo_url
             ) VALUES (%s, %s)
         """
@@ -78,7 +78,7 @@ class DonationRequestUpdate:
     def delete(post_id):
         sql = """
             DELETE 
-                FROM donation_request_update
+                FROM animal_help_post
             WHERE
                 id = %(post_id)s
         """
@@ -89,7 +89,7 @@ class DonationRequestUpdate:
 
     
     @classmethod
-    def find_all_by_id(cls, donation_request_id):
+    def find_all_by_id(cls, animal_help_id):
         sql = """
             SELECT
                 post.*,
@@ -98,22 +98,22 @@ class DonationRequestUpdate:
                 user.photo_url as user_photo_url,
                 GROUP_CONCAT(pictures.photo_url) AS photo_urls
             FROM
-                donation_request_update AS post
+                animal_help_post AS post
             LEFT JOIN
-                donation_request_update_pictures AS pictures
+                animal_help_post_pictures AS pictures
             ON
-                post.id = pictures.donation_request_update_id
+                post.id = pictures.animal_help_post_id
             LEFT JOIN
                 user ON post.user_id = user.id
             WHERE
-                post.donation_request_id = %s
+                post.animal_help_id = %s
             GROUP BY
                 post.id
             ORDER BY
                 created_at DESC
         """
         cur = db.new_cursor(dictionary=True)
-        cur.execute(sql, (donation_request_id,))
+        cur.execute(sql, (animal_help_id,))
         rows = cur.fetchall()
 
         updates = []

@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import TextAreaField, validators, FieldList, StringField
 
-class AddDonationRequestDonationInKindValidation(FlaskForm):
+class AddAnimalHelpDonationInKindValidation(FlaskForm):
     item_list = TextAreaField("Item List (Separate by comma ,)", render_kw={
         'placeholder': "List all the items (separate by comma ,)",
     })

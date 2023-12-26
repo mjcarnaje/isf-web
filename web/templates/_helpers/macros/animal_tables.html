@@ -183,7 +183,7 @@
                         {{ 'Available for Adoption' if not animal.for_adoption else 'Not for Adoption' }}
                       </li>
                       <li role="link"
-                          data-href="{{ url_for('admin.ask_for_help.add_help', animal_id=animal.id) }}"
+                          data-href="{{ url_for('admin.animal_help.add_animal_help', animal_id=animal.id) }}"
                           tabindex="0"
                           id="set-adoption-true-button"
                           data-animal-id="{{ animal.id }}"

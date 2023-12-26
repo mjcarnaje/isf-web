@@ -47,7 +47,7 @@ def member_applications():
 @member_application_bp.route('/<int:id>', methods=['GET'])
 @admin_required
 def view_member_application(id):
-  user = MemberApplication.find_by_id(id)
+  user = MemberApplication.find_one(id)
   return render_template('/admin/member-application/member_applications.html', user=user)  
 
 

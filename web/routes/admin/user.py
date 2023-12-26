@@ -46,7 +46,7 @@ def users():
 @user_bp.route('/<int:id>', methods=['GET'])
 @admin_required
 def view_user(id):
-  user = User.find_by_id(id)
+  user = User.find_one(id)
   adoptions = Adoption.get_user_adoptions(id)
   return render_template('/admin/user/user.html', user=user, adoptions=adoptions)  
 

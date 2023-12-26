@@ -204,7 +204,7 @@ class Event():
         }
 
     @classmethod
-    def find_by_id(cls, event_id):
+    def find_one(cls, event_id):
         sql = """
                 SELECT
                     id,
