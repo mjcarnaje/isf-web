@@ -8,6 +8,7 @@
           content="Iligan Stray Feeder is a web application that aims to help the city government of Iligan to monitor the stray animals in the city." />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
+      {% if current_user.unread_notification_count %}({{ current_user.unread_notification_count }}){% endif %}
       {% block title %}
       {% endblock title %}
     -  Iligan Stray Feeder</title>

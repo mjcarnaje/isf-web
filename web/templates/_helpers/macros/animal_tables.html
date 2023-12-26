@@ -1,5 +1,6 @@
 {% from "./_helpers/macros/empty_list.html" import empty_list %}
-{% macro animal_tables(animals, is_admin) %}
+{% macro animal_tables(animals, hidden_columns) %}
+  {% set is_admin = 'Admin' in current_user.roles %}
   {% if is_admin %}
     <dialog id="delete-animal-modal" class="modal modal-bottom sm:modal-middle">
       <div class="modal-box">
@@ -65,8 +66,10 @@
                 class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Dewormed</th>
             <th scope="col"
                 class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Neutered</th>
-            <th scope="col"
-                class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Deceased</th>
+            {% if not 'is_dead' in hidden_columns %}
+              <th scope="col"
+                  class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Deceased</th>
+            {% endif %}
             <th scope="col" class="relative py-3.5 px-3">
               <span class="sr-only">Edit</span>
             </th>
@@ -99,7 +102,7 @@
                   </div>
                 </div>
               </td>
-              <td class="px-3 py-5">
+              <td class="px-3 py-5 text-right">
                 <span class="inline-flex items-center gap-2 text-sm font-thin text-gray-700">
                   <div class="grid w-5 h-5 aspect-square {{ 'bg-purple-500' if animal.in_shelter else 'bg-gray-500' }} rounded-full place-items-center ">
                     <i class="text-xs text-white fa-solid fa-home"></i>
@@ -107,7 +110,7 @@
                   In Shelter
                 </span>
               </td>
-              <td class="px-3 py-5">
+              <td class="px-3 py-5 text-right">
                 <span class="inline-flex items-center gap-2 text-sm font-thin text-gray-700">
                   <div class="grid w-5 h-5 aspect-square {{ 'bg-primary-500' if animal.for_adoption else 'bg-gray-500' }} rounded-full place-items-center ">
                     <i class="text-xs text-white fa-solid fa-paw"></i>
@@ -115,7 +118,7 @@
                   For Adoption
                 </span>
               </td>
-              <td class="px-3 py-5">
+              <td class="px-3 py-5 text-right">
                 <span class="inline-flex items-center gap-2 text-sm font-thin text-gray-700">
                   <div class="grid w-5 h-5 aspect-square {{ 'bg-yellow-500' if animal.is_rescued else 'bg-gray-500' }} rounded-full place-items-center ">
                     <i class="text-xs text-white fa-solid fa-life-ring"></i>
@@ -123,7 +126,7 @@
                   Rescued
                 </span>
               </td>
-              <td class="px-3 py-5">
+              <td class="px-3 py-5 text-right">
                 <span class="inline-flex items-center gap-2 text-sm font-thin text-gray-700">
                   <div class="grid w-5 h-5 aspect-square {{ 'bg-red-500' if animal.is_adopted else 'bg-gray-500' }} rounded-full place-items-center ">
                     <i class="text-xs text-white fa-solid fa-heart"></i>
@@ -131,7 +134,7 @@
                   Adopted
                 </span>
               </td>
-              <td class="px-3 py-5">
+              <td class="px-3 py-5 text-right">
                 <span class="inline-flex items-center gap-2 text-sm font-thin text-gray-700">
                   <div class="grid w-5 h-5 aspect-square {{ 'bg-green-500' if animal.is_dewormed else 'bg-gray-500' }} rounded-full place-items-center ">
                     <i class="text-xs text-white fa-solid fa-shield"></i>
@@ -139,7 +142,7 @@
                   Dewormed
                 </span>
               </td>
-              <td class="px-3 py-5">
+              <td class="px-3 py-5 text-right">
                 <span class="inline-flex items-center gap-2 text-sm font-thin text-gray-700">
                   <div class="grid w-5 h-5 aspect-square {{ 'bg-blue-500' if animal.is_neutured else 'bg-gray-500' }} rounded-full place-items-center ">
                     <i class="text-xs text-white fa-solid fa-cut"></i>
@@ -147,14 +150,16 @@
                   Neutered
                 </span>
               </td>
-              <td class="px-3 py-5">
-                <span class="inline-flex items-center gap-2 text-sm font-thin text-gray-700">
-                  <div class="grid w-5 h-5 aspect-square {{ 'bg-gray-900' if animal.is_dead else 'bg-gray-500' }} rounded-full place-items-center ">
-                    <i class="text-xs text-white fa-solid fa-skull"></i>
-                  </div>
-                  Deceased
-                </span>
-              </td>
+              {% if not 'is_dead' in hidden_columns %}
+                <td class="px-3 py-5 text-right">
+                  <span class="inline-flex items-center gap-2 text-sm font-thin text-gray-700">
+                    <div class="grid w-5 h-5 aspect-square {{ 'bg-gray-900' if animal.is_dead else 'bg-gray-500' }} rounded-full place-items-center ">
+                      <i class="text-xs text-white fa-solid fa-skull"></i>
+                    </div>
+                    Deceased
+                  </span>
+                </td>
+              {% endif %}
               <td class="relative px-3 py-5 text-sm font-medium text-right whitespace-nowrap">
                 {% if is_admin %}
                   <div class="drop-down" data-dropdown>

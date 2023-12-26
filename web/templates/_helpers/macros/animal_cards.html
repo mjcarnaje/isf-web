@@ -1,5 +1,6 @@
 {% from "./_helpers/macros/empty_list.html" import empty_list %}
-{% macro animal_cards(animals, is_admin) %}
+{% macro animal_cards(animals) %}
+  {% set is_admin = 'Admin' in current_user.roles %}
   {% if is_admin %}
     <dialog id="delete-animal-modal" class="modal modal-bottom sm:modal-middle">
       <div class="modal-box">

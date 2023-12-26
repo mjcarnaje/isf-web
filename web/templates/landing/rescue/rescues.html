@@ -16,7 +16,7 @@
       </p>
     </div>
     <div class="w-full max-w-5xl px-4 py-16 mx-auto space-y-8">
-      {{ animal_filters(true) }}
+      {{ animal_filters(false) }}
       <div class="sm:flex sm:items-center">
         <div class="sm:flex-auto">
           <h1 class="text-2xl font-bold leading-6 text-gray-900">Animals ({{ pagination.total_count }})</h1>
@@ -24,9 +24,9 @@
         {% include "./_helpers/partials/view_form.html" %}
       </div>
       {% if view_type == "card" %}
-        {{ animal_cards(animals, false) }}
+        {{ animal_cards(animals) }}
       {% else %}
-        {{ animal_tables(animals, false) }}
+        {{ animal_tables(animals, ['is_dead']) }}
       {% endif %}
       {{ pagination_buttons() }}
     </div>

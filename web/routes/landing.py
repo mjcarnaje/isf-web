@@ -69,15 +69,7 @@ def animals():
   
   filters = {
       'query': request.args.get('query', '', type=str),
-      'for_adoption': request.args.get('for_adoption') == 'on',
-      'is_rescued': request.args.get('is_rescued') == 'on',
-      'is_adopted': request.args.get('is_adopted') == 'on',
-      'is_dead': request.args.get('is_dead') == 'on',
-      'is_dewormed': request.args.get('is_dewormed') == 'on',
-      'is_neutered': request.args.get('is_neutered') == 'on',
-      'in_shelter': request.args.get('in_shelter') == 'on',
-      'gender': request.args.get('gender'),
-      'type': request.args.get('type')
+      'is_dead': 0
   }
 
   
