@@ -22,7 +22,9 @@ class Animal():
                 author_id: str = None,
                 id: int | None = None, 
                 created_at: datetime.date | None = None,
-                updated_at: datetime.date | None = None):
+                updated_at: datetime.date | None = None,
+                help_requested: bool = False
+                ):
         self.id = id
         self.name = name
         self.type = type
@@ -42,6 +44,7 @@ class Animal():
         self.author_id = author_id
         self.created_at = created_at
         self.updated_at = updated_at
+        self.help_requested = help_requested
 
     @staticmethod
     def get_adopter(user_id: int):
@@ -74,7 +77,25 @@ class Animal():
     def find_by_id(cls, user_id: int):
         sql = """
             SELECT 
-                *
+                id,
+                name,
+                type,
+                estimated_birth_month,
+                estimated_birth_year,
+                photo_url,
+                gender,
+                is_adopted,
+                is_dead,
+                is_dewormed,
+                is_neutered,
+                in_shelter,
+                is_rescued,
+                for_adoption,
+                description,
+                appearance,
+                author_id,
+                created_at,
+                updated_at
             FROM 
                 animal
             WHERE 
@@ -136,7 +157,7 @@ class Animal():
         where_clauses = []
         filter_params = []
 
-        if filters: 
+        if filters:
             for key, value in filters.items():
                 if type(value) != int and not value:
                     continue
@@ -145,44 +166,81 @@ class Animal():
                     where_clauses.append("name LIKE %s")
                     filter_params.append(f"%{value}%")
                     continue
-    
+
                 where_clauses.append(f"{key} = %s")
                 filter_params.append(value)
 
         where_clause = " AND ".join(where_clauses) if where_clauses else ""
 
         sql = f"""
-            SELECT 
-                * 
-            FROM animal
-            """
+                SELECT 
+                    id,
+                    name,
+                    type,
+                    estimated_birth_month,
+                    estimated_birth_year,
+                    photo_url,
+                    gender,
+                    is_adopted,
+                    is_dead,
+                    is_dewormed,
+                    is_neutered,
+                    in_shelter,
+                    is_rescued,
+                    for_adoption,
+                    description,
+                    appearance,
+                    author_id,
+                    created_at,
+                    updated_at,
+                    help_requested
+                FROM (
+                    SELECT 
+                        animal.id,
+                        animal.name,
+                        animal.type,
+                        animal.estimated_birth_month,
+                        animal.estimated_birth_year,
+                        animal.photo_url,
+                        animal.gender,
+                        animal.is_adopted,
+                        animal.is_dead,
+                        animal.is_dewormed,
+                        animal.is_neutered,
+                        animal.in_shelter,
+                        animal.is_rescued,
+                        animal.for_adoption,
+                        animal.description,
+                        animal.appearance,
+                        animal.author_id,
+                        animal.created_at,
+                        animal.updated_at,
+                        (CASE WHEN donation_request.animal_id IS NOT NULL AND donation_request.is_fulfilled = FALSE THEN TRUE ELSE FALSE END) AS help_requested
+                    FROM animal
+                    LEFT JOIN donation_request ON donation_request.animal_id = animal.id
+                ) AS subquery
+                """
 
         if where_clause:
             sql += f" WHERE {where_clause}"
-            
-        sql += " LIMIT %s OFFSET %s"
 
+        count_sql = f"SELECT COUNT(*) AS total_count FROM ({sql}) AS count_subquery"
+        
+        sql += f" LIMIT %s OFFSET %s"
+        
         cur = db.new_cursor(dictionary=True)
-        cur.execute(sql, filter_params + [page_size, offset])
-        data = cur.fetchall()
-
-        count_sql = """
-            SELECT 
-                COUNT(*) as total_count
-            FROM animal
-        """
-
-        if where_clause:
-            count_sql += f" WHERE {where_clause}"
-
         cur.execute(count_sql, filter_params)
         total_count = cur.fetchone()['total_count']
+
+        cur.execute(sql, filter_params + [page_size, offset])
+        data = cur.fetchall()
 
         return {
             'data': data,
             'total_count': total_count,
             'offset': offset
         }
+
 
     
     @staticmethod

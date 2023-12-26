@@ -169,7 +169,8 @@ def get_animal_options():
 
     animals = Animal.find_all(page_number=page, page_size=Config.DEFAULT_PAGE_SIZE, filters={
         'query': query,
-        'is_adopted': 0
+        'is_adopted': 0,
+        'help_requested': 0
     })
 
     animals_data = animals.get("data")
