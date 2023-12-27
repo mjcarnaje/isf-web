@@ -1,3 +1,6 @@
+import random
+import string
+
 def sanitize_comma_separated(input_string):
     """
     Sanitize a comma-separated string by removing leading and trailing whitespaces
@@ -30,3 +33,8 @@ def starts_with(input_string, prefix):
     - bool: True if the input string starts with the prefix, False otherwise.
     """
     return input_string.startswith(prefix)
+
+
+def generate_simple_id():
+    # Generate a random 5-character ID using uppercase letters and digits
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))

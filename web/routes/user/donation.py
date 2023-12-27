@@ -69,6 +69,7 @@ def animal_help_donations(id):
       )
       new_donation.insert(new_donation)
       flash("Successfully added a donation", "success")
+      return redirect(url_for('user.donate.animal_help_donations', id=id))
   
     if in_kind_form.validate_on_submit() and formid == 'in-kind':
       new_donation = AnimalHelpDonation(
@@ -80,6 +81,8 @@ def animal_help_donations(id):
       )
       new_donation.insert(new_donation)
       flash("Successfully added a donation", "success")
+      return redirect(url_for('user.donate.animal_help_donations', id=id))
+
   
     data = AnimalHelp.find_one(id)
     donations = AnimalHelpDonation.find_all_by_id(id)

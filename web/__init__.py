@@ -12,7 +12,7 @@ from .database import db
 from .mail import mail
 from .models import User
 from .socket import socketio
-from .utils import celery_init_app, currency, get_image as _get_image, pretty_date as _pretty_date, sanitize_comma_separated as _sanitize_comma_separated, starts_with
+from .utils import celery_init_app, currency, get_image as _get_image, pretty_date as _pretty_date, sanitize_comma_separated as _sanitize_comma_separated, starts_with, generate_simple_id
 
 
 def  create_app():    
@@ -49,7 +49,8 @@ def  create_app():
     def utility_processor():
         return dict(
             get_image=_get_image,
-            starts_with=starts_with
+            starts_with=starts_with,
+            gen_id=generate_simple_id,
         )
     
     @app.template_filter('format_currency')
@@ -68,7 +69,6 @@ def  create_app():
     def get_image(string):
         return _get_image(string)
     
-
     @app.route('/favicon.ico')
     def favicon():
         return send_from_directory(os.path.join(app.root_path, 'static'),

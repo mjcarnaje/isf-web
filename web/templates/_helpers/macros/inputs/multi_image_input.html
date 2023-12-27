@@ -1,26 +1,31 @@
-{% macro multi_image_input(field) %}
+{% macro multi_image_input(field, uniqueId = gen_id()) %}
   <div class="flex flex-col form-control">
-    <ul id="selected-files" class="flex space-x-4 overflow-x-auto">
+    <ul id="selected-files-{{ uniqueId }}"
+        class="flex space-x-4 overflow-x-auto">
     </ul>
-    <input class="hidden" type="file" id="file-input" accept="image/*" multiple>
+    <input class="hidden"
+           type="file"
+           id="file-input-{{ uniqueId }}"
+           accept="image/*"
+           multiple>
     <div>
       <button type="button"
               class="flex items-center gap-3 px-3 py-2 text-sm font-semibold text-green-700 bg-green-100 rounded-lg"
-              onclick="addFiles()">
+              onclick="addFiles{{ uniqueId }}()">
         <i class="fa-solid fa-image"></i>
         Add Photo
       </button>
     </div>
   </div>
   <script>
-    const fileInput = document.getElementById('file-input');
-    const selectedFiles = document.getElementById('selected-files');
+    const fileInput{{ uniqueId }} = document.getElementById('file-input-{{ uniqueId }}');
+    const selectedFiles{{ uniqueId }} = document.getElementById('selected-files-{{ uniqueId }}');
 
-    fileInput.addEventListener('change', handleFileChange);
+    fileInput{{ uniqueId }}.addEventListener('change', handleFileChange{{ uniqueId }});
 
-    function handleFileChange() {
+    function handleFileChange{{ uniqueId }}() {
       const maxFileSizeMB = 1;
-      const files = fileInput.files;
+      const files = fileInput{{ uniqueId }}.files;
       const notIncluded = [];
 
       for (let i = 0; i < files.length; i++) {
@@ -35,9 +40,9 @@
         const reader = new FileReader();
 
         reader.onload = function (e) {
-          const li = createImageElement(e.target.result);
-          selectedFiles.appendChild(li);
-          updateInputNames();
+          const li = createImageElement{{ uniqueId }}(e.target.result);
+          selectedFiles{{ uniqueId }}.appendChild(li);
+          updateInputNames{{ uniqueId }}();
         };
 
         reader.readAsDataURL(file);
@@ -50,49 +55,47 @@
         }
       }
 
-      fileInput.value = '';
+      fileInput{{ uniqueId }}.value = '';
     }
 
-    function createImageElement(imageBase64) {
-        const li = document.createElement('li');
-        li.className = 'flex-shrink-0 aspect-[16/12] my-3 p-2 w-36 bg-gray-200 rounded-lg relative';
+    function createImageElement{{ uniqueId }}(imageBase64) {
+      const li = document.createElement('li');
+      li.className = 'flex-shrink-0 aspect-[16/12] my-3 p-2 w-36 bg-gray-200 rounded-lg relative';
 
-        const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'absolute w-6 h-6 flex justify-center items-center aspect-square rounded-lg -top-1 -right-1 p-2 bg-red-500 cursor-pointer';
-        deleteBtn.innerHTML = '<i class="text-xs text-white fas fa-trash-alt"></i>';
+      const deleteBtn = document.createElement('button');
+      deleteBtn.className = 'absolute w-6 h-6 flex justify-center items-center aspect-square rounded-lg -top-1 -right-1 p-2 bg-red-500 cursor-pointer';
+      deleteBtn.innerHTML = '<i class="text-xs text-white fas fa-trash-alt"></i>';
 
-        deleteBtn.addEventListener('click', function () {
-            li.remove();
-            updateInputNames();
-        });
+      deleteBtn.addEventListener('click', function () {
+        li.remove();
+        updateInputNames{{ uniqueId }}();
+      });
 
-        const img = document.createElement('img');
-        img.className = 'w-full rounded overflow-hidden bg-gray-50 h-full object-contain';
-        img.src = imageBase64;
+      const img = document.createElement('img');
+      img.className = 'w-full rounded overflow-hidden bg-gray-50 h-full object-contain';
+      img.src = imageBase64;
 
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.value = imageBase64;
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.value = imageBase64;
 
-        li.appendChild(deleteBtn);
-        li.appendChild(img);
-        li.appendChild(input);
+      li.appendChild(deleteBtn);
+      li.appendChild(img);
+      li.appendChild(input);
 
-        return li;
+      return li;
     }
 
-    function updateInputNames() {
-        const lis = document.querySelectorAll('#selected-files li');
-        lis.forEach((li, index) => {
-            const input = li.querySelector('input');
-            console.log(input)
-            input.name = `pictures-${index + 1}`;
-        });
+    function updateInputNames{{ uniqueId }}() {
+      const lis = document.querySelectorAll('#selected-files-{{ uniqueId }} li');
+      lis.forEach((li, index) => {
+        const input = li.querySelector('input');
+        input.name = `pictures-${index + 1}`;
+      });
     }
 
-
-    function addFiles() {
-      fileInput.click();
+    function addFiles{{ uniqueId }}() {
+      fileInput{{ uniqueId }}.click();
     }
   </script>
 {% endmacro %}
