@@ -4,7 +4,7 @@ from flask_login import current_user
 
 from ...config import Config
 from ...models import Event, User, Notification, EventPost
-from ...utils import admin_required, get_active_filter_count, pagination
+from ...utils import admin_required, get_active_filter_count, pagination, upload_images
 from ...validations import AddEventValidation, EditEventValidation, AddEventPostValidation
 from ...enums import WhoCanJoinEvent, NotificationType
 
@@ -56,10 +56,11 @@ def view_event(id):
         new_event = EventPost(
             event_id=id,
             post_text=form.post_text.data,
-            pictures=form.pictures.data,
+            pictures=upload_images(form.pictures.data),
             user_id=current_user.id
         )
         new_event.insert(new_event)
+        return redirect(url_for('admin.event.view_event', id=id))
     
     event = Event.find_one(id)
     statistics = Event.get_statistics(id)

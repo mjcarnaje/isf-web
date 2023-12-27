@@ -25,6 +25,8 @@ waitress = "*"
 uuid = "*"
 faker = "*"
 celery = "*"
+pillow = "*"
+opencv-python = "*"
 
 [dev-packages]
 

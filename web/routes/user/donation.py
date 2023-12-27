@@ -3,7 +3,7 @@ from flask_login import current_user
 
 from ...enums import DonationFor, DonationType, NotificationType
 from ...models import Donation, Notification, AnimalHelp, AnimalHelpPost, AnimalHelpDonation
-from ...utils import user_verified_required, get_active_filter_count, pagination
+from ...utils import user_verified_required, get_active_filter_count, pagination, upload_images
 from ...validations import AddDonation_In_Kind, AddDonationMoney, AddAnimalHelpDonationInKindValidation, AddAnimalHelpDonationMoneyValidation
 from ...config import Config
 
@@ -64,7 +64,7 @@ def animal_help_donations(id):
         amount=money_form.amount.data,
         animal_help_id=id,
         donation_type="Money",
-        pictures=money_form.pictures.data,
+        pictures=upload_images(money_form.pictures.data),
         user_id=current_user.id
       )
       new_donation.insert(new_donation)
@@ -75,7 +75,7 @@ def animal_help_donations(id):
         item_list=in_kind_form.item_list.data,
         animal_help_id=id,
         donation_type="In-Kind",
-        pictures=in_kind_form.pictures.data,
+        pictures=upload_images(in_kind_form.pictures.data),
         user_id=current_user.id
       )
       new_donation.insert(new_donation)
@@ -95,7 +95,7 @@ def donate_money():
     new_donation = Donation(
       remarks=form.remarks.data,
       amount=form.amount.data,
-      pictures=form.pictures.data,
+      pictures=upload_images(form.pictures.data),
       donation_type=DonationType.Money.value,
       type=DonationFor.General.value,
       user_id=current_user.id
@@ -125,7 +125,7 @@ def donate_in_kind():
     new_donation = Donation(
       remarks=form.remarks.data,
       item_list=form.item_list.data,
-      pictures=form.pictures.data,
+      pictures=upload_images(form.pictures.data),
       delivery_type=form.delivery_type.data,
       pick_up_location=form.pick_up_location.data,
       donation_type=DonationType.InKind.value,

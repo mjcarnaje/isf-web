@@ -12,18 +12,18 @@
         
     </style>
     {% if messages %}
-      <div class="toast toast-center toast-top" id="toastContainer">
+      <div class="z-50 toast toast-center toast-top" id="toastContainer">
         {% for category, message in messages %}
           {% if category == 'error' %}
-            <div class="p-4 min-w-[232px] flex justify-center items-center shadow rounded-lg bg-error">
+            <div class="p-4 min-w-[232px] max-w-[232px] flex justify-center items-center shadow rounded-lg bg-error">
               <span class="font-medium text-white">{{ message }}</span>
             </div>
           {% elif category == 'success' %}
-            <div class="p-4 min-w-[232px] flex justify-center items-center shadow rounded-lg bg-success">
+            <div class="p-4 min-w-[232px] max-w-[232px] flex justify-center items-center shadow rounded-lg bg-success">
               <span class="font-medium text-white">{{ message }}</span>
             </div>
           {% else %}
-            <div class="p-4 min-w-[232px] flex justify-center items-center shadow rounded-lg bg-info">
+            <div class="p-4 min-w-[232px] max-w-[232px] flex justify-center items-center shadow rounded-lg bg-info">
               <span class="font-medium text-white">{{ message }}</span>
             </div>
           {% endif %}

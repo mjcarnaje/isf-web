@@ -1,7 +1,7 @@
 {% set active_page = "user.animal_help.donations" %}
 {% extends "./_helpers/layout/animal_help/user_animal_help_layout.html" %}
 {% from './_helpers/macros/custom_input.html' import render_field %}
-{% from './_helpers/macros/multiple_photo_input.html' import render_multiple_photo_field with context %}
+{% from './_helpers/macros/inputs/multi_image_input.html' import multi_image_input with context %}
 {% from "./_helpers/macros/empty_list.html" import empty_list %}
 {% from "./_helpers/macros/animal_help/animal_help_donations.html" import animal_help_donations with context %}
 {% block title %}
@@ -18,7 +18,7 @@
             novalidate>
         {{ money_form.csrf_token() }}
         {{ render_field(money_form.amount) }}
-        {{ render_multiple_photo_field(money_form.pictures, 'Add Screenshots', 'money') }}
+        {{ multi_image_input(money_form.pictures) }}
         <button type="submit" class="w-full btn btn-md">Submit</button>
       </form>
     </div>
@@ -33,7 +33,7 @@
             novalidate>
         {{ in_kind_form.csrf_token() }}
         {{ render_field(in_kind_form.item_list) }}
-        {{ render_multiple_photo_field(in_kind_form.pictures, 'Add Picture', 'in-kind') }}
+        {{ multi_image_input(in_kind_form.pictures) }}
         <button type="submit" class="w-full btn btn-md">Submit</button>
       </form>
     </div>

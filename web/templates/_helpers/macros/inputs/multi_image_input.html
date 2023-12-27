@@ -1,0 +1,98 @@
+{% macro multi_image_input(field) %}
+  <div class="flex flex-col form-control">
+    <ul id="selected-files" class="flex space-x-4 overflow-x-auto">
+    </ul>
+    <input class="hidden" type="file" id="file-input" accept="image/*" multiple>
+    <div>
+      <button type="button"
+              class="flex items-center gap-3 px-3 py-2 text-sm font-semibold text-green-700 bg-green-100 rounded-lg"
+              onclick="addFiles()">
+        <i class="fa-solid fa-image"></i>
+        Add Photo
+      </button>
+    </div>
+  </div>
+  <script>
+    const fileInput = document.getElementById('file-input');
+    const selectedFiles = document.getElementById('selected-files');
+
+    fileInput.addEventListener('change', handleFileChange);
+
+    function handleFileChange() {
+      const maxFileSizeMB = 1;
+      const files = fileInput.files;
+      const notIncluded = [];
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+
+        if (file.size > maxFileSizeMB * 1024 * 1024) {
+          const fileSizeFormatted = formatFileSize(file.size);
+          notIncluded.push({ name: file.name, size: fileSizeFormatted });
+          continue;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+          const li = createImageElement(e.target.result);
+          selectedFiles.appendChild(li);
+          updateInputNames();
+        };
+
+        reader.readAsDataURL(file);
+      }
+
+      if (notIncluded.length > 0) {
+        for (let i = 0; i < notIncluded.length; i++) {
+          const { name, size } = notIncluded[i];
+          showToast("error", `This file is not included "${name}" (${size})`)
+        }
+      }
+
+      fileInput.value = '';
+    }
+
+    function createImageElement(imageBase64) {
+        const li = document.createElement('li');
+        li.className = 'flex-shrink-0 aspect-[16/12] my-3 p-2 w-36 bg-gray-200 rounded-lg relative';
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'absolute w-6 h-6 flex justify-center items-center aspect-square rounded-lg -top-1 -right-1 p-2 bg-red-500 cursor-pointer';
+        deleteBtn.innerHTML = '<i class="text-xs text-white fas fa-trash-alt"></i>';
+
+        deleteBtn.addEventListener('click', function () {
+            li.remove();
+            updateInputNames();
+        });
+
+        const img = document.createElement('img');
+        img.className = 'w-full rounded overflow-hidden bg-gray-50 h-full object-contain';
+        img.src = imageBase64;
+
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.value = imageBase64;
+
+        li.appendChild(deleteBtn);
+        li.appendChild(img);
+        li.appendChild(input);
+
+        return li;
+    }
+
+    function updateInputNames() {
+        const lis = document.querySelectorAll('#selected-files li');
+        lis.forEach((li, index) => {
+            const input = li.querySelector('input');
+            console.log(input)
+            input.name = `pictures-${index + 1}`;
+        });
+    }
+
+
+    function addFiles() {
+      fileInput.click();
+    }
+  </script>
+{% endmacro %}

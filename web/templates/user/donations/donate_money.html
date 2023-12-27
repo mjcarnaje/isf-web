@@ -2,7 +2,7 @@
 {% extends "./_helpers/layout/user_layout.html" %}
 {% from './_helpers/macros/custom_input.html' import render_field %}
 {% from './_helpers/macros/photo_input.html' import render_photo_field with context %}
-{% from './_helpers/macros/multiple_photo_input.html' import render_multiple_photo_field with context %}
+{% from './_helpers/macros/inputs/multi_image_input.html' import multi_image_input with context %}
 {% block title %}
   Donate
 {% endblock title %}
@@ -38,7 +38,7 @@
         novalidate>
     {{ render_field(form.amount) }}
     {{ render_field(form.remarks) }}
-    {{ render_multiple_photo_field(form.pictures) }}
+    {{ multi_image_input(form.pictures) }}
     {{ form.csrf_token() }}
     <button type="submit" class="w-full text-white btn-primary btn btn-md">Submit</button>
   </form>

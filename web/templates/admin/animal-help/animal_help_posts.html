@@ -1,7 +1,7 @@
 {% set active_page = "admin.animal_help.posts" %}
 {% extends "./_helpers/layout/animal_help/admin_animal_help_layout.html" %}
 {% from "./_helpers/macros/pagination_buttons.html" import pagination_buttons with context %}
-{% from './_helpers/macros/multiple_photo_input.html' import render_multiple_photo_field with context %}
+{% from './_helpers/macros/inputs/multi_image_input.html' import multi_image_input with context %}
 {% from './_helpers/macros/custom_input.html' import render_field %}
 {% from './_helpers/macros/animal_help/animal_help_posts.html' import animal_help_posts with context %}
 {% from "./_helpers/macros/empty_list.html" import empty_list %}
@@ -15,7 +15,7 @@
       <form class="grid w-full grid-cols-1 gap-4" method="post" novalidate>
         {{ form.csrf_token() }}
         {{ render_field(form.post_text) }}
-        {{ render_multiple_photo_field(form.pictures) }}
+        {{ multi_image_input(form.pictures) }}
         <button type="submit" class="w-full btn btn-md">Submit</button>
       </form>
     </div>

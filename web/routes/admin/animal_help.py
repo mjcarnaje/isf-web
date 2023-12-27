@@ -3,7 +3,7 @@ from flask import (Blueprint, render_template, request, session, jsonify, redire
 from ...config import Config
 from ...models import AnimalHelp, AnimalHelpPost, AnimalHelpDonation, Animal
 from ...utils import admin_required, get_active_filter_count
-from ...utils import pagination
+from ...utils import pagination, upload_images
 from ...validations import AddAnimalHelpValidation, AddAnimalHelpPostValidation, EditAnimalHelpValidation
 from flask_login import current_user
 
@@ -63,15 +63,17 @@ def animal_help_posts(id):
     if request.method == "POST" and form.validate_on_submit():
         new_update = AnimalHelpPost(
             animal_help_id=id,
-            pictures=form.pictures.data,
+            pictures=upload_images(form.pictures.data),
             post_text=form.post_text.data,
             user_id=current_user.id
         )
         new_update.insert(new_update)
         flash("Successfully added a post!", "success")
+        return redirect(url_for('admin.animal_help.animal_help_posts', id=id))
     
     data = AnimalHelp.find_one(id)
     posts = AnimalHelpPost.find_all_by_id(id)
+
     return render_template('admin/animal-help/animal_help_posts.html', 
         id=id, 
         data=data, 

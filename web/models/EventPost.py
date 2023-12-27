@@ -57,6 +57,7 @@ class EventPost:
             cur.executemany(pictures_sql, pictures_params)
             db.connection.commit()
 
+
         return event_post_id
         
     @classmethod

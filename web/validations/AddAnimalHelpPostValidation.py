@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import HiddenField, TextAreaField, validators, IntegerField, widgets, FieldList, StringField
+from wtforms import HiddenField, TextAreaField, validators, FieldList, StringField
 
 class AddAnimalHelpPostValidation(FlaskForm):
     animal_help_id = HiddenField("Animal Help Id")
