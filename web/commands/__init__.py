@@ -33,8 +33,8 @@ def set_up_commands(app: Flask):
 
     @app.cli.command("seed")
     def seed():
-        UserSeeder(db).seed(200)
-        UserRoleSeeder(db).seed(240)
+        UserSeeder(db).seed(20)
+        UserRoleSeeder(db).seed(10)
         AnimalSeeder(db).seed(600)
         EventSeeder(db).seed(100)
         

@@ -57,3 +57,10 @@ def delete_user(id):
    User.delete(id)
    flash("Successfuly delete user.", "success")
    return "success"
+
+@user_bp.route("/<int:id>/verify", methods=['PUT'])
+@admin_required
+def verify_user(id):
+   User.set_is_verified(id)
+   flash("Successfuly verify user.", "success")
+   return "success"
