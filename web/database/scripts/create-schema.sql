@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS user (
     gender ENUM('Male', 'Female', 'Other') NOT NULL,
     password VARCHAR(256) NOT NULL,
     photo_url VARCHAR(256),
-    is_verified BOOLEAN DEFAULT 0,
+    is_verified BOOLEAN DEFAULT 1,
     unread_notification_count INT DEFAULT 0,
     contact_number VARCHAR(12) UNIQUE NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP

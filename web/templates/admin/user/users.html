@@ -60,13 +60,15 @@
                     <i class="fa-solid fa-eye"></i>
                     <span class="text-sm pointer-events-none">View</span>
                   </li>
-                  <li role="button"
-                      tabindex="0"
-                      id="verify-user-button"
-                      data-user-id="{{ user.id }}">
-                    <i class="fa-solid fa-check"></i>
-                    <span class="text-sm pointer-events-none">Verify</span>
-                  </li>
+                  {% if not user.is_verified %}
+                    <li role="button"
+                        tabindex="0"
+                        id="verify-user-button"
+                        data-user-id="{{ user.id }}">
+                      <i class="fa-solid fa-check"></i>
+                      <span class="text-sm pointer-events-none">Verify</span>
+                    </li>
+                  {% endif %}
                   <li role="button"
                       tabindex="0"
                       id="delete-user-button"

@@ -35,8 +35,8 @@ def set_up_commands(app: Flask):
     def seed():
         UserSeeder(db).seed(20)
         UserRoleSeeder(db).seed(10)
-        AnimalSeeder(db).seed(600)
-        EventSeeder(db).seed(100)
+        AnimalSeeder(db).seed(200)
+        EventSeeder(db).seed(20)
         
     @app.cli.command("save-animal-photos")
     def save_animal_photos():
