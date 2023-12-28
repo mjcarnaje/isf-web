@@ -28,6 +28,7 @@ celery = "*"
 pillow = "*"
 opencv-python = "*"
 gunicorn = "*"
+eventlet = "*"
 
 [dev-packages]
 

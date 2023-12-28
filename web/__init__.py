@@ -13,6 +13,7 @@ from .mail import mail
 from .models import User
 from .socket import socketio
 from .utils import celery_init_app, currency, get_image as _get_image, pretty_date as _pretty_date, sanitize_comma_separated as _sanitize_comma_separated, starts_with, generate_simple_id
+from engineio.async_drivers import eventlet
 
 
 def  create_app():    
@@ -21,7 +22,7 @@ def  create_app():
     app.config.from_object(Config)
     db.init_app(app)
     mail.init_app(app)
-    socketio.init_app(app)
+    socketio.init_app(app=app, async_mode="eventlet")
     
     set_up_commands(app)
     CSRFProtect(app)
