@@ -24,9 +24,10 @@ def index():
 @user_bp.route('/dashboard', methods=['GET', 'POST'])
 @user_verified_required
 def dashboard():
-  latest_event = Event.get_latest_event()
-  featured_events = Event.get_featured()
-  return render_template('user/dashboard.html', latest_event=latest_event, featured_events=featured_events)
+  return redirect(url_for('user.animals.animals'))
+  # latest_event = Event.get_latest_event()
+  # featured_events = Event.get_featured()
+  # return render_template('user/dashboard.html', latest_event=latest_event, featured_events=featured_events)
 
 @user_bp.route('/notifications', methods=['GET'])
 @user_verified_required

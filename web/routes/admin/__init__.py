@@ -28,13 +28,14 @@ admin_bp.register_blueprint(member_application_bp)
 @admin_bp.route('/', methods=['GET'])
 @admin_required
 def index(): 
-   animal_stats = Animal.get_stats()
-   members = User.find_members()
-   adoption_query = Adoption.get_for_adoptions(
-        page_number=1, 
-        page_size=5
-    )
-   return render_template('/admin/dashboard.html', adoptions=adoption_query.get("data"), members=members[:5], animal_stats=animal_stats)
+   return redirect(url_for('admin.animal.animals'))
+   # animal_stats = Animal.get_stats()
+   # members = User.find_members()
+   # adoption_query = Adoption.get_for_adoptions(
+   #      page_number=1, 
+   #      page_size=5
+   #  )
+   # return render_template('/admin/dashboard.html', adoptions=adoption_query.get("data"), members=members[:5], animal_stats=animal_stats)
 
 @admin_bp.route('/notifications', methods=['GET'])
 @admin_required
