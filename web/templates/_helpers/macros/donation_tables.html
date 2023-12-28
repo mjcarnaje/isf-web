@@ -27,7 +27,7 @@
           <th class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Actions</th>
         </tr>
       </thead>
-      <tbody class="bg-white divide-y divide-gray-200">
+      <tbody>
         {% for donation in donations %}
           <dialog id="confirm_modal{{ loop.index }}"
                   class="modal modal-bottom sm:modal-middle">
@@ -65,18 +65,20 @@
           </dialog>
           <tr>
             <td class="px-3 py-5 text-sm text-gray-800">
-              <div class="flex items-center gap-2">
+              <a href="{{ url_for('admin.donations.donation', id=donation.id) }}"
+                 class="flex items-center gap-3 transition-all cursor-pointer group">
                 {% if donation.donation_type == 'Money' %}
-                  <div class="flex items-center justify-center w-10 h-10 bg-green-100 rounded-full">
-                    <i class="text-green-600 fa-solid fa-money-bill"></i>
+                  <div class="flex items-center justify-center w-12 h-12 transition-all bg-green-100 rounded-xl">
+                    <i class="text-lg text-green-600 transition-all group-hover:text-green-500 fa-solid fa-money-bill"></i>
                   </div>
+                  <span class="transition-all group-hover:text-green-500">{{ donation.donation_type }}</span>
                 {% else %}
-                  <div class="flex items-center justify-center w-10 h-10 bg-yellow-100 rounded-full">
-                    <i class="text-yellow-600 fa-solid fa-hand-holding-heart"></i>
+                  <div class="flex items-center justify-center w-12 h-12 transition-all bg-yellow-100 rounded-xl">
+                    <i class="text-lg text-yellow-600 transition-all group-hover:text-yellow-500 fa-solid fa-hand-holding-heart"></i>
                   </div>
+                  <span class="transition-all group-hover:text-yellow-500">{{ donation.donation_type }}</span>
                 {% endif %}
-                {{ donation.donation_type }}
-              </div>
+              </a>
             </td>
             <td class="px-3 py-5 text-sm text-left text-gray-800">{{ donation.remarks or "No remarks" }}</td>
             <td class="px-3 py-5 text-sm text-left text-gray-800">
@@ -185,7 +187,5 @@
         });
         });
     })
-
-
   </script>
 {% endmacro %}

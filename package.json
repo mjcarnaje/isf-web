@@ -4,7 +4,8 @@
   "description": "Welcome to the **Iligan Stray Feeders (ISF)** web application! Our platform is dedicated to connecting stray animals in Iligan City with potential adopters and donors. Additionally, we provide valuable resources for lost and found pets. ISF is a project that aims to unite volunteers and individuals who want to make a difference in the lives of stray animals.",
   "main": "tailwind.config.js",
   "scripts": {
-    "compile:css": "tailwindcss -i web/static/css/tailwind.css -o web/static/css/styles.css --watch"
+    "compile:css": "tailwindcss -i web/static/css/tailwind.css -o web/static/css/styles.css --watch",
+    "prod:css": "tailwindcss -i web/static/css/tailwind.css -o web/static/css/styles.css"
   },
   "author": "",
   "license": "ISC",

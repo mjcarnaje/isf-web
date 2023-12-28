@@ -40,9 +40,9 @@ def donations():
         ),
     )
 
-@donations_bp.route('/<int:id>', methods=['GET', 'POST'])
+@donations_bp.route('/<id>', methods=['GET', 'POST'])
 def donation(id):
-    return render_template()
+    return render_template('admin/donation/donation.html')
 
 
 @donations_bp.route('/confirm/<int:id>', methods=['PUT'])

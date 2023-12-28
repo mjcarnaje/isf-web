@@ -31,7 +31,7 @@ class Config:
     MAIL_USE_SSL = False
 
     CELERY = dict(
-        broker_url="pyamqp://guest:guest@localhost//",
+        broker_url=os.getenv('CELERY_BROKER_URL'),
         task_ignore_result=True,
     )
 
