@@ -1,9 +1,7 @@
 import os
 
 
-class Config:
-    APP_URL = os.getenv('APP_URL')
-    
+class Config:    
     SECRET_KEY = os.getenv('SECRET_KEY')
     MYSQL_HOST = os.getenv('MYSQL_HOST')
     MYSQL_USER = os.getenv('MYSQL_USER')

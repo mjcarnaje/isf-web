@@ -27,6 +27,7 @@ faker = "*"
 celery = "*"
 pillow = "*"
 opencv-python = "*"
+gunicorn = "*"
 
 [dev-packages]
 
