@@ -82,5 +82,22 @@
         </div>
       </div>
     {% endif %}
+    {% if animal.for_adoption %}
+      <div class="relative flex flex-col max-w-5xl gap-6 px-10 py-8 mx-auto mt-8 bg-white border shadow-md rounded-3xl">
+        <div class="flex items-center gap-4">
+          <div class="grid w-12 h-12 {{ 'bg-primary-500' if animal.for_adoption else 'bg-gray-500' }} rounded-full place-items-center">
+            <i class="text-xl text-white fa-solid fa-paw"></i>
+          </div>
+          <p class="text-xl font-bold text-gray-800">Available for Adoption</p>
+        </div>
+        <p class="mb-4 text-gray-600">
+          Help these adorable pets find their forever homes. Apply now to give them the love and care they deserve.
+        </p>
+        <a href="{{ url_for('user.adoption.adopt_me', id=animal.id) }}"
+           class="w-full btn {{ '' if animal.is_applied else 'btn-primary text-white' }}">
+          {{ "Already Applied" if animal.is_applied else 'Apply Now' }}
+        </a>
+      </div>
+    {% endif %}
   </div>
 {% endblock content %}

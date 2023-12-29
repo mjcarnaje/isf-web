@@ -1,8 +1,10 @@
-from flask import (Blueprint, render_template, request, session)
+from flask import Blueprint, render_template, request, session
+from flask_login import current_user
 
 from ...config import Config
 from ...models import Animal
-from ...utils import get_active_filter_count, user_verified_required, pagination
+from ...utils import (get_active_filter_count, pagination,
+                      user_verified_required)
 
 user_animal_bp = Blueprint("animals", __name__, url_prefix='/animals')
 
@@ -52,6 +54,6 @@ def animals():
 @user_animal_bp.route('/<int:id>', methods=['GET'])
 @user_verified_required
 def view_animal(id):
-  animal = Animal.find_one(id)
+  animal = Animal.find_one(animal_id=id, user_id=current_user.id)
   adopter = Animal.get_adopter(id)
   return render_template('/user/animals/animal.html', animal=animal, adopter=adopter) 

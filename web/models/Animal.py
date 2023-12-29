@@ -23,7 +23,8 @@ class Animal():
                 id: int | None = None, 
                 created_at: datetime.date | None = None,
                 updated_at: datetime.date | None = None,
-                help_requested: bool = False
+                help_requested: bool = False,
+                is_applied: bool = False
                 ):
         self.id = id
         self.name = name
@@ -45,6 +46,7 @@ class Animal():
         self.created_at = created_at
         self.updated_at = updated_at
         self.help_requested = help_requested
+        self.is_applied = is_applied
 
     @staticmethod
     def get_adopter(user_id: int):
@@ -74,38 +76,73 @@ class Animal():
         return row
 
     @classmethod
-    def find_one(cls, animal_id: int):
-        sql = """
-            SELECT 
-                id,
-                name,
-                type,
-                estimated_birth_month,
-                estimated_birth_year,
-                photo_url,
-                gender,
-                is_adopted,
-                is_dead,
-                is_dewormed,
-                is_neutered,
-                in_shelter,
-                is_rescued,
-                for_adoption,
-                description,
-                appearance,
-                author_id,
-                created_at,
-                updated_at
-            FROM 
-                animal
-            WHERE 
-                animal.id = %s;
-        """
-        cur = db.new_cursor(dictionary=True)
-        cur.execute(sql, (animal_id,))
-        row = cur.fetchone()
-        cur.close()
-        return cls(**row)
+    def find_one(cls, animal_id: int, user_id: int = None):
+        if user_id is not None:
+            sql = """
+                SELECT 
+                    animal.id,
+                    name,
+                    type,
+                    estimated_birth_month,
+                    estimated_birth_year,
+                    photo_url,
+                    gender,
+                    is_adopted,
+                    is_dead,
+                    is_dewormed,
+                    is_neutered,
+                    in_shelter,
+                    is_rescued,
+                    for_adoption,
+                    description,
+                    appearance,
+                    author_id,
+                    animal.created_at,
+                    animal.updated_at,
+                    IF(adoption.id IS NOT NULL, 1, 0) AS is_applied
+                FROM animal
+                LEFT JOIN adoption ON animal.id = adoption.animal_id AND adoption.user_id = %s
+                WHERE animal.id = %s
+            """
+            params = (user_id, animal_id)
+        else:
+            sql = """
+                SELECT 
+                    id,
+                    name,
+                    type,
+                    estimated_birth_month,
+                    estimated_birth_year,
+                    photo_url,
+                    gender,
+                    is_adopted,
+                    is_dead,
+                    is_dewormed,
+                    is_neutered,
+                    in_shelter,
+                    is_rescued,
+                    for_adoption,
+                    description,
+                    appearance,
+                    author_id,
+                    created_at,
+                    updated_at
+                FROM animal
+                WHERE id = %s
+            """
+            params = (animal_id,)
+
+        try:
+            cur = db.new_cursor(dictionary=True)
+            cur.execute(sql, params)
+            row = cur.fetchone()
+            cur.close()
+            return cls(**row) if row else None
+        except Exception as e:
+            # Handle the exception (e.g., log the error)
+            print(f"Error retrieving animal data: {e}")
+            return None
+
 
     @staticmethod
     def insert(

@@ -31,10 +31,10 @@ class UserSignupValidation(FlaskForm):
     password = PasswordField('New Password', validators=[
         validators.Length(min=6, max=25),
         validators.EqualTo('confirm_password', message='Passwords must match'),
-        validators.Regexp(regex=r'(?=.*[a-z])', message='Password must contain at least one lowercase letter'),
-        validators.Regexp(regex=r'(?=.*[A-Z])', message='Password must contain at least one uppercase letter'),
-        validators.Regexp(regex=r'(?=.*\d)', message='Password must contain at least one number'),
-        validators.Regexp(regex=r'(?=.*[@$!%*?&])', message='Password must contain at least one special character')
+        # validators.Regexp(regex=r'(?=.*[a-z])', message='Password must contain at least one lowercase letter'),
+        # validators.Regexp(regex=r'(?=.*[A-Z])', message='Password must contain at least one uppercase letter'),
+        # validators.Regexp(regex=r'(?=.*\d)', message='Password must contain at least one number'),
+        # validators.Regexp(regex=r'(?=.*[@$!%*?&])', message='Password must contain at least one special character')
     ])
     confirm_password = PasswordField('Confirm Password', validators=[
         validators.Length(min=6, max=25),
