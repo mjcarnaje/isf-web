@@ -70,7 +70,7 @@ class AnimalSeeder:
                 random.choice([0, 1]),
                 random.choice([0, 1]),
                 random.choice([0, 1]),
-                0 if is_adopted else random.choice([0, 1]),
+                0 if is_adopted else random.choice([0, 1, 1, 1]),
             )
             sql_values = self.generate_fake_sql_values(*animal_data)
             sql_statements.append(sql_values)

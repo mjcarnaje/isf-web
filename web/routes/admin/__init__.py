@@ -1,9 +1,9 @@
-from flask import Blueprint, redirect, render_template, request, url_for, session
+from flask import Blueprint, redirect, render_template, request, url_for
 from flask_login import current_user, login_user, logout_user
 from werkzeug.security import check_password_hash
 
-from ...models import Animal, Notification, User, Adoption
-from ...utils import admin_required, get_active_filter_count, pagination
+from ...models import Notification, User
+from ...utils import admin_required
 from ...validations import AdminLoginValidation
 from ...config import Config
 
@@ -79,9 +79,7 @@ def login():
     admin = User.find_by_username(username=form.username.data)
 
     if admin and check_password_hash(admin.password, form.password.data):
-      session['view_type'] = 'card'
       login_user(admin, remember=True)
-
       
       next_page = request.args.get("next")
 

@@ -57,7 +57,7 @@ def adopt():
         offset=offset,
         page_size=Config.DEFAULT_PAGE_SIZE,
         total_count=total_count,
-        base_url="landing.animals"
+        base_url="landing.adopt"
       )
   )
 

@@ -1,7 +1,7 @@
 import os
 import cloudinary
 from cloudinary.uploader import upload as cloudinary_upload
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, request, send_from_directory, session
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 from oauthlib.oauth2 import WebApplicationClient
@@ -107,8 +107,9 @@ def  create_app():
             'url': upload_result['secure_url']
         })
 
+    session['view_type'] = 'card'
+    
     from .routes import admin_bp, landing_bp, user_bp
-        
     app.register_blueprint(landing_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(user_bp)
