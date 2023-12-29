@@ -40,9 +40,19 @@ def set_up_commands(app: Flask):
         
     @app.cli.command("save-animal-photos")
     def save_animal_photos():
-        animal_photos = get_collection_photos("1816954")
+        cat_photos = get_collection_photos("1973336")
+        dog_photos = get_collection_photos("2109136")
+
+        results = []
+
+        for cat in cat_photos:
+            results.append({'type': 'cat', 'link': cat})
+
+        for dog in dog_photos:
+            results.append({'type': 'dog', 'link': dog})
+
         with open('animal_photos.json', 'w') as outf:
-            json.dump(animal_photos, outf, indent=2)
+            json.dump(results, outf, indent=2)
 
     @app.cli.command("save-user-photos")
     def save_user_photos():

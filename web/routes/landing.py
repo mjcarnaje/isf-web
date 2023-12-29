@@ -20,6 +20,9 @@ def index():
   animals_query = Animal.find_all(
       page_number=1,
       page_size=Config.DEFAULT_PAGE_SIZE,
+      filters={
+         'is_dead': 0
+      }
   )
   return render_template('/landing/home.html', animals=animals_query.get('data'))
   

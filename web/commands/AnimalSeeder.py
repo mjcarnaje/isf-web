@@ -26,11 +26,13 @@ class AnimalSeeder:
     def generate_fake_appearance(self, animal_type):
         return self.fake.sentence(nb_words=6) + f' {animal_type}.'
 
-    def generate_fake_sql_values(self, animal_type, is_adopted, is_dead, is_dewormed, is_neutered, in_shelter, is_rescued, for_adoption):
+    def generate_fake_sql_values(self, is_adopted, is_dead, is_dewormed, is_neutered, in_shelter, is_rescued, for_adoption):
         if not self.animal_photos_copy:
             self.animal_photos_copy = self.load_animal_photos()
 
-        photo_url = self.animal_photos_copy.pop(0)
+        animal_item = self.animal_photos_copy.pop(0)
+        animal_photo = animal_item['link']
+        animal_type = animal_item['type'].capitalize()
 
         return (
             "('{}', "
@@ -47,7 +49,7 @@ class AnimalSeeder:
                 animal_type,
                 self.generate_random_date().strftime('%B'),
                 self.generate_random_date().strftime('%Y'),
-                photo_url,
+                animal_photo,
                 self.generate_random_gender(),
                 is_adopted, is_dead, is_dewormed, is_neutered, in_shelter, is_rescued, for_adoption,
                 self.generate_fake_description(animal_type),
@@ -63,7 +65,6 @@ class AnimalSeeder:
             is_adopted = random.choice([0, 1])
 
             animal_data = (
-                random.choice(['Dog', 'Cat']),
                 is_adopted,
                 random.choice([0, 1]),
                 random.choice([0, 1]),
