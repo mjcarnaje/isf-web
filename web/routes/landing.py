@@ -16,6 +16,7 @@ landing_bp = Blueprint("landing", __name__)
 @landing_bp.route('/', methods=['GET'])
 @anonymous_required
 def index():
+  session['view_type'] = 'card'
   animals_query = Animal.find_all(
       page_number=1,
       page_size=Config.DEFAULT_PAGE_SIZE,

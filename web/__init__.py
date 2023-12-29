@@ -106,8 +106,6 @@ def  create_app():
             'public_id': upload_result['public_id'],
             'url': upload_result['secure_url']
         })
-
-    session['view_type'] = 'card'
     
     from .routes import admin_bp, landing_bp, user_bp
     app.register_blueprint(landing_bp)
