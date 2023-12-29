@@ -404,6 +404,7 @@ class Adoption:
                     adoption.phone_number,
                     animal.id as animal_id,
                     animal.name as animal_name,
+                    animal.description as animal_description,
                     animal.photo_url as animal_photo_url,
                     animal.is_dewormed as animal_is_dewormed,
                     animal.is_neutered as animal_is_neutered,

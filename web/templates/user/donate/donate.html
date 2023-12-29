@@ -26,8 +26,28 @@
     </div>
   </dialog>
   <div class="flex flex-col w-full gap-8">
-    <div class="flex justify-end pb-4">
-      <button onclick="modal.showModal()" class="text-white btn btn-primary">Support Organiation</button>
+    <div class="relative flex items-center w-full gap-8 px-10 py-8 mx-auto bg-white border shadow-md rounded-3xl">
+      <img class="z-10 max-w-[180px] rounded-full"
+           src="{{ url_for('static', filename='images/animals.png') }}"
+           alt="Animals"
+           height="auto"
+           width="auto" />
+      <div class="text-left">
+        <h1 class="mb-2 text-3xl font-bold text-gray-800">Support Our Cause</h1>
+        <p class="max-w-xl mb-4 text-gray-600">
+          Help us care for and find loving homes for stray animals in Iligan. Your donation makes a difference!
+        </p>
+        <div class="flex gap-x-4">
+          <a href="{{ url_for('user.donate.donate_money',) }}"
+             class="flex-1 text-white bg-blue-500 border-0 btn hover:bg-blue-600">
+            <i class="mr-2 fa-solid fa-money-bill"></i> Monetary Donation
+          </a>
+          <a href="{{ url_for('user.donate.donate_in_kind',) }}"
+             class="flex-1 text-white bg-green-500 border-0 btn hover:bg-green-600">
+            <i class="mr-2 fa-solid fa-hand-holding-heart"></i> In-Kind Donation
+          </a>
+        </div>
+      </div>
     </div>
     <div class="sm:flex sm:items-center">
       <div class="sm:flex-auto">

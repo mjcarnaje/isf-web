@@ -6,16 +6,19 @@
 {% endblock title %}
 {% block content %}
   <div class="space-y-8">
-    <div class="relative flex items-start gap-8 px-10 py-12 mx-auto bg-white border shadow-md rounded-3xl">
-      <a href="{{ url_for('user.animals.view_animal', id=application.animal_id) }}">
+    <div class="relative flex items-start w-full gap-8 px-10 py-12 mx-auto bg-white border shadow-md rounded-3xl">
+      <div class="w-64 h-64 p-1 border-4 rounded-full border-primary-500">
         <img src="{{ get_image(application.animal_photo_url) }}"
-             class="object-cover h-full ring ring-primary-500 ring-offset-2 w-36 rounded-xl aspect-square"
+             class="object-cover w-full h-full rounded-full"
              height="auto"
              width="auto"
              alt="Image Background">
-      </a>
-      <div class="flex flex-col w-full gap-6">
-        <h1 class="text-3xl font-bold">{{ application.animal_name }}</h1>
+      </div>
+      <div class="flex flex-col w-full max-w-2xl gap-8">
+        <div class="flex items-center gap-3">
+          <h1 class="text-4xl font-bold">{{ application.animal_name }}</h1>
+        </div>
+        <p class="w-full text-md">{{ application.animal_description }}</p>
         <div class="grid w-full grid-cols-2">
           <div class="flex items-center gap-3 p-3">
             <div class="grid w-8 h-8 {{ 'bg-green-500' if application.animal_is_dewormed else 'bg-gray-500' }} rounded-full place-items-center ">
@@ -54,6 +57,7 @@
             <p class="font-bold text-gray-800">For Adoption</p>
           </div>
         </div>
+        <div class="w-full border-t"></div>
         <div class="flex gap-8">
           <div class="flex items-center gap-2">
             {% if application.interview_preference == "Zoom" %}
