@@ -1,0 +1,71 @@
+{% macro home_animal_cards(animals) %}
+  {% for animal in animals %}
+    <div class="flex flex-col bg-white shadow-md group rounded-xl">
+      <div class="overflow-hidden w-60 rounded-t-xl aspect-square">
+        <img class="object-cover h-full transition-all duration-300 aspect-square rounded-t-xl group-hover:scale-105"
+             src="{{ get_image(animal.photo_url) }}"
+             alt="Animal Photo"
+             width="auto"
+             height="auto" />
+      </div>
+      <div class="flex-1 p-4">
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center justify-between">
+            <p class="font-bold text-gray-800">{{ animal.name }}</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-3">
+            {% if animal.for_adoption %}
+              <div class="tooltip" data-tip="For Adoption">
+                <div class="flex items-center justify-center h-8 rounded-lg {{ 'bg-primary-500' if animal.for_adoption else 'bg-gray-500' }} bg-opacity-20 aspect-square">
+                  <i class="text-primary-500 fa-solid fa-paw"></i>
+                </div>
+              </div>
+            {% endif %}
+            {% if animal.is_adopted %}
+              <div class="tooltip" data-tip="Adopted">
+                <div class="flex items-center justify-center h-8 {{ 'bg-red-500' if animal.is_adopted else 'bg-gray-500' }} rounded-lg bg-opacity-20 aspect-square">
+                  <i class="text-red-500 fa-solid fa-heart"></i>
+                </div>
+              </div>
+            {% endif %}
+            {% if animal.is_dewormed %}
+              <div class="tooltip" data-tip="Dewormed">
+                <div class="flex items-center justify-center h-8 {{ 'bg-green-500' if animal.is_dewormed else 'bg-gray-500' }} rounded-lg bg-opacity-20 aspect-square">
+                  <i class="text-green-500 fa-solid fa-shield"></i>
+                </div>
+              </div>
+            {% endif %}
+            {% if animal.is_neutered %}
+              <div class="tooltip" data-tip="Neutered">
+                <div class="flex items-center justify-center h-8 {{ 'bg-blue-500' if animal.is_neutered else 'bg-gray-500' }} rounded-lg bg-opacity-20 aspect-square">
+                  <i class="text-blue-500 fa-solid fa-cut"></i>
+                </div>
+              </div>
+            {% endif %}
+            {% if animal.in_shelter %}
+              <div class="tooltip" data-tip="In Shelter">
+                <div class="flex items-center justify-center h-8 {{ 'bg-purple-500' if animal.in_shelter else 'bg-gray-500' }} rounded-lg bg-opacity-20 aspect-square">
+                  <i class="text-purple-500 fa-solid fa-home"></i>
+                </div>
+              </div>
+            {% endif %}
+            {% if animal.is_rescued %}
+              <div class="tooltip" data-tip="Rescued">
+                <div class="flex items-center justify-center h-8 {{ 'bg-yellow-500' if animal.is_rescued else 'bg-gray-500' }} rounded-lg bg-opacity-20 aspect-square">
+                  <i class="text-yellow-500 fa-solid fa-life-ring"></i>
+                </div>
+              </div>
+            {% endif %}
+            {% if animal.is_dead %}
+              <div class="tooltip" data-tip="Dead">
+                <div class="flex items-center justify-center h-8 {{ 'bg-gray-800' if animal.is_dead else 'bg-gray-500' }} rounded-lg bg-opacity-20 aspect-square">
+                  <i class="text-gray-800 fa-solid fa-skull"></i>
+                </div>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+{% endmacro %}

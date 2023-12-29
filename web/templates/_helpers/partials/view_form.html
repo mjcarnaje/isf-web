@@ -7,8 +7,9 @@
                value="card"
                class="sr-only"
                aria-labelledby="view_type-1-label">
-        <span class="flex items-center justify-center w-4 h-4"
-              id="view_type-2-label"><i class="fa-solid fa-grip"></i></span>
+        <span class="flex items-center justify-center w-4 h-4" id="card">
+          <i class="fa-solid fa-grip"></i>
+        </span>
       </label>
       <label class="flex items-center justify-center px-3 py-3 text-sm font-semibold uppercase rounded-md cursor-pointer sm:flex-1 focus:outline-none {% if view_type == 'table' %} bg-primary-600 text-white hover:bg-primary-500 {% else %} ring-1 ring-inset ring-gray-300 bg-white text-gray-900 hover:bg-gray-50 {% endif %}">
         <input type="radio"
@@ -16,25 +17,30 @@
                value="table"
                class="sr-only"
                aria-labelledby="view_type-2-label">
-        <span class="flex items-center justify-center w-4 h-4"
-              id="view_type-3-label"><i class="fa-solid fa-list-ul"></i></span>
+        <span class="flex items-center justify-center w-4 h-4" id="table">
+          <i class="fa-solid fa-list-ul"></i>
+        </span>
       </label>
     </div>
   </form>
   <script>
-  const viewForm = document.getElementById("view-form");
-  const radios = document.querySelectorAll("[name='view_type']")
-  
-  radios.forEach((radio) => {
-    radio.addEventListener("change", () => {
-      fetch(`/set_view_type/${radio.value}`, {
-        method: "POST",
-        headers: {
-          "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
-        },
-      })
-      .then(() => window.location.reload())
-    })
-  })
+    const viewForm = document.getElementById("view-form");
+    const radios = document.querySelectorAll("[name='view_type']");
+
+    radios.forEach((radio) => {
+      radio.addEventListener("change", () => {
+        document.querySelector(`span[id='${radio.value}']`).innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
+        fetch(`/set_view_type/${radio.value}`, {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
+          },
+        })
+          .then(() => {
+            window.location.reload();
+          })
+      });
+    });
   </script>
 {% endblock view_form %}
