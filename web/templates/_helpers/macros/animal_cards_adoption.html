@@ -5,7 +5,7 @@
       {% set href = url_for('user.animals.view_animal', id=animal.id) %}
       <div class="flex flex-col p-4 bg-white shadow-md gap-y-4 rounded-xl">
         <a href="{{ href }}">
-          <div class="h-full overflow-hidden border bg-gray-50 aspect-square rounded-xl">
+          <div class="h-full overflow-hidden bg-gray-300 border aspect-square rounded-xl">
             <img class="object-cover h-full transition-all duration-300 group-hover:scale-105"
                  src="{{ get_image(animal.photo_url) }}"
                  alt="Animal Photo"
