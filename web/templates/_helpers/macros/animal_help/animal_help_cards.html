@@ -24,20 +24,20 @@
       <div class="col-span-1 overflow-hidden bg-white shadow-md rounded-xl">
         <a href="{{ href }}">
           <img src="{{ get_image(animal_help.thumbnail_url) }}"
-               class="object-contain w-full border aspect-video"
+               class="object-contain w-full h-48 border rounded-t-xl"
                alt="Thumbnail"
                height="auto"
                width="auto" />
         </a>
-        <div class="flex flex-col gap-4 px-3 py-4">
+        <div class="flex flex-col gap-4 p-4">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-4">
               <img src="{{ get_image(animal_help.animal_photo_url) }}"
-                   class="object-cover w-12 h-12 rounded-full ring-2 ring-offset-2 ring-primary-500 aspect-square"
-                   alt="Thumbnail"
+                   class="object-cover w-10 h-10 rounded-full ring-2 ring-offset-2 ring-primary-500"
+                   alt="Animal Thumbnail"
                    height="auto"
                    width="auto" />
-              <h1 class="text-3xl font-bold">{{ animal_help.animal_name }}</h1>
+              <h1 class="text-xl font-bold">{{ animal_help.animal_name }}</h1>
             </div>
             {% if is_admin %}
               <div class="drop-down" data-dropdown>
@@ -55,18 +55,43 @@
                       data-animal-help-id="{{ animal_help.id }}">Delete</li>
                 </ul>
               </div>
+            {% else %}
+              <button role="link"
+                      data-href="{{ href }}"
+                      class="px-3 py-2 text-xs text-white rounded-lg bg-primary-500 hover:bg-primary-600">
+                Help Now
+              </button>
             {% endif %}
           </div>
           <p class="text-gray-700">{{ animal_help.description }}</p>
-          <div class="flex flex-col">
-            <span class="text-sm">Amount needed:</span>
-            <p class="font-bold">{{ animal_help.amount | format_currency }}</p>
+          <div class="flex flex-col gap-1 mt-2">
+            <span class="text-xs">Wishlist</span>
+            <p class="font-medium">{{ animal_help.item_list | sanitize_comma_separated }}</p>
           </div>
-          <div class="flex flex-col">
-            <span class="text-sm">Wishlist:</span>
-            <p class="font-bold">{{ animal_help.item_list | sanitize_comma_separated }}</p>
+          <div class="flex flex-col mt-2">
+            <div class="flex items-center justify-between">
+              <div class="flex flex-col gap-1">
+                <span class="text-xs">Current amount</span>
+                <p class="text-xl font-bold text-green-500">{{ animal_help.current_amount | format_currency }}</p>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-xs text-right">Amount needed</span>
+                <p class="font-bold text-right text-primary-500">{{ animal_help.amount | format_currency }}</p>
+              </div>
+            </div>
+            <div class="w-full mt-4">
+              <div class="relative">
+                <div class="h-2 bg-gray-300 rounded-full"></div>
+                <div class="absolute top-0 left-0 h-full max-w-full bg-green-500 rounded-full"
+                     style="width: {{ (animal_help.current_amount / animal_help.amount) * 100 }}%"></div>
+              </div>
+              <div class="flex justify-between mt-2">
+                <span class="text-xs font-medium text-gray-600">0%</span>
+                <span class="text-xs font-medium text-gray-600">100%</span>
+              </div>
+            </div>
           </div>
-          <div class="flex items-center gap-4">
+          <div class="flex items-center gap-4 mt-4">
             {% if animal_help.is_fulfilled %}
               <span class="inline-block px-2 py-1 text-sm font-semibold text-white bg-green-500 rounded-full">Fulfilled</span>
             {% else %}

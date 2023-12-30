@@ -16,7 +16,7 @@ def get_image(public_id, is_admin=False):
     if public_id:
         source = public_id
 
-    url, options = cloudinary_url(source, format="jpg", crop="fill")
+    url, options = cloudinary_url(source)
     return url
 
 def reduce_image_quality(base64_image, quality=85):

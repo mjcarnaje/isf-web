@@ -155,8 +155,10 @@ def verify_account():
     
     if request.method == 'POST':
         current_app.logger.info('Requesting another token..')
+        
         token = generate_verification_token(user_id=current_user.id, email=current_user.email)
         send_verification_email(email=current_user.email, token=token, user=current_user)
+          
         flash('Email is sent!', 'success')
       
     return render_template('/landing/verify_account.html', is_expired=False)
@@ -173,14 +175,17 @@ def enter_new_email():
     form.old_email.data = current_user.email
 
     if form.validate_on_submit():
-      user_id = current_user.id
-      new_email = form.email.data
-      User.update_email(email=new_email, user_id=user_id)
-      token = generate_verification_token(user_id=user_id, email=new_email)
-      send_verification_email(email=new_email, token=token, user=current_user)
+      if not Config.IS_MAIL_TRAP_AVAILABLE:
+        flash('Our Email Provider is not available.')
+      else:
+        user_id = current_user.id
+        new_email = form.email.data
+        User.update_email(email=new_email, user_id=user_id)
+        token = generate_verification_token(user_id=user_id, email=new_email)
+        send_verification_email(email=new_email, token=token, user=current_user)
 
-      flash('Successfuly update your email', 'success')
-      return redirect(url_for('landing.verify_account'))
+        flash('Successfuly update your email', 'success')
+        return redirect(url_for('landing.verify_account'))
 
     return render_template('/landing/enter_new_email.html', form=form)
 
@@ -226,9 +231,13 @@ def sign_up():
 
       user_id = User.insert(new_user)
       token = generate_verification_token(user_id=user_id, email=new_user.email)
-      send_verification_email(email=new_user.email, token=token, user=new_user)
 
-      flash('Check your email to confirm your account.', 'success')
+      if Config.IS_MAIL_TRAP_AVAILABLE:
+        send_verification_email(email=new_user.email, token=token, user=new_user)
+        flash('Check your email to confirm your account.', 'success')
+      else:
+        User.set_is_verified(user_id=user_id)
+        flash('You are verified!')
 
       return redirect(url_for('landing.login'))
 

@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS user (
     gender ENUM('Male', 'Female', 'Other') NOT NULL,
     password VARCHAR(256) NOT NULL,
     photo_url VARCHAR(256),
-    is_verified BOOLEAN DEFAULT 1,
+    is_verified BOOLEAN DEFAULT 0,
     unread_notification_count INT DEFAULT 0,
     contact_number VARCHAR(12) UNIQUE NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -282,8 +282,9 @@ CREATE TABLE IF NOT EXISTS animal_help (
     id INT AUTO_INCREMENT PRIMARY KEY,
     animal_id INT NOT NULL REFERENCES animal(id) ON DELETE CASCADE,
     description TEXT NOT NULL,
-    amount INT, -- (if money)
-    item_list TEXT, -- (if in-kind) [comma-separated]
+    amount INT, 
+    item_list TEXT,
+    current_amount INT DEFAULT 0,
     is_fulfilled BOOLEAN DEFAULT false,
     thumbnail_url VARCHAR(256) DEFAULT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP  
@@ -330,6 +331,28 @@ CREATE TABLE IF NOT EXISTS animal_help_donation (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (animal_help_id) REFERENCES animal_help(id) ON DELETE CASCADE
 );
+
+--;;;;--
+
+
+CREATE TRIGGER update_current_amount
+AFTER UPDATE ON animal_help_donation
+FOR EACH ROW
+BEGIN
+    DECLARE donation_amount INT;
+
+    IF NEW.donation_type = 'Money' AND NEW.is_confirmed = true THEN
+        SET donation_amount = NEW.amount;
+    ELSEIF NEW.donation_type = 'Money' AND NEW.is_confirmed = false AND OLD.is_confirmed = true THEN
+        SET donation_amount = -OLD.amount;
+    ELSE
+        SET donation_amount = 0;
+    END IF;
+
+    UPDATE animal_help
+    SET current_amount = current_amount + donation_amount
+    WHERE id = NEW.animal_help_id;
+END;
 
 
 --;;;;--

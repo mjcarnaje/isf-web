@@ -1,7 +1,8 @@
-{% macro animal_help_donations(donations, is_user=False) %}
+{% macro animal_help_donations(donations) %}
+  {% set is_admin = "Admin" in current_user.roles %}
   {% for donation in donations %}
     {% set is_touched = donation.is_confirmed or donation.is_rejected %}
-    <div class="flex flex-col w-full gap-5 p-5 bg-white border shadow-md rounded-xl">
+    <div class="flex flex-col w-full h-full gap-5 p-5 bg-white border shadow-md rounded-xl">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-5">
           <img src="{{ get_image(donation.user_photo_url) }}"
@@ -15,7 +16,7 @@
           </div>
         </div>
         <div>
-          {% if not is_user %}
+          {% if is_admin %}
             <div class="drop-down" data-dropdown>
               <button data-dropdown-button
                       class="flex items-center justify-center w-10 h-10 transition-all duration-200 border rounded-full opacity-50 hover:shadow drop-down-button">
@@ -61,7 +62,7 @@
           <div class="flex items-center justify-center flex-1 p-3 text-white rounded-lg bg-error">Rejected</div>
         {% endif %}
       {% else %}
-        {% if is_user %}
+        {% if not is_admin %}
           <div class="flex items-center justify-center flex-1 p-3 text-white rounded-lg bg-info">Pending</div>
         {% endif %}
       {% endif %}

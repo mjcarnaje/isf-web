@@ -1,0 +1,70 @@
+{% set active_page = "user.animal_help.my_donations" %}
+{% extends "./_helpers/layout/animal_help/user_animal_help_layout.html" %}
+{% from './_helpers/macros/custom_input.html' import render_field %}
+{% from './_helpers/macros/inputs/multi_image_input.html' import multi_image_input with context %}
+{% from "./_helpers/macros/empty_list.html" import empty_list %}
+{% from "./_helpers/macros/animal_help/animal_help_donations.html" import animal_help_donations with context %}
+{% block title %}
+  Ask for help
+{% endblock title %}
+{% block inner_content %}
+  <dialog id="add-money-modal" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box">
+      <h2 class="mb-4 text-2xl font-bold">Add Money Donation</h2>
+      <form action="{{ url_for('user.donate.animal_help_my_donations',id=data.id, formid='money') }}"
+            id="add-money"
+            class="grid w-full grid-cols-1 gap-4"
+            method="post"
+            novalidate>
+        {{ money_form.csrf_token() }}
+        {{ render_field(money_form.amount) }}
+        {{ multi_image_input(money_form.pictures) }}
+        <button type="submit" class="w-full btn btn-md">Submit</button>
+      </form>
+    </div>
+  </dialog>
+  <dialog id="add-in-kind-modal" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box">
+      <h2 class="mb-4 text-2xl font-bold">Add In-Kind Donation</h2>
+      <form action="{{ url_for('user.donate.animal_help_my_donations',id=data.id, formid='in-kind') }}"
+            id="add-in-kind"
+            class="grid w-full grid-cols-1 gap-4"
+            method="post"
+            novalidate>
+        {{ in_kind_form.csrf_token() }}
+        {{ render_field(in_kind_form.item_list) }}
+        {{ multi_image_input(in_kind_form.pictures) }}
+        <button type="submit" class="w-full btn btn-md">Submit</button>
+      </form>
+    </div>
+  </dialog>
+  {% if not data.is_fulfilled %}
+    <div class="flex self-end w-full max-w-md gap-4">
+      <button id="add-money-button"
+              class="flex-1 text-white bg-blue-500 border-0 btn hover:bg-blue-600">
+        <i class="mr-2 fa-solid fa-money-bill"></i> Monetary Donation
+      </button>
+      <button id="add-in-kind-button"
+              class="flex-1 text-white bg-green-500 border-0 btn hover:bg-green-600">
+        <i class="mr-2 fa-solid fa-hand-holding-heart"></i> In-Kind Donation
+      </button>
+    </div>
+  {% endif %}
+  <div class="grid items-center grid-cols-2 gap-4">{{ animal_help_donations(donations) }}</div>
+  {{ empty_list(donations, "No Donations Found.") }}
+  <script>
+    const addMoneyDonationModal = document.querySelector("#add-money-modal")
+    const addInKindDonationModal = document.querySelector("#add-in-kind-modal")
+    
+    const addMoneyDonationButton = document.querySelector("#add-money-button")
+    const addInKindDonationButton = document.querySelector("#add-in-kind-button")
+
+    addMoneyDonationButton.addEventListener("click", ()=> {
+      addMoneyDonationModal.showModal();
+    })
+
+    addInKindDonationButton.addEventListener("click", ()=> {
+      addInKindDonationModal.showModal();
+    })
+  </script>
+{% endblock inner_content %}

@@ -122,6 +122,46 @@ class AnimalHelpDonation:
                 donations.append(cls(**row))
 
             return donations
+
+    @classmethod
+    def find_verified_donations(cls, animal_help_id: int):
+            sql = """
+                SELECT
+                    donation.*,
+                    CONCAT(user.first_name, ' ', user.last_name) as user_name,
+                    user.photo_url as user_photo_url,
+                    GROUP_CONCAT(pictures.photo_url) AS photo_urls
+                FROM
+                    animal_help_donation AS donation
+                LEFT JOIN
+                    animal_help_donation_pictures AS pictures
+                ON
+                    donation.id = pictures.animal_help_donation_id
+                LEFT JOIN
+                    user ON donation.user_id = user.id
+                WHERE
+                    donation.animal_help_id = %s 
+                AND
+                    donation.is_confirmed = 1
+                GROUP BY
+                    donation.id
+                ORDER BY
+                    created_at DESC
+            """
+
+            cur = db.new_cursor(dictionary=True)
+            cur.execute(sql, (animal_help_id,))
+            rows = cur.fetchall()
+
+            donations = []
+        
+            for row in rows:
+                photo_urls = row['photo_urls'].split(',') if row['photo_urls'] else []
+                row['pictures'] = photo_urls
+                del row['photo_urls']
+                donations.append(cls(**row))
+
+            return donations
     
     @classmethod
     def insert(cls, animal_help_donation):

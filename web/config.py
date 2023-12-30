@@ -34,4 +34,6 @@ class Config:
     )
 
     DEFAULT_PAGE_SIZE = 12
+    
     IS_CELERY_AVAILABLE = False
+    IS_MAIL_TRAP_AVAILABLE = False

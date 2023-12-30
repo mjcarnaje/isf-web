@@ -51,10 +51,16 @@ def view_request(id):
 def animal_help_posts(id):
     data = AnimalHelp.find_one(id)
     posts = AnimalHelpPost.find_all_by_id(id)
-    return render_template('user/donate//animal_help_posts.html', data=data, posts=posts)
+    return render_template('user/donate/animal_help_posts.html', data=data, posts=posts)
 
 @donate_bp.route('/<int:id>/donations', methods=['GET', 'POST'])
 def animal_help_donations(id):
+    data = AnimalHelp.find_one(id)
+    donations = AnimalHelpDonation.find_verified_donations(id)
+    return render_template('user/donate/animal_help_donations.html', data=data, donations=donations)
+
+@donate_bp.route('/<int:id>/my-donations', methods=['GET', 'POST'])
+def animal_help_my_donations(id):
     formid = request.args.get('formid')
     money_form = AddAnimalHelpDonationMoneyValidation()
     in_kind_form = AddAnimalHelpDonationInKindValidation()
@@ -69,7 +75,8 @@ def animal_help_donations(id):
       )
       new_donation.insert(new_donation)
       flash("Successfully added a donation", "success")
-      return redirect(url_for('user.donate.animal_help_donations', id=id))
+
+      return redirect(url_for('user.donate.animal_help_my_donations', id=id))
   
     if in_kind_form.validate_on_submit() and formid == 'in-kind':
       new_donation = AnimalHelpDonation(
@@ -81,12 +88,15 @@ def animal_help_donations(id):
       )
       new_donation.insert(new_donation)
       flash("Successfully added a donation", "success")
-      return redirect(url_for('user.donate.animal_help_donations', id=id))
+
+      return redirect(url_for('user.donate.animal_help_my_donations', id=id))
 
   
     data = AnimalHelp.find_one(id)
     donations = AnimalHelpDonation.find_all_by_id(id)
-    return render_template('user/donate//animal_help_donations.html', money_form=money_form, in_kind_form=in_kind_form, data=data, donations=donations)
+    
+    return render_template('user/donate/animal_help_my_donations.html', money_form=money_form, in_kind_form=in_kind_form, data=data, donations=donations)
+
 
 
 @donate_bp.route('/money', methods=['GET', 'POST'])
