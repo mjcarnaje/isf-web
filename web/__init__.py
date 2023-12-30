@@ -1,6 +1,7 @@
 import os
 import cloudinary
-from flask import Flask, send_from_directory
+from cloudinary.uploader import upload as cloudinary_upload
+from flask import Flask, jsonify, request, send_from_directory, session
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 from oauthlib.oauth2 import WebApplicationClient
@@ -73,7 +74,37 @@ def  create_app():
     def favicon():
         return send_from_directory(os.path.join(app.root_path, 'static'),
                                 'favicon.ico', mimetype='image/vnd.microsoft.icon')
+                                
+    @app.route('/upload/cloudinary', methods=['POST'])
+    def upload_to_cloudinary():
+        file = request.files.get('upload')
 
+        if not file:
+            return jsonify({
+                'is_success': False,
+                'error': 'Missing file'
+            })
+        
+        size = len(file.read())
+        file.seek(0)
+
+        MAX_FILE_SIZE = 1000 * 1000 * 4 # 4mb
+
+        if size > MAX_FILE_SIZE:
+            return jsonify({
+                'is_success': False,
+                'error': 'File too large'
+            }), 413
+
+        
+        upload_result = cloudinary_upload(
+            file, folder=Config.CLOUDINARY_FOLDER)
+
+        return jsonify({
+            'is_success': True,
+            'public_id': upload_result['public_id'],
+            'url': upload_result['secure_url']
+        })
     
     from .routes import admin_bp, landing_bp, user_bp
 
