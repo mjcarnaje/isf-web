@@ -56,7 +56,7 @@
                 </button>
                 <ul data-dropdown-content tabindex="0" class="drop-down-content">
                   <li role="link"
-                      data-href="{{ url_for('admin.user.view_user', id=user.id) }}">
+                      data-href="{{ url_for('admin.user.view_user', id=user.user_id) }}">
                     <i class="fa-solid fa-eye"></i>
                     <span class="text-sm pointer-events-none">View</span>
                   </li>
@@ -131,8 +131,35 @@
               <p class="text-sm font-medium text-primary-500">{{ user.role_name }}</p>
             </div>
             <div>
-              <a href="{{ url_for('admin.user.view_user', id=user.id) }}"
-                 class="btn btn-sm">View Profile</a>
+              <div class="drop-down" data-dropdown>
+                <button data-dropdown-button
+                        class="flex items-center justify-center w-10 h-10 transition-all duration-200 border rounded-full hover:shadow drop-down-button">
+                  <i class="text-lg pointer-events-none fa-solid fa-ellipsis"></i>
+                </button>
+                <ul data-dropdown-content tabindex="0" class="drop-down-content">
+                  <li role="link"
+                      data-href="{{ url_for('admin.user.view_user', id=user.user_id) }}">
+                    <i class="fa-solid fa-eye"></i>
+                    <span class="text-sm pointer-events-none">View</span>
+                  </li>
+                  {% if not user.is_verified %}
+                    <li role="button"
+                        tabindex="0"
+                        id="verify-user-button"
+                        data-user-id="{{ user.id }}">
+                      <i class="fa-solid fa-check"></i>
+                      <span class="text-sm pointer-events-none">Verify</span>
+                    </li>
+                  {% endif %}
+                  <li role="button"
+                      tabindex="0"
+                      id="delete-user-button"
+                      data-user-id="{{ user.id }}">
+                    <i class="fa-solid fa-trash"></i>
+                    <span class="text-sm pointer-events-none">Delete</span>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         {% endfor %}

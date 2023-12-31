@@ -84,44 +84,81 @@ class AnimalHelpDonation:
             current_app.logger.info(f"Donation with id {id} pending successfully!")
         except Exception as err:
             current_app.logger.error(err)
+    @classmethod
+    def find_donations_by_animal_help_id(cls, animal_help_id: int):
+        sql = """
+            SELECT
+                donation.*,
+                CONCAT(user.first_name, ' ', user.last_name) AS user_name,
+                user.photo_url AS user_photo_url,
+                GROUP_CONCAT(pictures.photo_url) AS photo_urls
+            FROM
+                animal_help_donation AS donation
+            LEFT JOIN
+                animal_help_donation_pictures AS pictures ON donation.id = pictures.animal_help_donation_id
+            LEFT JOIN
+                user ON donation.user_id = user.id
+            WHERE
+                donation.animal_help_id = %s
+            GROUP BY
+                donation.id
+            ORDER BY
+                created_at DESC
+        """
+
+        cur = db.new_cursor(dictionary=True)
+        cur.execute(sql, (animal_help_id,))
+        rows = cur.fetchall()
+
+        donations = []
+
+        for row in rows:
+            photo_urls = row['photo_urls'].split(',') if row['photo_urls'] else []
+            row['pictures'] = photo_urls
+            del row['photo_urls']
+            donations.append(cls(**row))
+
+        return donations
+
 
     @classmethod
-    def find_all_by_id(cls, animal_help_id: int):
-            sql = """
-                SELECT
-                    donation.*,
-                    CONCAT(user.first_name, ' ', user.last_name) as user_name,
-                    user.photo_url as user_photo_url,
-                    GROUP_CONCAT(pictures.photo_url) AS photo_urls
-                FROM
-                    animal_help_donation AS donation
-                LEFT JOIN
-                    animal_help_donation_pictures AS pictures
-                ON
-                    donation.id = pictures.animal_help_donation_id
-                LEFT JOIN
-                    user ON donation.user_id = user.id
-                WHERE
-                    donation.animal_help_id = %s
-                GROUP BY
-                    donation.id
-                ORDER BY
-                    created_at DESC
-            """
+    def find_donations_by_user_id(cls, animal_help_id: int, user_id: int):
+        sql = """
+            SELECT
+                donation.*,
+                CONCAT(user.first_name, ' ', user.last_name) AS user_name,
+                user.photo_url AS user_photo_url,
+                GROUP_CONCAT(pictures.photo_url) AS photo_urls
+            FROM
+                animal_help_donation AS donation
+            LEFT JOIN
+                animal_help_donation_pictures AS pictures ON donation.id = pictures.animal_help_donation_id
+            LEFT JOIN
+                user ON donation.user_id = user.id
+            WHERE
+                donation.animal_help_id = %s
+            AND
+                donation.user_id = %s
+            GROUP BY
+                donation.id
+            ORDER BY
+                created_at DESC
+        """
 
-            cur = db.new_cursor(dictionary=True)
-            cur.execute(sql, (animal_help_id,))
-            rows = cur.fetchall()
+        cur = db.new_cursor(dictionary=True)
+        cur.execute(sql, (animal_help_id, user_id,))
+        rows = cur.fetchall()
 
-            donations = []
-        
-            for row in rows:
-                photo_urls = row['photo_urls'].split(',') if row['photo_urls'] else []
-                row['pictures'] = photo_urls
-                del row['photo_urls']
-                donations.append(cls(**row))
+        donations = []
 
-            return donations
+        for row in rows:
+            photo_urls = row['photo_urls'].split(',') if row['photo_urls'] else []
+            row['pictures'] = photo_urls
+            del row['photo_urls']
+            donations.append(cls(**row))
+
+        return donations
+
 
     @classmethod
     def find_verified_donations(cls, animal_help_id: int):

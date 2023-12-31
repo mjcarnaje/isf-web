@@ -7,16 +7,16 @@
     'page': 'admin.animal.animals'
   },
   {
-    'name': 'Events',
-    'url': url_for('admin.event.events'),
-    'icon': 'fa-solid fa-calendar',
-    'page': 'admin.event'
-  },
-  {
     'name': 'Ask For Help',
     'url': url_for('admin.animal_help.index'),
     'icon': 'fa-solid fa-handshake-angle',
     'page': 'admin.animal_help'
+  },
+  {
+    'name': 'Events',
+    'url': url_for('admin.event.events'),
+    'icon': 'fa-solid fa-calendar',
+    'page': 'admin.event'
   },
 ] %}
 {% set my_navigations = [
@@ -26,18 +26,6 @@
     'icon': 'fa-solid fa-bell',
     'page': 'admin.notifications',
     'count': current_user.unread_notification_count
-  },
-  {
-    'name': 'Users',
-    'url': url_for('admin.user.users'),
-    'icon': 'fa-solid fa-user',
-    'page': 'admin.users'
-  },
-  {
-    'name': 'Member Applications',
-    'url': url_for('admin.member_application.member_applications'),
-    'icon': 'fa-solid fa-hand-back-fist',
-    'page': 'admin.member_applications'
   },
   {
     'name': 'Adoption Applications',
@@ -50,6 +38,18 @@
     'url': url_for('admin.donations.donations'),
     'icon': 'fa-solid fa-hand-holding-heart',
     'page': 'admin.donations.donations'
+  },
+  {
+    'name': 'Users',
+    'url': url_for('admin.user.users'),
+    'icon': 'fa-solid fa-user',
+    'page': 'admin.users'
+  },
+  {
+    'name': 'Member Applications',
+    'url': url_for('admin.member_application.member_applications'),
+    'icon': 'fa-solid fa-hand-back-fist',
+    'page': 'admin.member_applications'
   },
 ] %}
 {% block body %}

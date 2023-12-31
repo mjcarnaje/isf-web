@@ -63,7 +63,7 @@ class User(UserMixin):
         where_clause = " AND ".join(where_clauses) if where_clauses else ""
 
         sql = f"""
-            SELECT 
+            SELECT
                 *
             FROM user
             LEFT JOIN 

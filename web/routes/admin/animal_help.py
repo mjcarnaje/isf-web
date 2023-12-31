@@ -94,7 +94,7 @@ def animal_help_post(id, post_id):
 @animal_help_bp.route('/<int:id>/donations', methods=['GET', 'POST'])
 def animal_help_donations(id):
     data = AnimalHelp.find_one(id)
-    donations = AnimalHelpDonation.find_all_by_id(id)
+    donations = AnimalHelpDonation.find_donations_by_animal_help_id(id)
     return render_template('admin/animal-help/animal_help_donations.html', data=data, donations=donations)
 
 @animal_help_bp.route('/add', methods=['GET', 'POST'])

@@ -93,7 +93,7 @@ def animal_help_my_donations(id):
 
   
     data = AnimalHelp.find_one(id)
-    donations = AnimalHelpDonation.find_all_by_id(id)
+    donations = AnimalHelpDonation.find_donations_by_user_id(animal_help_id=id, user_id=current_user.id)
     
     return render_template('user/donate/animal_help_my_donations.html', money_form=money_form, in_kind_form=in_kind_form, data=data, donations=donations)
 

@@ -7,7 +7,7 @@
   Ask for help
 {% endblock title %}
 {% block inner_content %}
-  <div class="grid items-center grid-cols-2 gap-4">
+  <div>
     {{ animal_help_donations(donations) }}
     {{ empty_list(donations, "No Donations Found.", class="col-span-2") }}
   </div>

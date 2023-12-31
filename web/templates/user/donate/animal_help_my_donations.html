@@ -50,8 +50,10 @@
       </button>
     </div>
   {% endif %}
-  <div class="grid items-center grid-cols-2 gap-4">{{ animal_help_donations(donations) }}</div>
-  {{ empty_list(donations, "No Donations Found.") }}
+  <div>
+    {{ animal_help_donations(donations) }}
+    {{ empty_list(donations, "No Donations Found.") }}
+  </div>
   <script>
     const addMoneyDonationModal = document.querySelector("#add-money-modal")
     const addInKindDonationModal = document.querySelector("#add-in-kind-modal")
