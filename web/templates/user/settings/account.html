@@ -25,20 +25,54 @@
       </ul>
     </div>
     <div class="h-full col-span-4 p-12 bg-white border rounded-lg shadow-md">
-      <form class="flex flex-col w-full space-y-8" method="post" novalidate>
-        <div class="space-y-4">
-          {{ form.csrf_token }}
-          {{ form.id }}
-          {{ render_photo_field(form.photo_url, add_text="Update photo", remove_text="Remove photo", is_circle=True) }}
-          <div class="flex items-center gap-4">{{ render_field(form.username) }}</div>
-          <div class="flex items-center gap-4">
-            {{ render_field(form.first_name) }}
-            {{ render_field(form.last_name) }}
+      {% if is_edit %}
+        <form class="flex flex-col w-full space-y-8" method="post" novalidate>
+          <div class="space-y-4">
+            {{ form.csrf_token }}
+            {{ form.id }}
+            {{ render_photo_field(form.photo_url, add_text="Update photo", remove_text="Remove photo", is_circle=True) }}
+            <div class="flex items-center gap-4">{{ render_field(form.username) }}</div>
+            <div class="flex items-center gap-4">
+              {{ render_field(form.first_name) }}
+              {{ render_field(form.last_name) }}
+            </div>
+            {{ render_field(form.contact_number) }}
           </div>
-          {{ render_field(form.contact_number) }}
+          <div class="flex gap-4">
+            <a href="{{ url_for('user.account_settings',) }}" class="flex-1 btn">Cancel</a>
+            <button class="flex-1 text-white btn btn-primary" type="submit">Save Changes</button>
+          </div>
+        </form>
+      {% else %}
+        <div class="grid grid-cols-2 gap-8">
+          <div class="flex justify-center col-span-2 pb-8">
+            <div class="w-48 h-48 overflow-hidden rounded-full">
+              <img src="{{ get_image(form.photo_url.data) }}"
+                   alt="user's photo"
+                   width="auto"
+                   height="auto"
+                   class="object-cover w-full h-full">
+            </div>
+          </div>
+          <div class="flex flex-col col-span-2 gap-1">
+            <span class="text-sm text-gray-600">Username</span>
+            <h1 class="font-medium text-gray-800">{{ form.username.data }}</h1>
+          </div>
+          <div class="flex flex-col col-span-1 gap-1">
+            <span class="text-sm text-gray-600">First name</span>
+            <h1 class="font-medium text-gray-800">{{ form.first_name.data }}</h1>
+          </div>
+          <div class="flex flex-col col-span-1 gap-1">
+            <span class="text-sm text-gray-600">Last name</span>
+            <h1 class="font-medium text-gray-800">{{ form.last_name.data }}</h1>
+          </div>
+          <div class="flex flex-col col-span-2 gap-1">
+            <span class="text-sm text-gray-600">Contact Number</span>
+            <h1 class="font-medium text-gray-800">{{ form.contact_number.data }}</h1>
+          </div>
+          <a class="btn" href="{{ url_for('user.account_settings', edit=1) }}">Edit Profile</a>
         </div>
-        <button class="text-white btn btn-primary" type="submit">Save Changes</button>
-      </form>
+      {% endif %}
     </div>
   </div>
 {% endblock content %}

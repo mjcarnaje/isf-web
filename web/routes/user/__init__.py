@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, flash
+from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import current_user, logout_user
 from ...config import Config
 
@@ -68,6 +68,7 @@ def settings():
 @user_bp.route('/settings/accounts', methods=['GET', 'POST'])
 @user_verified_required
 def account_settings():
+  is_edit = bool(request.args.get("edit"))
   form = EditProfileValidation()
 
   if form.validate_on_submit():
@@ -81,7 +82,7 @@ def account_settings():
       contact_number=form.contact_number.data,
     )
     edited_user.update(edited_user)
-    
+    flash("Successfully edited your account!", "success")    
     return redirect(url_for('user.account_settings'))
 
   if not form.is_submitted():
@@ -92,7 +93,7 @@ def account_settings():
       form.photo_url.data = current_user.photo_url
       form.contact_number.data = current_user.contact_number
 
-  return render_template('user/settings/account.html', form=form)
+  return render_template('user/settings/account.html', form=form, is_edit=is_edit)
 
 @user_bp.route('/settings/notifications', methods=['GET', 'POST'])
 @user_verified_required
