@@ -92,8 +92,6 @@
                     <li role="link"
                         data-href="{{ url_for('admin.animal_help.add_animal_help', animal_id=animal.id) }}"
                         tabindex="0"
-                        id="set-adoption-true-button"
-                        data-animal-id="{{ animal.id }}"
                         class="{{ 'opacity-50 pointer-events-none' if animal.is_adopted or animal.is_dead or animal.help_requested }}">
                       Ask for help {{ '(Active)' if animal.help_requested else '' }}
                     </li>

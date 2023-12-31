@@ -1,7 +1,6 @@
 import os
 import cloudinary
-from cloudinary.uploader import upload as cloudinary_upload
-from flask import Flask, jsonify, request, send_from_directory, session
+from flask import Flask, send_from_directory
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 from oauthlib.oauth2 import WebApplicationClient
@@ -12,7 +11,7 @@ from .database import db
 from .mail import mail
 from .models import User
 from .socket import socketio
-from .utils import celery_init_app, currency, get_image as _get_image, pretty_date as _pretty_date, sanitize_comma_separated as _sanitize_comma_separated, starts_with, generate_simple_id
+from .utils import celery_init_app, format_currency, get_image , pretty_date , sanitize_comma_separated , starts_with, generate_simple_id
 from engineio.async_drivers import eventlet
 
 
@@ -49,68 +48,26 @@ def  create_app():
     @app.context_processor
     def utility_processor():
         return dict(
-            get_image=_get_image,
+            get_image=get_image,
             starts_with=starts_with,
             gen_id=generate_simple_id,
         )
     
-    @app.template_filter('format_currency')
-    def format_currency(n):
-        return currency.format_currency(n)
-
-    @app.template_filter('pretty_date')
-    def pretty_date(date):
-        return _pretty_date(date)
-
-    @app.template_filter('sanitize_comma_separated')
-    def sanitize_comma_separated(string):
-        return _sanitize_comma_separated(string)
-
-    @app.template_filter('get_image')
-    def get_image(string):
-        return _get_image(string)
+    app.jinja_env.filters['format_currency'] = format_currency
+    app.jinja_env.filters['pretty_date'] = pretty_date
+    app.jinja_env.filters['sanitize_comma_separated'] = sanitize_comma_separated
+    app.jinja_env.filters['get_image'] = get_image
     
     @app.route('/favicon.ico')
     def favicon():
-        return send_from_directory(os.path.join(app.root_path, 'static'),
-                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
-                                
-    @app.route('/upload/cloudinary', methods=['POST'])
-    def upload_to_cloudinary():
-        file = request.files.get('upload')
-
-        if not file:
-            return jsonify({
-                'is_success': False,
-                'error': 'Missing file'
-            })
-        
-        size = len(file.read())
-        file.seek(0)
-
-        MAX_FILE_SIZE = 1000 * 1000 * 4 # 4mb
-
-        if size > MAX_FILE_SIZE:
-            return jsonify({
-                'is_success': False,
-                'error': 'File too large'
-            }), 413
-
-        
-        upload_result = cloudinary_upload(
-            file, folder=Config.CLOUDINARY_FOLDER)
-
-        return jsonify({
-            'is_success': True,
-            'public_id': upload_result['public_id'],
-            'url': upload_result['secure_url']
-        })
+        return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
     
-    from .routes import admin_bp, landing_bp, user_bp
+    from .routes import admin_bp, landing_bp, user_bp, upload_bp
 
     app.register_blueprint(landing_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(user_bp)
+    app.register_blueprint(upload_bp)
 
     return app
 

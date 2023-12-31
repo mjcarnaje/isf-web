@@ -50,7 +50,7 @@
 
     addPhoto.innerText = "Uploading.."
 
-    const response = await fetch("{{ url_for('upload_to_cloudinary') }}", {
+    const response = await fetch("{{ url_for('upload.cloudinary') }}", {
       method: "POST",
       body: formData,
     });
