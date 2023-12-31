@@ -1,7 +1,7 @@
 {% block view_form %}
   <form id="view-form">
     <div class="grid grid-cols-2 gap-2">
-      <label class="flex items-center justify-center px-3 py-3 text-sm font-semibold uppercase rounded-md cursor-pointer sm:flex-1 focus:outline-none {% if view_type == 'card' %} bg-primary-600 text-white hover:bg-primary-500 {% else %} ring-1 ring-inset ring-gray-300 bg-white text-gray-900 hover:bg-gray-50 {% endif %}">
+      <label class="flex items-center justify-center px-3 py-3 text-sm font-semibold uppercase rounded-md cursor-pointer sm:flex-1 focus:outline-none {% if not view_type or view_type == 'card' %} bg-primary-600 text-white hover:bg-primary-500 {% else %} ring-1 ring-inset ring-gray-300 bg-white text-gray-900 hover:bg-gray-50 {% endif %}">
         <input type="radio"
                name="view_type"
                value="card"

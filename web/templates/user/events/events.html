@@ -16,7 +16,7 @@
       </div>
       {% include "./_helpers/partials/view_form.html" %}
     </div>
-    {% if view_type == "card" %}
+    {% if not view_type or view_type == "card" %}
       {{ event_cards(events, is_user=True) }}
     {% else %}
       {{ event_tables(events) }}

@@ -44,7 +44,7 @@
         </div>
       </div>
     </dialog>
-    {% if view_type == "card" %}
+      {% if not view_type or view_type == "card" %}
       <div class="grid grid-cols-3 gap-8">
         {% for user in users %}
           <div class="relative flex flex-col col-span-1 gap-4 px-3 py-8 bg-white border shadow-md rounded-xl">

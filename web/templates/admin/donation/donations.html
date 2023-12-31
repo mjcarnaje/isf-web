@@ -15,7 +15,7 @@
       </div>
       {% include "./_helpers/partials/view_form.html" %}
     </div>
-    {% if view_type == "card" %}
+    {% if not view_type or view_type == "card" %}
       {{ donation_tables(donations) }}
     {% else %}
       {{ donation_tables(donations) }}
