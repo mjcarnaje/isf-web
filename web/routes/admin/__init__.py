@@ -1,21 +1,21 @@
 from flask import Blueprint, redirect, render_template, request, url_for
-from flask_login import current_user, login_user, logout_user
+from flask_login import login_user, logout_user
+from flask_socketio import disconnect
 from werkzeug.security import check_password_hash
 
 from ...models import Notification, User
 from ...utils import admin_required
 from ...validations import AdminLoginValidation
-from ...config import Config
 
 admin_bp = Blueprint("admin", __name__, url_prefix='/admin')
 
 from .adoption import adoption_bp
 from .animal import animal_bp
+from .animal_help import animal_help_bp
 from .donation import donations_bp
 from .event import event_bp
-from .animal_help import animal_help_bp
-from .user import user_bp
 from .member_application import member_application_bp
+from .user import user_bp
 
 admin_bp.register_blueprint(animal_help_bp)
 admin_bp.register_blueprint(animal_bp)
@@ -76,5 +76,6 @@ def login():
 
 @admin_bp.route("/logout")
 def logout():
+    disconnect()
     logout_user()
     return redirect(url_for('landing.index'))
