@@ -1,6 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import current_user, logout_user
-from flask_socketio import disconnect
 
 from ...models import Notification, NotificationSettings, User, MemberApplication
 from ...utils import user_verified_required
@@ -145,7 +144,6 @@ def be_a_member():
 
 @user_bp.route("/logout")
 def logout():
-    disconnect()
     logout_user()
     return redirect(url_for('landing.index'))
 
