@@ -19,7 +19,7 @@ def  create_app():
     app.config.from_object(Config)
     db.init_app(app)
     mail.init_app(app)
-    socketio.init_app(app=app)
+    socketio.init_app(app, cors_allowed_origins="*")
     
     set_up_commands(app)
     CSRFProtect(app)

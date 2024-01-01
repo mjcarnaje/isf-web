@@ -131,10 +131,10 @@ function createToastElement(notification) {
         </div>
       </div>
       <div class="flex flex-col gap-1">
-        <p class="whitespace-normal ${isReadClass}">
+        <p class="whitespace-normal text-left ${isReadClass}">
         ${truncateString(notification.message, 80)}
         </p>
-        <p id="notification-date" class="text-sm ${dateClass}">
+        <p id="notification-date" class="text-sm text-left ${dateClass}">
           ${notification.created_at}
         </p>
       </div>
