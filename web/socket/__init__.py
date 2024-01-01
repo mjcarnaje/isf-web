@@ -7,14 +7,13 @@ socketio = SocketIO()
 connected_users = set()
 
 @socketio.on('connect')
-@authenticated_only
 def handle_connect():
-    user_id = current_user.id
-    connected_users.add(str(user_id))
-    print(f"User {user_id} connected")
+    if current_user.is_authenticated:
+        user_id = current_user.id
+        connected_users.add(str(user_id))
+        print(f"User {user_id} connected")
 
 @socketio.on('disconnect')
-@authenticated_only
 def handle_disconnect():
     user_id = current_user.id
     connected_users.discard(str(user_id))
