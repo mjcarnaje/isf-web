@@ -1,3 +1,47 @@
+async function markAllAsRead() {
+  try {
+    await fetch(`/notifications/mark-all-as-read`, {
+      method: "PUT",
+      headers: {
+        "X-CSRFToken": document.querySelector("meta[name='csrf_token']")
+          .content,
+      },
+    });
+  } catch (error) {
+    console.error("Fetch error:", error);
+  }
+}
+
+async function markAsRead(id) {
+  try {
+    const response = await fetch(`/notifications/mark-as-read/${id}`, {
+      method: "PUT",
+      headers: {
+        "X-CSRFToken": document.querySelector("meta[name='csrf_token']")
+          .content,
+      },
+    });
+    return response;
+  } catch (error) {
+    console.error("Fetch error:", error);
+  }
+}
+
+async function markAsArchived(id) {
+  try {
+    const response = await fetch(`/notifications/mark-as-archived/${id}`, {
+      method: "PUT",
+      headers: {
+        "X-CSRFToken": document.querySelector("meta[name='csrf_token']")
+          .content,
+      },
+    });
+    return response;
+  } catch (error) {
+    console.error("Fetch error:", error);
+  }
+}
+
 const scroller = document.querySelector(".scroller");
 const scrollerInner = document.querySelector(".scroller__inner");
 
@@ -9,6 +53,14 @@ if (scrollerInner) {
     duplicatedItem.setAttribute("aria-hidden", true);
     scrollerInner.append(duplicatedItem);
   });
+}
+
+function truncateString(str, maxLength) {
+  if (str.length > maxLength) {
+    return str.substring(0, maxLength) + "...";
+  } else {
+    return str;
+  }
 }
 
 function showToast(category, message, duration = 3000) {
@@ -39,6 +91,88 @@ function showToast(category, message, duration = 3000) {
       toastElement.remove();
     });
   }, duration);
+}
+
+function showNotificationToast(notification, duration = 20000) {
+  const notificationToastContainer = document.querySelector(
+    "#notificationToastContainer"
+  );
+
+  const toastElement = createToastElement(notification);
+  notificationToastContainer.appendChild(toastElement);
+
+  setTimeout(() => {
+    hideAndRemoveToast(toastElement);
+  }, duration);
+}
+
+function createToastElement(notification) {
+  const toastElement = document.createElement("button");
+
+  toastElement.addEventListener("click", async () => {
+    markAsRead(notification.id);
+    window.location.href = notification.redirect_url;
+  });
+
+  const iconClass = getIconClass(notification.type);
+  const isReadClass = notification.is_read ? "text-gray-600" : "font-medium";
+  const dateClass = notification.is_read ? "text-gray-400" : "text-primary-500";
+
+  toastElement.innerHTML = `
+    <div class="flex bg-white border shadow-md cursor-pointer p-4 max-w-md w-full rounded-lg items-start gap-4">
+      <div class="relative h-14 aspect-square">
+        <img class="object-cover w-full h-full border rounded-full bg-gray-50"
+          src="${notification.notifier_photo_url}"
+          alt="user's avatar"
+          height="auto"
+          width="auto" />
+        <div class="absolute flex items-center justify-center w-6 h-6 rounded-full shadow -bottom-1 -right-1 ${iconClass}">
+          <i class="text-white text-sm ${getIcon(notification.type)}"></i>
+        </div>
+      </div>
+      <div class="flex flex-col gap-1">
+        <p class="whitespace-normal ${isReadClass}">
+        ${truncateString(notification.message, 80)}
+        </p>
+        <p id="notification-date" class="text-sm ${dateClass}">
+          ${notification.created_at}
+        </p>
+      </div>
+    </div>
+  `;
+
+  return toastElement;
+}
+
+function getIconClass(type) {
+  const iconClasses = {
+    ADOPTION_REQUEST: "bg-primary-500",
+    ADOPTION_STATUS_UPDATE: "bg-primary-500",
+    ADD_DONATION_MONEY: "bg-green-500",
+    ADD_DONATION_IN_KIND: "bg-violet-500",
+    EVENT_INVITED: "bg-red-500",
+  };
+
+  return iconClasses[type] || "";
+}
+
+function getIcon(type) {
+  const iconClasses = {
+    ADOPTION_REQUEST: "fa-solid fa-file-invoice",
+    ADOPTION_STATUS_UPDATE: "fa-solid fa-calendar-days",
+    ADD_DONATION_MONEY: "fa-solid fa-money-bill",
+    ADD_DONATION_IN_KIND: "fa-solid fa-hand-holding-heart",
+    EVENT_INVITED: "fa-solid fa-calendar-day",
+  };
+
+  return iconClasses[type] || "";
+}
+
+function hideAndRemoveToast(toastElement) {
+  toastElement.classList.add("hideMe");
+  toastElement.addEventListener("animationend", () => {
+    toastElement.remove();
+  });
 }
 
 const fakeLinks = document.querySelectorAll('[role="link"]');
@@ -81,12 +215,6 @@ document.addEventListener("click", (e) => {
     if (element == currentDropdown) return;
     element.classList.remove("active");
   });
-});
-
-const socket = io();
-
-socket.on("notification", () => {
-  showToast("success", "new notification", 15000);
 });
 
 const images = document.querySelectorAll("img[data-can-view='true']");

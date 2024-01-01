@@ -5,7 +5,8 @@
     <div class="flex justify-end">
       <button id="mark-all-as-read" class="btn btn-sm">Mark all as read</button>
     </div>
-    <div id="notifications-container" class="flex flex-col">
+    <div id="notifications-container"
+         class="flex flex-col bg-white rounded-lg shadow">
       {% for notification in notifications %}
         <div data-id="{{ notification.id }}"
              data-redirect-url="{{ notification.redirect_url }}"
@@ -45,9 +46,12 @@
                 {% endif %}
               </div>
               <div class="flex flex-col gap-1">
-                <p class="{{ 'text-gray-600' if notification.is_read else 'font-medium' }}">{{ notification.message }}</p>
+                <p id="notification-message"
+                   class="{{ 'text-gray-600' if notification.is_read else 'font-medium' }}">
+                  {{ notification.message }}
+                </p>
                 <p id="notification-date"
-                   class="text-sm {{ 'text-gray-400' if notification.is_read else 'text-primary-500' }}">
+                   class="text-sm {{ 'text-gray-500' if notification.is_read else 'text-primary-500' }}">
                   {{ notification.created_at }}
                 </p>
               </div>
@@ -88,47 +92,6 @@
     </div>
   </div>
   <script>
-      async function markAllAsRead() {
-        try {
-          await fetch("/{{ type }}/notifications/mark-all-as-read", {
-            method: "PUT",
-            headers: {
-              "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
-            },
-          });
-        } catch (error) {
-          console.error('Fetch error:', error);
-        }
-      }
-
-      async function markAsRead(id) {
-        try {
-          const response = await fetch(`/{{ type }}/notifications/mark-as-read/${id}`, {
-            method: "PUT",
-            headers: {
-              "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
-            },
-          });
-          return response;
-        } catch (error) {
-          console.error('Fetch error:', error);
-        }
-      }
-      
-      async function markAsArchived(id, isRead) {
-        try {
-          const response = await fetch(`/{{ type }}/notifications/mark-as-archived/${id}`, {
-            method: "PUT",
-            headers: {
-              "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
-            },
-          });
-          return response;
-        } catch (error) {
-          console.error('Fetch error:', error);
-        }
-      }
-
       function updateNotificationDOM(params) {
         const container = document.getElementById("notifications-container");
         const notificationCount = document.getElementById("notification-count")
@@ -149,15 +112,17 @@
             notificationElement.classList.remove("bg-white");
             notificationElement.classList.add("bg-slate-50");
 
+            const messageElement = notificationElement.querySelector("#notification-message");
             const dateElement = notificationElement.querySelector("#notification-date");
             const statusElement = notificationElement.querySelector("#status-icon");
 
             dateElement.classList.replace("text-primary-500", "text-gray-400");
+            dateElement.classList.replace("font-medium", "text-gray-600")
 
             if (statusElement) {
               statusElement.classList.remove("bg-primary-500");
               statusElement.classList.add("bg-transparent");
-              notificationElement.setAttribute("data-is-read", true)
+              notificationElement.setAttribute("dat\a-is-read", true)
             }
           }
 
@@ -204,6 +169,7 @@
         
           try {
             await markAsRead(id);
+            updateNotificationDOM({ id });
             window.location.href = redirectUrl;
           } catch (err) {
             showToast("error", "Something went wrong!")
@@ -212,7 +178,7 @@
       })
 
       markAllAsReadBtn.addEventListener('click', async () => {
-        await markAllAsRead();
+        await markAllAsRead()
         updateNotificationDOM({ markAllAsRead: true })
       })
   </script>

@@ -33,6 +33,7 @@
     {% block body %}
     {% endblock body %}
     {% include "./_helpers/partials/toast.html" %}
+    {% include "./_helpers/partials/notification_toast.html" %}
     <div id="image-viewer"
          class="fixed inset-0 z-50 flex-col items-center justify-center hidden min-h-screen gap-8 bg-black bg-opacity-50">
       <div class="flex items-center justify-between w-full max-w-6xl">
@@ -62,4 +63,19 @@
       <div id="small-images" class="flex items-center gap-2 max-h-20"></div>
     </div>
   </body>
+  <script>
+    const socket = io();
+    const notificationSound = new Audio("{{ url_for('static', filename='notification.mp3') }}");
+
+    socket.on("notification", (data) => {
+      console.log(data)
+      showNotificationToast(data);
+      
+      if (notificationSound.canPlayType && notificationSound.canPlayType('audio/mpeg')) {
+        notificationSound.play().catch((error) => {
+          console.error('Error playing notification sound:', error.message);
+        }); 
+      }
+    });
+  </script>
 </html>

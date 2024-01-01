@@ -34,31 +34,13 @@ def dashboard():
 def notifications(): 
   notifications = Notification.find_all(
       page_number=1,
-      page_size=Config.DEFAULT_PAGE_SIZE,
+      page_size=1000,
       filters={
          'user_to_notify_id': current_user.id,
          'is_archived': 0
       }
    )
   return render_template('/user/notifications.html', notifications=notifications)
-
-@user_bp.route('/notifications/mark-as-read/<id>', methods=['PUT'])
-@user_verified_required
-def mark_as_read_notification(id):
-   Notification.mark_as_read(notification_id=id, user_id=current_user.id)
-   return "success"
-
-@user_bp.route('/notifications/mark-as-archived/<id>', methods=['PUT'])
-@user_verified_required
-def mark_as_archived_notification(id):
-   Notification.mark_as_archived(notification_id=id, user_id=current_user.id)
-   return "success"
-
-@user_bp.route('/notifications/mark-all-as-read', methods=['PUT'])
-@user_verified_required
-def mark_all_as_read_notification():
-   Notification.mark_all_as_read(user_id=current_user.id)
-   return "success"
 
 @user_bp.route('/settings', methods=['GET', 'POST'])
 @user_verified_required

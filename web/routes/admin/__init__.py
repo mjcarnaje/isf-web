@@ -42,7 +42,7 @@ def index():
 def notifications():  
    notifications = Notification.find_all(
       page_number=1,
-      page_size=Config.DEFAULT_PAGE_SIZE,
+      page_size=1000,
       filters={
          'user_to_notify_id': 1,
          'is_archived': 0
@@ -52,24 +52,6 @@ def notifications():
    return render_template('/admin/notifications.html', 
       notifications=notifications
    )
-
-@admin_bp.route('/notifications/mark-as-read/<id>', methods=['PUT'])
-@admin_required
-def mark_as_read_notifcation(id):
-   Notification.mark_as_read(notification_id=id, user_id=current_user.id)
-   return "success"
-
-@admin_bp.route('/notifications/mark-as-archived/<id>', methods=['PUT'])
-@admin_required
-def mark_as_archived_notification(id):
-   Notification.mark_as_archived(notification_id=id, user_id=current_user.id)
-   return "success"
-
-@admin_bp.route('/notifications/mark-all-as-read', methods=['PUT'])
-@admin_required
-def mark_all_as_read_notification():
-   Notification.mark_all_as_read(user_id=current_user.id)
-   return "success"
 
 @admin_bp.route('/login', methods=['GET', 'POST'])
 def login():

@@ -8,7 +8,7 @@ from ..utils import format_currency, pretty_date, get_image
 from .NotificationSettings import NotificationSettings
 from uuid import uuid4
 from ..config import Config
-
+from ..socket import handle_notification
 class Notification:
     def __init__(self, **kwargs):
         self.id = kwargs.get('id')
@@ -162,7 +162,7 @@ class Notification:
                 current_app.logger.info(f"Appending user_id ({user_id}) web notification..")
                 web_notifications_ids.append(user_id)
 
-            if result and result[f"{notif_type}_email"]:
+            if result and result[f"{notif_type}_email"] and Config.IS_CELERY_AVAILABLE:
                 current_app.logger.info(f"Appending user_id ({user_id}) email notification..")
                 email_notifications_ids.append(user_id)    
 
@@ -193,13 +193,21 @@ class Notification:
         """
 
         cur = db.new_cursor()
-        data = []
+        notifications_params = []
 
         notification_email_ids = []
+        notification_web_ids = []
 
         for notification in notifications:
             current_app.logger.info("Adding notifications..")
             id = uuid4().hex
+
+            if notification.user_to_notify_id in web_notifications_ids:
+                notification_web_ids.append(id)
+            
+            if notification.user_to_notify_id in email_notifications_ids:
+                notification_email_ids.append(id)
+            
             params = {
                 'id': id,
                 'type': notification.type,
@@ -212,13 +220,10 @@ class Notification:
                 'user_to_notify_id': notification.user_to_notify_id,
                 'is_archived': notification.user_to_notify_id not in web_notifications_ids
             }
-            data.append(params)
-            
-            if notification.user_to_notify_id in email_notifications_ids:
-                notification_email_ids.append(id)
-
-        cur.executemany(sql, data)
-
+            notifications_params.append(params)
+        
+        cur.executemany(sql, notifications_params)
+        
         sql = """
             UPDATE user
             SET 
@@ -226,7 +231,7 @@ class Notification:
             WHERE id = %(user_id)s
         """
 
-        data = []
+        user_notification_count_params = []
 
         for notification in notifications:
             if notification.user_to_notify_id not in web_notifications_ids:
@@ -234,30 +239,40 @@ class Notification:
             params = {
                 'user_id': notification.user_to_notify_id
             }
-            data.append(params)
+            user_notification_count_params.append(params)
 
-        cur.executemany(sql, data)
+        cur.executemany(sql, user_notification_count_params)
 
         db.connection.commit()
 
-        if Config.IS_CELERY_AVAILABLE:
-            from ..utils import send_notification_email
+        for notification_id in notification_web_ids:
+            result = cls.find_one(notification_id=notification_id)
+            handle_notification(user_id=result.user_to_notify_id, data={
+                'is_read': result.is_read,
+                'notifier_photo_url': get_image(result.notifier_photo_url),
+                'type': result.type,
+                'message': result.message,
+                'redirect_url': result.redirect_url,
+                'created_at': result.created_at,
+            })
+            
+        from ..utils import send_notification_email
 
-            for notification_id in notification_email_ids:
-                current_app.logger.info("Sending Notification Email..")
-                result = cls.find_one(notification_id=notification_id)
-                send_notification_email.delay(
-                    subject=NotificationType[result.type].get_email_subject(), 
-                    recipient_email=result.notified_email, 
-                    title=NotificationType[result.type].get_email_title(), 
-                    first_name=result.notified_first_name, 
-                    message=result.message,
-                    preview_image_url=get_image(result.preview_image_url),
-                    sender_name=result.notifier_first_name,
-                    sender_email=result.notifier_email,
-                    button_text="",
-                    button_link=""
-                )
+        for notification_id in notification_email_ids:
+            current_app.logger.info("Sending Notification Email..")
+            result = cls.find_one(notification_id=notification_id)
+            send_notification_email.delay(
+                subject=NotificationType[result.type].get_email_subject(), 
+                recipient_email=result.notified_email, 
+                title=NotificationType[result.type].get_email_title(), 
+                first_name=result.notified_first_name, 
+                message=result.message,
+                preview_image_url=get_image(result.preview_image_url),
+                sender_name=result.notifier_first_name,
+                sender_email=result.notifier_email,
+                button_text="",
+                button_link=""
+            )
         
     
     @classmethod

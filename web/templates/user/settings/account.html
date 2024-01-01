@@ -70,7 +70,8 @@
             <span class="text-sm text-gray-600">Contact Number</span>
             <h1 class="font-medium text-gray-800">{{ form.contact_number.data }}</h1>
           </div>
-          <a class="btn" href="{{ url_for('user.account_settings', edit=1) }}">Edit Profile</a>
+          <a class="col-span-2 btn"
+             href="{{ url_for('user.account_settings', edit=1) }}">Edit Profile</a>
         </div>
       {% endif %}
     </div>

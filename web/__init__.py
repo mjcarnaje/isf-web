@@ -12,8 +12,6 @@ from .mail import mail
 from .models import User
 from .socket import socketio
 from .utils import celery_init_app, format_currency, get_image , pretty_date , sanitize_comma_separated , starts_with, generate_simple_id
-from engineio.async_drivers import eventlet
-
 
 def  create_app():    
     app = Flask(__name__)
@@ -21,7 +19,7 @@ def  create_app():
     app.config.from_object(Config)
     db.init_app(app)
     mail.init_app(app)
-    socketio.init_app(app=app, async_mode="eventlet")
+    socketio.init_app(app=app)
     
     set_up_commands(app)
     CSRFProtect(app)
@@ -62,12 +60,14 @@ def  create_app():
     def favicon():
         return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
     
-    from .routes import admin_bp, landing_bp, user_bp, upload_bp
+    from .routes import admin_bp, landing_bp, user_bp, upload_bp, common_bp
 
     app.register_blueprint(landing_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(user_bp)
     app.register_blueprint(upload_bp)
+    app.register_blueprint(common_bp)
 
+    
     return app
 

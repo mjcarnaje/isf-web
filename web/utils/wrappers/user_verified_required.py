@@ -1,9 +1,11 @@
 from functools import wraps
-from flask import redirect, url_for, current_app, flash
-from flask_login import current_user
-from ..models import UserRole
 
-from  .redirect import get_login_redirect_url
+from flask import current_app, flash, redirect, url_for
+from flask_login import current_user
+
+from ...models import UserRole
+from ..redirect import get_login_redirect_url
+
 
 def user_verified_required(f):
     @wraps(f)

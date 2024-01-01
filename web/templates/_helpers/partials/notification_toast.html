@@ -1,0 +1,15 @@
+{% block notification_toast %}
+  <style>
+        @keyframes smoothFadeOut {
+          0%   { opacity: 1; transform: translateY(0) scale(1); }
+          50%  { scale: 1; }
+          100% { opacity: 0; transform: translateY(30px) scale(0); }
+        }
+        .hideMe {
+          animation: smoothFadeOut 0.5s cubic-bezier(0.455, 0.03, 0.515, 0.955);     
+        }
+        
+  </style>
+  <div class="z-50 toast toast-bottom toast-start"
+       id="notificationToastContainer"></div>
+{% endblock notification_toast %}

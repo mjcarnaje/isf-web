@@ -3,8 +3,8 @@ from functools import wraps
 from flask import current_app, flash, redirect
 from flask_login import current_user
 
-from ..models import UserRole
-from .redirect import get_login_redirect_url
+from ...models import UserRole
+from ..redirect import get_login_redirect_url
 
 
 def admin_required(f):
