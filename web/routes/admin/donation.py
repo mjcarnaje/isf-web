@@ -1,8 +1,9 @@
 from flask import Blueprint, render_template, request, session, jsonify
 
-from ...models import Donation
+from ...models import Donation, Notification
 from ...utils import admin_required, get_active_filter_count, pagination
 from ...config import Config
+from ...enums import NotificationType
 
 donations_bp = Blueprint("donations", __name__, url_prefix='/donations')
 
@@ -49,6 +50,13 @@ def donation(id):
 @admin_required
 def set_to_confirmed(id):
     Donation.set_to_confirmed(id)
+    notification = Notification(
+        type=NotificationType.DONATION_STATUS_UPDATE.value,
+        donation_id=id,
+        user_who_fired_event_id=1,
+        user_to_notify_id=request.form.get('user_id')
+    )
+    notification.insert_multiple([notification])
     return jsonify({ "success": True })
 
 @donations_bp.route('/reject/<int:id>', methods=['PUT'])

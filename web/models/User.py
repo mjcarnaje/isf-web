@@ -104,7 +104,19 @@ class User(UserMixin):
     def find_one(cls, user_id: int):
         sql = """
             SELECT 
-                user.*,
+                user.id,
+                user.email,
+                user.google_id,
+                user.username,
+                user.first_name,
+                user.gender,
+                user.last_name,
+                user.password,
+                user.is_verified,
+                user.photo_url,
+                user.contact_number,
+                user.unread_notification_count,
+                user.created_at,
                 GROUP_CONCAT(user_role.role_name) as roles
             FROM user 
             LEFT JOIN

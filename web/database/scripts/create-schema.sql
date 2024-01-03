@@ -222,7 +222,7 @@ CREATE TABLE IF NOT EXISTS event_volunteer (
 
 CREATE TABLE IF NOT EXISTS event_post (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL REFERENCES user(id),
+    user_id INT NOT NULL REFERENCES user(id) ON DELETE CASCADE,
     event_id INT NOT NULL REFERENCES event(id) ON DELETE CASCADE,
     post_text TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -246,18 +246,18 @@ CREATE TABLE IF NOT EXISTS event_post_pictures (
 CREATE TABLE  IF NOT EXISTS donation (
     id INT AUTO_INCREMENT PRIMARY KEY,
     type ENUM('General', 'Event', 'Animal') NOT NULL, -- 'event' or 'org'
-    animal_id INT,
+    animal_help_id INT,
     event_id INT,
-    user_id INT NOT NULL REFERENCES user(id),
+    user_id INT NOT NULL REFERENCES user(id) ON DELETE CASCADE,
     donation_type ENUM('Money', 'In-Kind') NOT NULL, -- 'money' or 'in_kind'
+    amount INT, -- (if money)
     delivery_type ENUM('Pick-up', 'Deliver'), -- (if in_kind)
     pick_up_location VARCHAR(256), -- optional, depending on delivery_type
-    amount INT, -- (if money)
     item_list TEXT, -- (if in-kind) [comma-seprated]
     remarks TEXT,
-    is_confirmed BOOLEAN DEFAULT false,
-    is_rejected BOOLEAN DEFAULT false,
+    status ENUM('Pending', 'Confirmed', 'Rejected') DEFAULT 'Pending',
     thumbnail_url VARCHAR(256) DEFAULT NULL,
+    FOREIGN KEY (animal_help_id) REFERENCES animal_help(id) ON DELETE CASCADE,
     FOREIGN KEY (animal_id) REFERENCES animal(id) ON DELETE CASCADE,
     FOREIGN KEY (event_id) REFERENCES event(id),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -273,6 +273,31 @@ CREATE TABLE IF NOT EXISTS donation_pictures (
     PRIMARY KEY (donation_id, photo_url),
     CONSTRAINT unique_donation_photo_url UNIQUE (donation_id, photo_url)
 );
+
+
+--;;;;--
+
+
+CREATE TABLE IF NOT EXISTS donation_status_history (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    donation_id INT NOT NULL REFERENCES donation(id) ON DELETE CASCADE,
+    previous_status ENUM('Pending', 'Confirmed', 'Rejected') NOT NULL,
+    new_status ENUM('Pending', 'Confirmed', 'Rejected') NOT NULL,
+    remarks TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+);
+
+
+--;;;;--
+
+
+CREATE TRIGGER add_pending_donation_history
+AFTER INSERT ON donation
+FOR EACH ROW
+BEGIN
+    INSERT INTO donation_status_history (donation_id, old_status, new_status, remarks)
+    VALUES (NEW.id, 'None', 'Pending', 'This is auto generated.');
+END;
 
 
 --;;;;--
@@ -296,7 +321,7 @@ CREATE TABLE IF NOT EXISTS animal_help (
 
 CREATE TABLE IF NOT EXISTS animal_help_post (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL REFERENCES user(id),
+    user_id INT NOT NULL REFERENCES user(id) ON DELETE CASCADE,
     animal_help_id INT NOT NULL REFERENCES animal_help(id),
     post_text TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,

@@ -9,6 +9,8 @@ from .NotificationSettings import NotificationSettings
 from uuid import uuid4
 from ..config import Config
 from ..socket import handle_notification
+from . import User
+
 class Notification:
     def __init__(self, **kwargs):
         self.id = kwargs.get('id')
@@ -92,40 +94,49 @@ class Notification:
         notification_sql = """
             UPDATE notification
             SET is_read = 1
-            WHERE user_to_notify_id = %(user_id)s and is_read = 0
+            WHERE user_to_notify_id = %(user_id)s AND is_read = 0
         """
-        
+
         cur.execute(notification_sql, params)
 
         db.connection.commit()
+
+        # Retrieve updated unread count
+        updated_unread_count = cls.get_unread_notification_count(user_id)
+        return updated_unread_count
 
     @classmethod
     def mark_as_read(cls, notification_id, user_id):
         user_sql = """
             UPDATE user
-            SET unread_notification_count = GREATEST(unread_notification_count - 1, 0)
+            SET unread_notification_count = GREATEST(unread_notification_count - 
+                CASE WHEN (SELECT is_read FROM notification WHERE id = %(notification_id)s) = 0 
+                THEN 1 ELSE 0 END, 0)
             WHERE id = %(user_id)s
         """
 
         params = {
-            'user_id': user_id
+            'user_id': user_id,
+            'notification_id': notification_id
         }
 
         cur = db.new_cursor(dictionary=True)
         cur.execute(user_sql, params)
-
-        params['notification_id'] = notification_id
 
         notification_sql = """
             UPDATE notification
             SET is_read = 1
             WHERE user_to_notify_id = %(user_id)s and id = %(notification_id)s
         """
-        
+
         cur.execute(notification_sql, params)
 
         db.connection.commit()
-        
+
+        # Retrieve updated unread count
+        updated_unread_count = cls.get_unread_notification_count(user_id)
+        return updated_unread_count
+
     @classmethod
     def mark_as_archived(cls, notification_id, user_id):
         notification_sql = """
@@ -133,7 +144,7 @@ class Notification:
             SET 
                 is_archived = 1,
                 is_read = 1
-            WHERE user_to_notify_id=%(user_id)s and id=%(notification_id)s
+            WHERE user_to_notify_id = %(user_id)s and id = %(notification_id)s
         """
 
         params = {
@@ -144,7 +155,40 @@ class Notification:
         cur = db.new_cursor(dictionary=True)
         cur.execute(notification_sql, params)
 
+        update_unread_count_sql = """
+            UPDATE user
+            SET unread_notification_count = GREATEST(unread_notification_count - 
+                CASE WHEN (SELECT is_read FROM notification WHERE id = %(notification_id)s) = 0 
+                THEN 1 ELSE 0 END, 0)
+            WHERE id = %(user_id)s
+        """
+
+        cur.execute(update_unread_count_sql, params)
+
         db.connection.commit()
+
+        # Retrieve updated unread count
+        updated_unread_count = cls.get_unread_notification_count(user_id)
+        return updated_unread_count
+
+    @classmethod
+    def get_unread_notification_count(cls, user_id):
+        select_sql = """
+            SELECT unread_notification_count
+            FROM user
+            WHERE id = %(user_id)s
+        """
+
+        params = {
+            'user_id': user_id
+        }
+
+        cur = db.new_cursor(dictionary=True)
+        cur.execute(select_sql, params)
+        result = cur.fetchone()
+
+        return result['unread_notification_count']
+
 
 
     @classmethod
@@ -247,13 +291,21 @@ class Notification:
 
         for notification_id in notification_web_ids:
             result = cls.find_one(notification_id=notification_id)
+            user = User.find_one(result.user_to_notify_id)
             handle_notification(user_id=result.user_to_notify_id, data={
-                'is_read': result.is_read,
-                'notifier_photo_url': get_image(result.notifier_photo_url),
-                'type': result.type,
-                'message': result.message,
-                'redirect_url': result.redirect_url,
-                'created_at': result.created_at,
+                'notification': {
+                    'id': result.id,
+                    'is_read': result.is_read,
+                    'notifier_photo_url': get_image(result.notifier_photo_url),
+                    'preview_image_url': get_image(result.preview_image_url),
+                    'type': result.type,
+                    'message': result.message,
+                    'redirect_url': result.redirect_url,
+                    'created_at': result.created_at,
+                },
+                'user': {
+                    'unread_notification_count': user.unread_notification_count
+                }
             })
             
         from ..utils import send_notification_email
