@@ -11,7 +11,7 @@
                  width="auto"
                  alt="donator image" />
             <div class="flex flex-col">
-              <p class="font-semibold">{{ donation.user_name }}</p>
+              <p class="font-semibold">{{ donation.user_first_name }}</p>
               <p class="text-sm">{{ donation.created_at | pretty_date }}</p>
             </div>
           </div>
@@ -58,16 +58,12 @@
           {% endfor %}
         </div>
         <div>
-          {% if donation.status != 'Pending' %}
-            {% if donation.status == 'Confirmed' %}
-              <div class="flex items-center justify-center flex-1 p-3 text-white rounded-lg bg-success">Confirmed</div>
-            {% else %}
-              <div class="flex items-center justify-center flex-1 p-3 text-white rounded-lg bg-error">Rejected</div>
-            {% endif %}
+          {% if donation.status == 'Pending' %}
+            <div class="flex items-center justify-center flex-1 p-3 text-white rounded-lg bg-info">Pending</div>
+          {% elif donation.status == 'Confirmed' %}
+            <div class="flex items-center justify-center flex-1 p-3 text-white rounded-lg bg-success">Confirmed</div>
           {% else %}
-            {% if not is_admin %}
-              <div class="flex items-center justify-center flex-1 p-3 text-white rounded-lg bg-info">Pending</div>
-            {% endif %}
+            <div class="flex items-center justify-center flex-1 p-3 text-white rounded-lg bg-error">Rejected</div>
           {% endif %}
         </div>
         <dialog id="confirm_modal{{ loop.index }}"
@@ -82,6 +78,7 @@
               </button>
               <button id="confirm-donation"
                       data-id="{{ donation.id }}"
+                      data-user-id="{{ donation.user_id }}"
                       data-donation-request-id="{{ donation.animal_help_id }}"
                       class="px-4 py-2 font-bold text-white bg-green-500 rounded-full hover:bg-green-600">
                 Confirm
@@ -101,6 +98,7 @@
               </button>
               <button id="reject-donation"
                       data-id="{{ donation.id }}"
+                      data-user-id="{{ donation.user_id }}"
                       data-donation-request-id="{{ donation.animal_help_id }}"
                       class="px-4 py-2 font-bold text-white bg-red-500 rounded-full hover:bg-red-600">Reject</button>
             </div>
@@ -116,23 +114,26 @@
         button.addEventListener("click", () => {
           const donationId = button.getAttribute("data-id");
           const donationRequestId = button.getAttribute("data-donation-request-id");
+          const userId = button.getAttribute("data-user-id");
 
-          console.log({donationId, donationRequestId})
+          const formData = new FormData();
+          formData.append("user_id", userId);
           
-              fetch(`/admin/animal-help/${donationRequestId}/donations/confirm/${donationId}`, {  // Add comma here
-                method: "POST",
-                headers: {
-                    "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
-                },
-            })
-            .then(response => response.json())
-            .then(data => {
-              window.location.reload();
-            })
-            .catch(error => {
-              console.error("Error confirming donation:", error);
-              showToast("error", "Error confirming donation. Please try again later.");
-            });
+          fetch(`/admin/animal-help/${donationRequestId}/donations/confirm/${donationId}`, {  // Add comma here
+              method: "POST",
+              headers: {
+                  "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
+              },
+              body: formData
+          })
+          .then(response => response.json())
+          .then(data => {
+            window.location.reload();
+          })
+          .catch(error => {
+            console.error("Error confirming donation:", error);
+            showToast("error", "Error confirming donation. Please try again later.");
+          });
         });
     })
 
@@ -142,12 +143,17 @@
         button.addEventListener("click", () => {
         const donationId = button.getAttribute("data-id");
         const donationRequestId = button.getAttribute("data-donation-request-id");
+        const userId = button.getAttribute("data-user-id");
 
+        const formData = new FormData();
+        formData.append("user_id", userId);
+        
         fetch(`/admin/animal-help/${donationRequestId}/donations/reject/${donationId}`, {  // Add comma here
             method: "POST",
             headers: {
                 "X-CSRFToken": document.querySelector("meta[name='csrf_token']").content,
             },
+            body: formData
         })
         .then(response => response.json())
         .then(data => {

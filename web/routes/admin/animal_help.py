@@ -1,7 +1,8 @@
 from flask import (Blueprint, render_template, request, session, jsonify, redirect, url_for, flash, current_app)
 
+from ...enums import NotificationType
 from ...config import Config
-from ...models import AnimalHelp, AnimalHelpPost, Donation, Animal
+from ...models import AnimalHelp, AnimalHelpPost, Donation, Animal, Notification
 from ...utils import admin_required, get_active_filter_count
 from ...utils import pagination, upload_images
 from ...validations import AddAnimalHelpValidation, AddAnimalHelpPostValidation, EditAnimalHelpValidation
@@ -163,33 +164,57 @@ def delete_animal_help(id):
     return {"success": "Successfuly deleted!"}
 
 
-@animal_help_bp.route('/<id>/donations/confirm/<donator_id>', methods=['POST'])
+@animal_help_bp.route('/<id>/donations/confirm/<donation_id>', methods=['POST'])
 @admin_required
-def confirm_donation(id, donator_id):
+def confirm_donation(id, donation_id):
     try:
-        Donation.set_to_confirmed(id=donator_id)
+        donation_status_history_id = Donation.set_to_confirmed(id=donation_id)
+        notification = Notification(
+            type=NotificationType.DONATION_STATUS_UPDATE.value,
+            donation_id=donation_id,
+            donation_status_history_id=donation_status_history_id,
+            user_who_fired_event_id=current_user.id,
+            user_to_notify_id=request.form.get('user_id')
+        )
+        Notification.insert_multiple([notification])
         flash("Donation request confirmed successfully!", "success")
         return jsonify({"status": "success", "message": "Donation request confirmed successfully!"})
     except Exception as e:
         flash("Error confirming donation request. Please try again later.", "error")
         return jsonify({"status": "error", "message": "Error confirming donation request. Please try again later."})
 
-@animal_help_bp.route('/<id>/donations/reject/<donator_id>', methods=['POST'])
+@animal_help_bp.route('/<id>/donations/reject/<donation_id>', methods=['POST'])
 @admin_required
-def reject_donation(id, donator_id):
+def reject_donation(id, donation_id):
     try:
-        Donation.set_to_rejected(id=donator_id)
+        donation_status_history_id = Donation.set_to_rejected(id=donation_id)
+        notification = Notification(
+            type=NotificationType.DONATION_STATUS_UPDATE.value,
+            donation_id=donation_id,
+            donation_status_history_id=donation_status_history_id,
+            user_who_fired_event_id=current_user.id,
+            user_to_notify_id=request.form.get('user_id')
+        )
+        Notification.insert_multiple([notification])
         flash("Donation request rejected successfully!", "success")
         return jsonify({"status": "success", "message": "Donation request rejected successfully!"})
     except Exception as e:
         flash("Error rejecting donation request. Please try again later.", "error")
         return jsonify({"status": "error", "message": "Error rejecting donation request. Please try again later."})
 
-@animal_help_bp.route('/<id>/donations/pending/<donator_id>', methods=['POST'])
+@animal_help_bp.route('/<id>/donations/pending/<donation_id>', methods=['POST'])
 @admin_required
-def pending_donation(id, donator_id):
+def pending_donation(id, donation_id):
     try:
-        Donation.set_to_pending(id=donator_id)
+        donation_status_history_id = Donation.set_to_pending(id=donation_id)
+        notification = Notification(
+            type=NotificationType.DONATION_STATUS_UPDATE.value,
+            donation_id=donation_id,
+            donation_status_history_id=donation_status_history_id,
+            user_who_fired_event_id=current_user.id,
+            user_to_notify_id=request.form.get('user_id')
+        )
+        Notification.insert_multiple([notification])
         flash("Donation request set to pending successfully!", "success")
         return jsonify({"status": "success", "message": "Donation request set to  pending successfully!"})
     except Exception as e:

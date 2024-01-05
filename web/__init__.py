@@ -3,7 +3,6 @@ import cloudinary
 from flask import Flask, send_from_directory
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
-from oauthlib.oauth2 import WebApplicationClient
 
 from .commands import set_up_commands
 from .config import Config
@@ -19,7 +18,7 @@ def  create_app():
     app.config.from_object(Config)
     db.init_app(app)
     mail.init_app(app)
-    socketio.init_app(app, async_mode="eventlet", cors_allowed_origins="*")
+    socketio.init_app(app, async_mode="eventlet" if Config.FLASK_ENV == "prod" else None, cors_allowed_origins="*")
     
     set_up_commands(app)
     CSRFProtect(app)
@@ -32,9 +31,7 @@ def  create_app():
         api_key=Config.CLOUDINARY_API_KEY,
         api_secret=Config.CLOUDINARY_API_SECRET,
     )
-    
-    client = WebApplicationClient(Config.GOOGLE_CLIENT_ID)
-        
+            
     login_manager = LoginManager()
     login_manager.login_view = 'landing.login'
     login_manager.init_app(app) 

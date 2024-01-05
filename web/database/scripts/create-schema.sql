@@ -145,8 +145,8 @@ CREATE TABLE IF NOT EXISTS adoption (
 CREATE TABLE IF NOT EXISTS adoption_status_history (
     id INT AUTO_INCREMENT PRIMARY KEY,
     adoption_id INT NOT NULL,
-    previous_status ENUM('None', 'Pending', 'Interview', 'Approved', 'Rejected', 'Turnovered') NOT NULL,
-    status ENUM('Pending', 'Interview', 'Approved', 'Rejected', 'Turnovered') NOT NULL,
+    previous_status ENUM('Pending', 'Interview', 'Approved', 'Rejected', 'Turnovered'),
+    new_status ENUM('Pending', 'Interview', 'Approved', 'Rejected', 'Turnovered') NOT NULL,
     remarks TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (adoption_id) REFERENCES adoption(id) ON DELETE CASCADE
@@ -157,7 +157,7 @@ CREATE TABLE IF NOT EXISTS adoption_status_history (
 CREATE TRIGGER add_pending_adoption_history AFTER INSERT ON adoption
 FOR EACH ROW
 BEGIN
-    INSERT INTO adoption_status_history (adoption_id, previous_status, status, remarks) VALUES (NEW.id, 'None', 'Pending', 'This is auto generated.');
+    INSERT INTO adoption_status_history (adoption_id, new_status) VALUES (NEW.id, 'Pending');
 END;
 
 
@@ -358,9 +358,24 @@ CREATE TRIGGER add_pending_donation_history
 AFTER INSERT ON donation
 FOR EACH ROW
 BEGIN
-    INSERT INTO donation_status_history (donation_id, new_status, remarks)
-    VALUES (NEW.id, 'Pending', 'This is auto generated.');
+    INSERT INTO donation_status_history (donation_id, new_status)
+    VALUES (NEW.id, 'Pending');
 END;
+
+
+--;;;;--
+
+
+CREATE TRIGGER set_previous_status
+BEFORE INSERT ON donation_status_history
+FOR EACH ROW
+SET NEW.previous_status = (
+    SELECT new_status
+    FROM donation_status_history
+    WHERE donation_id = NEW.donation_id
+    ORDER BY created_at DESC
+    LIMIT 1
+);
 
 
 --;;;;--
@@ -384,6 +399,7 @@ CREATE TABLE IF NOT EXISTS notification (
     adoption_id INT,
     adoption_status_history_id INT,
     donation_id INT,
+    donation_status_history_id INT,
     member_application_id INT,
     user_who_fired_event_id INT NOT NULL,
     user_to_notify_id INT NOT NULL,
@@ -393,6 +409,7 @@ CREATE TABLE IF NOT EXISTS notification (
     FOREIGN KEY (adoption_id) REFERENCES adoption(id) ON DELETE CASCADE,
     FOREIGN KEY (adoption_status_history_id) REFERENCES adoption_status_history(id) ON DELETE CASCADE,
     FOREIGN KEY (donation_id) REFERENCES donation(id) ON DELETE CASCADE,
+    FOREIGN KEY (donation_status_history_id) REFERENCES donation_status_history(id) ON DELETE CASCADE,
     FOREIGN KEY (event_id) REFERENCES event(id) ON DELETE CASCADE,
     FOREIGN KEY (member_application_id) REFERENCES member_application(id) ON DELETE CASCADE,
     FOREIGN KEY (user_who_fired_event_id) REFERENCES user(id) ON DELETE CASCADE,

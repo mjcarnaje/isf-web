@@ -1,7 +1,9 @@
 import os
 
 
-class Config:    
+class Config:
+    FLASK_ENV = os.getenv('FLASK_ENV')
+    
     SECRET_KEY = os.getenv('SECRET_KEY')
     MYSQL_HOST = os.getenv('MYSQL_HOST')
     MYSQL_USER = os.getenv('MYSQL_USER')

@@ -61,6 +61,7 @@ class Donation():
                 donation.remarks,
                 donation.status, 
                 donation.thumbnail_url, 
+                donation.created_at, 
                 GROUP_CONCAT(donation_pictures.photo_url) AS photo_urls,
                 user.photo_url as user_photo_url,
                 user.first_name as user_first_name,
@@ -171,7 +172,9 @@ class Donation():
                 donation.pick_up_location,
                 donation.item_list,
                 donation.remarks,
-                donation.status, 
+                donation.status,
+                donation.thumbnail_url,
+                donation.created_at, 
                 GROUP_CONCAT(donation_pictures.photo_url) AS photo_urls,
                 user.photo_url as user_photo_url,
                 user.first_name as user_first_name,
@@ -233,13 +236,39 @@ class Donation():
                 UPDATE donation
                 SET 
                     status = 'Confirmed'
-                WHERE id = %s
+                WHERE id = %(id)s
             """
+
+            params = {
+                'id': id
+            }
+            
             cur = db.new_cursor()
-            cur.execute(sql, (id,))
+            cur.execute(sql, params)
+
+            sql = """
+                INSERT INTO donation_status_history (
+                    donation_id,
+                    new_status
+                )
+                VALUES (
+                    %(donation_id)s,
+                    %(new_status)s
+                )
+            """
+
+            params = {
+                'donation_id': id,
+                'new_status': 'Confirmed', 
+            }
+
+            cur.execute(sql, params)
+                
             db.connection.commit()
 
             current_app.logger.info(f"Donation with id {id} confirmed successfully!")
+
+            return cur.lastrowid
         except Exception as err:
             current_app.logger.error(err)
 
@@ -250,13 +279,39 @@ class Donation():
                 UPDATE donation
                 SET 
                     status = 'Rejected'
-                WHERE id = %s
+                WHERE id = %(id)s
             """
-            cur = db.new_cursor()
-            cur.execute(sql, (id,))
-            db.connection.commit()
 
+            params = {
+                'id': id
+            }
+            
+            cur = db.new_cursor()
+            cur.execute(sql, params)
+
+            sql = """
+                INSERT INTO donation_status_history (
+                    donation_id,
+                    new_status
+                )
+                VALUES (
+                    %(donation_id)s,
+                    %(new_status)s
+                )
+            """
+
+            params = {
+                'donation_id': id,
+                'new_status': 'Rejected', 
+            }
+
+            cur.execute(sql, params)
+                
+            db.connection.commit()
+            
             current_app.logger.info(f"Donation with id {id} rejected successfully!")
+
+            return cur.lastrowid
         except Exception as err:
             current_app.logger.error(err)
 
@@ -267,12 +322,38 @@ class Donation():
                 UPDATE donation
                 SET 
                     status = 'Pending'
-                WHERE id = %s
+                WHERE id = %(id)s
             """
-            cur = db.new_cursor()
-            cur.execute(sql, (id,))
-            db.connection.commit()
 
+            params = {
+                'id': id
+            }
+            
+            cur = db.new_cursor()
+            cur.execute(sql, params)
+
+            sql = """
+                INSERT INTO donation_status_history (
+                    donation_id,
+                    new_status
+                )
+                VALUES (
+                    %(donation_id)s,
+                    %(new_status)s
+                )
+            """
+
+            params = {
+                'donation_id': id,
+                'new_status': 'Rejected', 
+            }
+
+            cur.execute(sql, params)
+                
+            db.connection.commit()
+            
             current_app.logger.info(f"Donation with id {id} pending successfully!")
+
+            return cur.lastrowid
         except Exception as err:
             current_app.logger.error(err)
