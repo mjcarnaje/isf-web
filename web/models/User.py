@@ -129,7 +129,8 @@ class User(UserMixin):
         cur.execute(sql, (user_id,))
         row = cur.fetchone()
 
-        row['roles'] = row['roles'].split(',') if row['roles'] else []
+        if row:
+            row['roles'] = row['roles'].split(',') if row['roles'] else []
 
         return cls(**row)    
     
