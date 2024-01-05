@@ -7,7 +7,7 @@
 {% endblock title %}
 {% block inner_content %}
   <div class="grid grid-cols-1 gap-4">
-    {% for donation in donations %}
+    {% for donation in donations.data %}
       <div class="flex flex-col w-full p-5 bg-white border shadow-md rounded-xl">
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-5">

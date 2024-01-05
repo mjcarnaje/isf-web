@@ -8,7 +8,7 @@
 {% endblock title %}
 {% block inner_content %}
   <div>
-    {{ animal_help_donations(donations) }}
-    {{ empty_list(donations, "No Donations Found.", class="col-span-2") }}
+    {{ animal_help_donations(donations.data) }}
+    {{ empty_list(donations.data, "No Donations Found.", class="col-span-2") }}
   </div>
 {% endblock inner_content %}

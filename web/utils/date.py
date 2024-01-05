@@ -4,6 +4,8 @@ def pretty_date(time=False):
     pretty string like 'an hour ago', 'Yesterday', '3 months ago',
     'just now', etc
     """
+    if not time: 
+        return ""
     from datetime import datetime
     now = datetime.now()
     if type(time) is int:

@@ -5,32 +5,27 @@
       <thead>
         <tr>
           <th class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Type</th>
-          <th class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Remarks</th>
           <th class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Amount / In-Kind</th>
           <th class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody class="divide-y">
         {% for donation in donations %}
           <tr>
             <td class="px-3 py-5 text-sm text-gray-800">
               <a href="{{ url_for('user.donation.donation', id=donation.id) }}"
-                 class="flex items-center gap-3 transition-all cursor-pointer group">
-                {% if donation.donation_type == 'Money' %}
-                  <div class="flex items-center justify-center w-12 h-12 transition-all bg-green-100 rounded-xl">
-                    <i class="text-lg text-green-600 transition-all group-hover:text-green-500 fa-solid fa-money-bill"></i>
-                  </div>
-                  <span class="transition-all group-hover:text-green-500">{{ donation.donation_type }}</span>
-                {% else %}
-                  <div class="flex items-center justify-center w-12 h-12 transition-all bg-yellow-100 rounded-xl">
-                    <i class="text-lg text-yellow-600 transition-all group-hover:text-yellow-500 fa-solid fa-hand-holding-heart"></i>
-                  </div>
-                  <span class="transition-all group-hover:text-yellow-500">{{ donation.donation_type }}</span>
-                {% endif %}
-              </a>
+                 class="flex items-center gap-3 transition-all cursor-pointer group">{{ donation.type }}</a>
             </td>
-            <td class="px-3 py-5 text-sm text-left text-gray-800">{{ donation.remarks or "No remarks" }}</td>
-            <td class="px-3 py-5 text-sm text-left text-gray-800">
+            <td class="flex items-center gap-2 px-3 py-5 text-sm text-left text-gray-800">
+              {% if donation.donation_type == 'Money' %}
+                <div class="flex items-center justify-center w-8 h-8 transition-all bg-green-100 rounded-lg">
+                  <i class="text-sm text-green-600 transition-all group-hover:text-green-500 fa-solid fa-money-bill"></i>
+                </div>
+              {% else %}
+                <div class="flex items-center justify-center w-8 h-8 transition-all bg-yellow-100 rounded-lg">
+                  <i class="text-sm text-yellow-600 transition-all group-hover:text-yellow-500 fa-solid fa-hand-holding-heart"></i>
+                </div>
+              {% endif %}
               {% if donation.amount %}
                 {{ donation.amount | format_currency }}
               {% else %}
@@ -38,12 +33,10 @@
               {% endif %}
             </td>
             <td class="px-3 py-5 text-sm text-left">
-              {% if donation.is_confirmed or donation.is_rejected %}
-                {% if donation.is_confirmed %}
-                  <div class="flex-1 text-white btn-xs btn btn-success">Confirmed</div>
-                {% else %}
-                  <div class="flex-1 text-white btn-xs btn btn-error">Rejected</div>
-                {% endif %}
+              {% if donation.status == 'Confirmed' %}
+                <div class="flex-1 text-white btn-xs btn btn-success">Confirmed</div>
+              {% elif donation.status == 'Rejected' %}
+                <div class="flex-1 text-white btn-xs btn btn-error">Rejected</div>
               {% else %}
                 <div class="flex-1 text-white btn-xs btn btn-warning">Pending</div>
               {% endif %}

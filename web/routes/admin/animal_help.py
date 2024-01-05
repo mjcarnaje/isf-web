@@ -1,7 +1,7 @@
 from flask import (Blueprint, render_template, request, session, jsonify, redirect, url_for, flash, current_app)
 
 from ...config import Config
-from ...models import AnimalHelp, AnimalHelpPost, AnimalHelpDonation, Animal
+from ...models import AnimalHelp, AnimalHelpPost, Donation, Animal
 from ...utils import admin_required, get_active_filter_count
 from ...utils import pagination, upload_images
 from ...validations import AddAnimalHelpValidation, AddAnimalHelpPostValidation, EditAnimalHelpValidation
@@ -94,7 +94,9 @@ def animal_help_post(id, post_id):
 @animal_help_bp.route('/<int:id>/donations', methods=['GET', 'POST'])
 def animal_help_donations(id):
     data = AnimalHelp.find_one(id)
-    donations = AnimalHelpDonation.find_donations_by_animal_help_id(id)
+    donations = Donation.find_all(filters={
+        'animal_help_id': id
+    }, page_number=1, page_size=100)
     return render_template('admin/animal-help/animal_help_donations.html', data=data, donations=donations)
 
 @animal_help_bp.route('/add', methods=['GET', 'POST'])
@@ -165,7 +167,7 @@ def delete_animal_help(id):
 @admin_required
 def confirm_donation(id, donator_id):
     try:
-        AnimalHelpDonation.set_to_confirmed(id=donator_id)
+        Donation.set_to_confirmed(id=donator_id)
         flash("Donation request confirmed successfully!", "success")
         return jsonify({"status": "success", "message": "Donation request confirmed successfully!"})
     except Exception as e:
@@ -176,7 +178,7 @@ def confirm_donation(id, donator_id):
 @admin_required
 def reject_donation(id, donator_id):
     try:
-        AnimalHelpDonation.set_to_rejected(id=donator_id)
+        Donation.set_to_rejected(id=donator_id)
         flash("Donation request rejected successfully!", "success")
         return jsonify({"status": "success", "message": "Donation request rejected successfully!"})
     except Exception as e:
@@ -187,7 +189,7 @@ def reject_donation(id, donator_id):
 @admin_required
 def pending_donation(id, donator_id):
     try:
-        AnimalHelpDonation.set_to_pending(id=donator_id)
+        Donation.set_to_pending(id=donator_id)
         flash("Donation request set to pending successfully!", "success")
         return jsonify({"status": "success", "message": "Donation request set to  pending successfully!"})
     except Exception as e:

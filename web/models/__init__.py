@@ -9,6 +9,5 @@ from .Notification import Notification
 from .NotificationSettings import NotificationSettings
 from .AnimalHelp import AnimalHelp
 from .AnimalHelpPost import AnimalHelpPost
-from .AnimalHelpDonation import AnimalHelpDonation
 from .EventPost import EventPost
 from .MemberApplication import MemberApplication

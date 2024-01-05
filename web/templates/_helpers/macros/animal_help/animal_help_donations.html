@@ -2,7 +2,6 @@
   {% set is_admin = "Admin" in current_user.roles %}
   <div class="grid items-center grid-cols-1 gap-4">
     {% for donation in donations %}
-      {% set is_touched = donation.is_confirmed or donation.is_rejected %}
       <div class="flex flex-col w-full h-full gap-5 p-5 bg-white border shadow-md rounded-xl">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-5">
@@ -59,8 +58,8 @@
           {% endfor %}
         </div>
         <div>
-          {% if is_touched %}
-            {% if donation.is_confirmed %}
+          {% if donation.status != 'Pending' %}
+            {% if donation.status == 'Confirmed' %}
               <div class="flex items-center justify-center flex-1 p-3 text-white rounded-lg bg-success">Confirmed</div>
             {% else %}
               <div class="flex items-center justify-center flex-1 p-3 text-white rounded-lg bg-error">Rejected</div>

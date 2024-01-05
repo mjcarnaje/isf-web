@@ -2,8 +2,7 @@ from enum import Enum
 
 class DonationFor(Enum):
   General = 'General'
-  Event = 'Event'
-  Animal = 'Animal'
+  AnimalHelp = 'Animal Help'
 
 class DonationType(Enum):
   Money = 'Money'

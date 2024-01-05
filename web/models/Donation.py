@@ -6,43 +6,75 @@ from ..database import db
 class Donation():
     def __init__(
         self, 
+        id: int | None = None,
         type: str = None,
         user_id: int = None,
-        animal_id: int = None,
-        event_id: int = None,
+        animal_help_id: int = None,
         donation_type: str = None,
         amount: int | None = None,
-        item_list: str | None = None,
         delivery_type: str = None,
         pick_up_location: str = None,
+        item_list: str | None = None,
         remarks: str = None,
+        status: str = None,
         thumbnail_url: str = None,
         pictures: [str] = None,
-        is_confirmed: bool = False,
         created_at=None,
-        id: int | None = None
+
+        user_photo_url: str | None = None,
+        user_first_name: str | None = None,
+        user_last_name: str | None = None,
     ):
         self.id = id
         self.type = type
-        self.animal_id = animal_id
-        self.event_id = event_id
+        self.user_id = user_id
+        self.animal_help_id = animal_help_id
         self.amount = amount
         self.item_list = item_list
-        self.user_id = user_id
         self.donation_type = donation_type
         self.delivery_type = delivery_type
         self.pick_up_location = pick_up_location
         self.remarks = remarks
-        self.thumbnail_url = thumbnail_url
         self.pictures = pictures 
-        self.is_confirmed = is_confirmed
+        self.status = status
+        self.thumbnail_url = thumbnail_url
         self.created_at = created_at
 
-        
+        self.user_photo_url = user_photo_url
+        self.user_first_name = user_first_name
+        self.user_last_name = user_last_name
+
         
     @classmethod
     def find_one(cls, donation_id: int):
-        sql = "SELECT * FROM donation WHERE id = %s"
+        sql = """
+            SELECT 
+                donation.id,
+                donation.type,
+                donation.user_id,
+                donation.animal_help_id,
+                donation.donation_type,
+                donation.amount,
+                donation.delivery_type,
+                donation.pick_up_location,
+                donation.item_list,
+                donation.remarks,
+                donation.status, 
+                donation.thumbnail_url, 
+                GROUP_CONCAT(donation_pictures.photo_url) AS photo_urls,
+                user.photo_url as user_photo_url,
+                user.first_name as user_first_name,
+                user.last_name as user_last_name
+            FROM donation 
+            LEFT JOIN
+                donation_pictures on donation.id = donation_pictures.donation_id
+            LEFT JOIN
+                user on donation.user_id = user.id
+            GROUP BY
+                donation.id
+            WHERE
+                donation.id = %s
+        """
         cur = db.new_cursor(dictionary=True)
         cur.execute(sql, (donation_id,))
         row = cur.fetchone()
@@ -56,37 +88,37 @@ class Donation():
             INSERT INTO donation (
                 type,
                 user_id,
+                animal_help_id,
                 donation_type,
                 amount,
                 item_list,
                 delivery_type,
                 pick_up_location,
                 remarks,
-                is_confirmed,
                 thumbnail_url
             ) VALUES (
                 %(type)s,
                 %(user_id)s,
+                %(animal_help_id)s,
                 %(donation_type)s,
                 %(amount)s,
                 %(item_list)s,
                 %(delivery_type)s,
                 %(pick_up_location)s,
                 %(remarks)s,
-                %(is_confirmed)s,
                 %(thumbnail_url)s
             )
         """
         params = {
             'type': donation.type,
             'user_id': donation.user_id,
+            'animal_help_id': donation.animal_help_id,
             'donation_type': donation.donation_type,
             'amount': donation.amount,
             'item_list': donation.item_list,
             'delivery_type': donation.delivery_type,
             'pick_up_location': donation.pick_up_location,
             'remarks': donation.remarks,
-            'is_confirmed': donation.is_confirmed,
             'thumbnail_url': donation.pictures[0],
         }
 
@@ -105,13 +137,14 @@ class Donation():
         if donation.pictures:
             pictures_params = [(donation_id, photo_url) for photo_url in donation.pictures]
             cur.executemany(pictures_sql, pictures_params)
-            db.connection.commit()
+            
+        db.connection.commit()
 
         return donation_id
     
-    @staticmethod
-    def find_all(page_number: int, page_size: int, filters: dict = None):
-        offset = (page_number - 1) * page_number
+    @classmethod
+    def find_all(cls, page_number: int, page_size: int, filters: dict = None):
+        offset = (page_number - 1) * page_size
         
         where_clauses = []
         filter_params = []
@@ -128,17 +161,24 @@ class Donation():
         
         sql = """
             SELECT 
-                donation.id as id,
-                donation_type,
-                amount,
-                item_list,
-                remarks,
-                is_confirmed,
-                is_rejected,
+                donation.id,
+                donation.type,
+                donation.user_id,
+                donation.animal_help_id,
+                donation.donation_type,
+                donation.amount,
+                donation.delivery_type,
+                donation.pick_up_location,
+                donation.item_list,
+                donation.remarks,
+                donation.status, 
+                GROUP_CONCAT(donation_pictures.photo_url) AS photo_urls,
                 user.photo_url as user_photo_url,
                 user.first_name as user_first_name,
                 user.last_name as user_last_name
             FROM donation 
+            LEFT JOIN
+                donation_pictures on donation.id = donation_pictures.donation_id
             LEFT JOIN
                 user on donation.user_id = user.id
         """
@@ -146,11 +186,26 @@ class Donation():
         if where_clause:
             sql += f" WHERE {where_clause}"
 
-        sql += " LIMIT %s OFFSET %s"
+        sql += """ 
+                GROUP BY
+                    donation.id
+                LIMIT %s OFFSET %s
+            """
+
+        print(sql)
+        print(filter_params + [page_size, offset])
 
         cur = db.new_cursor(dictionary=True)
         cur.execute(sql, filter_params + [page_size, offset])
-        data = cur.fetchall()
+        rows = cur.fetchall()
+
+        donations = []
+
+        for row in rows:
+            photo_urls = row['photo_urls'].split(',') if row['photo_urls'] else []
+            row['pictures'] = photo_urls
+            del row['photo_urls']
+            donations.append(cls(**row))
 
         count_sql = """
             SELECT 
@@ -165,11 +220,10 @@ class Donation():
         total_count = cur.fetchone()['total_count']
 
         return {
-            'data': data,
+            'data': donations,
             'total_count': total_count,
             'offset': offset
         }
-
 
 
     @staticmethod
@@ -178,8 +232,7 @@ class Donation():
             sql = """
                 UPDATE donation
                 SET 
-                    is_confirmed = 1,
-                    is_rejected = 0
+                    status = 'Confirmed'
                 WHERE id = %s
             """
             cur = db.new_cursor()
@@ -196,8 +249,7 @@ class Donation():
             sql = """
                 UPDATE donation
                 SET 
-                    is_rejected = 1,
-                    is_confirmed = 0
+                    status = 'Rejected'
                 WHERE id = %s
             """
             cur = db.new_cursor()
@@ -205,5 +257,22 @@ class Donation():
             db.connection.commit()
 
             current_app.logger.info(f"Donation with id {id} rejected successfully!")
+        except Exception as err:
+            current_app.logger.error(err)
+
+    @staticmethod
+    def set_to_pending(id):
+        try:
+            sql = """
+                UPDATE donation
+                SET 
+                    status = 'Pending'
+                WHERE id = %s
+            """
+            cur = db.new_cursor()
+            cur.execute(sql, (id,))
+            db.connection.commit()
+
+            current_app.logger.info(f"Donation with id {id} pending successfully!")
         except Exception as err:
             current_app.logger.error(err)

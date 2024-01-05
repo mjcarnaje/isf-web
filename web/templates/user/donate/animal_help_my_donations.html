@@ -51,8 +51,8 @@
     </div>
   {% endif %}
   <div>
-    {{ animal_help_donations(donations) }}
-    {{ empty_list(donations, "No Donations Found.") }}
+    {{ animal_help_donations(donations.data) }}
+    {{ empty_list(donations.data, "No Donations Found.") }}
   </div>
   <script>
     const addMoneyDonationModal = document.querySelector("#add-money-modal")

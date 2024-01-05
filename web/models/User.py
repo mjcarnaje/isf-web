@@ -238,13 +238,17 @@ class User(UserMixin):
 
     @classmethod
     def delete(cls, id):
-        sql =  """
-            DELETE FROM user
-            WHERE id = %(id)s
-        """
-        cur = db.new_cursor()
-        cur.execute(sql, {'id': id})
-        db.connection.commit()
+        try:
+            sql = """
+                DELETE FROM user
+                WHERE id = %(id)s
+            """
+            cur = db.new_cursor()
+            cur.execute(sql, {'id': id})
+            db.connection.commit()
+        except Exception as e:
+            print(f"Error deleting user with id {id}: {e}")
+        
 
     
     @classmethod
