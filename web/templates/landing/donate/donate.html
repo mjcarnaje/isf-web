@@ -4,54 +4,54 @@
   Donate
 {% endblock title %}
 {% block content %}
-  <div class="py-8">
-    <div class="flex flex-col items-center w-full max-w-5xl py-12 mx-auto space-y-10">
-      <h1 class="text-4xl font-bold text-center text-primary">Donation</h1>
-      <p class="font-medium leading-9 text-justify md:text-center">
-        ISF or Iligan Stray Feeders is a non-profit non government organization which focuses on feeding Stray animals in and around the city. It was founded and spearheaded by Trusty Choice O. Espinosa as it aims in promoting animal welfare through Stray Feeding Program. First Stray Feeding activity was conducted on December 9, 2020 and by January 7, 2021 ISF was formally organized. Through constant and regular Stray Feeding Program the group attracted a number of fellow animal advocates which became regular volunteers. The group expanded to other areas as it aims to feed larger number of Strays. With the help of regular donors and supporters the group was able to sustain its advocacy program until present time. 
+  <div class="flex flex-col items-center w-full max-w-5xl py-12 mx-auto space-y-10">
+    <h1 class="text-4xl font-bold text-center text-primary">Donation</h1>
+    <p class="font-medium leading-9 text-justify md:text-center">
+      ISF or Iligan Stray Feeders is a non-profit non government organization which focuses on feeding Stray animals in and around the city. It was founded and spearheaded by Trusty Choice O. Espinosa as it aims in promoting animal welfare through Stray Feeding Program. First Stray Feeding activity was conducted on December 9, 2020 and by January 7, 2021 ISF was formally organized. Through constant and regular Stray Feeding Program the group attracted a number of fellow animal advocates which became regular volunteers. The group expanded to other areas as it aims to feed larger number of Strays. With the help of regular donors and supporters the group was able to sustain its advocacy program until present time. 
+    </p>
+  </div>
+  <div class="w-full max-w-4xl px-8 py-12 mx-auto space-y-8">
+    <p class="text-2xl font-bold text-center">How to contribute through Money Donation?</p>
+    <p class="italic text-center">Simply scan the QR code with Maya or GCash</p>
+    <div class="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4 gap">
+      <img src="{{ url_for('static', filename='/images/qrs/gcash.png') }}"
+           class="col-span-1 rounded-lg"
+           alt="gcash"
+           width="auto"
+           height="auto" />
+      <img src="{{ url_for('static', filename='/images/qrs/maya.png') }}"
+           class="col-span-1 rounded-lg"
+           alt="paymaya"
+           width="auto"
+           height="auto" />
+      <img src="{{ url_for('static', filename='/images/qrs/bpi.png') }}"
+           class="col-span-1 rounded-lg"
+           alt="paymaya"
+           width="auto"
+           height="auto" />
+      <img src="{{ url_for('static', filename='/images/qrs/bdo.png') }}"
+           class="col-span-1 rounded-lg"
+           alt="paymaya"
+           width="auto"
+           height="auto" />
+    </div>
+  </div>
+  <div class="max-w-5xl mx-auto my-12 divider"></div>
+  <div class="flex flex-col max-w-2xl gap-12 mx-auto">
+    <div class="relative flex flex-col items-center w-full gap-8 px-10 py-8 mx-auto bg-white border shadow-md rounded-3xl">
+      <h1 class="w-9/12 mb-2 text-3xl font-bold text-center text-gray-800">Contribute and receive acknowledgment</h1>
+      <p class="max-w-md mb-4 text-center text-gray-600">
+        Help us care for and find loving homes for stray animals in Iligan. Your donation makes a difference!
       </p>
-    </div>
-    <div class="w-full max-w-4xl px-8 py-12 mx-auto space-y-8">
-      <p class="text-2xl font-bold text-center">How to contribute through Money Donation?</p>
-      <p class="italic text-center">Simply scan the QR code with Maya or GCash</p>
-      <div class="grid grid-cols-4 gap-5 gap">
-        <img src="{{ url_for('static', filename='/images/qrs/gcash.png') }}"
-             class="col-span-1 rounded-lg"
-             alt="gcash"
-             width="auto"
-             height="auto" />
-        <img src="{{ url_for('static', filename='/images/qrs/maya.png') }}"
-             class="col-span-1 rounded-lg"
-             alt="paymaya"
-             width="auto"
-             height="auto" />
-        <img src="{{ url_for('static', filename='/images/qrs/bpi.png') }}"
-             class="col-span-1 rounded-lg"
-             alt="paymaya"
-             width="auto"
-             height="auto" />
-        <img src="{{ url_for('static', filename='/images/qrs/bdo.png') }}"
-             class="col-span-1 rounded-lg"
-             alt="paymaya"
-             width="auto"
-             height="auto" />
-      </div>
-    </div>
-    <div class="max-w-5xl mx-auto divider"></div>
-    <div class="flex flex-col items-center justify-center gap-12 py-12">
-      <h1 class="text-3xl font-bold text-gray-800">Contribute and receive acknowledgment</h1>
-      <div class="flex flex-col items-center justify-center p-16 border shadow-md gap-y-12 rounded-3xl">
-        <h1 class="text-4xl font-bold text-gray-900">Types of Donation</h1>
-        <div class="flex gap-x-4">
-          <a href="{{ url_for('user.donate.donate_money',) }}"
-             class="gap-3 text-white btn btn-primary btn-wide rounded-xl btn-lg">
-            <i class="fa-solid fa-money-bill"></i>
-          Money</a>
-          <a href="{{ url_for('user.donate.donate_in_kind',) }}"
-             class="gap-3 text-white btn btn-primary btn-wide rounded-xl btn-lg">
-            <i class="fa-solid fa-hand-holding-heart"></i>In-Kind</a>
-        </div>
-        <p class="text-lg font-light text-gray-800">Your donation means the world to our stray animals</p>
+      <div class="flex flex-wrap w-full gap-4">
+        <a href="{{ url_for('user.donate.donate_money',) }}"
+           class="flex-grow text-white bg-blue-500 border-0 whitespace-nowrap btn btn-lg hover:bg-blue-600">
+          <i class="mr-2 fa-solid fa-money-bill"></i> Monetary Donation
+        </a>
+        <a href="{{ url_for('user.donate.donate_in_kind',) }}"
+           class="flex-grow text-white bg-green-500 border-0 whitespace-nowrap btn btn-lg hover:bg-green-600">
+          <i class="mr-2 fa-solid fa-hand-holding-heart"></i> In-Kind Donation
+        </a>
       </div>
     </div>
   </div>

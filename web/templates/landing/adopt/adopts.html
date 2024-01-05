@@ -8,50 +8,48 @@
   For Adoptions
 {% endblock title %}
 {% block content %}
-  <div class="py-8">
-    <div class="flex flex-col items-center w-full max-w-5xl py-12 mx-auto space-y-10">
-      <h1 class="text-4xl font-bold text-center text-primary">Adopt a shelter cat or dog</h1>
-      <p class="font-medium leading-9 text-justify lg:w-8/12 md:text-center">
-        Are you ready to make a difference in a furry friend's life? Consider adopting a shelter cat or dog and become a part of our mission to provide loving homes to animals in need.
-      </p>
-    </div>
-    <div class="flex flex-col w-full max-w-5xl gap-4 p-8 mx-auto bg-white border shadow-sm rounded-2xl">
-      <h3 class="text-xl font-bold ">Adoption Process</h3>
-      <ul class="space-y-1.5 list-decimal list-inside">
-        <li>
-          Login or Sign Up if you dont have account yet.
-          <div class="text-xs badge badge-ghost">None</div>
-        </li>
-        <li>
-          Submit the adoption application form
-          <div class="text-xs badge badge-ghost">Pending</div>
-        </li>
-        <li>
-          Conduct an initial interview (via phone, Zoom, or Google Meet).
-          <div class="text-xs badge badge-warning">Interview</div>
-        </li>
-        <li>
-          Meet our shelter animals in person
-          <div class="text-xs text-white badge badge-info">Approved</div>
-        </li>
-        <li>
-          Visit your chosen pet to confirm your choice
-          <div class="text-xs text-white badge badge-info">Approved</div>
-        </li>
-        <li>
-          Wait for vet clearance and schedule pick up
-          <div class="text-xs text-white badge badge-info">Approved</div>
-        </li>
-        <li>
-          Take your pet home!
-          <div class="text-xs text-white badge badge-success">Turnovered</div>
-        </li>
-      </ul>
-    </div>
-    <div class="w-full max-w-6xl py-16 mx-auto space-y-8">
-      {{ animal_filters(false) }}
-      {{ animal_cards_adoption(animals) }}
-      {{ pagination_buttons() }}
-    </div>
+  <div class="flex flex-col items-center w-full max-w-5xl py-12 mx-auto space-y-10">
+    <h1 class="text-4xl font-bold text-center text-primary">Adopt a shelter cat or dog</h1>
+    <p class="font-medium leading-9 text-justify lg:w-8/12 md:text-center">
+      Are you ready to make a difference in a furry friend's life? Consider adopting a shelter cat or dog and become a part of our mission to provide loving homes to animals in need.
+    </p>
+  </div>
+  <div class="flex flex-col w-full max-w-5xl gap-4 p-8 mx-auto bg-white border shadow-sm rounded-2xl">
+    <h3 class="text-xl font-bold ">Adoption Process</h3>
+    <ul class="space-y-1.5 list-decimal list-inside">
+      <li>
+        Login or Sign Up if you dont have account yet.
+        <div class="text-xs badge badge-ghost">None</div>
+      </li>
+      <li>
+        Submit the adoption application form
+        <div class="text-xs badge badge-ghost">Pending</div>
+      </li>
+      <li>
+        Conduct an initial interview (via phone, Zoom, or Google Meet).
+        <div class="text-xs badge badge-warning">Interview</div>
+      </li>
+      <li>
+        Meet our shelter animals in person
+        <div class="text-xs text-white badge badge-info">Approved</div>
+      </li>
+      <li>
+        Visit your chosen pet to confirm your choice
+        <div class="text-xs text-white badge badge-info">Approved</div>
+      </li>
+      <li>
+        Wait for vet clearance and schedule pick up
+        <div class="text-xs text-white badge badge-info">Approved</div>
+      </li>
+      <li>
+        Take your pet home!
+        <div class="text-xs text-white badge badge-success">Turnovered</div>
+      </li>
+    </ul>
+  </div>
+  <div class="w-full max-w-6xl px-4 py-16 mx-auto space-y-8">
+    {{ animal_filters(false) }}
+    {{ animal_cards_adoption(animals) }}
+    {{ pagination_buttons() }}
   </div>
 {% endblock content %}

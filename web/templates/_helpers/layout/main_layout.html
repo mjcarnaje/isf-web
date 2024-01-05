@@ -1,9 +1,11 @@
 {% extends "./_helpers/layout/base.html" %}
 {% block body %}
   {% include "./_helpers/partials/navbar.html" %}
-  <div class="min-h-screen">
-    {% block content %}
-    {% endblock content %}
-  </div>
+  <main class="flex w-full h-full min-h-screen py-10">
+    <div class="w-full px-4 pb-10 sm:px-6 lg:px-8">
+      {% block content %}
+      {% endblock content %}
+    </div>
+  </main>
   {% include "./_helpers/partials/footer.html" %}
 {% endblock body %}

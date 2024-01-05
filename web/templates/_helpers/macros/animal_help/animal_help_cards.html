@@ -14,7 +14,7 @@
       </div>
     </div>
   </dialog>
-  <div class="grid grid-cols-3 gap-8 pb-12">
+  <div class="grid grid-cols-1 gap-8 pb-12 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-3">
     {% for animal_help in animal_helps %}
       {% if is_admin %}
         {% set href = url_for('admin.animal_help.view_request', id=animal_help.id) %}

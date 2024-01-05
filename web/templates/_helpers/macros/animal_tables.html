@@ -47,157 +47,155 @@
       </div>
     </dialog>
   {% endif %}
-  <div class="overflow-hidden bg-white rounded-lg shadow-md ">
-    <div class="w-full">
-      <table class="min-w-full divide-y divide-gray-300">
-        <thead>
+  <div class="overflow-y-scroll bg-white rounded-lg shadow-md ">
+    <table class="min-w-full divide-y divide-gray-300">
+      <thead>
+        <tr>
+          <th scope="col"
+              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Name</th>
+          <th scope="col"
+              class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">For Adoption</th>
+          <th scope="col"
+              class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Adopted</th>
+          <th scope="col"
+              class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">In Shelter</th>
+          <th scope="col"
+              class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Rescued</th>
+          <th scope="col"
+              class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Dewormed</th>
+          <th scope="col"
+              class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Neutered</th>
+          {% if not 'is_dead' in hidden_columns %}
+            <th scope="col"
+                class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Deceased</th>
+          {% endif %}
+          <th scope="col" class="relative py-3.5 px-3">
+            <span class="sr-only">Edit</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        {% for animal in animals %}
+          {% if is_admin %}
+            {% set href = url_for('admin.animal.view_animal', id=animal.id) %}
+          {% else %}
+            {% set href = url_for('user.animals.view_animal', id=animal.id) %}
+          {% endif %}
           <tr>
-            <th scope="col"
-                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Name</th>
-            <th scope="col"
-                class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">For Adoption</th>
-            <th scope="col"
-                class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Adopted</th>
-            <th scope="col"
-                class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">In Shelter</th>
-            <th scope="col"
-                class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Rescued</th>
-            <th scope="col"
-                class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Dewormed</th>
-            <th scope="col"
-                class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Neutered</th>
-            {% if not 'is_dead' in hidden_columns %}
-              <th scope="col"
-                  class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Deceased</th>
-            {% endif %}
-            <th scope="col" class="relative py-3.5 px-3">
-              <span class="sr-only">Edit</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-          {% for animal in animals %}
-            {% if is_admin %}
-              {% set href = url_for('admin.animal.view_animal', id=animal.id) %}
-            {% else %}
-              {% set href = url_for('user.animals.view_animal', id=animal.id) %}
-            {% endif %}
-            <tr>
-              <td class="px-3 py-5 text-sm whitespace-nowrap">
-                <div class="flex items-center">
+            <td class="px-3 py-5 text-sm whitespace-nowrap">
+              <div class="flex items-center">
+                <a href="{{ href }}">
+                  <div class="flex-shrink-0 h-11 w-11">
+                    <img class="object-cover rounded-full h-11 w-11"
+                         src="{{ get_image(animal.photo_url) }}"
+                         alt=""
+                         height="auto"
+                         width="auto">
+                  </div>
+                </a>
+                <div class="ml-4">
                   <a href="{{ href }}">
-                    <div class="flex-shrink-0 h-11 w-11">
-                      <img class="object-cover rounded-full h-11 w-11"
-                           src="{{ get_image(animal.photo_url) }}"
-                           alt=""
-                           height="auto"
-                           width="auto">
-                    </div>
+                    <div class="font-medium text-gray-900">{{ animal.name }}</div>
                   </a>
-                  <div class="ml-4">
-                    <a href="{{ href }}">
-                      <div class="font-medium text-gray-900">{{ animal.name }}</div>
-                    </a>
-                    <div class="mt-1 text-gray-500">{{ animal.estimated_birth_month }} {{ animal.estimated_birth_year }}</div>
-                  </div>
+                  <div class="mt-1 text-gray-500">{{ animal.estimated_birth_month }} {{ animal.estimated_birth_year }}</div>
                 </div>
-              </td>
+              </div>
+            </td>
+            <td class="px-3 py-5 text-right">
+              <span class="inline-flex items-center gap-2 text-sm font-thin text-gray-700">
+                <div class="grid w-5 h-5 aspect-square {{ 'bg-primary-500' if animal.for_adoption else 'bg-gray-500' }} rounded-full place-items-center ">
+                  <i class="text-xs text-white fa-solid fa-paw"></i>
+                </div>
+                For Adoption
+              </span>
+            </td>
+            <td class="px-3 py-5 text-right">
+              <span class="inline-flex items-center gap-2 text-sm font-thin text-gray-700">
+                <div class="grid w-5 h-5 aspect-square {{ 'bg-red-500' if animal.is_adopted else 'bg-gray-500' }} rounded-full place-items-center ">
+                  <i class="text-xs text-white fa-solid fa-heart"></i>
+                </div>
+                Adopted
+              </span>
+            </td>
+            <td class="px-3 py-5 text-right">
+              <span class="inline-flex items-center gap-2 text-sm font-thin text-gray-700">
+                <div class="grid w-5 h-5 aspect-square {{ 'bg-purple-500' if animal.in_shelter else 'bg-gray-500' }} rounded-full place-items-center ">
+                  <i class="text-xs text-white fa-solid fa-home"></i>
+                </div>
+                In Shelter
+              </span>
+            </td>
+            <td class="px-3 py-5 text-right">
+              <span class="inline-flex items-center gap-2 text-sm font-thin text-gray-700">
+                <div class="grid w-5 h-5 aspect-square {{ 'bg-yellow-500' if animal.is_rescued else 'bg-gray-500' }} rounded-full place-items-center ">
+                  <i class="text-xs text-white fa-solid fa-life-ring"></i>
+                </div>
+                Rescued
+              </span>
+            </td>
+            <td class="px-3 py-5 text-right">
+              <span class="inline-flex items-center gap-2 text-sm font-thin text-gray-700">
+                <div class="grid w-5 h-5 aspect-square {{ 'bg-green-500' if animal.is_dewormed else 'bg-gray-500' }} rounded-full place-items-center ">
+                  <i class="text-xs text-white fa-solid fa-shield"></i>
+                </div>
+                Dewormed
+              </span>
+            </td>
+            <td class="px-3 py-5 text-right">
+              <span class="inline-flex items-center gap-2 text-sm font-thin text-gray-700">
+                <div class="grid w-5 h-5 aspect-square {{ 'bg-blue-500' if animal.is_neutured else 'bg-gray-500' }} rounded-full place-items-center ">
+                  <i class="text-xs text-white fa-solid fa-cut"></i>
+                </div>
+                Neutered
+              </span>
+            </td>
+            {% if not 'is_dead' in hidden_columns %}
               <td class="px-3 py-5 text-right">
                 <span class="inline-flex items-center gap-2 text-sm font-thin text-gray-700">
-                  <div class="grid w-5 h-5 aspect-square {{ 'bg-primary-500' if animal.for_adoption else 'bg-gray-500' }} rounded-full place-items-center ">
-                    <i class="text-xs text-white fa-solid fa-paw"></i>
+                  <div class="grid w-5 h-5 aspect-square {{ 'bg-gray-900' if animal.is_dead else 'bg-gray-500' }} rounded-full place-items-center ">
+                    <i class="text-xs text-white fa-solid fa-skull"></i>
                   </div>
-                  For Adoption
+                  Deceased
                 </span>
               </td>
-              <td class="px-3 py-5 text-right">
-                <span class="inline-flex items-center gap-2 text-sm font-thin text-gray-700">
-                  <div class="grid w-5 h-5 aspect-square {{ 'bg-red-500' if animal.is_adopted else 'bg-gray-500' }} rounded-full place-items-center ">
-                    <i class="text-xs text-white fa-solid fa-heart"></i>
-                  </div>
-                  Adopted
-                </span>
-              </td>
-              <td class="px-3 py-5 text-right">
-                <span class="inline-flex items-center gap-2 text-sm font-thin text-gray-700">
-                  <div class="grid w-5 h-5 aspect-square {{ 'bg-purple-500' if animal.in_shelter else 'bg-gray-500' }} rounded-full place-items-center ">
-                    <i class="text-xs text-white fa-solid fa-home"></i>
-                  </div>
-                  In Shelter
-                </span>
-              </td>
-              <td class="px-3 py-5 text-right">
-                <span class="inline-flex items-center gap-2 text-sm font-thin text-gray-700">
-                  <div class="grid w-5 h-5 aspect-square {{ 'bg-yellow-500' if animal.is_rescued else 'bg-gray-500' }} rounded-full place-items-center ">
-                    <i class="text-xs text-white fa-solid fa-life-ring"></i>
-                  </div>
-                  Rescued
-                </span>
-              </td>
-              <td class="px-3 py-5 text-right">
-                <span class="inline-flex items-center gap-2 text-sm font-thin text-gray-700">
-                  <div class="grid w-5 h-5 aspect-square {{ 'bg-green-500' if animal.is_dewormed else 'bg-gray-500' }} rounded-full place-items-center ">
-                    <i class="text-xs text-white fa-solid fa-shield"></i>
-                  </div>
-                  Dewormed
-                </span>
-              </td>
-              <td class="px-3 py-5 text-right">
-                <span class="inline-flex items-center gap-2 text-sm font-thin text-gray-700">
-                  <div class="grid w-5 h-5 aspect-square {{ 'bg-blue-500' if animal.is_neutured else 'bg-gray-500' }} rounded-full place-items-center ">
-                    <i class="text-xs text-white fa-solid fa-cut"></i>
-                  </div>
-                  Neutered
-                </span>
-              </td>
-              {% if not 'is_dead' in hidden_columns %}
-                <td class="px-3 py-5 text-right">
-                  <span class="inline-flex items-center gap-2 text-sm font-thin text-gray-700">
-                    <div class="grid w-5 h-5 aspect-square {{ 'bg-gray-900' if animal.is_dead else 'bg-gray-500' }} rounded-full place-items-center ">
-                      <i class="text-xs text-white fa-solid fa-skull"></i>
-                    </div>
-                    Deceased
-                  </span>
-                </td>
+            {% endif %}
+            <td class="relative px-3 py-5 text-sm font-medium text-right whitespace-nowrap">
+              {% if is_admin %}
+                <div class="drop-down" data-dropdown>
+                  <button data-dropdown-button
+                          class="flex items-center justify-center w-10 h-10 transition-all duration-200 border rounded-full hover:shadow drop-down-button">
+                    <i class="text-lg pointer-events-none fa-solid fa-ellipsis"></i>
+                  </button>
+                  <ul data-dropdown-content tabindex="0" class="drop-down-content">
+                    <li role="link"
+                        data-href="{{ url_for('admin.animal.edit_animal', id=animal.id) }}"
+                        tabindex="0">Edit</li>
+                    <li role="button"
+                        tabindex="0"
+                        id="delete-animal-button"
+                        data-animal-id="{{ animal.id }}">Delete</li>
+                    <li role="button"
+                        tabindex="0"
+                        id="{{ 'set-adoption-true-button' if not animal.for_adoption else 'set-adoption-false-button' }}"
+                        data-animal-id="{{ animal.id }}"
+                        class="{{ 'opacity-50 pointer-events-none' if animal.is_adopted or animal.is_dead }}">
+                      {{ 'Available for Adoption' if not animal.for_adoption else 'Not for Adoption' }}
+                    </li>
+                    <li role="link"
+                        data-href="{{ url_for('admin.animal_help.add_animal_help', animal_id=animal.id) }}"
+                        tabindex="0"
+                        class="{{ 'opacity-50 pointer-events-none' if animal.is_adopted or animal.is_dead or animal.help_requested }}">
+                      Ask for help {{ '(Active)' if animal.help_requested else '' }}
+                    </li>
+                  </ul>
+                </div>
               {% endif %}
-              <td class="relative px-3 py-5 text-sm font-medium text-right whitespace-nowrap">
-                {% if is_admin %}
-                  <div class="drop-down" data-dropdown>
-                    <button data-dropdown-button
-                            class="flex items-center justify-center w-10 h-10 transition-all duration-200 border rounded-full hover:shadow drop-down-button">
-                      <i class="text-lg pointer-events-none fa-solid fa-ellipsis"></i>
-                    </button>
-                    <ul data-dropdown-content tabindex="0" class="drop-down-content">
-                      <li role="link"
-                          data-href="{{ url_for('admin.animal.edit_animal', id=animal.id) }}"
-                          tabindex="0">Edit</li>
-                      <li role="button"
-                          tabindex="0"
-                          id="delete-animal-button"
-                          data-animal-id="{{ animal.id }}">Delete</li>
-                      <li role="button"
-                          tabindex="0"
-                          id="{{ 'set-adoption-true-button' if not animal.for_adoption else 'set-adoption-false-button' }}"
-                          data-animal-id="{{ animal.id }}"
-                          class="{{ 'opacity-50 pointer-events-none' if animal.is_adopted or animal.is_dead }}">
-                        {{ 'Available for Adoption' if not animal.for_adoption else 'Not for Adoption' }}
-                      </li>
-                      <li role="link"
-                          data-href="{{ url_for('admin.animal_help.add_animal_help', animal_id=animal.id) }}"
-                          tabindex="0"
-                          class="{{ 'opacity-50 pointer-events-none' if animal.is_adopted or animal.is_dead or animal.help_requested }}">
-                        Ask for help {{ '(Active)' if animal.help_requested else '' }}
-                      </li>
-                    </ul>
-                  </div>
-                {% endif %}
-              </td>
-            </tr>
-          </tbody>
-        {% endfor %}
-      </table>
-      {{ empty_list(animals, "No Animals Found.") }}
-    </div>
+            </td>
+          </tr>
+        </tbody>
+      {% endfor %}
+    </table>
+    {{ empty_list(animals, "No Animals Found.") }}
   </div>
   {% if is_admin %}
     <script>

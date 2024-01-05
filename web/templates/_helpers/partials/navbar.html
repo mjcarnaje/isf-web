@@ -7,10 +7,6 @@
       { 'name': 'Events', 'url': url_for('landing.events'), 'page': 'event'},
     ] %}
   <nav class="sticky top-0 z-50 flex items-center justify-center w-full h-20 px-4 bg-white border-b md:px-8 lg:px-12">
-    <a href="{{ url_for('admin.index',) }}"
-       class="absolute top-0 right-0 flex items-center justify-center w-8 h-8 transition rounded-lg opacity-0 cursor-pointer j hover:opacity-100 hover:bg-gray-200">
-      <i class="fa-solid fa-user"></i>
-    </a>
     <div class="flex items-center justify-between w-full gap-8 max-w-7xl">
       <a href="{{ url_for('landing.index',) }}">
         <img src="{{ url_for('static', filename='svgs/logo.svg') }}"
@@ -19,7 +15,7 @@
              height="auto"
              width="auto" />
       </a>
-      <ul class="hidden space-x-4 md:flex">
+      <ul class="hidden space-x-4 lg:flex">
         {% for navigation in navigations %}
           <li class="rounded-lg cursor-pointer">
             <a href="{{ navigation.url }}"
@@ -29,53 +25,13 @@
           </li>
         {% endfor %}
       </ul>
-      {% if current_user.is_authenticated %}
-        <div class="dropdown dropdown-end">
-          <label tabindex="0" class="btn btn-ghost btn-circle avatar">
-            <div class="w-10 rounded-full">
-              {% if current_user.photo_url %}
-                <img src="{{ get_image(current_user.photo_url) }}"
-                     alt="User profile picture"
-                     class="w-full h-full"
-                     height="auto"
-                     width="auto" />
-              {% else %}
-                <div class="flex items-center justify-center w-full h-full bg-slate-200 text-slate-500">
-                  <span class="text-2xl">{{ current_user.first_name[0] }}</span>
-                </div>
-              {% endif %}
-            </div>
-          </label>
-          <ul tabindex="0"
-              class="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
-            <li>
-              <a href="{{ url_for('user.dashboard',) }}">Dashboard</a>
-            </li>
-            <li>
-              <a href="{{ url_for('user.logout',) }}">Logout</a>
-            </li>
-          </ul>
-        </div>
-      {% else %}
-        <div class="flex items-center gap-2">
-          <a href="{{ url_for('landing.login',) }}" class="btn btn-sm">Login</a>
-          <a href="{{ url_for('landing.sign_up',) }}"
-             class="text-white btn btn-primary btn-sm">Sign up</a>
-        </div>
-      {% endif %}
-      <button id="menu-button" class="flex md:hidden">
-        <svg xmlns="http://www.w3.org/2000/svg"
-             width="28"
-             height="28"
-             viewBox="0 0 24 24"
-             fill="none"
-             stroke="currentColor"
-             stroke-width="2"
-             stroke-linecap="round"
-             stroke-linejoin="round"
-             class="lucide lucide-align-justify">
-          <line x1="3" x2="21" y1="6" y2="6" /><line x1="3" x2="21" y1="12" y2="12" /><line x1="3" x2="21" y1="18" y2="18" />
-        </svg>
+      <div class="items-center hidden gap-2 lg:flex">
+        <a href="{{ url_for('landing.login',) }}" class="btn btn-sm">Login</a>
+        <a href="{{ url_for('landing.sign_up',) }}"
+           class="text-white btn btn-primary btn-sm">Sign up</a>
+      </div>
+      <button id="menu-button" class="flex lg:hidden">
+        <i class="text-3xl fa-solid fa-bars"></i>
       </button>
     </div>
     <div id="menu-panel"
@@ -84,20 +40,31 @@
         {% for navigation in navigations %}
           <li class="rounded-lg cursor-pointer hover:bg-slate-100">
             <a href="{{ navigation.url }}"
-               class="flex items-center px-6 py-4 text-md {{ 'font-bold text-primary-800' if active_page == navigation.page else 'text-primary-200' }}">
+               class="flex items-center px-6 py-4 text-md {{ 'font-bold text-primary-800' if active_page == navigation.page else 'text-primary-400' }}">
               {{ navigation.name }}
             </a>
           </li>
         {% endfor %}
+        <li class="rounded-lg cursor-pointer">
+          <a href="{{ url_for('landing.login',) }}"
+             class="flex items-center px-6 py-4 text-md text-primary-400">Login</a>
+        </li>
+        <li class="rounded-lg cursor-pointer">
+          <a href="{{ url_for('landing.sign_up',) }}"
+             class="flex items-center px-6 py-4 text-md text-primary-400">Sign up</a>
+        </li>
       </ul>
     </div>
   </nav>
   <script>
   const menuButton = document.getElementById("menu-button");
+  const menuIcon = menuButton.querySelector("i");
   const menuPabel = document.getElementById("menu-panel");
 
   menuButton.addEventListener("click", () => {
-    menuPabel.classList.toggle("hidden")
+    menuPabel.classList.toggle("hidden");
+    menuIcon.classList.toggle("fa-xmark")
+    menuIcon.classList.toggle("fa-bars")
   })
   </script>
 {% endblock navbar %}

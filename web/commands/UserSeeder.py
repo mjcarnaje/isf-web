@@ -25,7 +25,9 @@ class UserSeeder:
             self.user_photos_copy = self.load_user_photos()
 
         photo_url = self.user_photos_copy.pop(0)
-        user_name = self.fake.user_name()
+        first_name = self.fake.first_name()
+        last_name = self.fake.last_name()
+        user_name = f"{first_name.lower()}_{last_name.lower()}"
 
         return (
             "('{}', "  # email
@@ -43,8 +45,8 @@ class UserSeeder:
                 self.fake.email(),
                 self.fake.uuid4(),
                 user_name,
-                self.fake.first_name(),
-                self.fake.last_name(),
+                first_name,
+                last_name,
                 random.choice(['Male', 'Female', 'Other']),
                 generate_password_hash(user_name),  # Assuming you have a generate_password_hash function
                 photo_url,

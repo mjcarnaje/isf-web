@@ -10,8 +10,8 @@
 {% block content %}
   <div class="flex flex-col gap-12 mx-auto max-w-7xl">
     {{ event_filters(is_user=True) }}
-    <div class="sm:flex sm:items-center">
-      <div class="sm:flex-auto">
+    <div class="flex items-center">
+      <div class="flex-auto">
         <h1 class="text-2xl font-bold leading-6 text-gray-900">Events ({{ pagination['total_count'] }})</h1>
       </div>
       {% include "./_helpers/partials/view_form.html" %}

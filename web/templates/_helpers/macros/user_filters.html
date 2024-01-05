@@ -36,13 +36,16 @@
       </div>
     </form>
   </dialog>
-  <div class="flex items-center justify-between py-4">
-    <form id="search-form"  class="flex items-center w-full max-w-xl gap-4">
+  <div class="flex items-center justify-between gap-8 py-4">
+    <form id="search-form"  class="flex items-center w-full max-w-xl gap-2">
       <input class="w-full input input-bordered"
              placeholder="Search by name"
              value="{{ filters.query }}"
              name="query" />
-      <button id="search-btn" type="submit" class="bg-white btn">Search</button>
+      <button id="search-btn" type="submit" class="bg-white btn">
+        <i class="fa-solid fa-search"></i>
+        <span class="hidden md:block">Search</span>
+      </button>
     </form>
     <button class="relative text-gray-700 bg-white btn"
             onclick="filters.showModal()">
@@ -53,7 +56,7 @@
           <span class="text-xs font-medium text-white">{{ active_filters }}</span>
         </div>
       {% endif %}
-      Filters
+      <span class="hidden md:block">Filters</span>
     </button>
   </div>
   <script>

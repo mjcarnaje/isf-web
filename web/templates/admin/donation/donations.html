@@ -9,8 +9,8 @@
 {% block content %}
   <div class="flex flex-col w-full gap-8 mx-auto max-w-7xl">
     {{ donation_filters() }}
-    <div class="sm:flex sm:items-center">
-      <div class="sm:flex-auto">
+    <div class="flex items-center">
+      <div class="flex-auto">
         <h1 class="text-2xl font-bold leading-6 text-gray-900">Donations ({{ pagination['total_count'] }})</h1>
       </div>
       {% include "./_helpers/partials/view_form.html" %}

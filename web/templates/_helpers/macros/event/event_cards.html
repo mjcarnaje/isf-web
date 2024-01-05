@@ -1,6 +1,6 @@
 {% from "./_helpers/macros/empty_list.html" import empty_list %}
 {% macro event_cards(events, is_user=False) %}
-  <div class="grid grid-cols-3 gap-8">
+  <div class="grid grid-cols-1 gap-8 pb-12 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-3">
     {% for event in events %}
       {% if is_user %}
         {% set event_href = url_for('user.events.view_event', id=event.id) %}

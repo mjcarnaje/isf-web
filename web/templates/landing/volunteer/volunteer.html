@@ -4,18 +4,23 @@
   Volunteer
 {% endblock title %}
 {% block content %}
-  <div class="flex flex-col max-w-5xl gap-16 py-12 mx-auto">
-    <h1 class="text-4xl font-bold text-center">Volunteers</h1>
-    <div class="grid grid-cols-8 gap-8">
-      {% for member in members %}
-        <div class="w-full col-span-1 overflow-hidden shadow ring-2 rounded-3xl aspect-square ring-offset-4 ring-primary-500">
+  <div class="flex flex-col items-center w-full max-w-5xl py-12 mx-auto space-y-10">
+    <h1 class="text-4xl font-bold text-center text-primary">Volunteers</h1>
+    <p class="font-medium leading-9 text-justify md:text-center">
+      These are the volunteers who work tirelessly to make a positive impact on our community and beyond. With dedication and passion, they contribute their time and skills to various projects and initiatives. Their hard work is the driving force behind the success of our organization, and we are incredibly grateful for their selfless commitment. Together, we strive to create a better world and inspire others to join us in making a difference.
+    </p>
+  </div>
+  <div class="grid w-full max-w-5xl grid-cols-3 gap-6 mx-auto sm:grid-cols-5 md:grid-cols-7 xl:grid-cols-8">
+    {% for member in members %}
+      <div class="tooltip" data-tip="{{ member.user_name }}">
+        <div class="w-full col-span-1 overflow-hidden shadow cursor-pointer group ring-2 rounded-3xl aspect-square ring-offset-4 ring-primary-500">
           <img src="{{ get_image(member.photo_url) }}"
-               class="object-cover w-full h-full"
+               class="object-cover w-full h-full transition-all group-hover:scale-105 bg-gray-50"
                alt="Volunteers"
                width="auto"
                height="auto" />
         </div>
-      {% endfor %}
-    </div>
+      </div>
+    {% endfor %}
   </div>
 {% endblock content %}
