@@ -128,9 +128,11 @@ class User(UserMixin):
         cur = db.new_cursor(dictionary=True)
         cur.execute(sql, (user_id,))
         row = cur.fetchone()
-
-        if row:
-            row['roles'] = row['roles'].split(',') if row['roles'] else []
+        
+        if not row: 
+            return None
+        
+        row['roles'] = row['roles'].split(',') if row['roles'] else []
 
         return cls(**row)    
     
