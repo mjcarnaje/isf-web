@@ -66,8 +66,6 @@ class EventSeeder:
             ";"
         )
 
-        print(sql)
-
         try:
             cur = self.db.connection.cursor()
             cur.execute(sql)

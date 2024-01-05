@@ -195,7 +195,6 @@ class Donation():
                 LIMIT %s OFFSET %s
             """
 
-        print(sql)
         print(filter_params + [page_size, offset])
 
         cur = db.new_cursor(dictionary=True)
