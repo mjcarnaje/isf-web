@@ -104,7 +104,8 @@ def animals():
 @anonymous_required
 def view_animal(id):
   animal = Animal.find_one(id)
-  return render_template('/landing/rescue/rescue.html', animal=animal)
+  adopter = Animal.get_adopter(id)
+  return render_template('/landing/rescue/rescue.html', animal=animal, adopter=adopter)  
 
 @landing_bp.route('/donate', methods=['GET'])
 @anonymous_required
