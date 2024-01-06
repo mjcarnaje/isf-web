@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS user_role (
     role_name ENUM('Admin', 'Member', 'Non-Member'),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
-    FOREIGN KEY (role_name) REFERENCES role(name)
+    FOREIGN KEY (role_name) REFERENCES role(name) ON DELETE CASCADE
 );
 
 --;;;;--
@@ -141,7 +141,6 @@ CREATE TABLE IF NOT EXISTS adoption (
 
 --;;;;--
 
-
 CREATE TABLE IF NOT EXISTS adoption_status_history (
     id INT AUTO_INCREMENT PRIMARY KEY,
     adoption_id INT NOT NULL,
@@ -160,9 +159,7 @@ BEGIN
     INSERT INTO adoption_status_history (adoption_id, new_status) VALUES (NEW.id, 'Pending');
 END;
 
-
 --;;;;--
-
 
 CREATE TABLE member_application (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -175,7 +172,6 @@ CREATE TABLE member_application (
 
 --;;;;--
 
-
 CREATE TRIGGER confirm_member_application
 AFTER UPDATE ON member_application
 FOR EACH ROW
@@ -187,9 +183,7 @@ BEGIN
     END IF;
 END;
 
-
 --;;;;--
-
 
 CREATE TABLE IF NOT EXISTS event (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -209,7 +203,6 @@ CREATE TABLE IF NOT EXISTS event (
 
 --;;;;--
 
-
 CREATE TABLE IF NOT EXISTS event_volunteer (
     event_id INT NOT NULL REFERENCES event(id) ON DELETE CASCADE,
     volunteer_id INT NOT NULL REFERENCES user(id) ON DELETE CASCADE,
@@ -218,7 +211,6 @@ CREATE TABLE IF NOT EXISTS event_volunteer (
 );
 
 --;;;;--
-
 
 CREATE TABLE IF NOT EXISTS event_post (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -231,7 +223,6 @@ CREATE TABLE IF NOT EXISTS event_post (
 
 --;;;;--
 
-
 CREATE TABLE IF NOT EXISTS event_post_pictures (
     event_post_id INT NOT NULL REFERENCES event_post(id) ON DELETE CASCADE,
     photo_url VARCHAR(256) NOT NULL, 
@@ -241,8 +232,6 @@ CREATE TABLE IF NOT EXISTS event_post_pictures (
 );
 
 --;;;;--
-
-
 
 CREATE TABLE IF NOT EXISTS animal_help (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -256,9 +245,7 @@ CREATE TABLE IF NOT EXISTS animal_help (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP  
 );
 
-
 --;;;;--
-
 
 CREATE TABLE IF NOT EXISTS animal_help_post (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -269,9 +256,7 @@ CREATE TABLE IF NOT EXISTS animal_help_post (
     FOREIGN KEY (animal_help_id) REFERENCES animal_help(id) ON DELETE CASCADE
 );
 
-
 --;;;;--
-
 
 CREATE TABLE IF NOT EXISTS animal_help_post_pictures (
     animal_help_post_id INT NOT NULL REFERENCES animal_help_post(id) ON DELETE CASCADE,
@@ -281,9 +266,7 @@ CREATE TABLE IF NOT EXISTS animal_help_post_pictures (
     CONSTRAINT unique_animal_help_post_photo_url UNIQUE (animal_help_post_id, photo_url)
 );
 
-
 --;;;;--
-
 
 CREATE TABLE  IF NOT EXISTS donation (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -325,9 +308,7 @@ BEGIN
     WHERE id = NEW.animal_help_id;
 END;
 
-
 --;;;;--
-
 
 CREATE TABLE IF NOT EXISTS donation_pictures (
     donation_id INT NOT NULL REFERENCES donation(id) ON DELETE CASCADE,
@@ -337,9 +318,7 @@ CREATE TABLE IF NOT EXISTS donation_pictures (
     CONSTRAINT unique_donation_photo_url UNIQUE (donation_id, photo_url)
 );
 
-
 --;;;;--
-
 
 CREATE TABLE IF NOT EXISTS donation_status_history (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -350,9 +329,7 @@ CREATE TABLE IF NOT EXISTS donation_status_history (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-
 --;;;;--
-
 
 CREATE TRIGGER add_pending_donation_history
 AFTER INSERT ON donation
@@ -362,9 +339,7 @@ BEGIN
     VALUES (NEW.id, 'Pending');
 END;
 
-
 --;;;;--
-
 
 CREATE TRIGGER set_previous_status
 BEFORE INSERT ON donation_status_history
@@ -377,9 +352,7 @@ SET NEW.previous_status = (
     LIMIT 1
 );
 
-
 --;;;;--
-
 
 CREATE TABLE IF NOT EXISTS notification (
     id VARCHAR(32) PRIMARY KEY,

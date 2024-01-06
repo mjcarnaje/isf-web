@@ -44,7 +44,7 @@ class User(UserMixin):
         where_clauses = []
         filter_params = []
 
-        if filters: 
+        if filters:
             for key, value in filters.items():
                 if not value:
                     continue
@@ -53,38 +53,52 @@ class User(UserMixin):
                     where_clauses.append("first_name LIKE %s OR last_name LIKE %s OR email LIKE %s OR username LIKE %s")
                     filter_params.extend([f"%{value}%", f"%{value}%", f"%{value}%", f"%{value}%"])
                     continue
-    
                 where_clauses.append(f"{key} = %s")
                 filter_params.append(value)
 
         where_clauses.append("user.id != %s")
         filter_params.append("1")
-        
+
         where_clause = " AND ".join(where_clauses) if where_clauses else ""
 
         sql = f"""
             SELECT
-                *
+                user.id,
+                user.email,
+                user.google_id,
+                user.username,
+                user.first_name,
+                user.gender,
+                user.last_name,
+                user.password,
+                user.is_verified,
+                user.photo_url,
+                user.contact_number,
+                user.unread_notification_count,
+                user.created_at,
+                GROUP_CONCAT(user_role.role_name) as roles
             FROM user
             LEFT JOIN 
                 user_role ON user.id = user_role.user_id
-            """
+        """
 
         if where_clause:
             sql += f" WHERE {where_clause}"
-        
+
+        sql += " GROUP BY user.id, user.email, user.google_id, user.username, user.first_name, user.gender, user.last_name, user.password, user.is_verified, user.photo_url, user.contact_number, user.unread_notification_count, user.created_at"
         sql += " LIMIT %s OFFSET %s"
+
+        print(sql)
 
         cur = db.new_cursor(dictionary=True)
         cur.execute(sql, filter_params + [page_size, offset])
         data = cur.fetchall()
 
+
         count_sql = """
             SELECT
                 COUNT(*) as total_count
             FROM user
-            LEFT JOIN 
-                user_role ON user.id = user_role.user_id
         """
 
         if where_clause:
@@ -98,7 +112,7 @@ class User(UserMixin):
             'total_count': total_count,
             'offset': offset
         }
-        
+    
     
     @classmethod
     def find_one(cls, user_id: int):
@@ -158,7 +172,6 @@ class User(UserMixin):
         
         return data
 
-
     @staticmethod
     def find_verified_users():
         sql = """
@@ -174,7 +187,6 @@ class User(UserMixin):
         cur.execute(sql)
         members = cur.fetchall()
         return members
-
     
     @classmethod
     def find_by_username(cls, username: str):
@@ -251,8 +263,6 @@ class User(UserMixin):
             db.connection.commit()
         except Exception as e:
             print(f"Error deleting user with id {id}: {e}")
-        
-
     
     @classmethod
     def update_email(cls, email, user_id):
@@ -270,7 +280,6 @@ class User(UserMixin):
         cur = db.new_cursor(dictionary=True)
         cur.execute(sql, params)
         db.connection.commit()
-
 
     @staticmethod
     def set_is_verified(user_id):
