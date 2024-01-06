@@ -198,44 +198,51 @@ def login():
     user = User.find_by_username(username=form.username.data)
 
     if user and check_password_hash(user.password, form.password.data):
-      login_user(user, remember=True)
-      
-      next_page = request.args.get("next")
+        login_user(user, remember=True)
+        
+        next_page = request.args.get("next")
 
-      if next_page:
-         return redirect(next_page)
-      
-      return redirect(url_for('user.index'))
-     
+        if next_page:
+            current_app.logger.info(f"User {user.username} logged in successfully.")
+            return redirect(next_page)
+        
+        current_app.logger.info(f"User {user.username} logged in successfully.")
+        return redirect(url_for('user.index'))
+
+    else:
+        current_app.logger.error(f"Failed login attempt for username: {form.username.data}")
+
   return render_template('user/login.html', form=form)
-  
+
 
 @landing_bp.route("/sign-up", methods=['POST', 'GET'])
 @anonymous_required
 def sign_up():
   form = UserSignupValidation()
-  
+
   if form.validate_on_submit():
       new_user = User(
-        email=form.email.data,
-        username=form.username.data,
-        first_name=form.first_name.data,
-        last_name=form.last_name.data,
-        photo_url=form.photo_url.data,
-        gender=form.gender.data,
-        contact_number=form.contact_number.data,
-        password=generate_password_hash(form.password.data),
+          email=form.email.data,
+          username=form.username.data,
+          first_name=form.first_name.data,
+          last_name=form.last_name.data,
+          photo_url=form.photo_url.data,
+          gender=form.gender.data,
+          contact_number=form.contact_number.data,
+          password=generate_password_hash(form.password.data),
       )
 
       user_id = User.insert(new_user)
       token = generate_verification_token(user_id=user_id, email=new_user.email)
 
       if Config.IS_MAIL_TRAP_AVAILABLE:
-        send_verification_email(email=new_user.email, token=token, user=new_user)
-        flash('Check your email to confirm your account.', 'success')
+          send_verification_email(email=new_user.email, token=token, user=new_user)
+          current_app.logger.info(f"Verification email sent to {new_user.email} for user {new_user.username}.")
+          flash('Check your email to confirm your account.', 'success')
       else:
-        User.set_is_verified(user_id=user_id)
-        flash('You are verified!')
+          User.set_is_verified(user_id=user_id)
+          current_app.logger.info(f"User {new_user.username} is verified.")
+          flash('You are verified!')
 
       return redirect(url_for('landing.login'))
 
