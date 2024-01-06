@@ -28,6 +28,7 @@ class UserSeeder:
         first_name = self.fake.first_name()
         last_name = self.fake.last_name()
         user_name = f"{first_name.lower()}_{last_name.lower()}"
+        email = f"{user_name}@gmail.com"
 
         return (
             "('{}', "  # email
@@ -42,7 +43,7 @@ class UserSeeder:
             "'{}', "  # contact_number
             "'{}')"   # created_at
             .format(
-                self.fake.email(),
+                email,
                 self.fake.uuid4(),
                 user_name,
                 first_name,
