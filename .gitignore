@@ -20,4 +20,3 @@ docs/_build/
 .vscode
 node_modules
 *.log
-!*.log/
